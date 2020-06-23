@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="options">Options</string>
+    <string name="menu_button_play">Play</string>
+    <string name="menu_button_play_audio">Play audio</string>
+    <string name="menu_button_continue_play_audio">Continue playing audio</string>
+    <string name="menu_button_pause_audio">Pause audio</string>
+    <string name="menu_button_stop_audio">Stop audio</string>
+    <string name="menu_button_slide_show">Play slide show</string>
+    <string name="change_page_color">Page Color</string>
+    <string name="rearrange_page">Page order</string>
+    <string name="delete_pages">Delete pages</string>
+    <string name="add_new_page">Add page</string>
+    <string name="add_new_page_select_position">Select position:</string>
+    <string name="add_new_page_leftmost">To leftmost</string>
+    <string name="add_new_page_rightmost">To rightmost</string>
+    <string name="rearrange_page_title">Change current page order</string>
+    <string name="rearrange_page_left">Left</string>
+    <string name="rearrange_page_right">Right</string>
+    <string name="edit_page_color_title">Set color:</string>
+    <string name="settings">Settings</string>
+    <string name="add_new_folder">Add new folder</string>
+    <string name="gallery">Gallery</string>
+    <string name="gallery_toast_no_file">No file yet, please create one first</string>
+    <string name="drag_note">Drag note</string>
+    <string name="preview_note_body">Preview body</string>
+    <string name="drag_folder">Drag folder</string>
+    <string name="delete_folders">Delete folders</string>
+</resources>

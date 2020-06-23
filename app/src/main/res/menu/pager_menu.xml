@@ -1,0 +1,43 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/VIEW_NOTE_CHECK"
+        android:orderInCategory="1"
+        app:showAsAction="always"
+        android:title="@string/btn_Select"
+        android:icon="@drawable/btn_check_on_holo_dark">
+    </item>
+    <item
+        android:id="@+id/VIEW_NOTE_MODE"
+        android:orderInCategory="2"
+        app:showAsAction="always"
+        android:title="@string/view_note_mode"
+        android:icon="@android:drawable/ic_menu_view">
+    <menu>
+        <item android:id="@+id/VIEW_ALL"
+            android:orderInCategory="1"
+            android:title="@string/view_note_mode_all"
+            app:showAsAction="ifRoom"/>
+        <item android:id="@+id/VIEW_PICTURE"
+            android:orderInCategory="2"
+            android:title="@string/view_note_mode_picture"
+            app:showAsAction="ifRoom"/>
+        <item android:id="@+id/VIEW_TEXT"
+            android:orderInCategory="3"
+            android:title="@string/view_note_mode_text"
+            app:showAsAction="ifRoom"/>
+    </menu>
+    </item>
+
+    <item android:id="@+id/ACTION_PREVIOUS"
+        android:orderInCategory="3"
+        android:title="@string/view_note_slide_action_previous"
+        android:icon="@android:drawable/ic_media_previous"
+        app:showAsAction="always"/>
+
+    <item android:id="@+id/ACTION_NEXT"
+        android:orderInCategory="4"
+        android:title="@string/view_note_slide_action_next"
+        android:icon="@android:drawable/ic_media_next"
+        app:showAsAction="always"/>
+</menu>

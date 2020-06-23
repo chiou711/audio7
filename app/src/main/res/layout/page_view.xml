@@ -1,0 +1,28 @@
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:orientation="vertical" >
+
+		<!-- list view -->
+		<com.mobeta.android.dslv.DragSortListView
+			android:id="@android:id/list"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:divider="@android:color/transparent"
+			android:dividerHeight="1dp"
+			android:drawSelectorOnTop="true"
+			android:background="@color/colorBlack"
+			android:minHeight="40dp" />
+
+		<!--<ProgressBar-->
+			<!--android:id="@+id/list1_progress"-->
+			<!--android:layout_width="wrap_content"-->
+			<!--android:layout_height="0dip"-->
+			<!--android:layout_weight="1"-->
+			<!--android:layout_gravity="center"-->
+			<!--android:visibility="gone"-->
+			<!--android:indeterminateDrawable="@drawable/spinner"-->
+			<!--/>-->
+
+</LinearLayout>

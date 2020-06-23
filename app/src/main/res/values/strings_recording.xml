@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Toolbar -->
+    <string name="action_settings">Settings</string>
+
+    <!-- Toasts -->
+    <string name="toast_recording_start">Recording started</string>
+    <string name="toast_recording_finish">Recording saved to</string>
+
+    <string name="default_file_name">Recording</string>
+    <string name="record_prompt">Tap the button to start recording</string>
+    <string name="record_in_progress">Recording</string>
+
+    <!-- Preferences -->
+    <string name="pref_high_quality_title">Enable High Quality Recording</string>
+
+</resources>

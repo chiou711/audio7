@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="edit_note_title">Edit the note</string>
+    <string name="edit_note_message">Note content:</string>
+    <string name="edit_note_button_save">OK</string>
+    <string name="edit_note_button_back">Cancel</string>
+    <string name="edit_note_confirm_update">Current note has been changed, do you want to update it?</string>
+    <string name="edit_note_button_delete">Delete</string>
+    <string name="edit_note_set_picture_dlg_title">Set picture</string>
+    <string name="edit_note_set_audio_dlg_title">Set audio</string>
+    <string name="edit_note_link">Link</string>
+    <string name="edit_note_dlg_link">Link:</string>
+    <string name="edit_note_dlg_set_link">Set link</string>
+    <string name="edit_note_dlg_title">Title:</string>
+    <string name="edit_note_dlg_body">Body:</string>
+    <string name="view_note_title">View note</string>
+    <string name="view_note_button_back">Back</string>
+    <string name="view_note_button_edit">Edit</string>
+    <string name="view_note_mode">View mode</string>
+    <string name="view_note_mode_all">Picture + Text</string>
+    <string name="view_note_mode_picture">Picture</string>
+    <string name="view_note_mode_text">Text</string>
+    <string name="view_note_slide_action_previous">Previous</string>
+    <string name="view_note_auto_play">Auto play</string>
+    <string name="view_note_slide_action_next">Next</string>
+    <string name="view_note_slide_action_finish">Last</string>
+</resources>

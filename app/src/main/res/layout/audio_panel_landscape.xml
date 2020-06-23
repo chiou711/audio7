@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/audio_panel"
+    android:layout_width="250dp"
+    android:layout_height="match_parent"
+    android:gravity="end"
+    android:background="@drawable/bar"
+    android:visibility="gone"
+    android:layout_marginTop="50dp"
+    android:orientation="vertical">
+
+    <!-- audio title -->
+    <TextView android:id="@+id/audio_panel_title"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_margin="3dp"
+        android:gravity="top"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textSize="18sp"
+        android:maxLines="10"
+        android:scrollbars="vertical"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        />
+
+    <!-- audio control: start -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="bottom"
+        android:background="@drawable/bar"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical" >
+            <TextView
+                android:id="@+id/audioPanel_audio_number"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="top|center"
+                android:textSize="12sp"
+                android:textColor="@color/colorWhite"
+                android:maxLines="1" />
+
+            <!--audio control buttons: start-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:orientation="horizontal" >
+                <ImageView
+                    android:id="@+id/audioPanel_previous"
+                    android:layout_width="50dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="left"
+                    android:layout_gravity="center"
+                    android:layout_margin="3dp"
+                    android:background="@drawable/button"/>
+
+                <!-- audio play button -->
+                <ImageView
+                    android:id="@+id/audioPanel_play"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:layout_gravity="center"
+                    android:layout_margin="3dp"
+                    android:background="@drawable/button" />
+
+                <ImageView
+                    android:id="@+id/audioPanel_next"
+                    android:layout_width="50dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:layout_gravity="center"
+                    android:layout_margin="3dp"
+                    android:background="@drawable/button" />
+            </LinearLayout>
+            <!-- audio control buttons: end-->
+
+            <!-- audio progress: start -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="bottom"
+                android:orientation="horizontal" >
+                <TextView
+                    android:id="@+id/audioPanel_current_pos"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="left"
+                    android:layout_gravity="center"
+                    android:textSize="12sp"
+                    android:textColor="@color/colorWhite"
+                    android:singleLine="true"
+                    />
+                <SeekBar
+                    android:id="@+id/audioPanel_seek_bar"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:layout_gravity="center"
+                    android:progressDrawable="@drawable/progress"
+                    android:thumb="@drawable/thumb"
+                    />
+                <TextView
+                    android:id="@+id/audioPanel_file_length"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:textSize="12sp"
+                    android:textColor="@color/colorWhite"
+                    android:gravity="end"
+                    android:layout_gravity="center"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginEnd="5dp"
+                    android:singleLine="true"
+                    />
+            </LinearLayout>
+            <!-- audio progress: end -->
+
+        </LinearLayout>
+
+    </LinearLayout>
+    <!-- audio control: end -->
+
+</LinearLayout>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="about_open_source_licenses">Open source licenses</string>
+    <string name="about_menu">About</string>
+    <string name="about_title">About</string>
+    <string name="about_version">Version</string>
+    <string name="about_version_name">Version name</string>
+    <string name="about_version_code">Version code</string>
+</resources>

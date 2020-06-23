@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="edit_note_title">編輯記事</string>
+    <string name="edit_note_message">記事內容:</string>
+    <string name="edit_note_button_save">確定</string>
+    <string name="edit_note_button_back">取消</string>
+    <string name="edit_note_confirm_update">目前記事已被更改，您要更新它嗎？</string>
+    <string name="edit_note_button_delete">刪除</string>
+    <string name="edit_note_set_picture_dlg_title">設置圖影</string>
+    <string name="edit_note_set_audio_dlg_title">設置音訊</string>
+    <string name="edit_note_link">連結</string>
+    <string name="edit_note_dlg_link">連結:</string>
+    <string name="edit_note_dlg_set_link">設置連結</string>
+    <string name="edit_note_dlg_title">標題:</string>
+    <string name="edit_note_dlg_body">正文:</string>
+    <string name="view_note_title">檢視記事</string>
+    <string name="view_note_button_back">返回</string>
+    <string name="view_note_button_edit">編輯</string>
+    <string name="view_note_mode">瀏覽模式</string>
+    <string name="view_note_mode_all">圖 + 文</string>
+    <string name="view_note_mode_picture">圖</string>
+    <string name="view_note_mode_text">文</string>
+    <string name="view_note_slide_action_previous">上一個</string>
+    <string name="view_note_auto_play">自動播放</string>
+    <string name="view_note_slide_action_next">下一個</string>
+    <string name="view_note_slide_action_finish">最後</string>       
+</resources>

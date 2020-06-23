@@ -1,0 +1,86 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+ <LinearLayout
+     	android:id="@+id/selectPageDlg"
+	    android:layout_width="match_parent"
+	    android:layout_height="match_parent"
+  		android:orientation="vertical" >
+	        
+   	<TextView
+		 android:id="@+id/select_list_title"
+		 android:layout_width="match_parent" 
+		 android:layout_height="50dp"
+		 android:textSize="22sp"
+		 android:textStyle="bold"
+		 android:gravity="center_vertical" 
+		 android:text="@string/config_select_pages_title"
+		 android:textAppearance="?android:attr/textAppearanceLarge"
+		 android:paddingLeft="5dp"
+		 />
+   	
+   	<CheckedTextView
+        android:id="@+id/chkSelectAllPages"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/checked_notes_check_all"
+        android:drawableLeft="?android:attr/listChoiceIndicatorMultiple"
+        android:clickable="true"
+        android:textSize="20sp"
+        android:paddingLeft="5dp"
+        android:gravity="center_vertical" />
+   	
+   	<View android:layout_width="match_parent" android:layout_height="1dp" android:background="#4f4f4f" />	
+   	
+    <ListView
+        android:id="@+id/listView1"
+        android:layout_width="match_parent"
+        android:layout_height="0dip"
+        android:layout_weight="1" >
+    </ListView>
+    <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#4f4f4f" />	
+    
+    <LinearLayout
+   	    android:layout_width="match_parent"
+   	    android:layout_height="50dp"
+   	    android:gravity="center"
+		android:background="@color/bar_color"
+	    android:orientation="horizontal" >
+    <Button
+	    android:id="@+id/btnSelPageCancel"
+	    android:layout_width="0dp"
+	    android:layout_height="wrap_content"
+	    android:layout_weight="1"
+		android:textColor="@android:color/white"
+		android:background="@drawable/button"
+		android:layout_margin="5dp"
+	    android:text="@string/btn_back" />
+    <Button
+	    android:id="@+id/btnSelPageOK"
+	    android:layout_width="0dp"
+	    android:layout_height="wrap_content"
+	    android:layout_weight="1"
+		android:textColor="@android:color/white"
+		android:background="@drawable/button"
+		android:layout_margin="5dp"
+	    android:text="@string/btn_OK" />
+ 	</LinearLayout>
+</LinearLayout> 	
+
+<LinearLayout
+    android:id="@+id/progressBar"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/background_dark"
+    android:gravity="center">
+    <ProgressBar
+        android:id="@+id/export_progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone" />
+</LinearLayout> 	
+
+</LinearLayout>

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent">
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+
+     <!--show licenses dialog-->
+   	<LinearLayout
+   	    android:id="@+id/showLicenses"
+   	    android:layout_width="match_parent"
+   	    android:layout_height="wrap_content"
+		android:paddingLeft="5dp"
+   	    android:gravity="center"
+	    android:orientation="horizontal" >
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="0dp"
+        android:src="@android:drawable/ic_menu_compass"
+        android:contentDescription="Show licenses"/>
+    <TextView
+		android:id="@+id/showLicensesText"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+ 		android:minHeight="50dp"
+		android:layout_weight="1"
+		android:gravity="center_vertical"
+		android:text="@string/about_open_source_licenses"
+		android:textStyle="normal"
+		android:paddingLeft="5dp"
+		android:textSize="18sp"/>
+	</LinearLayout>
+	<View android:layout_width="match_parent" android:layout_height="1dip" android:background="#4f4f4f" />
+
+	<!-- show about dialog-->
+   	<LinearLayout
+   	    android:id="@+id/showAbout"
+   	    android:layout_width="match_parent"
+   	    android:layout_height="wrap_content"
+		android:paddingLeft="5dp"
+   	    android:gravity="center"
+	    android:orientation="horizontal" >
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="0dp"
+        android:src="@android:drawable/ic_menu_info_details"
+        android:contentDescription="Show about"/>
+    <TextView
+		android:id="@+id/showAbout1"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:minHeight="50dp"
+		android:gravity="center_vertical"
+		android:layout_weight="1"
+		android:text="@string/about_version"
+		android:textStyle="normal"
+		android:paddingLeft="5dp"
+		android:textSize="18sp"/>
+	</LinearLayout>
+	<View android:layout_width="match_parent" android:layout_height="1dip" android:background="#4f4f4f" />
+
+
+    </LinearLayout>
+
+</ScrollView>
+</FrameLayout>
+

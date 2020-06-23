@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="edit_folder_title">編輯文件夾名稱</string>
+    <string name="edit_folder_message">文件夾名稱</string>
+    <string name="drawer_open">打開抽屜式導航</string>
+    <string name="drawer_close">關閉導航抽屜</string>
+</resources>

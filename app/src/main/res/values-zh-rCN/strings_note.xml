@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="edit_note_title">编辑笔记</string>
+    <string name="edit_note_message">笔记内容：</string>
+    <string name="edit_note_button_save">OK</string>
+    <string name="edit_note_button_back">取消</string>
+    <string name="edit_note_confirm_update">目前笔记已被更改，您要更新它吗？</string>
+    <string name="edit_note_button_delete">删除</string>
+    <string name="edit_note_set_picture_dlg_title">设置图影</string>
+    <string name="edit_note_set_audio_dlg_title">设置音讯</string>
+    <string name="edit_note_link">连结</string>
+    <string name="edit_note_dlg_link">连结:</string>
+    <string name="edit_note_dlg_set_link">设置连结</string>
+    <string name="edit_note_dlg_title">标题:</string>
+    <string name="edit_note_dlg_body">正文:</string>
+    <string name="view_note_title">查看笔记</string>
+    <string name="view_note_button_back">返回</string>
+    <string name="view_note_button_edit">编辑</string>
+    <string name="view_note_mode">浏览模式</string>
+    <string name="view_note_mode_all">图 + 文</string>
+    <string name="view_note_mode_picture">图</string>
+    <string name="view_note_mode_text">文</string>
+    <string name="view_note_slide_action_previous">上一个</string>
+    <string name="view_note_auto_play">自动播放</string>
+    <string name="view_note_slide_action_next">下一个</string>
+    <string name="view_note_slide_action_finish">最后</string>    
+</resources>

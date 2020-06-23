@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="add_new_note">新增記事</string>
+    <string name="add_new_note_position">頁面新筆記位置：</string>
+    <string name="add_new_note_top">到頂部</string>
+    <string name="add_new_note_bottom">到底部</string>
+    <string name="add_new_link_title_also">新增連結時,也包括連結的標題</string>
+    <string name="add_new_note_option_title">新增記事：</string>
+    <string name="add_new_note_title">新增記事</string>
+    <string name="add_new_note_message">記事內容:</string>
+    <string name="add_new_note_button_add">新增</string>
+    <string name="add_new_note_confirm_save">已經有內容在新記事中，您想要保存它嗎?</string>
+    <string name="dialog_add_new_option_title">設定新增記事的操作：</string>
+    <string name="dialog_add_new_multiple">新增現成文件記事時：包括目錄中的所有同類文件</string>
+    <string name="note_text">文字</string>
+    <string name="note_camera_image">照相機圖片</string>
+    <string name="note_camera_video">照相機影片</string>
+    <string name="note_ready_image">現成圖片</string>
+    <string name="note_ready_video">現成影片</string>
+    <string name="note_audio">音訊</string>
+    <string name="note_ready_audio">現成音訊</string>
+    <string name="note_recording">錄音</string>
+    <string name="note_drawing">塗鴉</string>
+    <string name="note_take_picture">拍照</string>
+    <string name="note_take_picture_OK">完成</string>
+    <string name="note_cancel_add_new">取消</string>
+    <string name="note_take_picture_continue_dlg_title">繼續拍照？</string>
+    <string name="note_ready_picture_continue_dlg_title">繼續選擇現成的圖片?</string>
+    <string name="add_new_chooser_audio">選擇音訊</string>    
+    <string name="add_new_chooser_image">選擇圖片</string>    
+    <string name="add_new_chooser_video">選擇影片</string>
+    <string name="audio_message_no_media_file_is_found">沒有找到媒體檔</string>
+    <string name="audio_message_could_not_open_file">無法開啟檔案</string>
+    <string name="audio_message_searching_media">尋找媒體 &#8230;</string>
+    <string name="audio_message_preparing_to_play">準備播放 &#8230;</string>
+    <string name="audio_message_preparing_time_out">準備已經超時</string>
+    <string name="audio_file_not_found">找不到或未選擇音訊檔案</string>
+    <string name="add_new_start">開始新增筆記</string>
+    <string name="add_new_stop">停止新增筆記</string>
+    <string name="add_new_file_error">新增多個文件時，請確認您的選擇是本地文件。</string>
+    <string name="add_drawing">新增塗鴉</string>
+    <string name="edit_drawing">編輯塗鴉</string>
+    <string name="button_erase">擦除</string>
+    <string name="button_set_color">設置顏色</string>
+    <string name="button_set_line_width">設置線寬</string>
+    <string name="label_alpha">Alpha</string>
+    <string name="label_red">紅色</string>
+    <string name="label_green">綠色</string>
+    <string name="label_blue">藍色</string>
+    <string name="menuitem_clear">清空</string>
+    <string name="menuitem_color">顏色</string>
+    <string name="menuitem_erase">擦除</string>
+    <string name="menuitem_line_width">線寬</string>
+    <string name="menuitem_save_image">保存圖片</string>
+    <string name="menuitem_save_as_other_image">另存為其他圖片</string>
+    <string name="message_erase">擦除繪圖？</string>
+    <string name="message_error_saving">
+       保存圖像時出錯</string>
+    <string name="message_saved">
+       您的繪畫已保存到圖庫中</string>
+    <string name="message_updated">
+       您的繪畫已更新到圖庫</string>
+    <string name="title_color_dialog">選擇顏色</string>
+    <string name="title_line_width_dialog">選擇線寬</string>
+</resources>

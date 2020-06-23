@@ -1,0 +1,76 @@
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:theme="@style/MyTheme">
+
+<com.google.android.material.appbar.AppBarLayout
+    android:id="@+id/tabanim_appbar"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabs"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"/>
+
+</com.google.android.material.appbar.AppBarLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:layout_marginTop="50dp"
+        android:orientation="vertical">
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/tabs_pager"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:visibility="visible"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+        <TextView
+            android:id="@+id/blankFolder"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/blank_folder"
+            android:textSize="25sp"
+            />
+        <!-- footer audio control -->
+        <TextView
+            android:id="@+id/footerText"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:gravity="center"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textSize="12sp"
+            android:maxLines="1"
+            android:background="@drawable/bg_gray_border" />
+
+        <!-- view for AdMob Banner Ad -->
+        <!--if ENABLE_ADMOB = true, enable the following-->
+<!--        <com.google.android.gms.ads.AdView-->
+<!--            xmlns:ads="http://schemas.android.com/apk/res-auto"-->
+<!--            android:id="@+id/adView"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_gravity="center"-->
+<!--            android:background="#4f4f4f"-->
+<!--            ads:adSize="BANNER"-->
+<!--            ads:adUnitId="@string/banner_ad_unit_id"/>-->
+    </LinearLayout>
+    <include
+        layout="@layout/audio_panel_landscape"
+        />
+    </LinearLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

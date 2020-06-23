@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="about_open_source_licenses">開放源代碼許可</string>
+    <string name="about_menu">關於</string>
+    <string name="about_title">關於</string>
+    <string name="about_version">版本</string>
+    <string name="about_version_name">版本名稱</string>
+    <string name="about_version_code">版本代碼</string>
+</resources>

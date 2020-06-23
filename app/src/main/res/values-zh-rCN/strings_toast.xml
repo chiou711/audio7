@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="toast_keep_one_page">请至少保留一页面</string>
+    <string name="toast_keep_one_drawer">请至少保留一页文件夹</string>
+    <string name="toast_leftmost">最左边</string>
+    <string name="toast_rightmost">最右边</string>
+    <string name="toast_no_email_address">没有电子邮件地址</string>
+    <string name="toast_import_SDCard_no_file">还没有档案，请先汇出一个</string>
+    <string name="toast_import_finished">所选档案已汇入</string>
+    <string name="toast_input_filename">请输入一个档案名称</string>
+    <string name="toast_saved">储存</string>
+    <string name="toast_pause">暂停</string>
+    <string name="toast_play">播放</string>
+    <string name="toast_no_link_found">找不到连结</string>
+    <string name="toast_edit_drawing_to_landscape">要查看整个图像，请将您的设备方向旋转为横向</string>
+    <string name="toast_edit_drawing_to_portrait">要查看整个图像，请将您的设备方向旋转为纵向</string>
+</resources>

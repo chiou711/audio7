@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scrollView1"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <RadioGroup
+        android:id="@+id/radioGroup1"
+        android:layout_width="match_parent"
+        android:layout_height="191dp" >
+
+	    <RadioButton
+	        android:id="@+id/radio0"
+	        android:layout_width="match_parent"
+	        android:layout_height="50dp"
+	        android:text="RadioButton0" />
+	
+	    <RadioButton
+	        android:id="@+id/radio1"
+	        android:layout_width="match_parent"
+	        android:layout_height="50dp"
+	        android:text="RadioButton1" />
+	
+	    <RadioButton
+	        android:id="@+id/radio2"
+	        android:layout_width="match_parent"
+	        android:layout_height="50dp"
+	        android:text="RadioButton2" />
+	
+	    <RadioButton
+	        android:id="@+id/radio3"
+	        android:layout_width="match_parent"
+	        android:layout_height="50dp"
+	        android:text="RadioButton3" />
+	    
+  	    <RadioButton
+	        android:id="@+id/radio4"
+	        android:layout_width="match_parent"
+	        android:layout_height="50dp"
+	        android:text="RadioButton4" />
+  	    
+  	    <RadioButton
+	        android:id="@+id/radio5"
+	        android:layout_width="match_parent"
+	        android:layout_height="50dp"
+	        android:text="RadioButton5" />
+  	    
+  	    <RadioButton
+	        android:id="@+id/radio6"
+	        android:layout_width="match_parent"
+	        android:layout_height="50dp"
+	        android:text="RadioButton6" />
+
+  	    <RadioButton
+	        android:id="@+id/radio7"
+	        android:layout_width="match_parent"
+	        android:layout_height="50dp"
+	        android:text="RadioButton7" />
+
+  	    <RadioButton
+	        android:id="@+id/radio8"
+	        android:layout_width="match_parent"
+	        android:layout_height="50dp"
+	        android:text="RadioButton8" />
+  	    
+  	    <RadioButton
+	        android:id="@+id/radio9"
+	        android:layout_width="match_parent"
+	        android:layout_height="50dp"
+	        android:text="RadioButton9" />
+  	    	    	    	    	    	    
+  	    </RadioGroup>
+</ScrollView>

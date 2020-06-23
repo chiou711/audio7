@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:id="@+id/container"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="vertical" >
+<include layout="@layout/toolbar" />
+<ScrollView  xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+    android:orientation="vertical">
+<LinearLayout
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:orientation="vertical">
+
+	<!-- title -->
+	<LinearLayout 
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+        android:background="@color/bar_color"
+        android:orientation="horizontal" >
+		<ImageView 
+		    android:layout_width="20dp"
+			android:layout_height="20dp" 
+			android:src="@android:drawable/ic_menu_edit" 
+			/>
+		<TextView 
+		    android:layout_width="wrap_content"
+			android:layout_height="wrap_content" 
+			android:text="@string/edit_note_dlg_title"
+            android:textColor="@android:color/white"/>
+	</LinearLayout>
+	
+	<EditText android:id="@+id/edit_title"
+		  	android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+		    android:textCursorDrawable="@null"
+		    android:inputType=""
+		    android:textSize="18sp"
+		    android:minLines="1"
+		    android:maxLines="20"
+			/>
+
+	<!-- body -->
+	<LinearLayout
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+        android:background="@color/bar_color"
+	    android:orientation="horizontal" >
+	<ImageView 
+	    android:layout_width="20dp"
+		android:layout_height="20dp" 
+		android:src="@android:drawable/ic_menu_edit" 
+		/>
+	<TextView
+        android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="@string/edit_note_dlg_body"
+        android:textColor="@android:color/white"/>
+	</LinearLayout>
+	
+	<EditText android:id="@+id/edit_body"
+	    android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+		android:textCursorDrawable="@null"
+	    android:inputType=""
+	    android:minLines="2"
+		android:maxLines="1000"
+	    android:autoLink="all"
+	    android:textSize="18sp"
+        android:scrollbars="vertical"
+        android:gravity="top"
+		/>
+
+	<!-- link -->
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:background="@color/bar_color"
+		android:orientation="horizontal" >
+		<ImageView
+			android:layout_width="20dp"
+			android:layout_height="20dp"
+			android:src="@android:drawable/ic_menu_edit"
+			/>
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="@string/edit_note_dlg_link"
+			android:textColor="@android:color/white"/>
+	</LinearLayout>
+
+	<EditText android:id="@+id/edit_link"
+			  android:layout_width="match_parent"
+			  android:layout_height="0dp"
+			  android:layout_weight="1"
+			  android:textCursorDrawable="@null"
+			  android:inputType=""
+			  android:minLines="1"
+			  android:maxLines="20"
+			  android:autoLink="all"
+			  android:textSize="18sp"
+			  android:scrollbars="vertical"
+			  android:gravity="top"
+	/>
+
+</LinearLayout>
+</ScrollView>
+</LinearLayout>

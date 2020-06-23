@@ -1,0 +1,177 @@
+ <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+	<!-- top block of pager -->
+	<RelativeLayout
+        android:id="@+id/pictureContent"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2">
+    
+    <!-- image view or video view -->
+    <FrameLayout
+        android:id="@+id/image_or_video_block"     
+		android:layout_width="match_parent"
+    	android:layout_height="match_parent" >
+    <ProgressBar
+        android:id="@+id/loading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone" />	 
+        
+    <com.cw.audio7.util.image.TouchImageView
+        android:id="@+id/image_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+		android:layout_gravity="center"
+		android:scaleType="fitCenter"
+  		android:contentDescription="image_view" />
+
+
+    </FrameLayout> 
+    
+    <!-- in view control: start -->
+    <Button
+        android:id="@+id/video_view_play_video"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_centerInParent="true"
+		android:visibility="gone"  />  
+
+    <!-- image view control -->
+    <LinearLayout
+        android:id="@+id/image_view_top"
+      	android:layout_width="match_parent"
+      	android:layout_height="wrap_content"
+      	android:layout_alignParentTop="true"
+      	android:gravity="center"
+      	android:orientation="horizontal"> 	
+	<Button
+        android:id="@+id/image_view_back"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+		android:visibility="gone"  />  	
+	<TextView
+        android:id="@+id/image_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_margin="5dp"
+        android:paddingLeft="5dp"
+        android:background="#7f7f7f7f"
+        android:textColor="#ffffff"
+        android:textSize="12sp"
+		android:visibility="gone" />
+    <Button
+        android:id="@+id/image_view_mode"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+		android:visibility="gone"  /> 
+	</LinearLayout>
+
+    <TextView
+        android:id="@+id/image_footer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/video_control"
+        android:text="page number"
+        android:gravity="center"
+        android:layout_margin="5dp"
+        android:background="#7f7f7f7f"
+        android:textColor="#ffffff"
+        android:textSize="12sp"
+		android:visibility="gone"
+		/>
+
+    <!-- video view control -->
+    <LinearLayout
+        android:id="@+id/video_control"
+      	android:layout_width="match_parent"
+      	android:layout_height="50dp"
+      	android:layout_alignParentBottom="true"
+      	android:gravity="center"
+      	android:orientation="horizontal"> 		
+    <Button
+        android:id="@+id/image_view_previous"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:visibility="gone"          />
+    
+    <LinearLayout android:id="@+id/video_progress"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_weight="1"
+        android:background="#7f7f7f7f"
+        android:orientation="horizontal">    
+    <TextView
+        android:id="@+id/video_current_pos"
+		android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:textColor="#ffffff"
+        android:textSize="12sp"
+        android:maxLines="1"
+        android:layout_margin="3dp"
+        android:visibility="gone" />
+   	<SeekBar
+	     android:id="@+id/video_seek_bar"
+	     android:layout_width="0dp"
+	     android:layout_weight="1"
+	     android:layout_height="wrap_content" 
+	     android:visibility="gone" />       
+    <TextView
+        android:id="@+id/video_file_length"
+		android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:textColor="#ffffff"
+        android:textSize="12sp"
+		android:maxLines="1"
+        android:layout_margin="3dp"
+        android:visibility="gone" />
+    </LinearLayout>
+    
+    <Button
+        android:id="@+id/image_view_next"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+		android:visibility="gone"  />
+    </LinearLayout>
+    <!-- in view control: end -->
+    
+	</RelativeLayout>
+
+    <!-- line view -->
+	<View android:id="@+id/line_view" android:layout_width="match_parent" android:layout_height="1dip" android:background="#40404040" />
+
+    <!-- bottom block of pager -->
+    <LinearLayout
+        android:id="@+id/textGroup"     
+		android:layout_width="match_parent"
+    	android:layout_height="0dp"
+    	android:layout_weight="1"
+    	android:orientation="vertical" >
+    <com.cw.audio7.util.CustomWebView
+        android:id="@+id/textBody"
+        android:layout_width="match_parent"
+    	android:layout_height="match_parent" 
+        style="?android:textAppearanceMedium"
+        android:lineSpacingMultiplier="1.2"
+        android:autoLink="all"
+        android:layout_marginBottom="0dp" />
+    </LinearLayout>
+
+	 <!-- footer -->
+	<TextView
+		android:id="@+id/note_view_footer"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:gravity="center"
+		android:text="footer"
+		android:textSize="12sp"
+		android:maxLines="1"
+		android:layout_margin="3dp"/>
+</LinearLayout>

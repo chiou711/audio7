@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="config_confirm_taken_picture">顯示剛剛拍攝的相機圖片:</string>
+    <string name="config_delete_warning">刪除之前需要確認</string>
+    <string name="config_warning_title">啟用項目:</string>
+    <string name="config_checkbox_warn_delete_note">單項記事</string>
+    <string name="config_checkbox_warn_delete_page">整頁記事</string>
+    <string name="config_checkbox_warn_delete_drawer">整個文件夾記事</string>
+    <string name="config_checkbox_warn_delete_checked">目前頁面所勾選的記事</string>
+    <string name="config_set_slideshow_sw_time">設置幻燈片切換時間:</string>
+    <string name="config_set_slideshow_dlg_title">設置切換時間</string>
+    <string name="config_set_slideshow_dlg_message">以秒為單位:</string>
+    <string name="config_set_vibration_title">啟用振動提醒刪除: </string>
+    <string name="config_status_enabled">啟用</string>
+    <string name="config_status_disabled">關閉</string>
+    <string name="config_set_style_title">新頁面背景顏色:</string>
+    <string name="config_add_new_note_location">新增筆記的位置</string>
+    <string name="config_delete_DB_title">刪除所有的記事頁面</string>
+    <string name="config_recover_all_settings">將所有設置恢復為默認設置</string>
+    <string name="config_delete_DB_btn">刪除</string>
+    <string name="config_delete_DB_confirm_content">您確定要刪除所有的記事頁面?</string>
+    <string name="config_delete_DB_toast">所有的記事頁面已被刪除.</string>
+    <string name="config_export_SDCard_title">匯出記事:到SD卡</string>
+    <string name="config_export_SDCard_btn">匯出</string>
+    <string name="config_export_SDCard_toast">匯出記事到SD卡: OK</string>
+    <string name="config_export_none_toast">還沒有記事</string>
+    <string name="config_export_SDCard_edit_filename">編輯檔案名稱</string>
+    <string name="config_SDCard_filename">檔案名稱: </string>
+    <string name="config_SDCard_file_content">檔案內容: </string>
+    <string name="config_import_SDCard_entry">匯入記事:從SD卡</string>
+    <string name="config_import_SDCard_title">選擇要匯入的檔案：</string>
+    <string name="config_import">匯入</string>
+    <string name="config_import_SDCard_confirm_title">確認要匯入所選：</string>
+    <string name="config_select_pages_title">選擇頁面:</string>
+    <string name="config_select_pages_delete_title">選擇要刪除的頁面:</string>
+    <string name="config_select_pages_export_title">選擇要匯出的頁面:</string>
+    <string name="config_select_pages_mail_title">選擇要寄送的頁面:</string>
+    <string name="config_select_folders_title">選擇要刪除的文件夾:</string>
+</resources>

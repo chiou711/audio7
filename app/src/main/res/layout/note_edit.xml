@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- title header 		   --> 
+<!-- title Edit and Picture-->
+<!-- body header 		   -->
+<!-- body Edit 			   -->
+<!-- bottoms 			   -->
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+			android:layout_width="match_parent"
+    		android:layout_height="match_parent"
+    		android:orientation="vertical"      >
+<LinearLayout
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+    android:orientation="vertical"    >
+
+<!-- audio header -->
+	<LinearLayout 
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        tools:ignore="UseCompoundDrawables"
+        >
+		<ImageView 
+		    android:layout_width="20dp"
+			android:layout_height="20dp" 
+			android:src="@drawable/ic_audio_info"
+            android:gravity="center"
+			android:contentDescription="audio"
+			/>
+		<TextView
+		    android:id="@+id/edit_audio" 
+		    android:layout_width="match_parent"
+			android:layout_height="wrap_content" 
+			android:text="@string/note_audio" />
+	</LinearLayout>    
+	<View android:layout_width="match_parent" android:layout_height="1dip" android:background="#4f4f4f" />
+
+
+			
+<!-- title header -->
+	<LinearLayout 
+	    android:orientation="horizontal"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:background="@color/bar_color"
+		tools:ignore="UseCompoundDrawables" >
+		<ImageView 
+		    android:layout_width="20dp"
+			android:layout_height="20dp" 
+			android:src="@android:drawable/ic_menu_edit"
+			android:contentDescription="image"
+			/>
+		<TextView 
+		    android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:textColor="@android:color/white"
+			android:text="@string/edit_note_dlg_title" />
+	</LinearLayout>
+	
+<!-- title Edit and Picture -->
+	<LinearLayout
+		android:id="@+id/edit_title_block"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
+        <!-- expanded image -->
+	<EditText
+    	android:id="@+id/edit_title" 
+	  	android:layout_width="0dp"
+        android:layout_weight="1"
+		android:layout_height="wrap_content"
+	    android:textCursorDrawable="@null"
+		android:layout_gravity="center"
+	    android:inputType=""
+	    android:textSize="18sp"
+	    android:minLines="2"
+	    android:maxLines="20" />
+	<ImageView
+          android:id="@+id/edit_picture"
+          android:layout_width="100dp"
+          android:layout_height="75dp"
+          android:layout_margin="3dp"
+          android:contentDescription="ImageView"/>
+	<ProgressBar
+          android:id="@+id/edit_progress_bar"
+          android:layout_width="100dp"
+          android:layout_height="75dp"
+          android:paddingRight="5dp"
+          android:visibility="gone"
+          android:contentDescription="ProgressBar"/>	
+	</LinearLayout>
+
+<!-- body header -->
+	<LinearLayout
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:orientation="horizontal"
+		android:background="@color/bar_color"
+	    tools:ignore="UseCompoundDrawables"
+        >
+		<ImageView 
+		    android:layout_width="20dp"
+			android:layout_height="20dp" 
+			android:src="@android:drawable/ic_menu_edit" 
+			android:contentDescription="image"/>
+		<TextView 
+		    android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:textColor="@android:color/white"
+			android:labelFor="@+id/edit_body"
+			android:text="@string/edit_note_dlg_body" />
+	</LinearLayout>
+
+<!-- body Edit -->	
+	<EditText 
+	    android:id="@+id/edit_body"
+	    android:layout_width="match_parent"
+		android:layout_height="0dp"
+        android:layout_weight="1"
+		android:textCursorDrawable="@null"
+	    android:inputType=""
+	    android:minLines="5"
+		android:maxLines="1000"
+	    android:autoLink="all"
+	    android:textSize="18sp"
+		android:scrollbars="vertical"
+		android:gravity="top"
+		/>
+
+<!-- expanded image  -->
+
+	<com.cw.audio7.util.image.TouchImageView
+        android:id="@+id/expanded_image"
+        android:layout_width="400dp"
+		android:layout_height="300dp"
+		android:visibility="gone"
+		android:layout_margin="5dp"
+		android:layout_gravity="center"
+        android:contentDescription="description_zoom_touch_close" />
+	<ProgressBar
+        android:id="@+id/edit_progress_bar_expand"
+        android:layout_width="150dp"
+		android:layout_height="200dp"
+        android:visibility="gone"
+		android:layout_margin="5dp"
+		android:layout_gravity="center"
+        android:contentDescription="ProgressBarExpand"/>
+<!-- buttons  -->
+	
+	<LinearLayout
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+		android:background="@color/bar_color"
+	    android:orientation="horizontal" >
+	    <Button
+	        android:id="@+id/note_edit_cancel"
+	        android:layout_width="0dp"
+	        android:layout_height="wrap_content"
+	        android:layout_weight="1"
+			android:layout_margin="3dp"
+			android:paddingRight="10dp"
+			android:paddingLeft="10dp"
+			android:background="@drawable/button"
+			android:textColor="@android:color/white"
+			android:drawableLeft="@android:drawable/ic_menu_close_clear_cancel"
+			android:drawableStart="@android:drawable/ic_menu_close_clear_cancel"
+	        android:text="@string/edit_note_button_back" />
+	    <Button
+	        android:id="@+id/note_edit_delete"
+	        android:layout_width="0dp"
+	        android:layout_height="wrap_content"
+	        android:layout_weight="1"
+			android:layout_margin="3dp"
+			android:paddingRight="10dp"
+			android:paddingLeft="10dp"
+			android:background="@drawable/button"
+			android:textColor="@android:color/white"
+			android:drawableLeft="@drawable/ic_delete"
+			android:drawableStart="@drawable/ic_delete"
+	        android:text="@string/edit_note_button_delete" />
+	    <Button
+	        android:id="@+id/note_edit_ok"
+	        android:layout_width="0dp"
+	        android:layout_height="wrap_content"
+	        android:layout_weight="1"
+			android:layout_margin="3dp"
+			android:paddingRight="10dp"
+			android:paddingLeft="10dp"
+			android:background="@drawable/button"
+			android:textColor="@android:color/white"
+			android:drawableLeft="@android:drawable/ic_menu_save"
+			android:drawableStart="@android:drawable/ic_menu_save"
+	        android:text="@string/edit_note_button_save" />
+	</LinearLayout>
+
+</LinearLayout>
+</ScrollView>

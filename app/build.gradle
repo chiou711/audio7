@@ -1,0 +1,82 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 29
+    buildToolsVersion '29.0.2'
+
+//    lintOptions {
+//        checkReleaseBuilds false
+//        // Or, if you prefer, you can continue to check for errors in release builds,
+//        // but continue the build even when errors are found:
+//        abortOnError false
+//    }
+
+    defaultConfig {
+        applicationId "com.cw.audio7"
+        minSdkVersion 16
+        targetSdkVersion 29
+        multiDexEnabled true
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+//            shrinkResources true
+//            signingConfig signingConfigs.release
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    sourceSets {
+        main {
+              // mark: With initial tables: 2 folders, 1 page each folder
+              // un-mark: With default content by assets XML file
+              // Note: Apk file size will increase if assets directory is set at default location (app/src/main/assets)
+            assets.srcDirs = ['preferred/assets/']
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    //https://stackoverflow.com/questions/44342455/more-than-one-file-was-found-with-os-independent-path-meta-inf-license
+//    packagingOptions {
+//        exclude 'META-INF/DEPENDENCIES'
+//    }
+
+    configurations.all {
+        resolutionStrategy.force 'com.google.code.findbugs:jsr305:3.0.1'
+    }
+}
+
+dependencies {
+    implementation 'androidx.multidex:multidex:2.0.1'
+    //    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation files('libs/commons-io-2.4.jar')
+    implementation files('libs/universal-image-loader-1.9.5.jar')
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'androidx.legacy:legacy-support-v13:1.0.0'
+    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'androidx.cardview:cardview:1.0.0'
+    implementation 'com.google.android.material:material:1.2.0-alpha06'
+
+    // if ENABLE_ADMOB = true, enable the following
+    implementation 'androidx.annotation:annotation:1.1.0'
+    implementation 'com.google.android.gms:play-services-ads:19.1.0'
+
+    // group: short and best
+    implementation('com.google.api-client:google-api-client-android:1.30.9') {
+        exclude group: 'org.apache.httpcomponents'
+    }
+    // group 1
+    //    implementation files('libs/google-api-client-1.24.1.jar')
+    //    implementation files('libs/google-oauth-client-1.24.1.jar')
+    //    implementation files('libs/google-http-client-1.24.1.jar')
+    //    implementation files('libs/jsr305-3.0.2.jar')
+    //    implementation files('libs/google-api-client-gson-1.24.1.jar')
+    //    implementation files('libs/gson-2.1.jar')
+    //    implementation files('libs/google-http-client-jackson2-1.24.1.jar')
+    //    implementation files('libs/jackson-core-2.9.2.jar')
+    //    implementation files('libs/google-api-services-oauth2-v1-rev145-java-1.25.0.zip')
+}

@@ -1,0 +1,60 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent">
+	<include layout="@layout/toolbar" />
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="0dp"
+		android:layout_weight="1"
+		android:orientation="horizontal" >
+    <!-- view pager  -->
+	<androidx.viewpager.widget.ViewPager
+    	android:id="@+id/tabs_pager"
+    	android:layout_width="400dp"
+    	android:layout_height="match_parent"
+		android:layout_weight="2"
+		android:layout_gravity="start"/>
+
+    <!-- start: audio group -->
+	<include layout = "@layout/note_view_landscape_audio_footer"/>
+	</LinearLayout>
+
+	<!-- buttons -->
+	<LinearLayout
+		android:id="@+id/view_button_group"
+    	android:layout_width="match_parent"
+    	android:layout_height="wrap_content"
+		android:background="@color/bar_color"
+    	android:orientation="horizontal" >
+    <Button
+        android:id="@+id/view_back"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+		android:layout_margin="3dp"
+		android:background="@drawable/button"
+		android:textColor="@android:color/white"
+        android:text="@string/view_note_button_back" />
+		<Button
+        android:id="@+id/view_edit"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_margin="3dp"
+        android:background="@drawable/button"
+        android:textColor="@android:color/white"
+        android:text="@string/view_note_button_edit" />
+		<Button
+        android:id="@+id/view_option"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+		android:layout_margin="3dp"
+		android:background="@drawable/button"
+		android:textColor="@android:color/white"
+        android:text="@string/options" />
+
+	</LinearLayout>
+
+</LinearLayout>

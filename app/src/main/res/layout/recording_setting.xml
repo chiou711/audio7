@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent">
+	<!-- set recorder setting option-->
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:padding ="5dp"
+		android:gravity="center"
+		android:orientation="horizontal" >
+		<ImageView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_margin="0dp"
+			android:src="@drawable/ic_mic"
+			android:contentDescription="RecordingQualityTitleOption"/>
+		<CheckedTextView
+			android:id="@+id/RecordingQualityTitle"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:minHeight="50dp"
+			android:layout_weight="2"
+			android:gravity="center_vertical"
+			android:text="@string/pref_high_quality_title"
+			android:textStyle="normal"
+			android:padding="5dp"
+			android:textSize="18sp"
+			android:drawableRight="?android:attr/listChoiceIndicatorMultiple"
+			android:drawableEnd="?android:attr/listChoiceIndicatorMultiple"
+			android:clickable="true"
+			android:focusable="true"/>
+	</LinearLayout>
+
+</FrameLayout>
+

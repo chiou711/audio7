@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	  android:id="@+id/file_list_linear"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:orientation="vertical">
+	<TextView
+            android:id="@+id/file_list_title"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:textSize="22sp" android:textStyle="bold"
+			android:paddingLeft="3dp"
+			android:text="@string/config_import_SDCard_title" />
+	<View android:layout_width="match_parent" android:layout_height="1dip" android:background="#4f4f4f" />	
+			
+	<ListView 
+	    	android:id="@android:id/list"
+	        android:layout_width="match_parent"
+	        android:layout_height="0dp"
+	        android:layout_weight="1"/>
+	<View android:layout_width="match_parent" android:layout_height="1dip" android:background="#4f4f4f" />
+
+	<LinearLayout
+		android:id="@+id/view_back_btn_bg"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:orientation="horizontal"
+		android:background="@color/bar_color"
+		android:gravity="center_horizontal">
+	<Button
+		android:id="@+id/view_back"
+		android:layout_width="120dp"
+	    android:layout_height="wrap_content"
+		android:text="@string/view_note_button_back"
+		android:background="@drawable/button"
+		android:layout_margin="5dp"
+		android:textColor="@android:color/white" />
+	<Button
+		android:id="@+id/view_renew"
+		android:layout_width="120dp"
+		android:layout_height="wrap_content"
+		android:text="@string/btn_Renew"
+		android:background="@drawable/button"
+		android:layout_margin="5dp"
+		android:textColor="@android:color/white" />
+	</LinearLayout>
+</LinearLayout>

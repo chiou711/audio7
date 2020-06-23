@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/blue_grey"
+    android:theme="@style/Theme.AppCompat">
+
+<LinearLayout
+	android:id="@+id/container"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:orientation="vertical">
+
+    <!-- title -->
+	<LinearLayout 
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+        android:background="@color/bar_color"
+        android:orientation="horizontal" >
+		<ImageView 
+		    android:layout_width="20dp"
+			android:layout_height="20dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_gravity="center_vertical"
+			android:src="@android:drawable/ic_menu_edit"/>
+		<TextView
+		    android:layout_width="wrap_content"
+			android:layout_height="40dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginLeft="5dp"
+			android:text="@string/edit_folder_title"
+            android:gravity="center_vertical"
+            android:textSize="18sp"
+            />
+	</LinearLayout>
+
+    <!-- input -->
+	<TextView
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginLeft="5dp"
+		android:text="@string/edit_folder_message"
+		/>
+
+	<com.cw.audio7.util.TouchableEditText
+        android:id="@+id/new_folder_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType=""
+        android:layout_margin="3dp"
+        android:textSize="18sp"
+        android:minLines="2"
+        android:maxLines="20" />
+
+    <!-- select Add new page location option-->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginLeft="5dp"
+        android:text="@string/add_new_page_select_position"
+        />
+
+    <RadioGroup
+        android:id="@+id/radioGroup_new_folder_at"
+        android:layout_width="match_parent"
+        android:layout_height="140dp"
+        android:layout_marginTop="5dp"
+        android:orientation="vertical">
+        <RadioButton
+            android:id="@+id/radio_new_folder_at_top"
+			android:layout_width="match_parent"
+			android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginStart="5dp"
+            android:layout_marginLeft="5dp"
+            android:text="@string/add_new_note_top" />
+        <RadioButton
+            android:id="@+id/radio_new_folder_at_bottom"
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+			android:layout_height="0dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginLeft="5dp"
+            android:text="@string/add_new_note_bottom" />
+    </RadioGroup>
+
+    <!-- buttons -->
+	<LinearLayout
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+        android:background="@color/bar_color"
+	    android:orientation="horizontal" >
+	    <Button
+	        android:id="@+id/new_folder_cancel"
+	        android:layout_width="0dp"
+	        android:layout_height="wrap_content"
+	        android:layout_weight="1"
+            android:layout_margin="10dp"
+            android:text="@string/edit_note_button_back"
+            android:paddingRight="10dp"
+            android:paddingLeft="10dp"
+            android:background="@drawable/button"
+            android:textColor="@android:color/white"
+			android:drawableLeft="@android:drawable/ic_menu_close_clear_cancel"
+			android:drawableStart="@android:drawable/ic_menu_close_clear_cancel"
+            />
+	     <Button
+	        android:id="@+id/new_folder_add"
+	        android:layout_width="0dp"
+	        android:layout_height="wrap_content"
+	        android:layout_weight="1"
+            android:layout_margin="10dp"
+            android:paddingRight="10dp"
+            android:paddingLeft="10dp"
+	        android:text="@string/add_new_note_button_add"
+            android:background="@drawable/button"
+            android:textColor="@android:color/white"
+            android:drawableLeft="@android:drawable/ic_menu_save"
+            android:drawableStart="@android:drawable/ic_menu_save"
+			/>
+	</LinearLayout>
+
+</LinearLayout>
+
+</ScrollView>

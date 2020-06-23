@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="toast_keep_one_page">Please keep one page at least</string>
+    <string name="toast_keep_one_drawer">Please keep one folder at least</string>
+    <string name="toast_leftmost">Leftmost</string>
+    <string name="toast_rightmost">Rightmost</string>
+    <string name="toast_no_email_address">No e-Mail address</string>
+    <string name="toast_import_SDCard_no_file">No file yet, please export one first</string>
+    <string name="toast_import_finished">The selected file has been imported</string>
+    <string name="toast_input_filename">Please input a file name</string>
+    <string name="toast_saved">Saved</string>
+    <string name="toast_pause">Pause</string>
+    <string name="toast_play">Play</string>
+    <string name="toast_no_link_found">No link is found</string>
+    <string name="toast_edit_drawing_to_landscape">For viewing whole image,please rotate your device orientation to landscape</string>
+    <string name="toast_edit_drawing_to_portrait">For viewing whole image,please rotate your device orientation to portrait</string>
+</resources>

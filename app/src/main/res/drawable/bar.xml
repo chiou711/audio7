@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    
+    <!-- When selected -->
+    <item android:state_selected="true">
+		<shape xmlns:android="http://schemas.android.com/apk/res/android"
+       			android:shape="rectangle">
+		    <gradient android:angle="90"
+	                  android:endColor="@color/bar_color"
+	                  android:centerColor="@color/bar_color"
+	                  android:startColor="@color/bar_color" />
+ 		</shape>
+	</item>
+    <!-- When not selected -->
+    <item>
+		<shape xmlns:android="http://schemas.android.com/apk/res/android"
+       			android:shape="rectangle">
+	        <gradient android:angle="90" 
+	                  android:endColor="@color/bar_color"
+	                  android:centerColor="@color/bar_color"
+	                  android:startColor="@color/bar_color" />
+ 		</shape>
+	</item>
+
+</selector>

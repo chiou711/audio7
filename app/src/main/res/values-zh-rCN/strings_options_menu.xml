@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="options">选项</string>
+    <string name="menu_button_play">播放</string>
+    <string name="menu_button_play_audio">播放音讯</string>
+    <string name="menu_button_continue_play_audio">继续播放音讯</string>
+    <string name="menu_button_pause_audio">暂停音讯</string>
+    <string name="menu_button_stop_audio">停止音讯</string>
+    <string name="menu_button_slide_show">播放幻灯片</string>
+    <string name="change_page_color">页面颜色</string>
+    <string name="rearrange_page">页面顺序</string>
+    <string name="delete_pages">删除页面</string>
+    <string name="add_new_page">新增页面</string>
+    <string name="add_new_page_select_position">选择位置:</string>
+    <string name="add_new_page_leftmost">到最左边</string>
+    <string name="add_new_page_rightmost">到最右边</string>
+    <string name="rearrange_page_title">改变目前页面顺序</string>
+    <string name="rearrange_page_left">向左</string>
+    <string name="rearrange_page_right">向右</string>
+    <string name="edit_page_color_title">设定颜色:</string>
+    <string name="settings">设置</string>
+    <string name="add_new_folder">新增文件夹</string>
+    <string name="gallery">图库</string>
+    <string name="gallery_toast_no_file">还没有文件，请您先建立一个</string>
+    <string name="drag_note">拖放笔记</string>
+    <string name="preview_note_body">预览本文</string>
+    <string name="drag_folder">拖放文件夹</string>
+    <string name="delete_folders">删除文件夹</string>
+</resources>

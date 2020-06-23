@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="default_folder_name">Folder</string>
+    <string name="prefer_folder_name_local">Local</string>
+    <string name="prefer_folder_name_web">Web</string>
+    <string name="default_page_name">Note page</string>
+    <string name="prefer_page_name">New page</string>
+</resources>

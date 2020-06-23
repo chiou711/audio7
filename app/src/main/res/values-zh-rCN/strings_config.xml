@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="config_confirm_taken_picture">显示刚刚拍摄的相机图片:</string>
+    <string name="config_delete_warning">删除前需要确认</string>
+    <string name="config_warning_title">启用项目：</string>
+    <string name="config_checkbox_warn_delete_note">一项笔记</string>
+    <string name="config_checkbox_warn_delete_page">一页笔记</string>
+    <string name="config_checkbox_warn_delete_drawer">一个文件夹笔记</string>
+    <string name="config_checkbox_warn_delete_checked">在当前页面中的选中笔记</string>
+    <string name="config_set_slideshow_sw_time">设置幻灯片切换时间:</string>
+    <string name="config_set_slideshow_dlg_title">设置切换时间</string>
+    <string name="config_set_slideshow_dlg_message">以秒为单位:</string>
+    <string name="config_set_vibration_title">启用振动提醒删除： </string>
+    <string name="config_status_enabled">启用</string>
+    <string name="config_status_disabled">关闭</string>
+    <string name="config_set_style_title">新页面背景色：</string>
+    <string name="config_add_new_note_location">新增笔记的位置</string>
+    <string name="config_delete_DB_title">删除所有的网页</string>
+    <string name="config_recover_all_settings">将所有设置恢复为默认设置</string>
+    <string name="config_delete_DB_btn">删除</string>
+    <string name="config_delete_DB_confirm_content">您确定要删除所有的网页？</string>
+    <string name="config_delete_DB_toast">所有页面已被删除。</string>
+    <string name="config_export_SDCard_title">汇出笔记:到SD卡</string>
+    <string name="config_export_SDCard_btn">汇出</string>
+    <string name="config_export_SDCard_toast">汇出笔记到SD卡：OK</string>
+    <string name="config_export_none_toast">还没有笔记</string>
+    <string name="config_export_SDCard_edit_filename">编辑档案名称</string>
+    <string name="config_SDCard_filename">档案名称: </string>
+    <string name="config_SDCard_file_content">档案内容: </string>
+    <string name="config_import_SDCard_entry">汇入笔记:从SD卡</string>
+    <string name="config_import_SDCard_title">选择要汇入的档案：</string>
+    <string name="config_import">汇入</string>
+    <string name="config_import_SDCard_confirm_title">确认要汇入所选：</string>
+    <string name="config_select_pages_title">选择页面:</string>
+    <string name="config_select_pages_delete_title">选择要删除的页面:</string>
+    <string name="config_select_pages_export_title">选择要汇出的页面:</string>
+    <string name="config_select_pages_mail_title">选择要寄送的页面:</string>
+    <string name="config_select_folders_title">选择要删除的文件夹:</string>
+</resources>

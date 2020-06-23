@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="checked_notes">勾選記事</string>
+    <string name="checked_notes_check_all">全部勾選</string>
+    <string name="checked_notes_uncheck_all">全部不勾選</string>
+    <string name="checked_notes_invert_selected">所選反相</string>
+    <string name="checked_notes_move_to">移動到</string>
+    <string name="checked_notes_move_to_dlg">移動已勾選記事到:</string>
+    <string name="checked_notes_copy_to">複製到</string>
+    <string name="checked_notes_copy_to_dlg">複製已勾選記事到:</string>
+    <string name="checked_notes_delete">刪除已勾選</string>
+    <string name="delete_checked_note_title">刪除已勾選</string>
+    <string name="delete_checked_message">已勾選的項目將被刪除.</string>
+    <string name="delete_checked_no_checked_items">無勾選項目</string>
+</resources>

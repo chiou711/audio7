@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<EditText  xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" 
+    android:layout_height="wrap_content" 
+    android:textCursorDrawable="@null"
+    android:inputType="textEmailAddress"
+    android:textSize="28sp"
+    android:minLines="1"
+    android:maxLines="5"
+    />
+<!-- 
+android:textCursorDrawable="@drawable/text_cursor"
+android:textStyle="bold"
+style="@style/cwEditText" 
+-->
+<!-- 
+Setting the android:textCursorDrawable attribute to @null 
+should result in the use of android:textColor as the cursor color. 
+-->

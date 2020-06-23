@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scrollView1"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+<LinearLayout 
+    android:id="@+id/addAudioOptional"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+	android:layout_margin="5dp"
+    android:orientation="vertical">
+
+	<TextView
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:textSize="18sp"
+		android:text="@string/add_new_note_position"/>
+	<RadioGroup
+		android:id="@+id/radioGroup_new_at"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:orientation="horizontal"
+		>
+
+		<RadioButton
+			android:id="@+id/radio_new_at_top"
+			android:layout_width="0dp"
+			android:layout_height="50dp"
+			android:layout_weight="1"
+			android:textSize="18sp"
+			android:text="@string/add_new_note_top" />
+
+		<RadioButton
+			android:id="@+id/radio_new_at_bottom"
+			android:layout_width="0dp"
+			android:layout_height="50dp"
+			android:layout_weight="1"
+			android:textSize="18sp"
+			android:text="@string/add_new_note_bottom" />
+
+	</RadioGroup>
+
+	<View android:layout_width="match_parent" android:layout_height="1dip" android:background="#4f4f4f" />
+
+	<CheckedTextView
+		android:id="@+id/check_add_folder_if_exists"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:textSize="18sp"
+		android:text="@string/dialog_add_new_multiple"
+		android:drawableLeft="?android:attr/listChoiceIndicatorMultiple"
+		android:clickable="true"
+		android:gravity="center_vertical" />
+
+	<View android:layout_width="match_parent" android:layout_height="1dip" android:background="#4f4f4f" />
+
+	<CheckedTextView
+		android:id="@+id/check_add_link_if_exists"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:textSize="18sp"
+		android:text="@string/add_new_link_title_also"
+		android:drawableLeft="?android:attr/listChoiceIndicatorMultiple"
+		android:clickable="true"
+		android:gravity="center_vertical" />
+
+</LinearLayout>
+</ScrollView>

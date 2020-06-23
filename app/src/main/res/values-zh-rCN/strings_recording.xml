@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Toolbar -->
+    <string name="action_settings">设置</string>
+
+    <!-- Toasts -->
+    <string name="toast_recording_start">录制开始了</string>
+    <string name="toast_recording_finish">录制保存到</string>
+
+    <string name="default_file_name">Recording</string>
+    <string name="record_prompt">点击按钮开始录制</string>
+    <string name="record_in_progress">录音</string>
+
+    <!-- Preferences -->
+    <string name="pref_high_quality_title">启用高质量录制</string>
+
+</resources>
