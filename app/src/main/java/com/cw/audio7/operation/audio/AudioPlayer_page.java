@@ -101,7 +101,9 @@ public class AudioPlayer_page
 
 				//for 1st play
 				audioUrl_page = Audio_manager.getAudioStringAt(Audio_manager.mAudioPos);
-				while (!UtilAudio.hasAudioExtension(audioUrl_page)) {
+				while (!UtilAudio.hasAudioExtension(audioUrl_page) &&
+						   !audioUrl_page.contains("google"))
+				{
                     Audio_manager.mAudioPos++;
                     audioUrl_page = Audio_manager.getAudioStringAt(Audio_manager.mAudioPos);
 
@@ -109,13 +111,14 @@ public class AudioPlayer_page
                         break;
 				}
 
-				if(UtilAudio.hasAudioExtension(audioUrl_page) && Util.isUriExisted(audioUrl_page,MainAct.mAct)) {
+				if( (UtilAudio.hasAudioExtension(audioUrl_page) && Util.isUriExisted(audioUrl_page,MainAct.mAct)) ||
+						audioUrl_page.contains("google")) {
                     startNewAudio();
                 }
                 else
                 {
                     Audio_manager.setPlayerState(Audio_manager.PLAYER_AT_STOP);
-                    Toast.makeText(act,R.string.audio_file_not_found,Toast.LENGTH_SHORT).show();
+	                Toast.makeText(act,R.string.audio_file_not_found,Toast.LENGTH_SHORT).show();
                 }
 			}
 		}

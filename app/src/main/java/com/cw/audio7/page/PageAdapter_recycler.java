@@ -60,13 +60,7 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import static com.cw.audio7.db.DB_page.KEY_NOTE_AUDIO_URI;
-import static com.cw.audio7.db.DB_page.KEY_NOTE_BODY;
-import static com.cw.audio7.db.DB_page.KEY_NOTE_CREATED;
-import static com.cw.audio7.db.DB_page.KEY_NOTE_DRAWING_URI;
-import static com.cw.audio7.db.DB_page.KEY_NOTE_LINK_URI;
 import static com.cw.audio7.db.DB_page.KEY_NOTE_MARKING;
-import static com.cw.audio7.db.DB_page.KEY_NOTE_PICTURE_URI;
-import static com.cw.audio7.db.DB_page.KEY_NOTE_TITLE;
 import static com.cw.audio7.page.Page_recycler.swapRows;
 
 // Pager adapter
@@ -75,7 +69,6 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
 {
 	private AppCompatActivity mAct;
 	Cursor cursor;
-	private String linkUri;
 	private static int style;
     private DB_folder dbFolder;
 	private DB_page mDb_page;
@@ -105,8 +98,6 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
 		ImageView iconAudio;
 		TextView audioName;
 		TextView textTitle;
-		TextView textBody;
-		TextView textTime;
         ImageViewCustom btnDrag;
 		View thumbBlock;
 		ImageView thumbAudio;
@@ -175,13 +166,8 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
 
 
         // get DB data
-        String strTitle = null;
-        String strBody = null;
         String pictureUri = null;
         String audioUri = null;
-        String drawingUri = null;
-        Long timeCreated = null;
-        linkUri = null;
         int marking = 0;
 
 		SharedPreferences pref_show_note_attribute = MainAct.mAct.getSharedPreferences("show_note_attribute", 0);
@@ -190,14 +176,8 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
 	    mDb_page.open();
 	    cursor = mDb_page.mCursor_note;
         if(cursor.moveToPosition(position)) {
-            strTitle = cursor.getString(cursor.getColumnIndexOrThrow(KEY_NOTE_TITLE));
-            strBody = cursor.getString(cursor.getColumnIndexOrThrow(KEY_NOTE_BODY));
-            pictureUri = cursor.getString(cursor.getColumnIndexOrThrow(KEY_NOTE_PICTURE_URI));
             audioUri = cursor.getString(cursor.getColumnIndexOrThrow(KEY_NOTE_AUDIO_URI));
-            linkUri = cursor.getString(cursor.getColumnIndexOrThrow(KEY_NOTE_LINK_URI));
-            drawingUri = cursor.getString(cursor.getColumnIndexOrThrow(KEY_NOTE_DRAWING_URI));
             marking = cursor.getInt(cursor.getColumnIndexOrThrow(KEY_NOTE_MARKING));
-            timeCreated = cursor.getLong(cursor.getColumnIndex(KEY_NOTE_CREATED));
         }
 	    mDb_page.close();
 
@@ -402,10 +382,7 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
                 i.putExtra("list_view_position", position);
                 i.putExtra(DB_page.KEY_NOTE_ID, rowId);
                 i.putExtra(DB_page.KEY_NOTE_TITLE, db_page.getNoteTitle_byId(rowId));
-                i.putExtra(DB_page.KEY_NOTE_PICTURE_URI , db_page.getNotePictureUri_byId(rowId));
-                i.putExtra(DB_page.KEY_NOTE_DRAWING_URI , db_page.getNoteDrawingUri_byId(rowId));
                 i.putExtra(DB_page.KEY_NOTE_AUDIO_URI , db_page.getNoteAudioUri_byId(rowId));
-                i.putExtra(DB_page.KEY_NOTE_LINK_URI , db_page.getNoteLinkUri_byId(rowId));
                 i.putExtra(DB_page.KEY_NOTE_BODY, db_page.getNoteBody_byId(rowId));
                 i.putExtra(DB_page.KEY_NOTE_CREATED, db_page.getNoteCreatedTime_byId(rowId));
                 mAct.startActivity(i);
@@ -445,6 +422,7 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
                                     (TabsHost.audioPlayer_page != null)        ){
                                 AudioPlayer_page.mAudioHandler.removeCallbacks(TabsHost.audioPlayer_page.page_runnable);
                             }
+
                             BackgroundAudioService.mMediaPlayer.release();
                             BackgroundAudioService.mMediaPlayer = null;
                         }
@@ -530,22 +508,19 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
         }
 
         String strNote = db_page.getNoteTitle(position,false);
-        String strPictureUri = db_page.getNotePictureUri(position,false);
         String strAudioUri = db_page.getNoteAudioUri(position,false);
-        String strDrawingUri = db_page.getNoteDrawingUri(position,false);
-        String strLinkUri = db_page.getNoteLinkUri(position,false);
         String strNoteBody = db_page.getNoteBody(position,false);
         Long idNote =  db_page.getNoteId(position,false);
 
         // toggle the marking
         if(db_page.getNoteMarking(position,false) == 0)
         {
-            db_page.updateNote(idNote, strNote, strPictureUri, strAudioUri, strDrawingUri, strLinkUri, strNoteBody, 1, 0, false);
+            db_page.updateNote(idNote, strNote, "", strAudioUri, "", "", strNoteBody, 1, 0, false);
             marking = 1;
         }
         else
         {
-            db_page.updateNote(idNote, strNote, strPictureUri, strAudioUri, strDrawingUri, strLinkUri, strNoteBody, 0, 0, false);
+            db_page.updateNote(idNote, strNote, "", strAudioUri, "", "", strNoteBody, 0, 0, false);
             marking = 0;
         }
         db_page.close();

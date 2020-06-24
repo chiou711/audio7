@@ -160,7 +160,7 @@ public class Audio_manager
 	 	for(int i = 0; i< db_page.getNotesCount(false); i++)
 	 	{
 	 		String audioUri = db_page.getNoteAudioUri(i,false);
-	 		
+
 	 		// initialize
 	 		addAudio(audioUri);
 	 		addCheckedAudio(i);
