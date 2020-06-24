@@ -960,14 +960,6 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
     /**
      * on Activity Result
      */
-    AlertDialog.Builder builder;
-    AlertDialog alertDlg;
-    Handler handler;
-    int count;
-    String countStr;
-    String nextLink;
-    String nextTitle;
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
@@ -1140,33 +1132,6 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
             menu.findItem(R.id.ENABLE_NOTE_DRAG_AND_DROP)
                     .setIcon(R.drawable.btn_check_off_holo_light)
                     .setTitle(R.string.drag_note) ;
-
-        // enable show body
-        mPref_show_note_attribute = getSharedPreferences("show_note_attribute", 0);
-        if(mPref_show_note_attribute.getString("KEY_SHOW_BODY", "yes").equalsIgnoreCase("yes"))
-            menu.findItem(R.id.SHOW_BODY)
-                    .setIcon(R.drawable.btn_check_on_holo_light)
-                    .setTitle(R.string.preview_note_body) ;
-        else
-            menu.findItem(R.id.SHOW_BODY)
-                .setIcon(R.drawable.btn_check_off_holo_light)
-                .setTitle(R.string.preview_note_body) ;
-
-
-        //
-        // Group 1 sub_menu for drawer operation
-        //
-
-        // add sub_menu item: add folder drag setting
-//    	if(mPref_show_note_attribute.getString("KEY_ENABLE_FOLDER_DRAGGABLE", "no")
-//    								.equalsIgnoreCase("yes"))
-//			menu.findItem(R.id.ENABLE_FOLDER_DRAG_AND_DROP)
-//				.setIcon(R.drawable.btn_check_on_holo_light)
-//				.setTitle(R.string.drag_folder) ;
-//    	else
-//			menu.findItem(R.id.ENABLE_FOLDER_DRAG_AND_DROP)
-//				.setIcon(R.drawable.btn_check_off_holo_light)
-//				.setTitle(R.string.drag_folder) ;
 
         return super.onCreateOptionsMenu(menu);
     }

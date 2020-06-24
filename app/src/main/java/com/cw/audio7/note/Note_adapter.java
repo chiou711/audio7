@@ -121,7 +121,6 @@ public class Note_adapter extends FragmentStatePagerAdapter
         textGroup.setContentDescription(act.getResources().getString(R.string.note_text));
 		textWebView.getRootView().setContentDescription(act.getResources().getString(R.string.note_text));
 
-        String linkUri = db_page.getNoteLinkUri(position,true);
         String strTitle = db_page.getNoteTitle(position,true);
         String strBody = db_page.getNoteBody(position,true);
 
@@ -145,6 +144,12 @@ public class Note_adapter extends FragmentStatePagerAdapter
 	  		line_view.setVisibility(View.VISIBLE);
 	  		textGroup.setVisibility(View.VISIBLE);
 
+		    if( !Util.isEmptyString(strTitle) ||
+				!Util.isEmptyString(strBody)   )
+		    {
+			    showTextWebView(position,textWebView);
+		    }
+
 	  	}
   		// picture and text
 	  	else if(Note.isViewAllMode())
@@ -159,7 +164,15 @@ public class Note_adapter extends FragmentStatePagerAdapter
 	  	    textGroup.setVisibility(View.VISIBLE);
 
 			// text
-			textGroup.setVisibility(View.GONE);
+		    if( !Util.isEmptyString(strTitle)||
+				    !Util.isEmptyString(strBody) )
+		    {
+			    showTextWebView(position,textWebView);
+		    }
+		    else
+		    {
+			    textGroup.setVisibility(View.GONE);
+		    }
 	  	}
 
 		// footer of note view
@@ -193,11 +206,11 @@ public class Note_adapter extends FragmentStatePagerAdapter
 
     	String strHtml;
 		strHtml = getHtmlStringWithViewPort(position,viewPort);
-//	    textWebView.loadData(strHtml,"text/html; charset=utf-8", "UTF-8");
+	    textWebView.loadData(strHtml,"text/html; charset=utf-8", "UTF-8");
 	    //refer https://stackoverflow.com/questions/3312643/android-webview-utf-8-not-showing
 	    textWebView.loadDataWithBaseURL(null, strHtml, "text/html", "UTF-8", null);
     }
-    
+
     // show picture view
     private void showPictureView(int position,
     		             TouchImageView imageView,
@@ -465,7 +478,6 @@ public class Note_adapter extends FragmentStatePagerAdapter
     	System.out.println("Note_adapter / _getHtmlStringWithViewPort");
     	String strTitle = db_page.getNoteTitle(position,true);
     	String strBody = db_page.getNoteBody(position,true);
-    	String linkUri = db_page.getNoteLinkUri(position,true);
 
     	// replace note title
 		boolean bSetGray = false;

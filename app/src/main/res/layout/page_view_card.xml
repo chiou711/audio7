@@ -138,26 +138,15 @@
         </LinearLayout>
         <!-- audio block end -->
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
+
         <!-- thumb nail start -->
         <FrameLayout
             android:id="@+id/row_thumb_nail"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
             android:layout_gravity="center"
             android:layout_margin="5dp"
             android:visibility="visible">
-
-            <ImageView
-                android:id="@+id/thumb_picture"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:contentDescription="img_thumb_picture"
-                android:scaleType="centerCrop"/>
 
             <ImageView
                 android:id="@+id/thumb_audio"
@@ -165,14 +154,6 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
                 android:contentDescription="img_thumb_audio"
-                android:scaleType="centerCrop"/>
-
-            <com.cw.audio7.util.CustomWebView
-                android:id="@+id/thumb_web"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:contentDescription="img_thumb_web"
                 android:scaleType="centerCrop"/>
 
             <ProgressBar
@@ -184,63 +165,7 @@
         </FrameLayout>
         <!-- thumb nail end -->
 
-
-        <!-- text block start -->
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="100dp"
-            android:layout_weight="1"
-            android:layout_margin="5dp"
-            android:background="@drawable/bg_gray_border"
-            android:orientation="vertical">
-
-            <!-- title -->
-            <TextView
-                android:id="@+id/row_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="top"
-                android:contentDescription="@string/note_text"
-                android:gravity="center_vertical"
-                android:maxLines="2"
-                android:minHeight="15dp"
-                android:paddingLeft="5dp"
-                android:paddingRight="5dp"
-                android:textSize="12sp"
-                android:textStyle="bold"
-                />
-
-            <!-- body -->
-            <TextView
-                android:id="@+id/row_body"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:maxLines="2"
-                android:minHeight="40dp"
-                android:paddingEnd="5dp"
-                android:paddingLeft="5dp"
-                android:paddingRight="5dp"
-                android:paddingStart="5dp"
-                android:textSize="12sp"/>
-
-            <!-- time -->
-            <TextView
-                android:id="@+id/row_time"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="bottom|end"
-                android:maxLines="1"
-                android:minHeight="8dp"
-                android:paddingLeft="5sp"
-                android:paddingRight="5sp"
-                android:textSize="10sp"/>
         </LinearLayout>
-        <!-- text block end-->
-
-        </LinearLayout>
-
-    </LinearLayout>
 
 </androidx.cardview.widget.CardView>
 <!-- whole end -->

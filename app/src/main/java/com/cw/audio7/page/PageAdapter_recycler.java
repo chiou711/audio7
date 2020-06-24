@@ -109,7 +109,6 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
 		TextView textTime;
         ImageViewCustom btnDrag;
 		View thumbBlock;
-		ImageView thumbPicture;
 		ImageView thumbAudio;
 		ProgressBar progressBar;
 
@@ -123,7 +122,6 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
                 }
             });
 
-            textTitle = (TextView) v.findViewById(R.id.row_title);
             rowId= (TextView) v.findViewById(R.id.row_id);
             audioBlock = v.findViewById(R.id.audio_block);
             iconAudio = (ImageView) v.findViewById(R.id.img_audio);
@@ -133,13 +131,9 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
             btnEditNote = (ImageView) v.findViewById(R.id.btn_edit_note);
             btnPlayAudio = (ImageView) v.findViewById(R.id.btn_play_audio);
             thumbBlock = v.findViewById(R.id.row_thumb_nail);
-            thumbPicture = (ImageView) v.findViewById(R.id.thumb_picture);
             thumbAudio = (ImageView) v.findViewById(R.id.thumb_audio);
             btnDrag = (ImageViewCustom) v.findViewById(R.id.btn_drag);
             progressBar = (ProgressBar) v.findViewById(R.id.thumb_progress);
-            textTitle = (TextView) v.findViewById(R.id.row_title);
-            textBody = (TextView) v.findViewById(R.id.row_body);
-            textTime = (TextView) v.findViewById(R.id.row_time);
         }
 
         public TextView getTextView() {
@@ -306,25 +300,10 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
             holder.audioBlock.setVisibility(View.GONE);
         }
 
-		// show text title
-		if( Util.isEmptyString(strTitle) )
-		{
-			// make sure empty title is empty after scrolling
-			holder.textTitle.setVisibility(View.VISIBLE);
-			holder.textTitle.setText("");
-		}
-		else
-		{
-			holder.textTitle.setVisibility(View.VISIBLE);
-			holder.textTitle.setText(strTitle);
-			holder.textTitle.setTextColor(ColorSet.mText_ColorArray[style]);
-		}
-
 		// case : show audio thumb nail if picture Uri is none and audio Uri exists
 		if((Util.isEmptyString(pictureUri) && UtilAudio.hasAudioExtension(audioUri) ) )
 		{
 			holder.thumbBlock.setVisibility(View.VISIBLE);
-			holder.thumbPicture.setVisibility(View.GONE);
 			holder.thumbAudio.setVisibility(View.VISIBLE);
 
             try {
@@ -338,46 +317,14 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
             } catch (Exception e) {
                 Log.e("PageAdapter", "AsyncTaskAudioBitmap error");
                 holder.thumbBlock.setVisibility(View.GONE);
-                holder.thumbPicture.setVisibility(View.GONE);
                 holder.thumbAudio.setVisibility(View.GONE);
             }
 		}
 		else
 		{
 			holder.thumbBlock.setVisibility(View.GONE);
-			holder.thumbPicture.setVisibility(View.GONE);
 			holder.thumbAudio.setVisibility(View.GONE);
 		}
-
-		// Show text body
-	  	if(pref_show_note_attribute.getString("KEY_SHOW_BODY", "yes").equalsIgnoreCase("yes"))
-	  	{
-	  		// test only: enabled for showing picture path
-//            String strBody = cursor.getString(cursor.getColumnIndex(KEY_NOTE_BODY));
-	  		if(!Util.isEmptyString(strBody)){
-				//normal: do nothing
-			}
-	  		else if(!Util.isEmptyString(pictureUri)) {
-//				strBody = pictureUri;//show picture Uri
-			}
-	  		else if(!Util.isEmptyString(linkUri)) {
-//				strBody = linkUri; //show link Uri
-			}
-
-			holder.textBody.setText(strBody);
-//			holder.textBody.setTextSize(12);
-
-//			holder.rowDivider.setVisibility(View.VISIBLE);
-			holder.textBody.setTextColor(ColorSet.mText_ColorArray[style]);
-			// time stamp
-            holder.textTime.setText(Util.getTimeString(timeCreated));
-			holder.textTime.setTextColor(ColorSet.mText_ColorArray[style]);
-	  	}
-	  	else
-	  	{
-            holder.textBody.setVisibility(View.GONE);
-            holder.textTime.setVisibility(View.GONE);
-	  	}
 
         setBindViewHolder_listeners(holder,position);
     }

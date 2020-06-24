@@ -66,13 +66,6 @@
                     app:showAsAction="never"
                     android:title="@string/drag_note"
                     android:icon="@drawable/btn_check_off_holo_light"/>
-                <item
-                    android:id="@+id/SHOW_BODY"
-                    android:orderInCategory="2"
-                    app:showAsAction="never"
-                    android:title="@string/preview_note_body"
-                    android:icon="@drawable/btn_check_off_holo_light"/>
-
             </menu>
         </item>
 
