@@ -7,9 +7,7 @@
 
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-	<uses-permission android:name="android.permission.CAMERA" />
-	<uses-permission android:name="android.permission.WAKE_LOCK" />	
-	<!--<uses-permission android:name="android.permission.READ_PHONE_STATE"/>-->
+	<uses-permission android:name="android.permission.WAKE_LOCK" />
 	<uses-permission android:name="android.permission.INTERNET" />
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 	<uses-permission android:name="com.google.android.apps.photos.permission.GOOGLE_PHOTOS"/>
@@ -17,12 +15,6 @@
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
-	<uses-feature android:name="android.hardware.camera"
-	    		  android:required="false"/>
-	<uses-feature android:name="android.hardware.camera.autofocus"
-                  android:required="false"/>
-    <uses-feature android:name="android.hardware.telephony"
-                  android:required="false"/>
     <application
         android:name="com.cw.audio7.util.uil.UilApplication"
         android:allowBackup="true"
@@ -117,29 +109,3 @@
            </application>
 
         </manifest>
-        <!-- reference
-             theme:
-                android:theme="@style/AppTheme"
-                android:theme="@style/CustomTheme"
-             screen orientation:
-                android:screenOrientation="portrait"
-
-            For android tv:
-
-            - in manifest
-                <uses-feature android:name="android.software.leanback"
-                android:required="false" />
-                <uses-feature android:name="android.hardware.touchscreen"
-                android:required="false" />
-
-            - in application tag
-                android:banner="@drawable/ic_banner"
-
-            - in main activity
-                <intent-filter>
-                    <action android:name="android.intent.action.MAIN" />
-                    <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
-                </intent-filter>
-
-
-         -->

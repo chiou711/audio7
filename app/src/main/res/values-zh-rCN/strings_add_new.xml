@@ -19,6 +19,8 @@
     <string name="note_ready_video">现成视频</string>
     <string name="note_audio">音讯</string>
     <string name="note_ready_audio">现成音讯</string>
+    <string name="note_ready_audio_1by1">1 by 1</string>
+    <string name="note_ready_audio_byFolder"> by folder</string>
     <string name="note_recording">录音</string>
     <string name="note_drawing">涂鸦</string>
     <string name="note_take_picture">拍照</string>

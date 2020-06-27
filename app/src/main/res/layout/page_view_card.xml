@@ -2,9 +2,6 @@
 <!-- whole -->
 <!-- [id | check | drag-drop |audio name] --> <!-- controls -->
 <!-- [ thumb nail   ][          title text              ] -->
-<!-- [              ][          body text               ] -->
-
-
 
 <!-- whole start -->
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
@@ -27,8 +24,8 @@
         <LinearLayout
             android:id="@+id/row_controls"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_margin="5dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="1dp"
             android:background="@drawable/bg_gray_border"
             android:orientation="horizontal">
 
@@ -112,10 +109,37 @@
         <LinearLayout
             android:id="@+id/audio_block"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_margin="5dp"
+            android:layout_height="50dp"
+            android:layout_margin="1dp"
             android:background="@drawable/bg_gray_border"
             android:orientation="horizontal">
+
+            <!-- thumb nail start -->
+            <FrameLayout
+                android:id="@+id/row_thumb_nail"
+                android:layout_width="60dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:layout_margin="5dp"
+                android:visibility="visible">
+
+                <ImageView
+                    android:id="@+id/thumb_audio"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:contentDescription="img_thumb_audio"
+                    android:scaleType="centerCrop"/>
+
+                <ProgressBar
+                    android:id="@+id/thumb_progress"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:visibility="gone"/>
+            </FrameLayout>
+            <!-- thumb nail end -->
+
             <!-- audio icon -->
             <ImageView
                 android:id="@+id/img_audio"
@@ -137,33 +161,6 @@
                 android:textSize="12sp"/>
         </LinearLayout>
         <!-- audio block end -->
-
-
-        <!-- thumb nail start -->
-        <FrameLayout
-            android:id="@+id/row_thumb_nail"
-            android:layout_width="match_parent"
-            android:layout_height="150dp"
-            android:layout_gravity="center"
-            android:layout_margin="5dp"
-            android:visibility="visible">
-
-            <ImageView
-                android:id="@+id/thumb_audio"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:contentDescription="img_thumb_audio"
-                android:scaleType="centerCrop"/>
-
-            <ProgressBar
-                android:id="@+id/thumb_progress"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:visibility="gone"/>
-        </FrameLayout>
-        <!-- thumb nail end -->
 
         </LinearLayout>
 

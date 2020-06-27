@@ -19,9 +19,7 @@ package com.cw.audio7.note_add;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
@@ -34,13 +32,14 @@ import android.widget.Toast;
 
 import com.cw.audio7.R;
 import com.cw.audio7.note_add.add_recording.Add_recording_act;
-import com.cw.audio7.util.Util;
-import com.cw.audio7.util.drawing.Note_drawingAct;
+import com.cw.audio7.operation.import_export.Add_audio_1by1;
+import com.cw.audio7.operation.import_export.Add_audio_byFolder;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentTransaction;
 
 /**
  * Created by cw on 2017/10/7.
@@ -66,6 +65,8 @@ public class Add_note_option {
 
     private final static int ID_NEW_RECORDING = 3;
     private final static int ID_NEW_AUDIO = 4;
+    private final static int ID_NEW_AUDIO_1by1 = 5;
+    private final static int ID_NEW_AUDIO_byFolder = 6;
     private final static int ID_NEW_BACK = 11;
     private final static int ID_NEW_SETTING = 12;
 
@@ -78,21 +79,27 @@ public class Add_note_option {
         // get layout inflater
         View rootView = act.getLayoutInflater().inflate(R.layout.option_grid, null);
 
-        // check camera feature
-        PackageManager packageManager = act.getPackageManager();
-
         addNoteList = new ArrayList<>();
 
-            // recording
-            addNoteList.add(new Add_note_option(ID_NEW_RECORDING,
-//                    android.R.drawable.ic_btn_speak_now,
-                    R.drawable.ic_mic,
-                    R.string.note_recording));
+        // recording
+        addNoteList.add(new Add_note_option(ID_NEW_RECORDING,
+                R.drawable.ic_mic,
+                R.string.note_recording));
 
-            // audio
-            addNoteList.add(new Add_note_option(ID_NEW_AUDIO,
-                    R.drawable.ic_audio_unselected,
-                    R.string.note_ready_audio));
+        // audio
+        addNoteList.add(new Add_note_option(ID_NEW_AUDIO,
+                R.drawable.ic_audio_unselected,
+                R.string.note_ready_audio));
+
+        // audio 1by1
+        addNoteList.add(new Add_note_option(ID_NEW_AUDIO_1by1,
+                R.drawable.ic_audio_unselected,
+                R.string.note_ready_audio_1by1));
+
+        // audio by folder
+        addNoteList.add(new Add_note_option(ID_NEW_AUDIO_byFolder,
+                R.drawable.ic_audio_unselected,
+                R.string.note_ready_audio_byFolder));
 
         // Back
         addNoteList.add(new Add_note_option(ID_NEW_BACK,
@@ -145,6 +152,22 @@ public class Add_note_option {
 
         switch (option) {
 
+            case ID_NEW_RECORDING:
+            {
+                Intent intent = new Intent(act, Add_recording_act.class);
+                if( bTop && !bDirectory )
+                    intent.putExtra("EXTRA_ADD_EXIST", "single_to_top");
+                else if(!bTop && !bDirectory)
+                    intent.putExtra("EXTRA_ADD_EXIST", "single_to_bottom");
+                else if(bTop && bDirectory)
+                    intent.putExtra("EXTRA_ADD_EXIST", "directory_to_top");
+                else if(!bTop && bDirectory)
+                    intent.putExtra("EXTRA_ADD_EXIST", "directory_to_bottom");
+
+                act.startActivity(intent);
+            }
+            break;
+
             case ID_NEW_AUDIO:
             {
                 Intent intent = new Intent(act, Note_addAudio.class);
@@ -161,19 +184,27 @@ public class Add_note_option {
             }
             break;
 
-            case ID_NEW_RECORDING:
+            case ID_NEW_AUDIO_1by1:
             {
-                Intent intent = new Intent(act, Add_recording_act.class);
-                if( bTop && !bDirectory )
-                    intent.putExtra("EXTRA_ADD_EXIST", "single_to_top");
-                else if(!bTop && !bDirectory)
-                    intent.putExtra("EXTRA_ADD_EXIST", "single_to_bottom");
-                else if(bTop && bDirectory)
-                    intent.putExtra("EXTRA_ADD_EXIST", "directory_to_top");
-                else if(!bTop && bDirectory)
-                    intent.putExtra("EXTRA_ADD_EXIST", "directory_to_bottom");
+                // replace fragment
+                dlgAddNew.dismiss();
+                Add_audio_1by1 add_audio1by1 = new Add_audio_1by1();
+                FragmentTransaction transaction = act.getSupportFragmentManager().beginTransaction();
 
-                act.startActivity(intent);
+                transaction.setCustomAnimations(R.anim.fragment_slide_in_left, R.anim.fragment_slide_out_left, R.anim.fragment_slide_in_right, R.anim.fragment_slide_out_right);
+                transaction.replace(R.id.content_frame, add_audio1by1, "add_audio").addToBackStack(null).commit();
+            }
+            break;
+
+            case ID_NEW_AUDIO_byFolder:
+            {
+                // replace fragment
+                dlgAddNew.dismiss();
+                Add_audio_byFolder add_audio_byFolder = new Add_audio_byFolder();
+                FragmentTransaction transaction = act.getSupportFragmentManager().beginTransaction();
+
+                transaction.setCustomAnimations(R.anim.fragment_slide_in_left, R.anim.fragment_slide_out_left, R.anim.fragment_slide_in_right, R.anim.fragment_slide_out_right);
+                transaction.replace(R.id.content_frame, add_audio_byFolder, "add_audio").addToBackStack(null).commit();
             }
             break;
 

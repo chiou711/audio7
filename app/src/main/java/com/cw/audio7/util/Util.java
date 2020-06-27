@@ -1096,7 +1096,7 @@ public class Util
             public void run() {
                 toast.cancel();
             }
-        }, 2000);
+        }, 500);
 	}
 
 	static public boolean isLandscapeOrientation(Activity act)
