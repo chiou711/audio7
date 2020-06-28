@@ -316,7 +316,7 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
                 "Next",
                 MediaButtonReceiver.buildMediaButtonPendingIntent(this, PlaybackStateCompat.ACTION_SKIP_TO_NEXT)));
         builder.setStyle(new androidx.media.app.NotificationCompat.MediaStyle().setShowActionsInCompactView(0).setMediaSession(mMediaSessionCompat.getSessionToken()));
-        builder.setSmallIcon(R.drawable.ic_launcher);
+        builder.setSmallIcon(R.mipmap.ic_launcher);
         builder.setShowWhen(false);
         NotificationManagerCompat.from(this).notify(id, builder.build());
     }
@@ -338,7 +338,7 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
                 "Next",
                 MediaButtonReceiver.buildMediaButtonPendingIntent(this, PlaybackStateCompat.ACTION_SKIP_TO_NEXT)));
         builder.setStyle(new androidx.media.app.NotificationCompat.MediaStyle().setShowActionsInCompactView(0).setMediaSession(mMediaSessionCompat.getSessionToken()));
-        builder.setSmallIcon(R.drawable.ic_launcher);
+        builder.setSmallIcon(R.mipmap.ic_launcher);
         builder.setShowWhen(false);
         NotificationManagerCompat.from(this).notify(id, builder.build());
     }

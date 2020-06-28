@@ -18,7 +18,6 @@ package com.cw.audio7.operation.import_export;
 
 import android.content.Context;
 import android.graphics.Typeface;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.LayoutInflater;
@@ -31,12 +30,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cw.audio7.R;
+import com.cw.audio7.db.DB_folder;
 import com.cw.audio7.db.DB_page;
+import com.cw.audio7.folder.FolderUi;
 import com.cw.audio7.main.MainAct;
 import com.cw.audio7.tabs.TabsHost;
 import com.cw.audio7.util.BaseBackPressedListener;
 import com.cw.audio7.util.ColorSet;
 import com.cw.audio7.util.Util;
+import com.cw.audio7.util.preferences.Pref;
 
 import org.apache.commons.io.FileUtils;
 
@@ -48,6 +50,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.ListFragment;
 
 public class Add_audio_byFolder extends ListFragment
@@ -156,6 +159,7 @@ public class Add_audio_byFolder extends ListFragment
     // on list item click
     public void onListItemClick(long rowId)
     {
+        AppCompatActivity act = (AppCompatActivity) getActivity();
         selectedRow = (int)rowId;
         if(selectedRow == 0)
         {
@@ -173,7 +177,37 @@ public class Add_audio_byFolder extends ListFragment
             final File file = new File(currFilePath);
             if(file.isDirectory())
             {
-            	//directory
+                // get current Max page table Id
+                int currentMaxPageTableId = 0;
+                int pagesCount = FolderUi.getFolder_pagesCount(act,FolderUi.getFocus_folderPos());
+                DB_folder db_folder = new DB_folder(act,DB_folder.getFocusFolder_tableId());
+
+                for(int i=0;i< pagesCount;i++)
+                {
+                    int id = db_folder.getPageTableId(i,true);
+                    if(id >currentMaxPageTableId)
+                        currentMaxPageTableId = id;
+                }
+                currentMaxPageTableId++;
+
+                int newPageTableId = currentMaxPageTableId;
+
+                // get page name
+                String pageName = file.getName();
+
+                // insert page name
+                int style = Util.getNewPageStyle(act);
+                db_folder.insertPage(DB_folder.getFocusFolder_tableName(),pageName,newPageTableId,style,true );
+
+                // insert table for new page
+                db_folder.insertPageTable(db_folder,DB_folder.getFocusFolder_tableId(),newPageTableId, true);
+
+                // commit: final page viewed
+                Pref.setPref_focusView_page_tableId(act, newPageTableId);
+
+                TabsHost.setCurrentPageTableId(newPageTableId);
+
+            	//add directory audio links
                 addAudio_byDir(file.listFiles());
             }
             else

@@ -31,6 +31,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cw.audio7.R;
+import com.cw.audio7.folder.FolderUi;
 import com.cw.audio7.note_add.add_recording.Add_recording_act;
 import com.cw.audio7.operation.import_export.Add_audio_1by1;
 import com.cw.audio7.operation.import_export.Add_audio_byFolder;
@@ -81,20 +82,24 @@ public class Add_note_option {
 
         addNoteList = new ArrayList<>();
 
+        int pagesCount = FolderUi.getFolder_pagesCount(act,FolderUi.getFocus_folderPos());
         // recording
-        addNoteList.add(new Add_note_option(ID_NEW_RECORDING,
-                R.drawable.ic_mic,
-                R.string.note_recording));
+        if(pagesCount>0)
+            addNoteList.add(new Add_note_option(ID_NEW_RECORDING,
+                    R.drawable.ic_mic,
+                    R.string.note_recording));
 
         // audio
-        addNoteList.add(new Add_note_option(ID_NEW_AUDIO,
-                R.drawable.ic_audio_unselected,
-                R.string.note_ready_audio));
+        if(pagesCount>0)
+            addNoteList.add(new Add_note_option(ID_NEW_AUDIO,
+                    R.drawable.ic_audio_unselected,
+                    R.string.note_ready_audio));
 
         // audio 1by1
-        addNoteList.add(new Add_note_option(ID_NEW_AUDIO_1by1,
-                R.drawable.ic_audio_unselected,
-                R.string.note_ready_audio_1by1));
+        if(pagesCount>0)
+            addNoteList.add(new Add_note_option(ID_NEW_AUDIO_1by1,
+                    R.drawable.ic_audio_unselected,
+                    R.string.note_ready_audio_1by1));
 
         // audio by folder
         addNoteList.add(new Add_note_option(ID_NEW_AUDIO_byFolder,

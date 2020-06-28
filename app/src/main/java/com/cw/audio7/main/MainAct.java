@@ -1086,7 +1086,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                  *  Note group
                  */
                 // group of notes
-                mMenu.setGroupVisible(R.id.group_notes, pgsCnt > 0);
+                mMenu.setGroupVisible(R.id.group_notes, true);
 
                 // play
                 mMenu.findItem(R.id.PLAY).setVisible( (pgsCnt >0) && (notesCnt>0) );

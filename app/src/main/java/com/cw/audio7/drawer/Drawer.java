@@ -147,7 +147,7 @@ public class Drawer {
 
                     if(act.getSupportActionBar() != null) {
                         act.getSupportActionBar().setTitle(R.string.app_name);
-                        MainAct.mToolbar.setLogo(R.drawable.ic_launcher);
+                        MainAct.mToolbar.setLogo(R.mipmap.ic_launcher);
                     }
 
                     act.invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()

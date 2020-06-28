@@ -7,7 +7,7 @@
         android:id="@+id/app_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/ic_launcher"
+        android:background="@mipmap/ic_launcher"
         android:scaleType="centerInside"/>
 
     <TextView
