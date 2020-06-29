@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.cw.audio7.operation.import_export;
+package com.cw.audio7.note_add.add_audio;
 
 import android.content.Context;
 import android.graphics.Typeface;
@@ -177,38 +177,46 @@ public class Add_audio_byFolder extends ListFragment
             final File file = new File(currFilePath);
             if(file.isDirectory())
             {
-                // get current Max page table Id
-                int currentMaxPageTableId = 0;
-                int pagesCount = FolderUi.getFolder_pagesCount(act,FolderUi.getFocus_folderPos());
-                DB_folder db_folder = new DB_folder(act,DB_folder.getFocusFolder_tableId());
+                int dirCount = getFilesList(file.listFiles());
+                int filesCount = file.listFiles().length;
 
-                for(int i=0;i< pagesCount;i++)
-                {
-                    int id = db_folder.getPageTableId(i,true);
-                    if(id >currentMaxPageTableId)
-                        currentMaxPageTableId = id;
+                System.out.println( "=> dirCount = " + dirCount);
+                System.out.println( "=> filesCount = " + filesCount);
+
+                // check if audio files exist
+                if( (dirCount ==0 ) && (filesCount>0) ) {
+                    // get current Max page table Id
+                    int currentMaxPageTableId = 0;
+                    int pagesCount = FolderUi.getFolder_pagesCount(act, FolderUi.getFocus_folderPos());
+                    DB_folder db_folder = new DB_folder(act, DB_folder.getFocusFolder_tableId());
+
+                    for (int i = 0; i < pagesCount; i++) {
+                        int id = db_folder.getPageTableId(i, true);
+                        if (id > currentMaxPageTableId)
+                            currentMaxPageTableId = id;
+                    }
+                    currentMaxPageTableId++;
+
+                    int newPageTableId = currentMaxPageTableId;
+
+                    // get page name
+                    String pageName = file.getName();
+
+                    // insert page name
+                    int style = Util.getNewPageStyle(act);
+                    db_folder.insertPage(DB_folder.getFocusFolder_tableName(), pageName, newPageTableId, style, true);
+
+                    // insert table for new page
+                    db_folder.insertPageTable(db_folder, DB_folder.getFocusFolder_tableId(), newPageTableId, true);
+
+                    // commit: final page viewed
+                    Pref.setPref_focusView_page_tableId(act, newPageTableId);
+
+                    TabsHost.setCurrentPageTableId(newPageTableId);
+
+                    //add directory audio links
+                    addAudio_byDir(file.listFiles());
                 }
-                currentMaxPageTableId++;
-
-                int newPageTableId = currentMaxPageTableId;
-
-                // get page name
-                String pageName = file.getName();
-
-                // insert page name
-                int style = Util.getNewPageStyle(act);
-                db_folder.insertPage(DB_folder.getFocusFolder_tableName(),pageName,newPageTableId,style,true );
-
-                // insert table for new page
-                db_folder.insertPageTable(db_folder,DB_folder.getFocusFolder_tableId(),newPageTableId, true);
-
-                // commit: final page viewed
-                Pref.setPref_focusView_page_tableId(act, newPageTableId);
-
-                TabsHost.setCurrentPageTableId(newPageTableId);
-
-            	//add directory audio links
-                addAudio_byDir(file.listFiles());
             }
             else
             {
@@ -233,8 +241,9 @@ public class Add_audio_byFolder extends ListFragment
         }
     }
 
-    void getFilesList(File[] files)
+    int  getFilesList(File[] files)
     {
+        int dirCount = 0;
         if(files == null)
         {
         	Toast.makeText(getActivity(),"Please select audio file",Toast.LENGTH_SHORT).show();
@@ -268,6 +277,7 @@ public class Add_audio_byFolder extends ListFragment
                 }
                 else if(file.isDirectory())
                 {
+                    dirCount++;
                     filePathArray.add(file.getPath());
                     // directory
                     fileNames.add("[ " + file.getName() +" ]");
@@ -279,6 +289,8 @@ public class Add_audio_byFolder extends ListFragment
                                                                   fileNames);
 	        setListAdapter(fileListAdapter);
         }
+
+        return dirCount;
     }
 
     // Directory group and file group, both directory and file are sorted alphabetically
@@ -320,25 +332,26 @@ public class Add_audio_byFolder extends ListFragment
             convertView.setFocusable(true);
             convertView.setClickable(true);
 
+            convertView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    System.out.println("=> position  = " + position);
+                    v.setBackgroundColor(ColorSet.getHighlightColor(getActivity()));
+                    onListItemClick(position);
+                }
+            });
+
             TextView tv = (TextView)convertView.findViewById(R.id.text1);
             String appName = getString(R.string.app_name);
             tv.setText(fileNames.get(position));
             if(fileNames.get(position).equalsIgnoreCase("sdcard")   ||
                fileNames.get(position).equalsIgnoreCase(appName)    ||
-               fileNames.get(position).equalsIgnoreCase("audio7") || //todo need to change for different app name
-               fileNames.get(position).equalsIgnoreCase("Download")   )
+               fileNames.get(position).equalsIgnoreCase("[ audio7 ]") || //todo need to change for different app name
+               fileNames.get(position).equalsIgnoreCase("[ Download ]")   )
                 tv.setTypeface(null, Typeface.BOLD);
             else
                 tv.setTypeface(null, Typeface.NORMAL);
 
-            final int item = position;
-            convertView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    v.setBackgroundColor(ColorSet.getHighlightColor(getActivity()));
-                    onListItemClick(item);
-                }
-            });
             return convertView;
         }
     }
@@ -368,7 +381,7 @@ public class Add_audio_byFolder extends ListFragment
                     {
                         // insert
                         // set marking to 1 for default
-                        System.out.println("Add_audio_byFolder / _addAudio_byDir / uriStr = " + uriStr);
+                        //System.out.println("Add_audio_byFolder / _addAudio_byDir / uriStr = " + uriStr);
 
                         dB.insertNote("", "", uriStr, "", "", "", 1, (long) 0);// add new note, get return row Id
                     }
@@ -381,7 +394,7 @@ public class Add_audio_byFolder extends ListFragment
 
                 } else if (file.isDirectory()) {
                     //TODO ??? Add sub folder
-                    System.out.println("=> is directory ,  , file.getPath() = " +  file.getPath());
+                    System.out.println("=> is directory ,  file.getPath() = " +  file.getPath());
                 }
             }
         }

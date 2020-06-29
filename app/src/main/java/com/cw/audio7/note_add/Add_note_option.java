@@ -33,8 +33,8 @@ import android.widget.Toast;
 import com.cw.audio7.R;
 import com.cw.audio7.folder.FolderUi;
 import com.cw.audio7.note_add.add_recording.Add_recording_act;
-import com.cw.audio7.operation.import_export.Add_audio_1by1;
-import com.cw.audio7.operation.import_export.Add_audio_byFolder;
+import com.cw.audio7.note_add.add_audio.Add_audio_1by1;
+import com.cw.audio7.note_add.add_audio.Add_audio_byFolder;
 
 import java.util.ArrayList;
 import java.util.List;
