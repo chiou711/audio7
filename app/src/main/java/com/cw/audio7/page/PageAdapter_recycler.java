@@ -90,9 +90,6 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
      */
     public static class ViewHolder extends RecyclerView.ViewHolder implements ItemTouchHelperViewHolder {
         ImageView btnMarking;
-        ImageView btnViewNote;
-        ImageView btnEditNote;
-        ImageView btnPlayAudio;
 		TextView rowId;
 		View audioBlock;
 		ImageView iconAudio;
@@ -118,9 +115,6 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
             iconAudio = (ImageView) v.findViewById(R.id.img_audio);
             audioName = (TextView) v.findViewById(R.id.row_audio_name);
             btnMarking = (ImageView) v.findViewById(R.id.btn_marking);
-            btnViewNote = (ImageView) v.findViewById(R.id.btn_view_note);
-            btnEditNote = (ImageView) v.findViewById(R.id.btn_edit_note);
-            btnPlayAudio = (ImageView) v.findViewById(R.id.btn_play_audio);
             thumbBlock = v.findViewById(R.id.row_thumb_nail);
             thumbAudio = (ImageView) v.findViewById(R.id.thumb_audio);
             btnDrag = (ImageViewCustom) v.findViewById(R.id.btn_drag);
@@ -208,12 +202,6 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
             holder.btnDrag.setVisibility(View.VISIBLE);
         else
             holder.btnDrag.setVisibility(View.GONE);
-
-        // show audio button
-        if( !Util.isEmptyString(audioUri) && (marking == 1) && Util.isUriExisted(audioUri,mAct))
-            holder.btnPlayAudio.setVisibility(View.VISIBLE);
-        else
-            holder.btnPlayAudio.setVisibility(View.GONE);
 
         // set audio name
         String audio_name = null;
@@ -354,7 +342,7 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
         });
 
         // on view note
-        viewHolder.btnViewNote.setOnClickListener(new View.OnClickListener() {
+        viewHolder.thumbBlock.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 TabsHost.getCurrentPage().mCurrPlayPosition = position;
@@ -372,9 +360,10 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
         });
 
         // on edit note
-        viewHolder.btnEditNote.setOnClickListener(new View.OnClickListener() {
+        viewHolder.audioBlock.setOnLongClickListener(new View.OnLongClickListener() {
+
             @Override
-            public void onClick(View v) {
+            public boolean onLongClick(View v) {
                 DB_page db_page = new DB_page(mAct, TabsHost.getCurrentPageTableId());
                 Long rowId = db_page.getNoteId(position,true);
 
@@ -386,11 +375,13 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
                 i.putExtra(DB_page.KEY_NOTE_BODY, db_page.getNoteBody_byId(rowId));
                 i.putExtra(DB_page.KEY_NOTE_CREATED, db_page.getNoteCreatedTime_byId(rowId));
                 mAct.startActivity(i);
+
+                return true;
             }
         });
 
         // on play audio
-        viewHolder.btnPlayAudio.setOnClickListener(new View.OnClickListener() {
+        viewHolder.audioBlock.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 TabsHost.reloadCurrentPage();// after Drag and drop: this is needed to update thumb nail and title

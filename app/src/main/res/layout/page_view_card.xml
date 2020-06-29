@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- whole -->
-<!-- [id | check | drag-drop |audio name] --> <!-- controls -->
-<!-- [ thumb nail   ][          title text              ] -->
+<!--  [id | check | drag-drop | thumb nail  | audio name ] -->
 
 <!-- whole start -->
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
@@ -10,100 +9,80 @@
                                     android:orientation="vertical"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    card_view:cardCornerRadius="5dp"
-                                    card_view:cardElevation="3dp"
+                                    card_view:cardCornerRadius="1dp"
+                                    card_view:cardElevation="1dp"
                                     card_view:cardPreventCornerOverlap="true"
                                     card_view:cardUseCompatPadding="true">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="50dp"
+        android:layout_margin="1dp"
+        android:background="@drawable/bg_gray_border"
+        android:orientation="horizontal">
 
-        <!-- controls start -->
-        <LinearLayout
-            android:id="@+id/row_controls"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="1dp"
-            android:background="@drawable/bg_gray_border"
-            android:orientation="horizontal">
+        <!-- check box-->
+        <ImageView
+            android:id="@+id/btn_marking"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="1dp"
+            android:layout_marginStart="1dp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:src="@drawable/btn_check_off_holo_light"
+            android:contentDescription="img_check"/>
 
-            <!-- row id -->
-            <TextView
-                android:id="@+id/row_id"
-                android:layout_width="45dp"
-                android:layout_height="45dp"
-                android:layout_marginLeft="5dp"
-                android:layout_marginStart="5dp"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:maxLines="1"
-                android:textSize="14sp"
-                android:textStyle="italic"/>
+        <!-- row Id -->
+        <TextView
+            android:id="@+id/row_id"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginLeft="1dp"
+            android:layout_marginStart="1dp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:maxLines="1"
+            android:textSize="14sp"
+            android:textStyle="italic"/>
 
-            <!-- check box-->
+        <!-- drag button -->
+        <com.cw.audio7.page.ImageViewCustom
+            android:id="@+id/btn_drag"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_marginStart="3dp"
+            android:layout_marginLeft="3dp"
+            android:layout_gravity="center_vertical"
+            android:gravity="center_vertical"
+            android:contentDescription="@string/drag_handler"
+            android:src="@drawable/ic_drag_on"/>
+
+        <!-- thumb nail start -->
+        <FrameLayout
+            android:id="@+id/row_thumb_nail"
+            android:layout_width="60dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:layout_margin="5dp"
+            android:visibility="visible">
+
             <ImageView
-                android:id="@+id/btn_marking"
-                android:layout_width="45dp"
-                android:layout_height="45dp"
-                android:layout_marginLeft="5dp"
-                android:layout_marginStart="5dp"
+                android:id="@+id/thumb_audio"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:layout_gravity="center"
-                android:gravity="center"
-                android:src="@drawable/btn_check_off_holo_light"
-                android:contentDescription="img_check"/>
+                android:contentDescription="img_thumb_audio"
+                android:scaleType="centerCrop"/>
 
-            <!-- drag button -->
-            <com.cw.audio7.page.ImageViewCustom
-                android:id="@+id/btn_drag"
-                android:layout_width="45dp"
-                android:layout_height="45dp"
-                android:layout_marginStart="3dp"
-                android:layout_marginLeft="3dp"
-                android:layout_gravity="center_vertical"
-                android:gravity="center_vertical"
-                android:contentDescription="@string/drag_handler"
-                android:src="@drawable/ic_drag_on"/>
-
-            <!-- view note -->
-            <ImageView
-                android:id="@+id/btn_view_note"
-                android:layout_width="45dp"
-                android:layout_height="45dp"
-                android:layout_marginStart="3dp"
-                android:layout_marginLeft="3dp"
+            <ProgressBar
+                android:id="@+id/thumb_progress"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:layout_gravity="center"
-                android:gravity="center"
-                android:contentDescription="@string/view_note_title"
-                android:src="@android:drawable/ic_menu_view"/>
-
-            <!-- edit note -->
-            <ImageView
-                android:id="@+id/btn_edit_note"
-                android:layout_width="45dp"
-                android:layout_height="45dp"
-                android:layout_marginStart="3dp"
-                android:layout_marginLeft="3dp"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:contentDescription="@string/edit_note_title"
-                android:src="@android:drawable/ic_menu_edit"/>
-
-            <!-- play audio -->
-            <ImageView
-                android:id="@+id/btn_play_audio"
-                android:layout_width="45dp"
-                android:layout_height="45dp"
-                android:layout_marginStart="3dp"
-                android:layout_marginLeft="3dp"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:contentDescription="@string/note_audio"
-                android:src="@drawable/ic_jog_dial_sound_on"/> <!-- ic_audio_info -->
-
-        </LinearLayout>
-        <!-- controls end -->
+                android:visibility="gone"/>
+        </FrameLayout>
+        <!-- thumb nail end -->
 
         <!-- audio block start -->
         <LinearLayout
@@ -113,56 +92,29 @@
             android:layout_margin="1dp"
             android:background="@drawable/bg_gray_border"
             android:orientation="horizontal">
+        <!-- audio icon -->
+        <ImageView
+            android:id="@+id/img_audio"
+            android:layout_width="20dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_margin="1dp"
+            android:adjustViewBounds="false"
+            android:contentDescription="img_audio"/>
+        <!-- audio name -->
+        <TextView
+            android:id="@+id/row_audio_name"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            android:maxLines="3"
+            android:minHeight="25dp"
+            android:textStyle="italic|bold"
+            android:textSize="12sp"/>
+    </LinearLayout>
+    <!-- audio block end -->
 
-            <!-- thumb nail start -->
-            <FrameLayout
-                android:id="@+id/row_thumb_nail"
-                android:layout_width="60dp"
-                android:layout_height="50dp"
-                android:layout_gravity="center"
-                android:layout_margin="5dp"
-                android:visibility="visible">
-
-                <ImageView
-                    android:id="@+id/thumb_audio"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center"
-                    android:contentDescription="img_thumb_audio"
-                    android:scaleType="centerCrop"/>
-
-                <ProgressBar
-                    android:id="@+id/thumb_progress"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center"
-                    android:visibility="gone"/>
-            </FrameLayout>
-            <!-- thumb nail end -->
-
-            <!-- audio icon -->
-            <ImageView
-                android:id="@+id/img_audio"
-                android:layout_width="20dp"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:layout_margin="1dp"
-                android:adjustViewBounds="false"
-                android:contentDescription="img_audio"/>
-            <!-- audio name -->
-            <TextView
-                android:id="@+id/row_audio_name"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="start"
-                android:maxLines="3"
-                android:minHeight="25dp"
-                android:textStyle="italic|bold"
-                android:textSize="12sp"/>
-        </LinearLayout>
-        <!-- audio block end -->
-
-        </LinearLayout>
+    </LinearLayout>
 
 </androidx.cardview.widget.CardView>
 <!-- whole end -->

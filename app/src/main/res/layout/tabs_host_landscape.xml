@@ -49,7 +49,7 @@
         <TextView
             android:id="@+id/footerText"
             android:layout_width="match_parent"
-            android:layout_height="30dp"
+            android:layout_height="20dp"
             android:gravity="center"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textSize="12sp"

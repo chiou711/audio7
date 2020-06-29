@@ -215,7 +215,7 @@ public class Add_audio_byFolder extends ListFragment
                     TabsHost.setCurrentPageTableId(newPageTableId);
 
                     //add directory audio links
-                    addAudio_byDir(file.listFiles());
+                    addAudio_byDir(file.listFiles(),pageName);
                 }
             }
             else
@@ -357,7 +357,7 @@ public class Add_audio_byFolder extends ListFragment
     }
 
     // add audio
-    void addAudio_byDir( File[] files)
+    void addAudio_byDir( File[] files,String pageName)
     {
         if(files == null)
         {
@@ -389,14 +389,14 @@ public class Add_audio_byFolder extends ListFragment
                     if(!Util.isEmptyString(uriStr))
                     {
                         String audioName = Util.getDisplayNameByUriString(uriStr, getActivity());
-                        Util.showSavedFileToast(audioName,getActivity());
                     }
 
                 } else if (file.isDirectory()) {
-                    //TODO ??? Add sub folder
                     System.out.println("=> is directory ,  file.getPath() = " +  file.getPath());
                 }
             }
+
+            Util.showSavedFileToast(pageName +" Added",getActivity());
         }
     }
 }
