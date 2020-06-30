@@ -16,20 +16,11 @@
             android:icon="@drawable/ic_input_add">
         </item>
 
-        <!-- checked operation -->
-        <item
-            android:id="@+id/HANDLE_CHECKED_NOTES"
-            android:orderInCategory="1"
-            app:showAsAction="always"
-            android:title="@string/checked_notes"
-            android:icon="@drawable/ic_menu_mark">
-        </item>
-
         <!-- Play -->
         <item
             android:id="@+id/PLAY"
-            android:orderInCategory="2"
-            app:showAsAction="never"
+            android:orderInCategory="1"
+            app:showAsAction="always"
             android:title="Play"
             android:icon="@drawable/ic_media_play">
 
@@ -41,21 +32,18 @@
                     app:showAsAction="never"
                     android:title="@string/menu_button_play_audio"
                     android:icon="@drawable/ic_menu_play_clip"/>
-                <item
-                    android:id="@+id/SLIDE_SHOW"
-                    android:orderInCategory="1"
-                    app:showAsAction="never"
-                    android:title="@string/menu_button_slide_show"
-                    android:icon="@android:drawable/ic_menu_slideshow"/>
-                <item
-                    android:id="@+id/GALLERY"
-                    android:orderInCategory="2"
-                    app:showAsAction="never"
-                    android:title="@string/gallery"
-                    android:icon="@android:drawable/ic_menu_gallery"/>
             </menu>
         </item>
     </group>
+
+    <!-- checked operation -->
+    <item
+        android:id="@+id/HANDLE_CHECKED_NOTES"
+        android:orderInCategory="2"
+        app:showAsAction="never"
+        android:title="@string/checked_notes"
+        android:icon="@drawable/ic_menu_mark">
+    </item>
 
     <!-- more -->
     <group

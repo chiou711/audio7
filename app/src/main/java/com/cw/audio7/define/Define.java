@@ -41,11 +41,7 @@ public class Define {
 
     //
     public final static int DEBUG_DEFAULT_BY_INITIAL = 0;
-    public final static int DEBUG_DEFAULT_BY_ASSETS = 1;
-    public final static int DEBUG_DEFAULT_BY_DOWNLOAD = 2;
     public final static int RELEASE_DEFAULT_BY_INITIAL = 3;
-    public final static int RELEASE_DEFAULT_BY_ASSETS = 4;
-    public final static int RELEASE_DEFAULT_BY_DOWNLOAD = 5;
     public final static String  DB_FILE_NAME = "audio7.db";
 
     public static void setAppBuildMode()
@@ -78,31 +74,11 @@ public class Define {
                 INITIAL_PAGES_COUNT = 1;// Page1_1
                 break;
 
-            case DEBUG_DEFAULT_BY_ASSETS:
-                CODE_MODE = DEBUG_MODE;
-                DEFAULT_CONTENT = BY_ASSETS;
-                break;
-
-            case DEBUG_DEFAULT_BY_DOWNLOAD:
-                CODE_MODE = DEBUG_MODE;
-                DEFAULT_CONTENT = BY_DOWNLOAD;
-                break;
-
             case RELEASE_DEFAULT_BY_INITIAL:
                 CODE_MODE = RELEASE_MODE;
                 DEFAULT_CONTENT = BY_INITIAL_TABLES;
                 INITIAL_FOLDERS_COUNT = 2;  // Folder1, Folder2
                 INITIAL_PAGES_COUNT = 1;// Page1_1
-                break;
-
-            case RELEASE_DEFAULT_BY_ASSETS:
-                CODE_MODE = RELEASE_MODE;
-                DEFAULT_CONTENT = BY_ASSETS;
-                break;
-
-            case RELEASE_DEFAULT_BY_DOWNLOAD:
-                CODE_MODE = RELEASE_MODE;
-                DEFAULT_CONTENT = BY_DOWNLOAD;
                 break;
 
             default:
@@ -173,7 +149,7 @@ public class Define {
      * Enable AdMob at page bottom
      *
      ***************************************************************************/
-    public static boolean ENABLE_ADMOB = true; //true; //false;
+    public static boolean ENABLE_ADMOB = false; //true; //false;
 
 
     // Apply system default for picture path

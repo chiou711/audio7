@@ -241,7 +241,7 @@ public class AudioPlayer_page
         }
 	}
 
-	private boolean isAudioPanelOn()
+	public static boolean isAudioPanelOn(AppCompatActivity act)
     {
         View audio_panel = act.findViewById(R.id.audio_panel);
         boolean isOn = false;
@@ -273,7 +273,7 @@ public class AudioPlayer_page
 	   		if( Audio_manager.getCheckedAudio(Audio_manager.mAudioPos) == 1 )
 	   		{
                 // for incoming call case and after Key protection
-                if(!isAudioPanelOn())
+                if(!isAudioPanelOn(act))
                     showAudioPanel(act,true);
 
                 // check if audio file exists or not

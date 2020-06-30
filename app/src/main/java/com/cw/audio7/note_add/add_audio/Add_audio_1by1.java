@@ -147,6 +147,11 @@ public class Add_audio_1by1 extends ListFragment
                                     "/" +
                                     Util.getStorageDirName(getActivity());
         currFilePath = appDir;
+
+        File dir = new File(appDir);
+        if(!dir.exists())
+            dir.mkdir();
+
         getFilesList(new File(appDir).listFiles());
     }
 

@@ -150,6 +150,11 @@ public class Add_audio_byFolder extends ListFragment
                                     "/" +
                                     Util.getStorageDirName(getActivity());
         currFilePath = appDir;
+
+        File dir = new File(appDir);
+        if(!dir.exists())
+            dir.mkdir();
+
         getFilesList(new File(appDir).listFiles());
     }
 
@@ -177,8 +182,13 @@ public class Add_audio_byFolder extends ListFragment
             final File file = new File(currFilePath);
             if(file.isDirectory())
             {
-                int dirCount = getFilesList(file.listFiles());
-                int filesCount = file.listFiles().length;
+                int dirCount = 0;
+                int filesCount = 0;
+
+                if(file.listFiles() != null) {
+                    dirCount = getFilesList(file.listFiles());
+                    filesCount = file.listFiles().length;
+                }
 
                 System.out.println( "=> dirCount = " + dirCount);
                 System.out.println( "=> filesCount = " + filesCount);

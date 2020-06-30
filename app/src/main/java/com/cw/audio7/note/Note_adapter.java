@@ -124,68 +124,32 @@ public class Note_adapter extends FragmentStatePagerAdapter
         String strTitle = db_page.getNoteTitle(position,true);
         String strBody = db_page.getNoteBody(position,true);
 
-        // View mode
-    	// picture only
-	  	if(Note.isPictureMode())
-	  	{
-			System.out.println("Note_adapter / _instantiateItem / isPictureMode ");
-	  		pictureGroup.setVisibility(View.VISIBLE);
-	  	    showPictureView(position,imageView,spinner);
+		System.out.println("Note_adapter / _instantiateItem / isViewAllMode ");
 
-	  	    line_view.setVisibility(View.GONE);
-	  	    textGroup.setVisibility(View.GONE);
-	  	}
-	    // text only
-	  	else if(Note.isTextMode())
-	  	{
-			System.out.println("Note_adapter / _instantiateItem / isTextMode ");
-	  		pictureGroup.setVisibility(View.GONE);
+		// picture
+		pictureGroup.setVisibility(View.VISIBLE);
+        showPictureView(position,imageView,spinner);
 
-	  		line_view.setVisibility(View.VISIBLE);
-	  		textGroup.setVisibility(View.VISIBLE);
+        line_view.setVisibility(View.VISIBLE);
+        textGroup.setVisibility(View.VISIBLE);
 
-		    if( !Util.isEmptyString(strTitle) ||
-				!Util.isEmptyString(strBody)   )
-		    {
-			    showTextWebView(position,textWebView);
-		    }
-
-	  	}
-  		// picture and text
-	  	else if(Note.isViewAllMode())
-	  	{
-			System.out.println("Note_adapter / _instantiateItem / isViewAllMode ");
-
-			// picture
-			pictureGroup.setVisibility(View.VISIBLE);
-	  	    showPictureView(position,imageView,spinner);
-
-	  	    line_view.setVisibility(View.VISIBLE);
-	  	    textGroup.setVisibility(View.VISIBLE);
-
-			// text
-		    if( !Util.isEmptyString(strTitle)||
-				    !Util.isEmptyString(strBody) )
-		    {
-			    showTextWebView(position,textWebView);
-		    }
-		    else
-		    {
-			    textGroup.setVisibility(View.GONE);
-		    }
-	  	}
+		// text
+	    if( !Util.isEmptyString(strTitle)||
+			    !Util.isEmptyString(strBody) )
+	    {
+		    showTextWebView(position,textWebView);
+	    }
+	    else
+	    {
+		    textGroup.setVisibility(View.GONE);
+	    }
 
 		// footer of note view
 		TextView footerText = (TextView) pagerView.findViewById(R.id.note_view_footer);
-		if(!Note.isPictureMode())
-		{
-			footerText.setVisibility(View.VISIBLE);
-			footerText.setText(String.valueOf(position+1)+"/"+ pager.getAdapter().getCount());
-            footerText.setTextColor(ColorSet.mText_ColorArray[Note.mStyle]);
-            footerText.setBackgroundColor(ColorSet.mBG_ColorArray[Note.mStyle]);
-		}
-		else
-			footerText.setVisibility(View.GONE);
+		footerText.setVisibility(View.VISIBLE);
+		footerText.setText(String.valueOf(position+1)+"/"+ pager.getAdapter().getCount());
+        footerText.setTextColor(ColorSet.mText_ColorArray[Note.mStyle]);
+        footerText.setBackgroundColor(ColorSet.mBG_ColorArray[Note.mStyle]);
 
     	container.addView(pagerView, 0);
     	
@@ -321,14 +285,11 @@ public class Note_adapter extends FragmentStatePagerAdapter
 			String audioUri = db_page.getNoteAudioUri(position,true);
 
 			// remove last text web view
-			if (!Note.isPictureMode())
-			{
-				String tag = "current" + mLastPosition + "textWebView";
-				CustomWebView textWebView = (CustomWebView) pager.findViewWithTag(tag);
-				if (textWebView != null) {
-					textWebView.onPause();
-					textWebView.onResume();
-				}
+			String tag = "current" + mLastPosition + "textWebView";
+			CustomWebView textWebView = (CustomWebView) pager.findViewWithTag(tag);
+			if (textWebView != null) {
+				textWebView.onPause();
+				textWebView.onResume();
 			}
 
             ViewGroup audioBlock = (ViewGroup) act.findViewById(R.id.audioGroup);

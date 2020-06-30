@@ -27,7 +27,6 @@ import com.cw.audio7.page.PageAdapter_recycler;
 import com.cw.audio7.tabs.TabsHost;
 import com.cw.audio7.util.DeleteFileAlarmReceiver;
 import com.cw.audio7.util.audio.UtilAudio;
-import com.cw.audio7.util.image.UtilImage;
 import com.cw.audio7.util.preferences.Pref;
 import com.cw.audio7.operation.mail.MailNotes;
 import com.cw.audio7.util.uil.UilCommon;
@@ -43,13 +42,10 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.SystemClock;
 import android.support.v4.media.MediaBrowserCompat;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -93,12 +89,7 @@ public class Note extends AppCompatActivity
 	public static String mAudioUriInDB;
 
     public AppCompatActivity act;
-    public static int mPlayVideoPositionOfInstance;
     public AudioUi_note audioUi_note;
-
-	public static int mCurrentState;
-	public final static int STATE_PAUSED = 0;
-	public final static int STATE_PLAYING = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) 
@@ -118,31 +109,12 @@ public class Note extends AppCompatActivity
 
 	} //onCreate end
 
-//	// callback of granted permission
-//	@Override
-//	public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults)
-//	{
-//		System.out.println("Note / _onRequestPermissionsResult / grantResults.length =" + grantResults.length);
-//		switch (requestCode)
-//		{
-//			case Util.PERMISSIONS_REQUEST_PHONE:
-//			{
-//				// If request is cancelled, the result arrays are empty.
-//				if ( (grantResults.length > 0) && ( (grantResults[0] == PackageManager.PERMISSION_GRANTED) ))
-//					UtilAudio.setPhoneListener(this);
-//			}
-//			break;
-//		}
-//	}
-
 	// Add to prevent resizing full screen picture,
 	// when popup menu shows up at picture mode
 	@Override
 	public void onWindowFocusChanged(boolean hasFocus) {
 		super.onWindowFocusChanged(hasFocus);
 		System.out.println("Note / _onWindowFocusChanged");
-		if (hasFocus && isPictureMode() )
-			Util.setFullScreen(act);
 	}
 
 	// key event: 1 from bluetooth device 2 when notification bar dose not shown
@@ -239,10 +211,6 @@ public class Note extends AppCompatActivity
 		viewPager.setAdapter(mPagerAdapter);
 		viewPager.setCurrentItem(NoteUi.getFocus_notePos());
 
-		// tab style
-//		if(TabsHost.mDbFolder != null)
-//			TabsHost.mDbFolder.close();
-
 		if(mDb_page != null) {
 			mNoteId = mDb_page.getNoteId(NoteUi.getFocus_notePos(), true);
 			mAudioUriInDB = mDb_page.getNoteAudioUri_byId(mNoteId);
@@ -296,17 +264,8 @@ public class Note extends AppCompatActivity
 		backButton.setOnClickListener(new View.OnClickListener()
 		{
 			public void onClick(View view) {
-				if(isTextMode())
-				{
-					// back to view all mode
-					setViewAllMode();
-					setOutline(act);
-				}
-				else //view all mode
-				{
-					stopAV();
-					finish();
-				}
+				stopAV();
+				finish();
 			}
 		});
 	}
@@ -324,8 +283,6 @@ public class Note extends AppCompatActivity
 			System.out.println("Note / _onPageSelected");
 //			System.out.println("    NoteUi.getFocus_notePos() = " + NoteUi.getFocus_notePos());
 //			System.out.println("    nextPosition = " + nextPosition);
-
-			mIsViewModeChanged = false;
 
 			// show audio name
 			mNoteId = mDb_page.getNoteId(nextPosition,true);
@@ -390,38 +347,23 @@ public class Note extends AppCompatActivity
 	public static void setOutline(AppCompatActivity act)
 	{
         // Set full screen or not, and action bar
-		if(isViewAllMode() || isTextMode())
-		{
-			Util.setFullScreen_noImmersive(act);
-            if(act.getSupportActionBar() != null)
-			    act.getSupportActionBar().show();
-		}
-		else if(isPictureMode())
-		{
-			Util.setFullScreen(act);
-            if(act.getSupportActionBar() != null)
-    			act.getSupportActionBar().hide();
-		}
+		Util.setFullScreen_noImmersive(act);
+        if(act.getSupportActionBar() != null)
+		    act.getSupportActionBar().show();
 
         // renew pager
         showSelectedView();
 
 		LinearLayout buttonGroup = (LinearLayout) act.findViewById(R.id.view_button_group);
         // button group
-        if(Note.isPictureMode() )
-            buttonGroup.setVisibility(View.GONE);
-        else
-            buttonGroup.setVisibility(View.VISIBLE);
+		buttonGroup.setVisibility(View.VISIBLE);
 
 		TextView audioTitle = (TextView) act.findViewById(R.id.pager_audio_title);
         // audio title
-        if(!Note.isPictureMode())
-        {
-            if(!Util.isEmptyString(audioTitle.getText().toString()) )
-                audioTitle.setVisibility(View.VISIBLE);
-            else
-                audioTitle.setVisibility(View.GONE);
-        }
+        if(!Util.isEmptyString(audioTitle.getText().toString()) )
+            audioTitle.setVisibility(View.VISIBLE);
+        else
+            audioTitle.setVisibility(View.GONE);
 
         // renew options menu
         act.invalidateOptionsMenu();
@@ -455,14 +397,9 @@ public class Note extends AppCompatActivity
 			NoteUi.popup = null;
 		}
 
-		NoteUi.cancel_UI_callbacks();
-
         setLayoutView();
 
-        if(canShowFullScreenPicture())
-            Note.setPictureMode();
-        else
-            Note.setViewAllMode();
+        Note.setViewAllMode();
 
         // Set outline of view mode
         setOutline(act);
@@ -483,10 +420,7 @@ public class Note extends AppCompatActivity
 
 		isPagerActive = true;
 
-        if(canShowFullScreenPicture())
-            Note.setPictureMode();
-        else
-            Note.setViewAllMode();
+		Note.setViewAllMode();
 
 		setOutline(act);
 
@@ -521,8 +455,6 @@ public class Note extends AppCompatActivity
 		System.out.println("Note / _onPause");
 
 		isPagerActive = false;
-
-		NoteUi.cancel_UI_callbacks();
 	}
 	
 	@Override
@@ -553,11 +485,8 @@ public class Note extends AppCompatActivity
 	@Override
 	public void finish() {
 		System.out.println("Note / _finish");
-		if(mPagerHandler != null)
-			mPagerHandler.removeCallbacks(mOnBackPressedRun);		
-	    
+
 		ViewGroup view = (ViewGroup) getWindow().getDecorView();
-//	    view.setBackgroundColor(getResources().getColor(color.background_dark)); // avoid white flash
 	    view.setBackgroundColor(getResources().getColor(R.color.bar_color)); // avoid white flash
 	    view.removeAllViews();
 
@@ -576,7 +505,6 @@ public class Note extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) 
     {
         super.onCreateOptionsMenu(menu);
-//		System.out.println("Note / _onCreateOptionsMenu");
 
 		// inflate menu
 		getMenuInflater().inflate(R.menu.pager_menu, menu);
@@ -589,11 +517,6 @@ public class Note extends AppCompatActivity
 			menu.findItem(R.id.VIEW_NOTE_CHECK).setIcon(R.drawable.btn_check_off_holo_dark);
 		else
 			menu.findItem(R.id.VIEW_NOTE_CHECK).setIcon(R.drawable.btn_check_on_holo_dark);
-
-		// menu item: view mode
-   		markCurrentSelected(menu.findItem(R.id.VIEW_ALL),"ALL");
-		markCurrentSelected(menu.findItem(R.id.VIEW_PICTURE),"PICTURE_ONLY");
-		markCurrentSelected(menu.findItem(R.id.VIEW_TEXT),"TEXT_ONLY");
 
 	    // menu item: previous
 		MenuItem itemPrev = menu.findItem(R.id.ACTION_PREVIOUS);
@@ -627,21 +550,9 @@ public class Note extends AppCompatActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-            	if(isTextMode())
-            	{
-        			// back to view all mode
-            		setViewAllMode();
-					setOutline(act);
-            	}
-            	else if(isViewAllMode())
-            	{
-					stopAV();
-	            	finish();
-            	}
+				stopAV();
+                finish();
                 return true;
-
-            case R.id.VIEW_NOTE_MODE:
-            	return true;
 
 			case R.id.VIEW_NOTE_CHECK:
 				int markingNow = PageAdapter_recycler.toggleNoteMarking(this,NoteUi.getFocus_notePos());
@@ -654,21 +565,6 @@ public class Note extends AppCompatActivity
 
 				return true;
 
-            case R.id.VIEW_ALL:
-        		setViewAllMode();
-				setOutline(act);
-            	return true;
-            	
-            case R.id.VIEW_PICTURE:
-        		setPictureMode();
-				setOutline(act);
-            	return true;
-
-            case R.id.VIEW_TEXT:
-        		setTextMode();
-				setOutline(act);
-            	return true;
-            	
             case R.id.ACTION_PREVIOUS:
                 // Go to the previous step in the wizard. If there is no previous step,
                 // setCurrentItem will do nothing.
@@ -691,91 +587,18 @@ public class Note extends AppCompatActivity
     @Override
     public void onBackPressed() {
 		System.out.println("Note / _onBackPressed");
-        if(isPictureMode())
-    	{
-            // dispatch touch event to show buttons
-            long downTime = SystemClock.uptimeMillis();
-            long eventTime = SystemClock.uptimeMillis() + 100;
-            float x = 0.0f;
-            float y = 0.0f;
-            // List of meta states found here: developer.android.com/reference/android/view/KeyEvent.html#getMetaState()
-            int metaState = 0;
-            MotionEvent event = MotionEvent.obtain(downTime, eventTime, MotionEvent.ACTION_UP,
-                                                    x, y,metaState);
-            dispatchTouchEvent(event);
-            event.recycle();
-
-            // in order to make sure ImageViewBackButton is effective to be clicked
-            mPagerHandler = new Handler();
-            mPagerHandler.postDelayed(mOnBackPressedRun, 500);
-        }
-    	else if(isTextMode())
-    	{
-			// back to view all mode
-    		setViewAllMode();
-			setOutline(act);
-    	}
-    	else
-    	{
-    		System.out.println("Note / _onBackPressed / view all mode");
-			stopAV();
-        	finish();
-    	}
+		stopAV();
+        finish();
     }
     
-    static Handler mPagerHandler;
-	Runnable mOnBackPressedRun = new Runnable()
-	{   @Override
-		public void run()
-		{
-            String tagStr = "current"+ NoteUi.getFocus_notePos() +"pictureView";
-            ViewGroup pictureGroup = (ViewGroup) viewPager.findViewWithTag(tagStr);
-            System.out.println("Note / _showPictureViewUI / tagStr = " + tagStr);
-
-            Button picView_back_button;
-            if(pictureGroup != null)
-            {
-                picView_back_button = (Button) (pictureGroup.findViewById(R.id.image_view_back));
-                picView_back_button.performClick();
-            }
-
-			if(Note_adapter.mIntentView != null)
-				Note_adapter.mIntentView = null;
-		}
-	};
-    
-    // get current picture string
-    public String getCurrentPictureString()
-    {
-		return mDb_page.getNotePictureUri(NoteUi.getFocus_notePos(),true);
-    }
-
-    // Mark current selected
-    void markCurrentSelected(MenuItem subItem, String str)
-    {
-        if(mPref_show_note_attribute.getString("KEY_PAGER_VIEW_MODE", "ALL")
-                .equalsIgnoreCase(str))
-            subItem.setIcon(R.drawable.btn_radio_on_holo_dark);
-        else
-            subItem.setIcon(R.drawable.btn_radio_off_holo_dark);
-    }
-
     // Show selected view
     static void showSelectedView()
     {
-   		mIsViewModeChanged = false;
-
-		if(!Note.isTextMode())
-   		{
-   			Note_adapter.mLastPosition = -1;
-   		}
+   		Note_adapter.mLastPosition = -1;
 
     	if(mPagerAdapter != null)
     		mPagerAdapter.notifyDataSetChanged(); // will call Note_adapter / _setPrimaryItem
     }
-    
-    public static int mPositionOfChangeView;
-    public static boolean mIsViewModeChanged;
     
     static void setViewAllMode()
     {
@@ -784,114 +607,11 @@ public class Note extends AppCompatActivity
 		   						  .apply();
     }
     
-    static void setPictureMode()
-    {
-		 mPref_show_note_attribute.edit()
-		   						  .putString("KEY_PAGER_VIEW_MODE","PICTURE_ONLY")
-		   						  .apply();
-    }
-    
-    static void setTextMode()
-    {
-		 mPref_show_note_attribute.edit()
-		   						  .putString("KEY_PAGER_VIEW_MODE","TEXT_ONLY")
-		   						  .apply();
-    }
-    
-    
-    public static boolean isPictureMode()
-    {
-	  	return mPref_show_note_attribute.getString("KEY_PAGER_VIEW_MODE", "ALL")
-										.equalsIgnoreCase("PICTURE_ONLY");
-    }
-    
-    public static boolean isViewAllMode()
-    {
-	  	return mPref_show_note_attribute.getString("KEY_PAGER_VIEW_MODE", "ALL")
-										.equalsIgnoreCase("ALL");
-    }
-
-    public static boolean isTextMode()
-    {
-	  	return mPref_show_note_attribute.getString("KEY_PAGER_VIEW_MODE", "ALL")
-										.equalsIgnoreCase("TEXT_ONLY");
-    }
-
-	static NoteUi picUI_touch;
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent event) {
-        int maskedAction = event.getActionMasked();
-        switch (maskedAction) {
-            case MotionEvent.ACTION_UP:
-            case MotionEvent.ACTION_POINTER_UP:
-    			 System.out.println("Note / _dispatchTouchEvent / MotionEvent.ACTION_UP / viewPager.getCurrentItem() =" + viewPager.getCurrentItem());
-				 //1st touch to turn on UI
-				 if(picUI_touch == null) {
-				 	picUI_touch = new NoteUi(act, viewPager, viewPager.getCurrentItem());
-				 	picUI_touch.tempShow_picViewUI(5000,getCurrentPictureString());
-				 }
-				 //2nd touch to turn off UI
-				 else
-					 setTransientPicViewUI();
-
-				 //1st touch to turn off UI (primary)
-				 if(Note_adapter.picUI_primary != null)
-					 setTransientPicViewUI();
-    	  	  	 break;
-
-	        case MotionEvent.ACTION_MOVE:
-            case MotionEvent.ACTION_DOWN:
-            case MotionEvent.ACTION_POINTER_DOWN:
-	        case MotionEvent.ACTION_CANCEL: 
-	        	 break;
-        }
-
-        return super.dispatchTouchEvent(event);
-    }
-
-	/**
-	 * Set delay for transient picture view UI
-	 *
-	 */
-    void setTransientPicViewUI()
-    {
-        NoteUi.cancel_UI_callbacks();
-        picUI_touch = new NoteUi(act, viewPager, viewPager.getCurrentItem());
-
-        // for image
-        picUI_touch.tempShow_picViewUI(111,getCurrentPictureString());
-    }
-
 	public static void stopAV()
 	{
 		if(Audio_manager.getAudioPlayMode() == Audio_manager.NOTE_PLAY_MODE)
             Audio_manager.stopAudioPlayer();
 	}
-
-	public static void changeToNext(ViewPager mPager)
-	{
-		mPager.setCurrentItem(mPager.getCurrentItem() + 1);
-	}
-
-	public static void changeToPrevious(ViewPager mPager)
-	{
-		mPager.setCurrentItem(mPager.getCurrentItem() + 1);
-	}
-
-    // Show full screen picture when device orientation and image orientation are the same
-    boolean canShowFullScreenPicture()
-    {
-        String pictureStr = mDb_page.getNotePictureUri(NoteUi.getFocus_notePos(),true);
-		System.out.println(" Note / _canShowFullPicture / pictureStr = " +pictureStr);
-//		System.out.println(" Note / _canShowFullPicture / Util.isLandscapeOrientation(act) = " +Util.isLandscapeOrientation(act));
-//		System.out.println(" Note / _canShowFullPicture / UtilImage.isLandscapePicture(pictureStr) = " +UtilImage.isLandscapePicture(pictureStr));
-        if( !Util.isEmptyString(pictureStr) &&
-            ( (Util.isLandscapeOrientation(act) && UtilImage.isLandscapePicture(pictureStr) ) ||
-            (Util.isPortraitOrientation(act) && !UtilImage.isLandscapePicture(pictureStr))  ) )
-            return true;
-        else
-            return false;
-    }
 
 	//The BroadcastReceiver that listens for bluetooth broadcasts
 	private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
