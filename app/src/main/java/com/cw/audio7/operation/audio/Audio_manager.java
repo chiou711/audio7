@@ -30,7 +30,6 @@ import androidx.core.app.NotificationManagerCompat;
 public class Audio_manager
 {
 	private static List<String> audioList;
-	private static List<Integer> audioList_checked;
 
     private static int mAudioPlayMode;
     public final static int NOTE_PLAY_MODE = 0;
@@ -49,7 +48,6 @@ public class Audio_manager
    Audio_manager()
    {
       audioList = new ArrayList<>();
-      audioList_checked = new ArrayList<>();
    }
 
     /**
@@ -112,7 +110,7 @@ public class Audio_manager
 	   {
 		  for(int i=0;i< audioList.size();i++)
 		  {
-			  if( !Util.isEmptyString(audioList.get(i)) && (getCheckedAudio(i) == 1) )
+			  if( !Util.isEmptyString(audioList.get(i)))
 				  size++;
 		  }
 	   }
@@ -123,22 +121,6 @@ public class Audio_manager
    private static void addAudio(String path)
    {
       audioList.add(path);
-   }
-   
-   // Add audio with marking to list
-   private static void addCheckedAudio(int i)
-   {
-	   audioList_checked.add(i);
-   }   
-   
-   private static void setCheckedAudio(int index, int marking)
-   {
-	   audioList_checked.set(index,marking);
-   }
-
-   public static int getCheckedAudio(int index)
-   {
-	   return  audioList_checked.get(index);
    }
    
    // return String at position index
@@ -163,14 +145,6 @@ public class Audio_manager
 
 	 		// initialize
 	 		addAudio(audioUri);
-	 		addCheckedAudio(i);
-
-	 		// set playable
-	 		if( !Util.isEmptyString(audioUri)  &&
-                (db_page.getNoteMarking(i,false) == 1) )
-		 		setCheckedAudio(i,1);
-	 		else
-	 			setCheckedAudio(i,0);
 	 	}
 	 	db_page.close();
 	}

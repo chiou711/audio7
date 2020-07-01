@@ -22,6 +22,7 @@
     <string name="add_new_folder">新增文件夾</string>
     <string name="gallery">圖庫</string>
     <string name="gallery_toast_no_file">還沒有文件，請您先建立一個</string>
+    <string name="select_note">勾選筆記</string>
     <string name="drag_note">拖放記事</string>
     <string name="preview_note_body">預覽本文</string>
     <string name="drag_folder">拖放文件夾</string>

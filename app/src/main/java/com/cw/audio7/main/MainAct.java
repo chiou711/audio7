@@ -67,7 +67,6 @@ import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Build;
-import android.os.Handler;
 import android.os.RemoteException;
 import android.os.StrictMode;
 import android.content.Context;
@@ -83,7 +82,6 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -95,7 +93,6 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import static android.os.Build.VERSION_CODES.M;
-import static android.os.Build.VERSION_CODES.O;
 
 public class MainAct extends AppCompatActivity implements FragmentManager.OnBackStackChangedListener
 {
@@ -1092,7 +1089,11 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                 mMenu.findItem(R.id.PLAY).setVisible( (pgsCnt >0) && (notesCnt>0) );
 
                 // HANDLE CHECKED NOTES
-                mMenu.findItem(R.id.HANDLE_CHECKED_NOTES).setVisible( (pgsCnt >0) && (notesCnt>0) );
+                mPref_show_note_attribute = mContext.getSharedPreferences("show_note_attribute", 0);
+                if(mPref_show_note_attribute.getString("KEY_ENABLE_SELECT", "yes").equalsIgnoreCase("yes"))
+                    mMenu.findItem(R.id.HANDLE_CHECKED_NOTES).setVisible( (pgsCnt >0) && (notesCnt>0) );
+                else
+                    mMenu.findItem(R.id.HANDLE_CHECKED_NOTES).setVisible( false );
             }
             else if(foldersCnt==0)
             {
@@ -1132,6 +1133,16 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
             menu.findItem(R.id.ENABLE_NOTE_DRAG_AND_DROP)
                     .setIcon(R.drawable.btn_check_off_holo_light)
                     .setTitle(R.string.drag_note) ;
+
+        // enable select note
+        if(mPref_show_note_attribute.getString("KEY_ENABLE_SELECT", "yes").equalsIgnoreCase("yes"))
+            menu.findItem(R.id.ENABLE_NOTE_SELECT)
+                    .setIcon(R.drawable.btn_check_on_holo_light)
+                    .setTitle(R.string.select_note) ;
+        else
+            menu.findItem(R.id.ENABLE_NOTE_SELECT)
+                    .setIcon(R.drawable.btn_check_off_holo_light)
+                    .setTitle(R.string.select_note) ;
 
         return super.onCreateOptionsMenu(menu);
     }
@@ -1378,21 +1389,21 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                 TabsHost.reloadCurrentPage();
                 return true;
 
-            case MenuId.SHOW_BODY:
+            case MenuId.ENABLE_NOTE_SELECT:
                 mPref_show_note_attribute = mContext.getSharedPreferences("show_note_attribute", 0);
-                if(mPref_show_note_attribute.getString("KEY_SHOW_BODY", "yes").equalsIgnoreCase("yes")) {
-                    mPref_show_note_attribute.edit().putString("KEY_SHOW_BODY", "no").apply();
-                    Toast.makeText(this,getResources().getString(R.string.preview_note_body) +
-                                        ": " +
-                                        getResources().getString(R.string.set_disable),
-                                    Toast.LENGTH_SHORT).show();
+                if(mPref_show_note_attribute.getString("KEY_ENABLE_SELECT", "yes").equalsIgnoreCase("yes")) {
+                    mPref_show_note_attribute.edit().putString("KEY_ENABLE_SELECT", "no").apply();
+                    Toast.makeText(this,getResources().getString(R.string.select_note)+
+                                    ": " +
+                                    getResources().getString(R.string.set_disable),
+                            Toast.LENGTH_SHORT).show();
                 }
                 else {
-                    mPref_show_note_attribute.edit().putString("KEY_SHOW_BODY", "yes").apply();
-                    Toast.makeText(this,getResources().getString(R.string.preview_note_body) +
-                                        ": " +
-                                        getResources().getString(R.string.set_enable),
-                                   Toast.LENGTH_SHORT).show();
+                    mPref_show_note_attribute.edit().putString("KEY_ENABLE_SELECT", "yes").apply();
+                    Toast.makeText(this,getResources().getString(R.string.select_note) +
+                                    ": " +
+                                    getResources().getString(R.string.set_enable),
+                            Toast.LENGTH_SHORT).show();
                 }
                 invalidateOptionsMenu();
                 TabsHost.reloadCurrentPage();

@@ -190,16 +190,10 @@ public class AudioUi_page {
             @Override
             public void onClick(View v)
             {
-
-                do {
-                    if(Audio_manager.mAudioPos > 0)
-                        Audio_manager.mAudioPos--;
-                    else if( Audio_manager.mAudioPos == 0)
-                    {
-                        Audio_manager.mAudioPos = Audio_manager.getPlayingPage_notesCount()-1;
-                    }
-                }
-                while (Audio_manager.getCheckedAudio(Audio_manager.mAudioPos) == 0);
+                if(Audio_manager.mAudioPos > 0)
+                    Audio_manager.mAudioPos--;
+                else if( Audio_manager.mAudioPos == 0)
+                    Audio_manager.mAudioPos = Audio_manager.getPlayingPage_notesCount()-1;
 
                 nextAudio_panel();
             }
@@ -211,14 +205,9 @@ public class AudioUi_page {
             @Override
             public void onClick(View v)
             {
-
-                do
-                {
-                    Audio_manager.mAudioPos++;
-                    if( Audio_manager.mAudioPos >= Audio_manager.getPlayingPage_notesCount())
-                        Audio_manager.mAudioPos = 0; //back to first index
-                }
-                while (Audio_manager.getCheckedAudio(Audio_manager.mAudioPos) == 0);
+                Audio_manager.mAudioPos++;
+                if( Audio_manager.mAudioPos >= Audio_manager.getPlayingPage_notesCount())
+                    Audio_manager.mAudioPos = 0; //back to first index
 
                 nextAudio_panel();
             }

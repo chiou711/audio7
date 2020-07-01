@@ -61,8 +61,14 @@
             >
             <menu>
                 <item
-                    android:id="@+id/ENABLE_NOTE_DRAG_AND_DROP"
+                    android:id="@+id/ENABLE_NOTE_SELECT"
                     android:orderInCategory="1"
+                    app:showAsAction="never"
+                    android:title="@string/select_note"
+                    android:icon="@drawable/btn_check_off_holo_light"/>
+                <item
+                    android:id="@+id/ENABLE_NOTE_DRAG_AND_DROP"
+                    android:orderInCategory="2"
                     app:showAsAction="never"
                     android:title="@string/drag_note"
                     android:icon="@drawable/btn_check_off_holo_light"/>
