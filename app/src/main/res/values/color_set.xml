@@ -2,7 +2,7 @@
 <resources>
     <!-- set 1 -->
     <color name="bar_color">#ff185060</color>
-    <color name="button_color">#ff3070A0</color>
+    <color name="button_color">#ff204020</color>
     <color name="highlight_color">#ffff8000</color>
 
     <!-- set 2 -->
@@ -42,5 +42,7 @@
     <color name="videoGrid">#0047b3</color>
     <color name="linkGrid">#107d1d</color>
     <color name="otherGrid">#202020</color>
+
+    <color name="audioBg">#661400</color>
 
 </resources>
