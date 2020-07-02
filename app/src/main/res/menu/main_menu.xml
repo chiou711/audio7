@@ -40,7 +40,7 @@
     <item
         android:id="@+id/HANDLE_CHECKED_NOTES"
         android:orderInCategory="2"
-        app:showAsAction="never"
+        app:showAsAction="always"
         android:title="@string/checked_notes"
         android:icon="@drawable/ic_menu_mark">
     </item>

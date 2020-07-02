@@ -229,6 +229,7 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
 
         // show audio highlight if audio is not at Stop
         if( PageUi.isAudioPlayingPage() &&
+            (marking !=0) &&
             (position == Audio_manager.mAudioPos)  &&
             (Audio_manager.getPlayerState() != Audio_manager.PLAYER_AT_STOP) &&
             (Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE) 	)
@@ -261,7 +262,12 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
 //			holder.audioName.setTypeface(Typeface.DEFAULT, Typeface.NORMAL);
 
             // set icon
-            holder.iconAudio.setVisibility(View.VISIBLE);
+//            holder.iconAudio.setVisibility(View.VISIBLE);
+            if(marking == 1)
+                holder.iconAudio.setVisibility(View.VISIBLE);
+            else
+                holder.iconAudio.setVisibility(View.INVISIBLE);
+
             if(style % 2 == 0)
                 holder.iconAudio.setImageResource(R.drawable.ic_audio_off_white);
             else
@@ -326,6 +332,11 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
                 System.out.println("PageAdapter / _getView / btnMarking / _onClick");
                 // toggle marking
                 toggleNoteMarking(mAct,position);
+
+                // Stop if unmarked item is at playing state
+                if(Audio_manager.mAudioPos == position) {
+                    UtilAudio.stopAudioIfNeeded();
+                }
 
                 //Toggle marking will resume page, so do Store v scroll
                 RecyclerView listView = TabsHost.mTabsPagerAdapter.fragmentList.get(TabsHost.getFocus_tabPos()).recyclerView;
@@ -394,10 +405,11 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
                 if(position >= notesCount) //end of list
                     return ;
 
+                int marking = db_page.getNoteMarking(position,true);
                 String uriString = db_page.getNoteAudioUri(position,true);
 
                 boolean isAudioUri = false;
-                if( !Util.isEmptyString(uriString) )
+                if( !Util.isEmptyString(uriString) && (marking == 1))
                     isAudioUri = true;
 
                 if(position < notesCount) // avoid footer error
