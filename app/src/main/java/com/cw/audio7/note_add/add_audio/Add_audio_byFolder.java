@@ -398,7 +398,7 @@ public class Add_audio_byFolder extends ListFragment
 
                     if(!Util.isEmptyString(uriStr))
                     {
-                        String audioName = Util.getDisplayNameByUriString(uriStr, getActivity());
+                        String[] audioName = Util.getDisplayNameByUriString(uriStr, getActivity());
                     }
 
                 } else if (file.isDirectory()) {

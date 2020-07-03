@@ -64,7 +64,6 @@ public class Note_adapter extends FragmentStatePagerAdapter
 	static int mLastPosition;
 	private static LayoutInflater inflater;
 	private AppCompatActivity act;
-	private static String mWebTitle;
 	private ViewPager pager;
 	DB_page db_page;
 
@@ -180,24 +179,17 @@ public class Note_adapter extends FragmentStatePagerAdapter
     		             TouchImageView imageView,
     		             ProgressBar spinner          )
     {
-		String linkUri = db_page.getNoteLinkUri(position,true);
-		String pictureUri = db_page.getNotePictureUri(position,true);
 		String audioUri = db_page.getNoteAudioUri(position,true);
-		String drawingUri = db_page.getNoteDrawingUri(position,true);
 
         // show image view
-  		if( UtilImage.hasImageExtension(pictureUri, act)||
-  		    (Util.isEmptyString(pictureUri)&& 
-  		     Util.isEmptyString(audioUri)&& 
-  		     Util.isEmptyString(linkUri)      )             ) // for wrong path icon
+  		if( Util.isEmptyString(audioUri) ) // for wrong path icon
   		{
 			System.out.println("Note_adapter / _showPictureView / show image view");
   			imageView.setVisibility(View.VISIBLE);
-  			showImageByTouchImageView(spinner, imageView, pictureUri,position);
+  			showImageByTouchImageView(spinner, imageView, "",position);
   		}
   		// show audio thumb nail view
-  		else if(Util.isEmptyString(pictureUri)&& 
-  				!Util.isEmptyString(audioUri)    )
+  		else if(!Util.isEmptyString(audioUri)    )
   		{
 			System.out.println("Note_adapter / _showPictureView / show audio thumb nail view");
   			imageView.setVisibility(View.VISIBLE);
@@ -221,9 +213,7 @@ public class Note_adapter extends FragmentStatePagerAdapter
 			}
   		}
   		// show link thumb view
-  		else if(Util.isEmptyString(pictureUri)&&
-  				Util.isEmptyString(audioUri)  &&
-  				!Util.isEmptyString(linkUri))
+  		else if(Util.isEmptyString(audioUri))
   		{
 			System.out.println("Note_adapter / _showPictureView / show link thumb view");
   			imageView.setVisibility(View.GONE);
@@ -269,19 +259,6 @@ public class Note_adapter extends FragmentStatePagerAdapter
 			System.out.println("Note_adapter / _setPrimaryItem / mLastPosition = " + mLastPosition);
             System.out.println("Note_adapter / _setPrimaryItem / position = " + position);
 
-			String lastPictureStr = null;
-			String lastLinkUri = null;
-			String lastAudioUri = null;
-
-			if(mLastPosition != -1)
-			{
-				lastPictureStr = db_page.getNotePictureUri(mLastPosition,true);
-				lastLinkUri = db_page.getNoteLinkUri(mLastPosition, true);
-				lastAudioUri = db_page.getNoteAudioUri(mLastPosition, true);
-			}
-
-			String pictureStr = db_page.getNotePictureUri(position,true);
-			String linkUri = db_page.getNoteLinkUri(position,true);
 			String audioUri = db_page.getNoteAudioUri(position,true);
 
 			// remove last text web view
@@ -297,7 +274,7 @@ public class Note_adapter extends FragmentStatePagerAdapter
 
 			// init audio block of pager
 			if(UtilAudio.hasAudioExtension(audioUri) ||
-               UtilAudio.hasAudioExtension(Util.getDisplayNameByUriString(audioUri, act)) )
+               UtilAudio.hasAudioExtension(Util.getDisplayNameByUriString(audioUri, act)[0] ))
 			{
 				AudioUi_note.initAudioProgress(act,audioUri,pager);
 
@@ -315,117 +292,6 @@ public class Note_adapter extends FragmentStatePagerAdapter
 	    mLastPosition = position;
 	    
 	} //setPrimaryItem		
-
-	// Set web view
-    private static boolean bWebViewIsShown;
-	private void setWebView(final CustomWebView webView,Object object, int whichView)
-	{
-        final SharedPreferences pref_web_view = act.getSharedPreferences("web_view", 0);
-		final ProgressBar spinner = (ProgressBar) ((View)object).findViewById(R.id.loading);
-        if( whichView == CustomWebView.TEXT_VIEW )
-        {
-            int scale = pref_web_view.getInt("KEY_WEB_VIEW_SCALE",0);
-            webView.setInitialScale(scale);
-        }
-        else if( whichView == CustomWebView.LINK_VIEW )
-        {
-            bWebViewIsShown = false;
-            webView.setInitialScale(30);
-        }
-
-        int style = Note.getStyle();
-		webView.setBackgroundColor(ColorSet.mBG_ColorArray[style]);
-
-    	webView.getSettings().setBuiltInZoomControls(true);
-    	webView.getSettings().setSupportZoom(true);
-    	webView.getSettings().setUseWideViewPort(true);
-//    	customWebView.getSettings().setLoadWithOverviewMode(true);
-    	webView.getSettings().setJavaScriptEnabled(true);//warning: Using setJavaScriptEnabled can introduce XSS vulnerabilities
-
-//		// speed up
-//		if (Build.VERSION.SDK_INT >= 19) {
-//			// chromium, enable hardware acceleration
-//			webView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
-//		} else {
-//			// older android version, disable hardware acceleration
-//			webView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-//		}
-
-        if( whichView == CustomWebView.TEXT_VIEW )
-   		{
-	    	webView.setWebViewClient(new WebViewClient()
-	        {
-	            @Override
-	            public void onScaleChanged(WebView web_view, float oldScale, float newScale)
-	            {
-	                super.onScaleChanged(web_view, oldScale, newScale);
-	//                System.out.println("Note_adapter / onScaleChanged");
-	//                System.out.println("    oldScale = " + oldScale);
-	//                System.out.println("    newScale = " + newScale);
-
-	                int newDefaultScale = (int) (newScale*100);
-	                pref_web_view.edit().putInt("KEY_WEB_VIEW_SCALE",newDefaultScale).apply();
-
-	                //update current position
-	                NoteUi.setFocus_notePos(pager.getCurrentItem());
-	            }
-
-	            @Override
-	            public void onPageFinished(WebView view, String url) {}
-	        });
-
-   		}
-	    
-    	if(whichView == CustomWebView.LINK_VIEW)
-    	{
-	        webView.setWebChromeClient(new WebChromeClient()
-	        {
-	            public void onProgressChanged(WebView view, int progress)
-	            {
-                    System.out.println("---------------- spinner progress = " + progress);
-
-                    if(spinner != null )
-	            	{
-						if(bWebViewIsShown)
-						{
-							if (progress < 100 && (spinner.getVisibility() == ProgressBar.GONE)) {
-								webView.setVisibility(View.GONE);
-								spinner.setVisibility(ProgressBar.VISIBLE);
-							}
-
-							spinner.setProgress(progress);
-
-							if (progress > 30)
-								bWebViewIsShown = true;
-						}
-
-						if(bWebViewIsShown || (progress == 100))
-						{
-							spinner.setVisibility(ProgressBar.GONE);
-							webView.setVisibility(View.VISIBLE);
-						}
-	            	}
-	            }
-
-	            @Override
-			    public void onReceivedTitle(WebView view, String title) {
-			        super.onReceivedTitle(view, title);
-			        if (!TextUtils.isEmpty(title) &&
-			        	!title.equalsIgnoreCase("about:blank"))
-			        {
-			        	System.out.println("Note_adapter / _onReceivedTitle / title = " + title);
-
-						int position = NoteUi.getFocus_notePos();
-				    	String tag = "current"+position+"textWebView";
-				    	CustomWebView textWebView = (CustomWebView) pager.findViewWithTag(tag);
-
-				    	String strLink = db_page.getNoteLinkUri(position,true);
-
-			        }
-			    }
-			});
-    	}
-	}
 
     final private static int VIEW_PORT_BY_NONE = 0;
     final private static int VIEW_PORT_BY_DEVICE_WIDTH = 1;
@@ -467,8 +333,8 @@ public class Note_adapter extends FragmentStatePagerAdapter
    	  			   "<head>";
     	}
     		
-       	String separatedLineTitle = (!Util.isEmptyString(strTitle))?"<hr size=2 color=blue width=99% >":"";
-       	String separatedLineBody = (!Util.isEmptyString(strBody))?"<hr size=1 color=black width=99% >":"";
+//       	String separatedLineTitle = (!Util.isEmptyString(strTitle))?"<hr size=2 color=blue width=99% >":"";
+//       	String separatedLineBody = (!Util.isEmptyString(strBody))?"<hr size=1 color=black width=99% >":"";
 
        	// title
        	if(!Util.isEmptyString(strTitle))
@@ -509,16 +375,16 @@ public class Note_adapter extends FragmentStatePagerAdapter
     	bgColorStr = bgColorStr.substring(2);
     	
     	return   head + "<body color=\"" + bgColorStr + "\">" +
-				 "<br>" + //Note: text mode needs this, otherwise title is overlaid
+//				 "<br>" + //Note: text mode needs this, otherwise title is overlaid
 		         "<p align=\"center\"><b>" +
 		         "<font color=\"" + colorStr + "\">" + strTitle + "</font>" +
-         		 "</b></p>" + separatedLineTitle +
+         		 "</b></p>" +// separatedLineTitle +
 		         "<p>" + 
 				 "<font color=\"" + colorStr + "\">" + strBody + "</font>" +
-				 "</p>" + separatedLineBody +
-		         "<p align=\"right\">" + 
-				 "<font color=\"" + colorStr + "\">"  + Util.getTimeString(createTime) + "</font>" +
-		         "</p>" + 
+				 "</p>" + //separatedLineBody +
+//		         "<p align=\"right\">" +
+//				 "<font color=\"" + colorStr + "\">"  + Util.getTimeString(createTime) + "</font>" +
+//		         "</p>" +
 		         "</body></html>";
     }
 

@@ -217,7 +217,7 @@ public class Note extends AppCompatActivity
 		}
 
         if(UtilAudio.hasAudioExtension(mAudioUriInDB) ||
-		   UtilAudio.hasAudioExtension(Util.getDisplayNameByUriString(mAudioUriInDB, act))) {
+		   UtilAudio.hasAudioExtension(Util.getDisplayNameByUriString(mAudioUriInDB, act)[0])) {
             audioUi_note = new AudioUi_note(this, mAudioUriInDB);
             audioUi_note.init_audio_block();
         }

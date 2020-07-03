@@ -187,8 +187,8 @@ public class Note_addAudio extends AppCompatActivity {
 
 		        	if(!Util.isEmptyString(uriStr))
 		        	{
-		                String audioName = Util.getDisplayNameByUriString(uriStr, Note_addAudio.this);
-		        		Util.showSavedFileToast(audioName,this);
+		                String[] audioName = Util.getDisplayNameByUriString(uriStr, Note_addAudio.this);
+		        		Util.showSavedFileToast(audioName[0].concat(" / ").concat(audioName[1]),this);
 		        	}
 				}
 				// add multiple audio files in the selected file's directory
@@ -257,7 +257,7 @@ public class Note_addAudio extends AppCompatActivity {
                             // avoid showing empty toast
                             if(!Util.isEmptyString(urlStr))
                             {
-                                String audioName = Util.getDisplayNameByUriString(urlStr, Note_addAudio.this);
+                                String audioName = Util.getDisplayNameByUriString(urlStr, Note_addAudio.this)[0];
                                 audioName = i + "/" + total + ": " + audioName;
 //                                Util.showSavedFileToast(audioName, Note_addAudio.this);
                                 progress.append("\r\n"+audioName);

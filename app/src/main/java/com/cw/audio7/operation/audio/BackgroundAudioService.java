@@ -390,13 +390,13 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
 //        metadataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher));
 
         String audioStr = Audio_manager.getAudioStringAt(Audio_manager.mAudioPos);
-        String displayName = Util.getDisplayNameByUriString(audioStr, MainAct.mAct);
-        String[] displayItems={"",""};
+//        String displayName = Util.getDisplayNameByUriString(audioStr, MainAct.mAct)[0];
+        String[] displayItems=Util.getDisplayNameByUriString(audioStr, MainAct.mAct);
 
-        if(displayName.contains(" / "))
-            displayItems = displayName.split(" / ");
-        else
-            displayItems[0] = displayName;
+//        if(displayName.contains(" / "))
+//            displayItems = displayName.split(" / ");
+//        else
+//            displayItems[0] = displayName;
 
         // prepare bit map
         MediaMetadataRetriever mmr = new MediaMetadataRetriever();

@@ -31,8 +31,6 @@ public class CustomWebView extends WebView {
     static final int NONE = 0;
     static final int DRAG = 1;
     static final int ZOOM = 2;
-    public static final int LINK_VIEW = 1;
-    public static final int TEXT_VIEW = 2;
     int mode = NONE;
 
     PointF start = new PointF();

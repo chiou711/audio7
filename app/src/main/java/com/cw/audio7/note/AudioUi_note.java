@@ -173,8 +173,8 @@ public class AudioUi_note
         TextView audio_title_text_view = (TextView) act.findViewById(R.id.pager_audio_title);
         // title: set marquee
         if(Util.isUriExisted(mAudioUriInDB, act)) {
-            String audio_name = Util.getDisplayNameByUriString(mAudioUriInDB, act);
-            audio_title_text_view.setText(audio_name);
+            String[] audio_name = Util.getDisplayNameByUriString(mAudioUriInDB, act);
+            audio_title_text_view.setText(audio_name[0] + " / " + audio_name[1]);
         }
         else
             audio_title_text_view.setText(R.string.file_not_found);
@@ -292,8 +292,9 @@ public class AudioUi_note
 
         NotificationManagerCompat.from(MainAct.mAct).cancel(BackgroundAudioService.id);
 
+        String[] audioName = Util.getDisplayNameByUriString(audioStr, act);
         if(UtilAudio.hasAudioExtension(audioStr) ||
-           UtilAudio.hasAudioExtension(Util.getDisplayNameByUriString(audioStr, act)))
+           UtilAudio.hasAudioExtension(audioName[0]))
         {
             AudioPlayer_note.mAudioPos = NoteUi.getFocus_notePos();
             MainAct.mPlaying_pageTableId = TabsHost.getCurrentPageTableId();

@@ -455,7 +455,7 @@ public class Note_edit extends Activity
 	// show audio file name
 	void showSavedFileToast(String audioUri)
 	{
-        String audioName = Util.getDisplayNameByUriString(audioUri, Note_edit.this);
+        String audioName = Util.getDisplayNameByUriString(audioUri, Note_edit.this)[0];
 		Toast.makeText(Note_edit.this,
 						audioName,
 						Toast.LENGTH_SHORT)

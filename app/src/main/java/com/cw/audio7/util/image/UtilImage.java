@@ -706,7 +706,7 @@ public class UtilImage
     	
     	if(!has)
     	{
-    		String fn = Util.getDisplayNameByUriString(string, act);
+    		String fn = Util.getDisplayNameByUriString(string, act)[0];
 
     		if(!Util.isEmptyString(fn)) {
 				fn = fn.toLowerCase(Locale.getDefault());

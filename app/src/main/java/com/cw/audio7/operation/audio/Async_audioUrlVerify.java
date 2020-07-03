@@ -140,16 +140,14 @@ class Async_audioUrlVerify extends AsyncTask<String,Integer,String>
  		else if(scheme.equalsIgnoreCase("content") ||
  		    scheme.equalsIgnoreCase("file")    )
  		{
- 		    String strName = null;
  			isUriExisted = Util.isUriExisted(audioStr, act);
-	 		 
+
+		    String[] strName = null;
  			if(isUriExisted)
-	 		    strName = Util.getDisplayNameByUriString(audioStr, act);
- 			 
-	 		if(!Util.isEmptyString(strName))
- 			    mIsOkUrl = true;
- 			else
- 			    mIsOkUrl = false;
+			    strName =  Util.getDisplayNameByUriString(audioStr, act);
+
+		    assert strName != null;
+		    mIsOkUrl = !Util.isEmptyString(strName[0]) || !Util.isEmptyString(strName[1]);
  		}
  		
  		System.out.println("Url mIsOkUrl = " + mIsOkUrl);

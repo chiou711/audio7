@@ -225,7 +225,8 @@ public class AudioPlayer_page
 
                 // set footer message with audio name
                 String audioStr = Audio_manager.getAudioStringAt(Audio_manager.mAudioPos);
-                audio_panel_title_textView.setText(Util.getDisplayNameByUriString(audioStr, act));
+                String[] audioName = Util.getDisplayNameByUriString(audioStr, act);
+                audio_panel_title_textView.setText(audioName[0] .concat(" / ").concat(audioName[1]));
 
                 // show audio playing item number
                 TextView audioPanel_audio_number = (TextView) audio_panel.findViewById(R.id.audioPanel_audio_number);

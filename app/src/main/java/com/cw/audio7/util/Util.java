@@ -696,14 +696,17 @@ public class Util
 	}
 	
 	// get display name by URI string
-	public static String getDisplayNameByUriString(String uriString, Activity activity)
-	{
-		String display_name = "";
+	public static String[] getDisplayNameByUriString(String uriString, Activity activity) {
+//		String display_name = "";
 		String scheme = getUriScheme(uriString);
-		
-		if(Util.isEmptyString(uriString) || Util.isEmptyString(scheme))
-			return display_name;
-		
+		String[] displayName = new String[2];
+
+		if (Util.isEmptyString(uriString) || Util.isEmptyString(scheme)) {
+		    displayName[0] = "";
+		    displayName[1] = "";
+			return displayName;
+		}
+
 		Uri uri = Uri.parse(uriString);
 		//System.out.println("Uri string = " + uri.toString());
 		//System.out.println("Uri last segment = " + uri.getLastPathSegment());
@@ -726,7 +729,8 @@ public class Util
                 do
                 {
                 	col_index = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DISPLAY_NAME);
-                	display_name = cursor.getString(col_index);
+	                displayName[0] = cursor.getString(col_index);
+	                displayName[1] = "";
                 }while(cursor.moveToNext());
                 cursor.close();
             }
@@ -735,7 +739,8 @@ public class Util
 				scheme.equalsIgnoreCase("https")   )
 		{
             // if display name can not be displayed, then show last segment instead
-          	display_name = uri.getLastPathSegment();
+			displayName[0] = uri.getLastPathSegment();
+			displayName[1] = "";
 		}
 		else if(scheme.equalsIgnoreCase("file")  )
 		{
@@ -758,22 +763,33 @@ public class Util
 					}
 					audio_title = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE);
 					audio_artist = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST);
-					display_name = audio_title + " / " + audio_artist;
+					if(audio_artist == null) {
+						displayName[0] = audio_title ;
+						displayName[1] = "";
+					}
+					else {
+						displayName[0] = audio_title;
+						displayName[1] = audio_artist;
+					}
 				}
 
 				// add for video with mkv format
 				if(Util.isEmptyString(audio_title) &&
 				   Util.isEmptyString(audio_artist)   )
 				{
-					display_name = uri.getLastPathSegment();
+					displayName[0] = uri.getLastPathSegment();
+					displayName[1] = "";
 				}
 			}
-			else
-				display_name = uri.getLastPathSegment();
+			else {
+				displayName[0] = uri.getLastPathSegment();
+				displayName[1] = "";
+			}
 		}
-		//System.out.println("display_name = " + display_name);
-                	
-        return display_name;
+		System.out.println("displayName[0] = " + displayName[0]);
+		System.out.println("displayName[1] = " + displayName[1]);
+
+        return displayName;
 	}
 	
 	// get scheme by Uri string

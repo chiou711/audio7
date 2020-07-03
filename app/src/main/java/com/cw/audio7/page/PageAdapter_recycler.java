@@ -93,7 +93,8 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
 		TextView rowId;
 		View audioBlock;
 		ImageView iconAudio;
-		TextView audioName;
+        TextView audioTitle;
+        TextView audioArtist;
 		TextView textTitle;
         ImageViewCustom btnDrag;
 		View thumbBlock;
@@ -113,7 +114,8 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
             rowId= (TextView) v.findViewById(R.id.row_id);
             audioBlock = v.findViewById(R.id.audio_block);
             iconAudio = (ImageView) v.findViewById(R.id.img_audio);
-            audioName = (TextView) v.findViewById(R.id.row_audio_name);
+            audioTitle = (TextView) v.findViewById(R.id.row_audio_title);
+            audioArtist = (TextView) v.findViewById(R.id.row_audio_artist);
             btnMarking = (ImageView) v.findViewById(R.id.btn_marking);
             thumbBlock = v.findViewById(R.id.row_thumb_nail);
             thumbAudio = (ImageView) v.findViewById(R.id.thumb_audio);
@@ -182,7 +184,6 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
         holder.rowId.setText(String.valueOf(position+1));
         holder.rowId.setTextColor(ColorSet.mText_ColorArray[style]);
 
-
         // show marking check box
         if(pref_show_note_attribute.getString("KEY_ENABLE_SELECT", "yes").equalsIgnoreCase("yes")) {
             // show checked icon
@@ -212,20 +213,29 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
             holder.btnDrag.setVisibility(View.GONE);
 
         // set audio name
-        String audio_name = null;
+        String[] audio_name = null;
         if(!Util.isEmptyString(audioUri))
             audio_name = Util.getDisplayNameByUriString(audioUri, mAct);
 
+        System.out.println("-> title = " + audio_name[0]);
+        System.out.println("-> artist = " + audio_name[1]);
+
         // show audio name
-        if(Util.isUriExisted(audioUri, mAct))
-            holder.audioName.setText(audio_name);
-        else
-            holder.audioName.setText(R.string.file_not_found);
+        if(Util.isUriExisted(audioUri, mAct)) {
+            holder.audioTitle.setText(audio_name[0]);
+            holder.audioArtist.setText(audio_name[1]);
+        }
+        else {
+            holder.audioTitle.setText(R.string.file_not_found);
+            holder.audioArtist.setText("");
+        }
 
 //			holder.audioName.setTextSize(12.0f);
 
-        if(!Util.isEmptyString(audioUri))
-            holder.audioName.setTextColor(ColorSet.mText_ColorArray[style]);
+        if(!Util.isEmptyString(audioUri)) {
+            holder.audioTitle.setTextColor(ColorSet.mText_ColorArray[style]);
+            holder.audioArtist.setTextColor(ColorSet.mText_ColorArray[style]);
+        }
 
         // show audio highlight if audio is not at Stop
         if( PageUi.isAudioPlayingPage() &&
@@ -241,7 +251,8 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
 
             // set type face
 //			holder.audioName.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
-            holder.audioName.setTextColor(ColorSet.getHighlightColor(mAct));
+            holder.audioTitle.setTextColor(ColorSet.getHighlightColor(mAct));
+            holder.audioArtist.setTextColor(ColorSet.getHighlightColor(mAct));
 
             // set icon
             holder.iconAudio.setVisibility(View.VISIBLE);

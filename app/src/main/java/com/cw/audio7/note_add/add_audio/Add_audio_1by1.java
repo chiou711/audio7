@@ -385,8 +385,8 @@ public class Add_audio_1by1 extends ListFragment
 
             if(!Util.isEmptyString(uriStr))
             {
-                String audioName = Util.getDisplayNameByUriString(uriStr, getActivity());
-                Util.showSavedFileToast(audioName,getActivity());
+                String[] audioName = Util.getDisplayNameByUriString(uriStr, getActivity());
+                Util.showSavedFileToast(audioName[0]+" / " +audioName[1],getActivity());
             }
         }
 

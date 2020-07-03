@@ -250,7 +250,7 @@ public class Note_drawingAct extends Activity
 
             if(!Util.isEmptyString(uriStr))
             {
-                String drawingName = Util.getDisplayNameByUriString(uriStr, this);
+                String drawingName = Util.getDisplayNameByUriString(uriStr, this)[0];
                 Util.showSavedFileToast(drawingName,this);
             }
         }
