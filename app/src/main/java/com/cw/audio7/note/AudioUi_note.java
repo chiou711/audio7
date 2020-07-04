@@ -50,10 +50,12 @@ import androidx.viewpager.widget.ViewPager;
 public class AudioUi_note
 {
     private AppCompatActivity act;
-    private TextView audio_title;
+    TextView audio_title;
     private ViewGroup audioBlock;
     private static String mAudioUriInDB;
     private ViewPager mPager;
+    public ImageView audioPanel_next_btn;
+    public ImageView audioPanel_previous_btn;
 
     // constructor
     AudioUi_note(AppCompatActivity act, String audioUriInDB)
@@ -68,8 +70,11 @@ public class AudioUi_note
         mPager = (ViewPager) act.findViewById(R.id.tabs_pager);
 
         // audio block
-        TextView tag = (TextView) act.findViewById(R.id.text_view_audio);
-        tag.setTextColor(ColorSet.color_white);
+        audioPanel_previous_btn = (ImageView) act.findViewById(R.id.audioPanel_previous);
+        audioPanel_previous_btn.setImageResource(R.drawable.ic_media_previous);
+
+        audioPanel_next_btn = (ImageView) act.findViewById(R.id.audioPanel_next);
+        audioPanel_next_btn.setImageResource(R.drawable.ic_media_next);
 
         audio_title = (TextView) act.findViewById(R.id.pager_audio_title); // first setting
         audio_title.setTextColor(ColorSet.color_white);
@@ -202,23 +207,6 @@ public class AudioUi_note
             @Override
             public void onClick(View v)
             {
-
-//                // check permission first time, request phone permission
-//                if(Build.VERSION.SDK_INT >= M)//API23
-//                {
-//                    int permissionPhone = ActivityCompat.checkSelfPermission(act, Manifest.permission.READ_PHONE_STATE);
-//                    if(permissionPhone != PackageManager.PERMISSION_GRANTED)
-//                    {
-//                        ActivityCompat.requestPermissions(act,
-//                                new String[]{Manifest.permission.READ_PHONE_STATE},
-//                                Util.PERMISSIONS_REQUEST_PHONE);
-//                    }
-//                    else
-//                        UtilAudio.setPhoneListener(act);
-//                }
-//                else
-//                    UtilAudio.setPhoneListener(act);
-
                 isPausedAtSeekerAnchor = false;
 
                 if( (Audio_manager.isRunnableOn_page)||
@@ -277,6 +265,25 @@ public class AudioUi_note
             }
         });
 
+        ImageView audioPanel_previous_btn = (ImageView) act.findViewById(R.id.audioPanel_previous);
+        audioPanel_previous_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ViewPager viewPager = act.findViewById(R.id.tabs_pager);
+                NoteUi.setFocus_notePos(NoteUi.getFocus_notePos()-1);
+                viewPager.setCurrentItem(viewPager.getCurrentItem() - 1);
+            }
+        });
+
+        ImageView audioPanel_next_btn = (ImageView) act.findViewById(R.id.audioPanel_next);
+        audioPanel_next_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ViewPager viewPager = act.findViewById(R.id.tabs_pager);
+                NoteUi.setFocus_notePos(NoteUi.getFocus_notePos()+1);
+                viewPager.setCurrentItem(viewPager.getCurrentItem() + 1);
+            }
+        });
     }
 
     //  play audio in pager

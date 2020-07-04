@@ -25,15 +25,6 @@
     <string name="confirm_dialog_button_yes">是</string>
     <string name="footer_checked">勾选</string>
     <string name="footer_total">总计</string>
-    <string name="mail_notes_title">发送笔记页(文字)</string>
-    <string name="mail_notes_btn">发送</string>
-    <string name="mail_notes_dlg_title">发送笔记</string>
-    <string name="mail_notes_dlg_message">收件人的电子邮件地址:</string>
-    <string name="mail_chooser_title">选择电子邮件应用程序</string>
-    <string name="mail_exit">结束电子邮件</string>
-    <string name="eMail_subject">发送笔记</string>
-    <string name="eMail_body">附件与以下文字来自</string>
-    <string name="eMail_chooser_dlg_title">发送邮件由:</string>
     <string name="edit_page_tab_title">编辑标签名称</string>
     <string name="edit_page_tab_message">标签名称：</string>
     <string name="edit_page_button_update">OK</string>

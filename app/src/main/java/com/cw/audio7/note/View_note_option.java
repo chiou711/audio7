@@ -31,10 +31,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cw.audio7.R;
-import com.cw.audio7.db.DB_page;
-import com.cw.audio7.operation.mail.MailNotes;
-import com.cw.audio7.tabs.TabsHost;
-import com.cw.audio7.util.Util;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,7 +59,6 @@ public class View_note_option {
      */
     static List<View_note_option> option_list;
 
-    private final static int ID_OPTION_MAIL = 0;
     private final static int ID_OPTION_BACK = 9;
     static long noteId;
     static GridIconAdapter mGridIconAdapter;
@@ -81,11 +76,6 @@ public class View_note_option {
         option_list.add(new View_note_option(ID_OPTION_BACK,
                 R.drawable.ic_menu_back,
                 R.string.btn_back));
-
-        // mail
-        option_list.add(new View_note_option(ID_OPTION_MAIL ,
-                android.R.drawable.ic_menu_send,
-                R.string.mail_notes_btn));
 
         gridView = (GridView) rootView.findViewById(R.id.option_grid_view);
 
@@ -122,33 +112,6 @@ public class View_note_option {
         System.out.println("View_note_option / _startAddNoteActivity / optionId = " + optionId);
 
         switch (optionId) {
-            case ID_OPTION_MAIL:
-            {
-				// set Sent string Id
-				String sentString = Util.getStringWithXmlTag(TabsHost.getFocus_tabPos(),noteId);
-				sentString = Util.addXmlTag(sentString);
-
-                DB_page dB_page = new DB_page(act, TabsHost.getCurrentPageTableId());
-
-                // picture first priority
-                String picFile = dB_page.getNotePictureUri_byId(noteId);
-
-				// then drawing
-				if(Util.isEmptyString(picFile))
-                    picFile = dB_page.getNoteDrawingUri_byId(noteId);
-
-                System.out.println("-> picFile = " + picFile);
-
-				String[] picFileArray = null;
-				if( (picFile != null) &&
-						(picFile.length() > 0) )
-				{
-					picFileArray = new String[]{picFile};
-				}
-				new MailNotes(act,sentString,picFileArray);
-            }
-            break;
-
             case ID_OPTION_BACK:
             {
                 dlgAddNew.dismiss();

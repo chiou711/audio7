@@ -76,9 +76,6 @@
         <service android:name="com.cw.audio7.note_add.add_recording.RecordingService" />
 
         <!--receiver-->
-        <receiver
-            android:name="com.cw.audio7.util.DeleteFileAlarmReceiver"
-            android:enabled="true" />
         <receiver android:name="androidx.media.session.MediaButtonReceiver" >
             <intent-filter>
                 <action android:name="android.intent.action.MEDIA_BUTTON" />

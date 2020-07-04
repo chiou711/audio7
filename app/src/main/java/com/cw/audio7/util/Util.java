@@ -118,7 +118,6 @@ public class Util
     SharedPreferences mPref_vibration;
     private static Context mContext;
 	private Activity mAct;
-	private String mEMailString;
     private static DB_folder mDbFolder;
     public static String NEW_LINE = "\r" + System.getProperty("line.separator");
 
@@ -178,11 +177,11 @@ public class Util
 		
 		// sent data
 		data = addXmlTag(data);
-		mEMailString = data;
+		String string = data;
 
         exportToSdCardFile(filename,data);
 
-		return mEMailString;
+		return string;
 	}
 	
 	// Export data to be SD Card file
@@ -573,8 +572,7 @@ public class Util
 				String body = cursorNote.getString(cursorNote.getColumnIndexOrThrow(DB_page.KEY_NOTE_BODY));
 				body = replaceEscapeCharacter(body);
 
-				String picUrl = cursorNote.getString(cursorNote.getColumnIndexOrThrow(DB_page.KEY_NOTE_PICTURE_URI));
-				picUrl = replaceEscapeCharacter(picUrl);
+				String picUrl = "";
 
 				String audioUrl = cursorNote.getString(cursorNote.getColumnIndexOrThrow(DB_page.KEY_NOTE_AUDIO_URI));
 				audioUrl = replaceEscapeCharacter(audioUrl);

@@ -95,11 +95,6 @@ public class Note_adapter extends FragmentStatePagerAdapter
     	int style = Note.getStyle();
         pagerView.setBackgroundColor(ColorSet.mBG_ColorArray[style]);
 
-    	// Picture group
-        ViewGroup pictureGroup = (ViewGroup) pagerView.findViewById(R.id.pictureContent);
-        String tagPictureStr = "current"+ position +"pictureView";
-        pictureGroup.setTag(tagPictureStr);
-    	
         // image view
     	TouchImageView imageView = ((TouchImageView) pagerView.findViewById(R.id.image_view));
         String tagImageStr = "current"+ position +"imageView";
@@ -126,7 +121,6 @@ public class Note_adapter extends FragmentStatePagerAdapter
 		System.out.println("Note_adapter / _instantiateItem / isViewAllMode ");
 
 		// picture
-		pictureGroup.setVisibility(View.VISIBLE);
         showPictureView(position,imageView,spinner);
 
         line_view.setVisibility(View.VISIBLE);
@@ -147,8 +141,6 @@ public class Note_adapter extends FragmentStatePagerAdapter
 		TextView footerText = (TextView) pagerView.findViewById(R.id.note_view_footer);
 		footerText.setVisibility(View.VISIBLE);
 		footerText.setText(String.valueOf(position+1)+"/"+ pager.getAdapter().getCount());
-        footerText.setTextColor(ColorSet.mText_ColorArray[Note.mStyle]);
-        footerText.setBackgroundColor(ColorSet.mBG_ColorArray[Note.mStyle]);
 
     	container.addView(pagerView, 0);
     	

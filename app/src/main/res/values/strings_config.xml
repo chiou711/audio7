@@ -34,6 +34,5 @@
     <string name="config_select_pages_title">Select pages:</string>
     <string name="config_select_pages_delete_title">Select pages to delete:</string>
     <string name="config_select_pages_export_title">Select folders to export:</string>
-    <string name="config_select_pages_mail_title">Select folders to mail:</string>
     <string name="config_select_folders_title">Select folders to delete:</string>
 </resources>

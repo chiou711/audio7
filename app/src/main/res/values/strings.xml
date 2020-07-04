@@ -25,15 +25,6 @@
     <string name="confirm_dialog_button_yes">Yes</string>
     <string name="footer_checked">Selected</string>
     <string name="footer_total">Total</string>
-    <string name="mail_notes_title">Mail note pages (text))</string>
-    <string name="mail_notes_btn">Send</string>
-    <string name="mail_notes_dlg_title">Mail notes</string>
-    <string name="mail_notes_dlg_message">Receiver e-Mail address:</string>
-    <string name="mail_chooser_title">Choose eMail application</string>
-    <string name="mail_exit">End eMail</string>
-    <string name="eMail_subject">Mail notes</string>
-    <string name="eMail_body">the attachment and the following text comes from</string>
-    <string name="eMail_chooser_dlg_title">Send mail by:</string>
     <string name="edit_page_tab_title">Edit the tab name</string>
     <string name="edit_page_tab_message">Tab name:</string>
     <string name="edit_page_button_update">OK</string>

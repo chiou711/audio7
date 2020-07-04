@@ -130,12 +130,6 @@
                 app:showAsAction="never"
                 android:title="@string/config_export_SDCard_title"
                 android:icon="@android:drawable/ic_menu_save"/>
-            <item
-                android:id="@+id/SEND_PAGES"
-                android:orderInCategory="4"
-                app:showAsAction="never"
-                android:title="@string/mail_notes_title"
-                android:icon="@android:drawable/ic_menu_send"/>
         </menu>
         </item>
 

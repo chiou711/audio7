@@ -25,10 +25,8 @@ import com.cw.audio7.operation.audio.Audio_manager;
 import com.cw.audio7.operation.audio.BackgroundAudioService;
 import com.cw.audio7.page.PageAdapter_recycler;
 import com.cw.audio7.tabs.TabsHost;
-import com.cw.audio7.util.DeleteFileAlarmReceiver;
 import com.cw.audio7.util.audio.UtilAudio;
 import com.cw.audio7.util.preferences.Pref;
-import com.cw.audio7.operation.mail.MailNotes;
 import com.cw.audio7.util.uil.UilCommon;
 import com.cw.audio7.util.Util;
 
@@ -77,13 +75,11 @@ public class Note extends AppCompatActivity
     public static Long mNoteId;
     int mEntryPosition;
     int EDIT_CURRENT_VIEW = 5;
-    int MAIL_CURRENT_VIEW = 6;
     static int mStyle;
     
     static SharedPreferences mPref_show_note_attribute;
 
     Button editButton;
-    Button optionButton;
     Button backButton;
 
 	public static String mAudioUriInDB;
@@ -247,17 +243,6 @@ public class Note extends AppCompatActivity
 			}
 		});
 
-		// send note button
-		optionButton = (Button) findViewById(R.id.view_option);
-		optionButton.setCompoundDrawablesWithIntrinsicBounds(android.R.drawable.ic_menu_more, 0, 0, 0);
-		optionButton.setOnClickListener(new View.OnClickListener()
-		{
-			public void onClick(View view)
-			{
-				View_note_option.note_option(act,mNoteId);
-			}
-		});
-
 		// back button
 		backButton = (Button) findViewById(R.id.view_back);
 		backButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_menu_back, 0, 0, 0);
@@ -315,19 +300,10 @@ public class Note extends AppCompatActivity
 	{
 		super.onActivityResult(requestCode,resultCode,data);
 		System.out.println("Note / _onActivityResult ");
-        if((requestCode==EDIT_CURRENT_VIEW) || (requestCode==MAIL_CURRENT_VIEW))
+        if((requestCode==EDIT_CURRENT_VIEW) )
         {
 			stopAV();
         }
-		else if(requestCode == MailNotes.EMAIL)
-		{
-			Toast.makeText(act,R.string.mail_exit,Toast.LENGTH_SHORT).show();
-			// note: result code is always 0 (cancel), so it is not used
-			new DeleteFileAlarmReceiver(act,
-					                    System.currentTimeMillis() + 1000 * 60 * 5, // formal: 300 seconds
-//						    		    System.currentTimeMillis() + 1000 * 10, // test: 10 seconds
-					                    MailNotes.mAttachmentFileName);
-		}
 
 	    // check if there is one note at least in the pager
 		if( viewPager.getAdapter().getCount() > 0 )
@@ -518,24 +494,6 @@ public class Note extends AppCompatActivity
 		else
 			menu.findItem(R.id.VIEW_NOTE_CHECK).setIcon(R.drawable.btn_check_on_holo_dark);
 
-	    // menu item: previous
-		MenuItem itemPrev = menu.findItem(R.id.ACTION_PREVIOUS);
-		itemPrev.setEnabled(viewPager.getCurrentItem() > 0);
-		itemPrev.getIcon().setAlpha(viewPager.getCurrentItem() > 0?255:30);
-
-		// menu item: Next or Finish
-		MenuItem itemNext = menu.findItem(R.id.ACTION_NEXT);
-		itemNext.setTitle((viewPager.getCurrentItem() == mPagerAdapter.getCount() - 1)	?
-									R.string.view_note_slide_action_finish :
-									R.string.view_note_slide_action_next                  );
-
-        // set Disable and Gray for Last item
-		boolean isLastOne = (viewPager.getCurrentItem() == (mPagerAdapter.getCount() - 1));
-        if(isLastOne)
-        	itemNext.setEnabled(false);
-
-        itemNext.getIcon().setAlpha(isLastOne?30:255);
-
         return true;
     }
     
@@ -564,20 +522,6 @@ public class Note extends AppCompatActivity
 					mMenu.findItem(R.id.VIEW_NOTE_CHECK).setIcon(R.drawable.btn_check_off_holo_dark);
 
 				return true;
-
-            case R.id.ACTION_PREVIOUS:
-                // Go to the previous step in the wizard. If there is no previous step,
-                // setCurrentItem will do nothing.
-            	NoteUi.setFocus_notePos(NoteUi.getFocus_notePos()-1);
-            	viewPager.setCurrentItem(viewPager.getCurrentItem() - 1);
-                return true;
-
-            case R.id.ACTION_NEXT:
-                // Advance to the next step in the wizard. If there is no next step, setCurrentItem
-                // will do nothing.
-				NoteUi.setFocus_notePos(NoteUi.getFocus_notePos()+1);
-            	viewPager.setCurrentItem(viewPager.getCurrentItem() + 1);
-                return true;
         }
 
         return super.onOptionsItemSelected(item);

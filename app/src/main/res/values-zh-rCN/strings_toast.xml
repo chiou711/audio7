@@ -4,7 +4,6 @@
     <string name="toast_keep_one_drawer">请至少保留一页文件夹</string>
     <string name="toast_leftmost">最左边</string>
     <string name="toast_rightmost">最右边</string>
-    <string name="toast_no_email_address">没有电子邮件地址</string>
     <string name="toast_import_SDCard_no_file">还没有档案，请先汇出一个</string>
     <string name="toast_import_finished">所选档案已汇入</string>
     <string name="toast_input_filename">请输入一个档案名称</string>

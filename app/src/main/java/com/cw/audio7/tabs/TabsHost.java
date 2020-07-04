@@ -742,7 +742,7 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
 
         // show footer
         mFooterMessage.setTextColor(ColorSet.color_white);
-        if(mFooterMessage != null) //add this for avoiding null exception when after e-Mail action
+        if(mFooterMessage != null)
         {
             if(!AudioPlayer_page.isAudioPanelOn(MainAct.mAct))
                 mFooterMessage.setText(getFooterMessage(mAct));

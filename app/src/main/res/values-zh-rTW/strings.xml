@@ -25,15 +25,6 @@
     <string name="confirm_dialog_button_yes">是</string>
     <string name="footer_checked">勾選</string>
     <string name="footer_total">總數</string>
-    <string name="mail_notes_title">寄送記事頁(文字)</string>
-    <string name="mail_notes_btn">寄送</string>
-    <string name="mail_notes_dlg_title">寄送記事</string>
-    <string name="mail_notes_dlg_message">收件人的電子郵件地址:</string>
-    <string name="mail_chooser_title">選擇電子郵件應用程式</string>
-    <string name="mail_exit">結束電子郵件</string>
-    <string name="eMail_subject">寄送記事</string>
-    <string name="eMail_body">附件與以下文字來自</string>
-    <string name="eMail_chooser_dlg_title">寄送郵件以:</string>
     <string name="edit_page_tab_title">編輯標籤名稱</string>
     <string name="edit_page_tab_message">標籤名稱:</string>
     <string name="edit_page_button_update">確定</string>

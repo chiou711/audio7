@@ -47,7 +47,6 @@ public class MenuId {
         static final int DELETE_PAGES = R.id.DELETE_PAGES;
 
         // operation
-        static final int SEND_PAGES = R.id.SEND_PAGES;
         static final int EXPORT_TO_SD_CARD = R.id.EXPORT_TO_SD_CARD;
         static final int IMPORT_FROM_SD_CARD = R.id.IMPORT_FROM_SD_CARD;
 

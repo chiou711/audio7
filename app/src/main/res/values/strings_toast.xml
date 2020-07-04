@@ -4,7 +4,6 @@
     <string name="toast_keep_one_drawer">Please keep one folder at least</string>
     <string name="toast_leftmost">Leftmost</string>
     <string name="toast_rightmost">Rightmost</string>
-    <string name="toast_no_email_address">No e-Mail address</string>
     <string name="toast_import_SDCard_no_file">No file yet, please export one first</string>
     <string name="toast_import_finished">The selected file has been imported</string>
     <string name="toast_input_filename">Please input a file name</string>

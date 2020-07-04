@@ -37,7 +37,6 @@ import com.cw.audio7.db.DB_page;
 import com.cw.audio7.main.MainAct;
 import com.cw.audio7.operation.audio.Audio_manager;
 import com.cw.audio7.operation.audio.AudioPlayer_page;
-import com.cw.audio7.operation.mail.MailNotes;
 import com.cw.audio7.tabs.TabsHost;
 import com.cw.audio7.util.Util;
 import com.cw.audio7.util.audio.UtilAudio;
@@ -85,7 +84,6 @@ public class Checked_notes_option {
     private final static int INVERT_SELECTED = 3;
     private final static int MOVE_CHECKED_NOTE = 4;
     private final static int COPY_CHECKED_NOTE = 5;
-    private final static int MAIL_CHECKED_NOTE = 6;
     private final static int DELETE_CHECKED_NOTE = 7;
 
 
@@ -128,11 +126,6 @@ public class Checked_notes_option {
         checkedOperationList.add(new Checked_notes_option(COPY_CHECKED_NOTE,
                 R.drawable.ic_menu_copy_holo_dark,
                 R.string.checked_notes_copy_to));
-
-        // MAIL_CHECKED_NOTE
-        checkedOperationList.add(new Checked_notes_option(MAIL_CHECKED_NOTE,
-                android.R.drawable.ic_menu_send,
-                R.string.mail_notes_btn));
 
         // DELETE_CHECKED_NOTE
         checkedOperationList.add(new Checked_notes_option(DELETE_CHECKED_NOTE,
@@ -235,49 +228,6 @@ public class Checked_notes_option {
                     else if(option == COPY_CHECKED_NOTE)
                         operateCheckedTo(mAct,copyItemsTitle, copyItemsPicture, copyItemsAudio, copyItemsDrawing, copyItemsLink, copyItemsBody, copyItemsTime, COPY_TO);// copy to
 
-                }
-                else
-                    Toast.makeText(act,
-                            R.string.delete_checked_no_checked_items,
-                            Toast.LENGTH_SHORT)
-                            .show();
-                dlgAddNew.dismiss();
-                break;
-
-            case MAIL_CHECKED_NOTE:
-                if(!noItemChecked())
-                {
-                    // set Sent string Id
-                    List<Long> noteIdArray = new ArrayList<>();
-                    List<String> pictureFileNameList = new ArrayList<>();
-                    int j=0;
-                    mDb_page.open();
-                    int count = mDb_page.getNotesCount(false);
-                    for(int i=0; i<count; i++)
-                    {
-                        if(mDb_page.getNoteMarking(i,false) == 1)
-                        {
-                            j++;
-
-                            String picFile = mDb_page.getNotePictureUri_byId(mDb_page.getNoteId(i,false),false,false);
-                            if((picFile != null) && (picFile.length() > 0))
-                                pictureFileNameList.add(picFile);
-                        }
-                    }
-                    mDb_page.close();
-
-                    // message
-                    String sentString = Util.getStringWithXmlTag(TabsHost.getFocus_tabPos(),Util.ID_FOR_NOTES);
-                    sentString = Util.addXmlTag(sentString);
-
-                    // picture array
-                    int cnt = pictureFileNameList.size();
-                    String pictureFileNameArr[] = new String[cnt];
-                    for(int i=0; i < cnt ; i++ )
-                    {
-                        pictureFileNameArr[i] = pictureFileNameList.get(i);
-                    }
-                    new MailNotes(mAct,sentString,pictureFileNameArr);
                 }
                 else
                     Toast.makeText(act,

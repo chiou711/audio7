@@ -92,7 +92,7 @@ public class Export_toSDCardFragment extends Fragment {
 		btnSelPageOK.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				// input mail address: dialog
+				// input file name dialog
 				if(mList_selPage.mChkNum > 0)
 					inputFileNameDialog(); // call next dialog
 				else
@@ -140,7 +140,6 @@ public class Export_toSDCardFragment extends Fragment {
 
 	// step 2: input file name
     String mDefaultFileName;
-    SharedPreferences mPref_email;
 	EditText editSDCardFileNameText;
 	AlertDialog mDialog;
 
@@ -148,7 +147,6 @@ public class Export_toSDCardFragment extends Fragment {
 	{
 		AlertDialog.Builder builder1;
 
-		mPref_email = getActivity().getSharedPreferences("sd_card_file_name", 0);
 	    editSDCardFileNameText = (EditText)getActivity().getLayoutInflater()
 	    							.inflate(R.layout.edit_text_dlg, null);
 		builder1 = new AlertDialog.Builder(getActivity());
