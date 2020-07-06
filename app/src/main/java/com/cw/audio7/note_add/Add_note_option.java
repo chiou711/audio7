@@ -32,6 +32,7 @@ import android.widget.Toast;
 
 import com.cw.audio7.R;
 import com.cw.audio7.folder.FolderUi;
+import com.cw.audio7.note_add.add_audio.Add_audio_auto;
 import com.cw.audio7.note_add.add_recording.Add_recording_act;
 import com.cw.audio7.note_add.add_audio.Add_audio_1by1;
 import com.cw.audio7.note_add.add_audio.Add_audio_byFolder;
@@ -68,6 +69,7 @@ public class Add_note_option {
     private final static int ID_NEW_AUDIO = 4;
     private final static int ID_NEW_AUDIO_1by1 = 5;
     private final static int ID_NEW_AUDIO_byFolder = 6;
+    private final static int ID_NEW_AUDIO_auto = 7;
     private final static int ID_NEW_BACK = 11;
     private final static int ID_NEW_SETTING = 12;
 
@@ -104,6 +106,11 @@ public class Add_note_option {
         // audio by folder
         addNoteList.add(new Add_note_option(ID_NEW_AUDIO_byFolder,
                 R.drawable.ic_audio_unselected,
+                R.string.note_ready_audio_byFolder));
+
+        // audio by auto
+        addNoteList.add(new Add_note_option(ID_NEW_AUDIO_auto,
+                R.drawable.ic_color_a,
                 R.string.note_ready_audio_byFolder));
 
         // Back
@@ -210,6 +217,18 @@ public class Add_note_option {
 
                 transaction.setCustomAnimations(R.anim.fragment_slide_in_left, R.anim.fragment_slide_out_left, R.anim.fragment_slide_in_right, R.anim.fragment_slide_out_right);
                 transaction.replace(R.id.content_frame, add_audio_byFolder, "add_audio").addToBackStack(null).commit();
+            }
+            break;
+
+            case ID_NEW_AUDIO_auto:
+            {
+                // replace fragment
+                dlgAddNew.dismiss();
+                Add_audio_auto add_audio_auto = new Add_audio_auto();
+                FragmentTransaction transaction = act.getSupportFragmentManager().beginTransaction();
+
+                transaction.setCustomAnimations(R.anim.fragment_slide_in_left, R.anim.fragment_slide_out_left, R.anim.fragment_slide_in_right, R.anim.fragment_slide_out_right);
+                transaction.replace(R.id.content_frame, add_audio_auto, "add_audio").addToBackStack(null).commit();
             }
             break;
 

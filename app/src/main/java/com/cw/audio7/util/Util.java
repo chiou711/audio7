@@ -784,8 +784,8 @@ public class Util
 				displayName[1] = "";
 			}
 		}
-		System.out.println("displayName[0] = " + displayName[0]);
-		System.out.println("displayName[1] = " + displayName[1]);
+//		System.out.println("displayName[0] = " + displayName[0]);
+//		System.out.println("displayName[1] = " + displayName[1]);
 
         return displayName;
 	}

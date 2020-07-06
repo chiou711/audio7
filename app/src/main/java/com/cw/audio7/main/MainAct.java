@@ -913,16 +913,16 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
     @Override
     public void onBackStackChanged() {
         int backStackEntryCount = mFragmentManager.getBackStackEntryCount();
-        System.out.println("MainAct / _onBackStackChanged / backStackEntryCount = " + backStackEntryCount);
+//        System.out.println("MainAct / _onBackStackChanged / backStackEntryCount = " + backStackEntryCount);
 
         if(backStackEntryCount == 1) // fragment
         {
-            System.out.println("MainAct / _onBackStackChanged / fragment");
+//            System.out.println("MainAct / _onBackStackChanged / fragment");
             initActionBar_home();
         }
         else if(backStackEntryCount == 0) // init
         {
-            System.out.println("MainAct / _onBackStackChanged / init");
+//            System.out.println("MainAct / _onBackStackChanged / init");
             onBackPressedListener = null;
 
             if(mFolder.adapter!=null)
