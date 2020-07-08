@@ -217,8 +217,8 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
         if(!Util.isEmptyString(audioUri))
             audio_name = Util.getDisplayNameByUriString(audioUri, mAct);
 
-        System.out.println("-> title = " + audio_name[0]);
-        System.out.println("-> artist = " + audio_name[1]);
+//        System.out.println("-> title = " + audio_name[0]);
+//        System.out.println("-> artist = " + audio_name[1]);
 
         // show audio name
         if(Util.isUriExisted(audioUri, mAct)) {

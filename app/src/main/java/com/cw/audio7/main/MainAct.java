@@ -1004,6 +1004,9 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
              */
             mMenu.setGroupVisible(R.id.group_pages_and_more, foldersCnt >0);
 
+            // group of notes
+            mMenu.setGroupVisible(R.id.group_notes, true);
+
             if(foldersCnt>0)
             {
                 getSupportActionBar().setTitle(mFolderTitle);
@@ -1045,8 +1048,6 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                 /**
                  *  Note group
                  */
-                // group of notes
-                mMenu.setGroupVisible(R.id.group_notes, true);
 
                 // play
                 mMenu.findItem(R.id.PLAY).setVisible( (pgsCnt >0) && (notesCnt>0) );
@@ -1060,10 +1061,8 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
             }
             else if(foldersCnt==0)
             {
-                /**
-                 *  Note group
-                 */
                 mMenu.setGroupVisible(R.id.group_notes, false);
+                mMenu.findItem(R.id.HANDLE_CHECKED_NOTES).setVisible( false );
             }
         }
         return super.onPrepareOptionsMenu(menu);

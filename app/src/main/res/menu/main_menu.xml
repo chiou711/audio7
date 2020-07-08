@@ -1,20 +1,21 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <!-- main group -->
-    <group
-        android:id="@+id/group_notes"
-        android:title="notes"
-        app:showAsAction="ifRoom|withText"
-        android:orderInCategory="0">
     <!-- Add note -->
     <item
         android:id="@+id/ADD_NEW_NOTE"
         android:orderInCategory="0"
         app:showAsAction="always"
         android:title="@string/add_new_note"
-		android:icon="@drawable/ic_input_add">
-	</item>
+        android:icon="@drawable/ic_input_add">
+    </item>
+
+    <!-- main group -->
+    <group
+        android:id="@+id/group_notes"
+        android:title="notes"
+        app:showAsAction="ifRoom|withText"
+        android:orderInCategory="0">
 
     <!-- Play -->
     <item

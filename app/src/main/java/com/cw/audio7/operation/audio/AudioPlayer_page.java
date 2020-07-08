@@ -563,7 +563,7 @@ public class AudioPlayer_page
 			    if (Build.VERSION.SDK_INT >= 21) {
 				    MediaControllerCompat.getMediaController(MainAct.mAct)
 						    .getTransportControls()
-						    .playFromUri(Uri.parse(audioUrl_page), null);
+						    .playFromUri(Uri.parse(audioUrl_page), null);//todo How to avoid null exception if not using recreate
 
 				    MediaControllerCompat.getMediaController(MainAct.mAct).getTransportControls().play();
 			    } else {

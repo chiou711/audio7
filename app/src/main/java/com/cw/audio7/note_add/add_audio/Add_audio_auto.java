@@ -30,6 +30,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cw.audio7.R;
+import com.cw.audio7.db.DB_drawer;
 import com.cw.audio7.db.DB_folder;
 import com.cw.audio7.db.DB_page;
 import com.cw.audio7.folder.FolderUi;
@@ -49,6 +50,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.ListFragment;
@@ -79,6 +81,7 @@ public class Add_audio_auto extends ListFragment
         backButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 getActivity().getSupportFragmentManager().popBackStack();
+                Objects.requireNonNull(getActivity()).recreate();
             }
         });
 
@@ -155,39 +158,152 @@ public class Add_audio_auto extends ListFragment
         if(!dir.exists())
             dir.mkdir();
 
-//        getFilesList(new File(appDir).listFiles());
-
-        listAllFilesUnderPath(currFilePath);
-
+        addAllFilesUnderPath(currFilePath);
     }
 
-    ///
-    private void listAllFilesUnderPath(String path) {
-        System.out.println("_listFilesInPath = " + path);
-        List<String> list;
 
+    /**
+     *  Add all files under path
+     * */
+    private void addAllFilesUnderPath(String path) {
+        System.out.println("_listAllFilesUnderPath / path = " + path);
+        System.out.println("_listAllFilesUnderPath / appDir= " + appDir);
+
+        String folderName = path.replace(appDir,"");
+        String[] layers = folderName.split("/");
+
+        // add folder
+        if(layers.length == 2 )
+        {
+            folderName = layers[1];
+            addNewFolder(folderName);
+        }
+
+        List<String> list;
         list = getListInPath(path);
-        System.out.println("list.size() = " + list.size());
-        String appDirPath = appDir.concat("/..");
 
         if (list.size() > 0) {
-                for (String file : list)
-                {
-                    File fileDir = new File(path.concat("/").concat(file));
+            for (String file : list) {
+                File fileDir = new File(path.concat("/").concat(file));
+                if(!fileDir.getAbsolutePath().contains("..")) {
+                    if (fileDir.isDirectory()) {
+                        // add page
+                        int dirCount = 0;
+                        int filesCount = 0;
 
-                    // dir
-                    if( fileDir.isDirectory() && !fileDir.getAbsolutePath().contains("..")) {
-                        System.out.println("appDirPath: " + appDirPath);
-                        System.out.println("dir abs path: " + fileDir.getAbsolutePath());
-//                            System.out.println("dir path: " + fileDir.getPath());
-                        listAllFilesUnderPath(fileDir.getAbsolutePath());
-                    }
+                        if (fileDir.listFiles() != null) {
+                            dirCount = getFilesList(fileDir.listFiles());
+                            filesCount = fileDir.listFiles().length;
+                        }
+
+                        // get page name
+                        String pageName = fileDir.getName();
+
+                        // check if audio files exist
+                        if ((dirCount == 0) && (filesCount > 0))
+                            addNewPage(pageName);
+
+                        // recursive
+                        addAllFilesUnderPath(fileDir.getAbsolutePath());
+                    } // if (fileDir.isDirectory())
                     else {
-                        // file
-                        System.out.println("file: " + fileDir.getAbsolutePath());
+                        String audioUri =  "file://".concat(fileDir.getPath());
+                        addNewNote(audioUri);
                     }
-            }
+                } // if(!fileDir.getAbsolutePath().contains(".."))
+            } // for (String file : list)
+        } // if (list.size() > 0)
+    }
+
+    // add new folder
+    void addNewFolder(String folderName)
+    {
+        DB_drawer dB_drawer = new DB_drawer(MainAct.mAct);
+        int folders_count = dB_drawer.getFoldersCount(true);
+
+        // get last folder Id
+        long  lastFolderId = 0;
+        for(int i=0; i<folders_count; i++)
+        {
+            if(dB_drawer.getFolderId(i,true) > lastFolderId)
+                lastFolderId = dB_drawer.getFolderId(i,true);
         }
+
+        // new last folder Id
+        lastFolderId++;
+
+        // insert new folder row
+        dB_drawer.insertFolder((int)lastFolderId, folderName, true);
+
+        // get last folder table Id
+        int lastFolderTableId =0;
+        for(int i=0;i<folders_count;i++)
+        {
+            if(dB_drawer.getFolderTableId(i,true)>lastFolderTableId)
+                lastFolderTableId = dB_drawer.getFolderTableId(i,true);
+        }
+
+        // new last folder table Id
+        lastFolderTableId++;
+
+        // insert new folder table
+        dB_drawer.insertFolderTable(lastFolderTableId, true);
+
+        // set focus
+        DB_folder.setFocusFolder_tableId(lastFolderTableId);
+        Pref.setPref_focusView_folder_tableId(MainAct.mAct, lastFolderTableId);
+        Pref.setPref_focusView_page_tableId(MainAct.mAct, 1);
+
+        TabsHost.setLastPageTableId(0);
+        TabsHost.setFocus_tabPos(0);
+    }
+
+    // add new page
+    void addNewPage(String pageName)
+    {
+        AppCompatActivity act = (AppCompatActivity) getActivity();
+
+        // get focus folder position
+        DB_drawer dB_drawer = new DB_drawer(MainAct.mAct);
+        int folders_count = dB_drawer.getFoldersCount(true);
+        for (int pos = 0; pos < folders_count; pos++) {
+            if (dB_drawer.getFolderTableId(pos, true) == Pref.getPref_focusView_folder_tableId(act))
+                FolderUi.setFocus_folderPos(pos);
+        }
+        // get current Max page table Id
+        int currentMaxPageTableId = 0;
+        int pagesCount = FolderUi.getFolder_pagesCount(act, FolderUi.getFocus_folderPos());
+
+        DB_folder db_folder = new DB_folder(act, DB_folder.getFocusFolder_tableId());
+        for (int i = 0; i < pagesCount; i++) {
+            int id = db_folder.getPageTableId(i, true);
+            if (id > currentMaxPageTableId)
+                currentMaxPageTableId = id;
+        }
+        currentMaxPageTableId++;
+
+        int newPageTableId = currentMaxPageTableId;
+
+        // insert page name
+        int style = Util.getNewPageStyle(act);
+        db_folder.insertPage(DB_folder.getFocusFolder_tableName(), pageName, newPageTableId, style, true);
+
+        // insert page table
+        db_folder.insertPageTable(db_folder, DB_folder.getFocusFolder_tableId(), newPageTableId, true);
+
+        // commit: final page viewed
+        Pref.setPref_focusView_page_tableId(act, newPageTableId);
+
+        TabsHost.setCurrentPageTableId(newPageTableId);
+    }
+
+    // add new note
+    void addNewNote(String audioUri)
+    {
+        DB_page dB = new DB_page(getActivity(), TabsHost.getCurrentPageTableId());
+        // insert
+        if (!Util.isEmptyString(audioUri))
+            dB.insertNote("", "", audioUri, "", "", "", 1, (long) 0);// add new note, get return row Id
     }
 
     List<String> getListInPath(String path)
@@ -199,7 +315,6 @@ public class Add_audio_auto extends ListFragment
         }
         else
         {
-//        	System.out.println("files length = " + files.length);
             filePathArray = new ArrayList<>();
             fileNames = new ArrayList<>();
             filePathArray.add("");
@@ -219,15 +334,12 @@ public class Add_audio_auto extends ListFragment
                     // add for filtering non-audio file
                     if (!file.isDirectory() &&
                             (file.getName().contains("MP3") || file.getName().contains("mp3"))) {
-//                        System.out.println("=> file name = " + file.getName());
                         filePathArray.add(file.getPath());
                         // file
                         fileNames.add(file.getName());
                     } else if (file.isDirectory()) {
-//                        System.out.println("=> dir name = " + file.getName());
                         filePathArray.add(file.getPath());
                         // directory
-//                        fileNames.add("[ " + file.getName() + " ]");
                         fileNames.add(file.getName());
                     }
                 }
@@ -238,10 +350,8 @@ public class Add_audio_auto extends ListFragment
                 setListAdapter(fileListAdapter);
             }
         }
-//        System.out.println("=> fileNames = " + fileNames);
         return fileNames;
     }
-///
 
     int selectedRow;
     String currFilePath;
@@ -262,7 +372,7 @@ public class Add_audio_auto extends ListFragment
         else
         {
             currFilePath = filePathArray.get(selectedRow);
-            System.out.println("Add_audio_byFolder / _onListItemClick / currFilePath = " + currFilePath);
+//            System.out.println("Add_audio_byFolder / _onListItemClick / currFilePath = " + currFilePath);
 
             final File file = new File(currFilePath);
             if(file.isDirectory())
@@ -275,8 +385,8 @@ public class Add_audio_auto extends ListFragment
                     filesCount = file.listFiles().length;
                 }
 
-                System.out.println( "=> dirCount = " + dirCount);
-                System.out.println( "=> filesCount = " + filesCount);
+//                System.out.println( "=> dirCount = " + dirCount);
+//                System.out.println( "=> filesCount = " + filesCount);
 
                 // check if audio files exist
                 if( (dirCount ==0 ) && (filesCount>0) ) {
@@ -366,14 +476,14 @@ public class Add_audio_auto extends ListFragment
                 if(!file.isDirectory() &&
                    (file.getName().contains("MP3") || file.getName().contains("mp3")))
                 {
-                    System.out.println("=> file name = " + file.getName());
+//                    System.out.println("=> _getFilesList / file name = " + file.getName());
                     filePathArray.add(file.getPath());
                     // file
                     fileNames.add(file.getName());
                 }
                 else if(file.isDirectory())
                 {
-                    System.out.println("=> dir name = " + file.getName());
+//                    System.out.println("=> _getFilesList / dir name = " + file.getName());
                     dirCount++;
                     filePathArray.add(file.getPath());
                     // directory
@@ -489,7 +599,7 @@ public class Add_audio_auto extends ListFragment
                     }
 
                 } else if (file.isDirectory()) {
-                    System.out.println("=> is directory ,  file.getPath() = " +  file.getPath());
+//                    System.out.println("=> is directory ,  file.getPath() = " +  file.getPath());
                 }
             }
 
