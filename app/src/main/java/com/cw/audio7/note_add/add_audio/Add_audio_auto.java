@@ -39,6 +39,7 @@ import com.cw.audio7.tabs.TabsHost;
 import com.cw.audio7.util.BaseBackPressedListener;
 import com.cw.audio7.util.ColorSet;
 import com.cw.audio7.util.Util;
+import com.cw.audio7.util.audio.UtilAudio;
 import com.cw.audio7.util.preferences.Pref;
 
 import org.apache.commons.io.FileUtils;
@@ -81,7 +82,6 @@ public class Add_audio_auto extends ListFragment
         backButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 getActivity().getSupportFragmentManager().popBackStack();
-                Objects.requireNonNull(getActivity()).recreate();
             }
         });
 
@@ -149,9 +149,22 @@ public class Add_audio_auto extends ListFragment
     public void onResume() {
         super.onResume();
         listView = getListView();
-        appDir = Environment.getExternalStorageDirectory().toString() +
+
+        // case: /storage/emulated/0/audio7
+//        appDir = Environment.getExternalStorageDirectory().toString() +
+//                                    "/" +
+//                                    Util.getStorageDirName(getActivity());
+
+        // case: /sdcard/audio7
+        appDir = System.getenv("EXTERNAL_STORAGE")+
                                     "/" +
-                                    Util.getStorageDirName(getActivity());
+                                    Util.getStorageDirName(getActivity()) ;
+
+        // case: test external sdcard
+//        appDir = "/storage/B8F3-5830/Music";
+
+        System.out.println("-> appDir = " + appDir);
+
         currFilePath = appDir;
 
         File dir = new File(appDir);
@@ -166,8 +179,8 @@ public class Add_audio_auto extends ListFragment
      *  Add all files under path
      * */
     private void addAllFilesUnderPath(String path) {
-        System.out.println("_listAllFilesUnderPath / path = " + path);
-        System.out.println("_listAllFilesUnderPath / appDir= " + appDir);
+        System.out.println("_addAllFilesUnderPath / path = " + path);
+        System.out.println("_addAllFilesUnderPath / appDir= " + appDir);
 
         String folderName = path.replace(appDir,"");
         String[] layers = folderName.split("/");
@@ -333,7 +346,7 @@ public class Add_audio_auto extends ListFragment
                 for (File file : files) {
                     // add for filtering non-audio file
                     if (!file.isDirectory() &&
-                            (file.getName().contains("MP3") || file.getName().contains("mp3"))) {
+                        (UtilAudio.hasAudioExtension(file))) {
                         filePathArray.add(file.getPath());
                         // file
                         fileNames.add(file.getName());

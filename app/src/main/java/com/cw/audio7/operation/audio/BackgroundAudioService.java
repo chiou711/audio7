@@ -217,8 +217,8 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
                     if(mMediaPlayer != null) {
                         mMediaPlayer.release();
                         // disconnect media browser
-                        if( MediaControllerCompat.getMediaController(MainAct.mAct).getPlaybackState().getState() == PlaybackStateCompat.STATE_PLAYING ) {
-                            MediaControllerCompat.getMediaController(MainAct.mAct).getTransportControls().stop();// .pause();
+                        if( MainAct.mMediaControllerCompat.getPlaybackState().getState() == PlaybackStateCompat.STATE_PLAYING ) {
+                            MainAct.mMediaControllerCompat.getTransportControls().stop();// .pause();
                         }
                     }
 
@@ -464,7 +464,7 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
         switch( focusChange ) {
             case AudioManager.AUDIOFOCUS_LOSS: {
                 System.out.println("BackgroundAudioService / _onAudioFocusChange / AudioManager.AUDIOFOCUS_LOSS");
-                Audio_manager.stopAudioPlayer();
+                //Audio_manager.stopAudioPlayer(); //TODO Mark out this is OK?
                 break;
             }
             case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT: {

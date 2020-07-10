@@ -22,7 +22,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Handler;
-import android.support.v4.media.session.MediaControllerCompat;
 import android.view.View;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -134,7 +133,7 @@ public class AudioPlayer_page
 
                 //for pause
                 if(Build.VERSION.SDK_INT >= 21)
-                    MediaControllerCompat.getMediaController(MainAct.mAct).getTransportControls().pause();
+	                MainAct.mMediaControllerCompat.getTransportControls().pause();
                 else
                     BackgroundAudioService.mMediaPlayer.pause();
 			}
@@ -151,7 +150,7 @@ public class AudioPlayer_page
 
                 //for play
                 if(Build.VERSION.SDK_INT >= 21)
-                    MediaControllerCompat.getMediaController(MainAct.mAct).getTransportControls().play();
+	                MainAct.mMediaControllerCompat.getTransportControls().play();
                 else
                     BackgroundAudioService.mMediaPlayer.start();
 			}
@@ -559,13 +558,12 @@ public class AudioPlayer_page
 			    Async_audioPrepare mAsyncTaskAudioPrepare = new Async_audioPrepare(act);
 			    mAsyncTaskAudioPrepare.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "Preparing to play ...");
 
-
 			    if (Build.VERSION.SDK_INT >= 21) {
-				    MediaControllerCompat.getMediaController(MainAct.mAct)
+				    MainAct.mMediaControllerCompat
 						    .getTransportControls()
 						    .playFromUri(Uri.parse(audioUrl_page), null);//todo How to avoid null exception if not using recreate
 
-				    MediaControllerCompat.getMediaController(MainAct.mAct).getTransportControls().play();
+				    MainAct.mMediaControllerCompat.getTransportControls().play();
 			    } else {
 				    BackgroundAudioService.mMediaPlayer = new MediaPlayer();
 				    BackgroundAudioService.mMediaPlayer.reset();
