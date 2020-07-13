@@ -156,12 +156,13 @@ public class Add_audio_auto extends ListFragment
 //                                    Util.getStorageDirName(getActivity());
 
         // case: /sdcard/audio7
-        appDir = System.getenv("EXTERNAL_STORAGE")+
-                                    "/" +
-                                    Util.getStorageDirName(getActivity()) ;
+//        appDir = System.getenv("EXTERNAL_STORAGE")+
+//                                    "/" +
+//                                    Util.getStorageDirName(getActivity()) ;
 
         // case: test external sdcard
-//        appDir = "/storage/B8F3-5830/Music";
+//        appDir = "/storage/B8F3-5830/Music"; // for Nokia phone
+        appDir = "/storage/8C01-308E/Music"; // for Sony phone
 
         System.out.println("-> appDir = " + appDir);
 

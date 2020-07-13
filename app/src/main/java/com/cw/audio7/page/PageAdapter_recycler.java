@@ -19,10 +19,7 @@ package com.cw.audio7.page;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.graphics.Color;
-import android.net.Uri;
 import android.os.AsyncTask;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -31,6 +28,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.cw.audio7.R;
 import com.cw.audio7.db.DB_drawer;
@@ -293,7 +291,7 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
         }
 
 		// case : show audio thumb nail if picture Uri is none and audio Uri exists
-		if((Util.isEmptyString(pictureUri) && UtilAudio.hasAudioExtension(audioUri) ) )
+		if(UtilAudio.hasAudioExtension(audioUri) )
 		{
 			holder.thumbBlock.setVisibility(View.VISIBLE);
 			holder.thumbAudio.setVisibility(View.VISIBLE);
@@ -408,7 +406,8 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
         viewHolder.audioBlock.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TabsHost.reloadCurrentPage();// after Drag and drop: this is needed to update thumb nail and title
+
+//                TabsHost.reloadCurrentPage();// after Drag and drop: this is needed to update thumb nail and title
 
                 Audio_manager.setAudioPlayMode(Audio_manager.PAGE_PLAY_MODE);
                 DB_page db_page = new DB_page(mAct, TabsHost.getCurrentPageTableId());

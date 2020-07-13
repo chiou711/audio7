@@ -31,6 +31,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
+import com.cw.audio7.R;
+
 //Audio bitmap Async Task for applying MediaMetadataRetriever
 //Note: setDataSource could hang up system for a long time when accessing remote content
 public class AsyncTaskAudioBitmap extends AsyncTask<String,Integer,String>
@@ -111,8 +113,14 @@ public class AsyncTaskAudioBitmap extends AsyncTask<String,Integer,String>
 		 }
 		 else
 		 {
-			 mImageView.setVisibility(View.GONE);
-			 ((ViewGroup) mImageView.getParent()).setVisibility(View.GONE);
+			 Bitmap bitmap = BitmapFactory.decodeResource(mAct.getResources(),
+					 R.mipmap.ic_launcher);
+			 bitmap = Bitmap.createScaledBitmap(bitmap, 100, 100, true);
+			 if(bitmap != null)
+				 mImageView.setImageBitmap(bitmap);
+
+			 mImageView.setVisibility(View.VISIBLE);
+			 ((ViewGroup) mImageView.getParent()).setVisibility(View.VISIBLE);
 		 }
 
 	 }
