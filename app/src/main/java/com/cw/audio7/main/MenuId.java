@@ -37,6 +37,7 @@ public class MenuId {
         static final int CHECKED_OPERATION = R.id.HANDLE_CHECKED_NOTES;
 
         // note operation
+        static final int ENABLE_NOTE_LARGE_VIEW = R.id.ENABLE_NOTE_LARGE_VIEW;
         static final int ENABLE_NOTE_SELECT = R.id.ENABLE_NOTE_SELECT;
         static final int ENABLE_NOTE_DRAG_AND_DROP = R.id.ENABLE_NOTE_DRAG_AND_DROP;
 

@@ -51,7 +51,6 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.ListFragment;
@@ -162,17 +161,40 @@ public class Add_audio_auto extends ListFragment
 
         // case: test external sdcard
 //        appDir = "/storage/B8F3-5830/Music"; // for Nokia phone
-        appDir = "/storage/8C01-308E/Music"; // for Sony phone
+//        appDir = "/storage/8C01-308E/Music"; // for Sony phone
 
-        System.out.println("-> appDir = " + appDir);
+        List<StorageUtils.StorageInfo> listOfStorage = StorageUtils.getStorageList();
 
-        currFilePath = appDir;
+        for(int i=0;i<listOfStorage.size();i++) {
+            System.out.println("-->  listOfStorage[" + i +"] name = "+ listOfStorage.get(i).getDisplayName());
+            System.out.println("-->  listOfStorage[" + i +"] path = "+ listOfStorage.get(i).path);
 
-        File dir = new File(appDir);
-        if(!dir.exists())
-            dir.mkdir();
+            String sdCardPath =  listOfStorage.get(i).path;
 
-        addAllFilesUnderPath(currFilePath);
+            // Internal SD card case : /storage/emulated/0
+            if(sdCardPath.contains("/emulated/0")) {
+                //TODO temp dir audio7
+                appDir = sdCardPath.concat("/").concat(Util.getStorageDirName(getActivity()));
+            }
+            // external SD card case : /mnt/media_rw/8C01-308E
+            else if (sdCardPath.contains("/mnt/media_rw"))
+            {
+                //TODO temp dir Music
+                appDir = sdCardPath.concat("/Music");
+                appDir = appDir.replace("mnt/media_rw","storage");
+            }
+            System.out.println("-> appDir (sd card "+ i + ") = " + appDir);
+
+            currFilePath = appDir;
+
+            File dir = new File(appDir);
+            if(!dir.exists())
+                dir.mkdir();
+
+            // add all links to DB
+            addAllFilesUnderPath(currFilePath);
+        }
+
     }
 
 
@@ -620,4 +642,5 @@ public class Add_audio_auto extends ListFragment
             Util.showSavedFileToast(pageName +" Added",getActivity());
         }
     }
+
 }

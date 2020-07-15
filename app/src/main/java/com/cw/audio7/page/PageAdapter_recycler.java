@@ -140,9 +140,17 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
     // Create new views (invoked by the layout manager)
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
+
+        int resource_id;
+        SharedPreferences   mPref_show_note_attribute = MainAct.mAct.getSharedPreferences("show_note_attribute", 0);
+        if(mPref_show_note_attribute.getString("KEY_ENABLE_LARGE_VIEW", "yes").equalsIgnoreCase("yes"))
+            resource_id = R.layout.page_view_card_high;
+        else
+            resource_id = R.layout.page_view_card;
+
         // Create a new view.
         View v = LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.page_view_card, viewGroup, false);
+                .inflate(resource_id, viewGroup, false);
 
         return new ViewHolder(v);
     }
@@ -221,7 +229,11 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
         // show audio name
         if(Util.isUriExisted(audioUri, mAct)) {
             holder.audioTitle.setText(audio_name[0]);
-            holder.audioArtist.setText(audio_name[1]);
+
+            if(!Util.isEmptyString(audio_name[1]))
+                holder.audioArtist.setText(audio_name[1]);
+            else
+                holder.audioArtist.setVisibility(View.GONE);
         }
         else {
             holder.audioTitle.setText(R.string.file_not_found);

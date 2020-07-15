@@ -24,6 +24,7 @@
     <string name="gallery_toast_no_file">No file yet, please create one first</string>
     <string name="select_note">Select note</string>
     <string name="drag_note">Drag note</string>
+    <string name="large_view">Large view</string>
     <string name="preview_note_body">Preview body</string>
     <string name="drag_folder">Drag folder</string>
     <string name="delete_folders">Delete folders</string>

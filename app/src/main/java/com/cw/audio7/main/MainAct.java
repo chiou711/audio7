@@ -1084,9 +1084,19 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
         getMenuInflater().inflate(R.menu.main_menu, menu);
 
         playOrStopMusicButton = menu.findItem(R.id.PLAY_OR_STOP_MUSIC);
+        mPref_show_note_attribute = getSharedPreferences("show_note_attribute", 0);
+
+        // enable larger view
+        if(mPref_show_note_attribute.getString("KEY_ENABLE_LARGE_VIEW", "yes").equalsIgnoreCase("yes"))
+            menu.findItem(R.id.ENABLE_NOTE_LARGE_VIEW)
+                    .setIcon(R.drawable.btn_check_on_holo_light)
+                    .setTitle(R.string.large_view) ;
+        else
+            menu.findItem(R.id.ENABLE_NOTE_LARGE_VIEW)
+                    .setIcon(R.drawable.btn_check_off_holo_light)
+                    .setTitle(R.string.large_view) ;
 
         // enable drag note
-        mPref_show_note_attribute = getSharedPreferences("show_note_attribute", 0);
         if(mPref_show_note_attribute.getString("KEY_ENABLE_DRAGGABLE", "yes").equalsIgnoreCase("yes"))
             menu.findItem(R.id.ENABLE_NOTE_DRAG_AND_DROP)
                     .setIcon(R.drawable.btn_check_on_holo_light)
@@ -1330,6 +1340,26 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                     Toast.makeText(this, R.string.no_page_yet, Toast.LENGTH_SHORT).show();
                 }
             return true;
+
+            case MenuId.ENABLE_NOTE_LARGE_VIEW:
+                mPref_show_note_attribute = mContext.getSharedPreferences("show_note_attribute", 0);
+                if(mPref_show_note_attribute.getString("KEY_ENABLE_LARGE_VIEW", "yes").equalsIgnoreCase("yes")) {
+                    mPref_show_note_attribute.edit().putString("KEY_ENABLE_LARGE_VIEW", "no").apply();
+                    Toast.makeText(this,getResources().getString(R.string.large_view)+
+                                    ": " +
+                                    getResources().getString(R.string.set_disable),
+                            Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    mPref_show_note_attribute.edit().putString("KEY_ENABLE_LARGE_VIEW", "yes").apply();
+                    Toast.makeText(this,getResources().getString(R.string.large_view) +
+                                    ": " +
+                                    getResources().getString(R.string.set_enable),
+                            Toast.LENGTH_SHORT).show();
+                }
+                invalidateOptionsMenu();
+                TabsHost.reloadCurrentPage();
+                return true;
 
             case MenuId.ENABLE_NOTE_DRAG_AND_DROP:
                 mPref_show_note_attribute = mContext.getSharedPreferences("show_note_attribute", 0);

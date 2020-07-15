@@ -24,6 +24,7 @@
     <string name="gallery_toast_no_file">还没有文件，请您先建立一个</string>
     <string name="select_note">勾选笔记</string>
     <string name="drag_note">拖放笔记</string>
+    <string name="large_view">大视图</string>
     <string name="preview_note_body">预览本文</string>
     <string name="drag_folder">拖放文件夹</string>
     <string name="delete_folders">删除文件夹</string>
