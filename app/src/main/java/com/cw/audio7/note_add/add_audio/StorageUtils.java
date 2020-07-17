@@ -52,20 +52,33 @@ public class StorageUtils {
 
 		List<StorageInfo> list = new ArrayList<StorageInfo>();
 		String def_path = Environment.getExternalStorageDirectory().getPath();
-		boolean def_path_internal = !Environment.isExternalStorageRemovable();
+//		System.out.println("---- def_path = " + def_path);
+
 		String def_path_state = Environment.getExternalStorageState();
+//		System.out.println("---- def_path_state = " + def_path_state);
+
+		boolean def_path_internal = !Environment.isExternalStorageRemovable();
+//		System.out.println("---- def_path_internal = " + def_path_internal);
+
 		boolean def_path_available = def_path_state.equals(Environment.MEDIA_MOUNTED)
-				|| def_path_state.equals(Environment.MEDIA_MOUNTED_READ_ONLY);
+														|| def_path_state.equals(Environment.MEDIA_MOUNTED_READ_ONLY);
+//		System.out.println("---- def_path_available = " + def_path_available);
+
 		boolean def_path_readonly = Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED_READ_ONLY);
+//		System.out.println("---- def_path_readonly = " + def_path_readonly);
+
 		BufferedReader buf_reader = null;
+
 		try {
 			HashSet<String> paths = new HashSet<String>();
 			buf_reader = new BufferedReader(new FileReader("/proc/mounts"));
 			String line;
 			int cur_display_number = 1;
 			Log.d(TAG, "/proc/mounts");
+
 			while ((line = buf_reader.readLine()) != null) {
 				Log.d(TAG, line);
+//				System.out.println("---- line = " + line);
 				if (line.contains("vfat") || line.contains("/mnt")) {
 					StringTokenizer tokens = new StringTokenizer(line, " ");
 					String unused = tokens.nextToken(); //device
@@ -94,8 +107,14 @@ public class StorageUtils {
 			}
 
 			if (!paths.contains(def_path) && def_path_available) {
+				paths.add(def_path);
 				list.add(0, new StorageInfo(def_path, def_path_internal, def_path_readonly, -1));
 			}
+
+//			System.out.println("paths.size() =" + paths.size() );
+//			for(int i=0;i<paths.size();i++ )
+//				System.out.println("path["+i+"] =" + paths.toArray()[i] );
+
 
 		} catch (FileNotFoundException ex) {
 			ex.printStackTrace();
@@ -108,6 +127,7 @@ public class StorageUtils {
 				} catch (IOException ex) {}
 			}
 		}
+
 		return list;
 	}
 }
