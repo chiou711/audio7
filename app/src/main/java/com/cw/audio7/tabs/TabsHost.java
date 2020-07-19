@@ -527,6 +527,7 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
 
     public static void setCurrentPageTableId(int id)
     {
+        //System.out.println("TabsHost / _setCurrentPageTableId / id = " + id);
         mFocusPageTableId = id;
     }
 

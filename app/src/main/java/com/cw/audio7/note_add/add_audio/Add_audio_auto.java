@@ -33,6 +33,7 @@ import com.cw.audio7.R;
 import com.cw.audio7.db.DB_drawer;
 import com.cw.audio7.db.DB_folder;
 import com.cw.audio7.db.DB_page;
+import com.cw.audio7.drawer.Drawer;
 import com.cw.audio7.folder.FolderUi;
 import com.cw.audio7.main.MainAct;
 import com.cw.audio7.tabs.TabsHost;
@@ -144,6 +145,8 @@ public class Add_audio_auto extends ListFragment
 
     String appDir;
     String currFilePath;
+    Integer folders_count;
+    Integer pages_count;
 
     @Override
     public void onResume() {
@@ -151,6 +154,9 @@ public class Add_audio_auto extends ListFragment
         listView = getListView();
 
         List<StorageUtils.StorageInfo> storageList = StorageUtils.getStorageList();
+
+        folders_count = 0;
+        pages_count = 0;
 
         for(int i=0;i<storageList.size();i++) {
             System.out.println("-->  storageList[" + i +"] name = "+ storageList.get(i).getDisplayName());
@@ -207,25 +213,20 @@ public class Add_audio_auto extends ListFragment
     // Scan all storage devices and save audio links to DB
     void scan_and_save(String currFilePath, boolean beSaved)
     {
-        String folderName = currFilePath.replace(appDir,"");
-//        System.out.println("==>  folderName = " + folderName);
-        String[] layers = folderName.split("/");
 
+//        String folderName = currFilePath.replace(appDir,"");
+//        String[] layers = folderName.split("/");
         // check layers
-        for(int i=0;i<layers.length;i++) {
-            System.out.println("==>  layer[" + i + "] = " + layers[i]);
-        }
-
-        // add folder
-        if(layers.length == 2 )
-        {
+//        for(int i=0;i<layers.length;i++) {
+//            System.out.println("==>  layer[" + i + "] = " + layers[i]);
+//        }
+//        if(layers.length == 2 )
+//        {
             // first level
-            folderName = layers[1];
-            System.out.println("==>  first level folderName = " + folderName);
+//            folderName = layers[1];
+//            System.out.println("==>  first level folderName = " + folderName);
+//        }
 
-//            if(beSaved) //TODO Implement for multiple DB folders?
-//                addNewFolder(folderName);
-        }
 
         List<String> list;
         list = getListInPath(currFilePath);
@@ -235,29 +236,30 @@ public class Add_audio_auto extends ListFragment
             for (String file : list) {
                 File fileDir = new File(currFilePath.concat("/").concat(file));
 
-                System.out.println("==>  file = " + file);
-                System.out.println("==>  fileDir = " + fileDir.getPath());
+//                System.out.println("==>  file = " + file);
+//                System.out.println("==>  fileDir = " + fileDir.getPath());
 
                 if( !fileDir.getAbsolutePath().contains("..") ||
                     (fileDir.getAbsolutePath().contains("..") &&  (file.length()!=2) ) )
                 {
                     if (fileDir.isDirectory()) {
+
                         // add page
                         int dirs_count = 0;
                         int dirsFilesCount = 0;
 
                         // get page name
                         String pageName = fileDir.getName();
-                        System.out.println(" ");
-                        System.out.println("==>  dir Name = " + pageName);
+//                        System.out.println(" ");
+//                        System.out.println("==>  dir Name = " + pageName);
 
                         if (fileDir.listFiles() != null) {
                             dirsFilesCount = fileDir.listFiles().length;
-                            System.out.println("--> dirsFilesCount : " + dirsFilesCount);
+//                            System.out.println("--> dirsFilesCount : " + dirsFilesCount);
                             dirs_count = getFilesList(fileDir.listFiles());
-                            System.out.println("--1 dirs_count : " + dirs_count);
+//                            System.out.println("--1 dirs_count : " + dirs_count);
                             int files_count =  dirsFilesCount - dirs_count;
-                            System.out.println("--2 files_count : " + files_count);
+//                            System.out.println("--2 files_count : " + files_count);
                         }
 
                         // check if audio files exist
@@ -265,8 +267,20 @@ public class Add_audio_auto extends ListFragment
                             if ((dirs_count == 0) && (dirsFilesCount > 0)) {
 
                                 // check if dir has audio files before Save
-                                if(getAudioFilesCount(fileDir)>0)
+                                if(getAudioFilesCount(fileDir)>0) {
+
+                                    // add new folder
+                                    if ((pages_count % 7) == 0) {
+                                        folders_count = (pages_count / 7) + 1;
+
+                                        if (folders_count > Drawer.getFolderCount())
+                                            addNewFolder(String.valueOf(folders_count));
+                                    }
+
+                                    // add new page
                                     addNewPage(pageName);
+                                    pages_count++;
+                                }
                             }
                         }
 
@@ -304,7 +318,7 @@ public class Add_audio_auto extends ListFragment
                 }
             }
         }
-        System.out.println("---------------- audioFilesCount = " + audioFilesCount);
+//        System.out.println("---------------- audioFilesCount = " + audioFilesCount);
         return  audioFilesCount;
     }
 

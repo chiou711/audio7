@@ -113,8 +113,10 @@ public class AsyncTaskAudioBitmap extends AsyncTask<String,Integer,String>
 		 }
 		 else
 		 {
-			 Bitmap bitmap = BitmapFactory.decodeResource(mAct.getResources(),
-					 R.mipmap.ic_launcher);
+		 	 // It’s best practice to place your app icons in mipmap- folders (not the drawable- folders)
+			 // https://android-developers.googleblog.com/2014/10/getting-your-apps-ready-for-nexus-6-and.html
+//			 Bitmap bitmap = BitmapFactory.decodeResource(mAct.getResources(), R.mipmap.ic_launcher);
+			 Bitmap bitmap = BitmapFactory.decodeResource(mAct.getResources(), R.drawable.ic_launcher2);
 			 bitmap = Bitmap.createScaledBitmap(bitmap, 100, 100, true);
 			 if(bitmap != null)
 				 mImageView.setImageBitmap(bitmap);

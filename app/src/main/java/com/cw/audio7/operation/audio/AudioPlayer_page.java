@@ -283,8 +283,13 @@ public class AudioPlayer_page
 					return;
 				} else {
 					if (BackgroundAudioService.mIsPrepared) {
-						// media file length
-						media_file_length = BackgroundAudioService.mMediaPlayer.getDuration(); // gets the song length in milliseconds from URL
+
+						// media file length //TODO temporary workaround for getDuration exception
+						if( BackgroundAudioService.mMediaPlayer != null)
+							media_file_length = BackgroundAudioService.mMediaPlayer.getDuration(); // gets the song length in milliseconds from URL
+						else
+							media_file_length = 0;
+
 						System.out.println("AudioPlayer_page / _setAudioPlayerListeners / media_file_length = " + media_file_length);
 
 						// set footer message: media name
@@ -641,9 +646,16 @@ public class AudioPlayer_page
         int curSec = Math.round((float)((currentPos - curHour * 60 * 60 * 1000 - curMin * 60 * 1000)/ 1000));
 
         // set current playing time
-        audioUi_page.audioPanel_curr_pos.setText(String.format(Locale.US,"%2d", curHour)+":" +
-                String.format(Locale.US,"%02d", curMin)+":" +
-                String.format(Locale.US,"%02d", curSec) );//??? why affect audio title?
+	    if(media_file_length != 0) {
+		    audioUi_page.audioPanel_curr_pos.setText(String.format(Locale.US, "%2d", curHour) + ":" +
+				    String.format(Locale.US, "%02d", curMin) + ":" +
+				    String.format(Locale.US, "%02d", curSec));//??? why affect audio title?
+	    }
+	    else {
+		    audioUi_page.audioPanel_curr_pos.setText(String.format(Locale.US, "%2d", 0) + ":" +
+				    String.format(Locale.US, "%02d", 0) + ":" +
+				    String.format(Locale.US, "%02d", 0));
+	    }
 
         // set current progress
         AudioUi_page.mProgress = (int)(((float)currentPos/ media_file_length)*100);

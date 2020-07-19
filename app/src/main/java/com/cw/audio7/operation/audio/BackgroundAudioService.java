@@ -168,21 +168,19 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
             if(mMediaPlayer == null)
                 initMediaPlayer();
 
+            setAudioPlayerListeners();
+
             try {
                 mMediaPlayer.setDataSource(MainAct.mAct, uri);
             } catch (IOException e) {
                 e.printStackTrace();
             }
 
-
             try {
                 mMediaPlayer.prepare();
                 mIsPrepared = false;
                 mIsCompleted = false;
-
-                setAudioPlayerListeners();
-
-            } catch (IOException e) {
+            } catch (IllegalStateException | IOException e) {
                 e.printStackTrace();
             }
         }
