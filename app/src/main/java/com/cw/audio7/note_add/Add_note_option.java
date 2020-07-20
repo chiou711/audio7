@@ -116,7 +116,7 @@ public class Add_note_option {
         // audio by auto
         addNoteList.add(new Add_note_option(ID_NEW_AUDIO_auto,
                 R.drawable.ic_color_a,
-                R.string.note_ready_audio_auto));
+                R.string.note_ready_audio_by_all));
 
         // Back
         addNoteList.add(new Add_note_option(ID_NEW_BACK,

@@ -62,6 +62,7 @@ public class Add_audio_auto extends ListFragment
     List<String> fileNames = null;
     public View rootView;
     ListView listView;
+    int PAGES_PER_FOLDER = 7;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -145,6 +146,7 @@ public class Add_audio_auto extends ListFragment
 
     String appDir;
     String currFilePath;
+    Integer existing_folders_count;
     Integer folders_count;
     Integer pages_count;
 
@@ -155,6 +157,7 @@ public class Add_audio_auto extends ListFragment
 
         List<StorageUtils.StorageInfo> storageList = StorageUtils.getStorageList();
 
+        existing_folders_count = Drawer.getFolderCount();
         folders_count = 0;
         pages_count = 0;
 
@@ -270,11 +273,11 @@ public class Add_audio_auto extends ListFragment
                                 if(getAudioFilesCount(fileDir)>0) {
 
                                     // add new folder
-                                    if ((pages_count % 7) == 0) {
-                                        folders_count = (pages_count / 7) + 1;
+                                    if ((pages_count % PAGES_PER_FOLDER) == 0) {
+                                        folders_count = (pages_count / PAGES_PER_FOLDER) + 1 + existing_folders_count;
 
                                         if (folders_count > Drawer.getFolderCount())
-                                            addNewFolder(String.valueOf(folders_count));
+                                            addNewFolder(String.valueOf((pages_count / PAGES_PER_FOLDER) + 1));
                                     }
 
                                     // add new page
