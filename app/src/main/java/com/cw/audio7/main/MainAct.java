@@ -214,62 +214,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                 dialog_EULA.applyPreference();
 
                 // dialog: with default content
-                if( (Define.DEFAULT_CONTENT == Define.BY_ASSETS) ||
-                    (Define.DEFAULT_CONTENT == Define.BY_DOWNLOAD) )
-                {
-                    // has not answered if default content needed
-                    if(!Pref.getPref_has_answered_if_default_content_needed(this)) {
-                        // Click Yes
-                        DialogInterface.OnClickListener click_sample_Yes = (DialogInterface dlg, int j) -> {
-                            // Close dialog
-                            dialog.dismiss();
-
-                            // check build version for permission request (starts from API 23)
-                            if (Build.VERSION.SDK_INT >= 23)
-                                checkPermission(savedInstanceState, Util.PERMISSIONS_REQUEST_STORAGE_WITH_DEFAULT_CONTENT_YES);
-                            else {
-                                if (Define.DEFAULT_CONTENT == Define.BY_DOWNLOAD) {
-                                    createDefaultContent_byDownload();
-                                } else {
-                                    Pref.setPref_will_create_default_content(this, true);
-                                    recreate();
-                                }
-                            }
-                        };
-
-                        // Click No
-                        DialogInterface.OnClickListener click_sample_No = (DialogInterface dlg, int j) -> {
-                            // Close dialog
-                            dialog.dismiss();
-
-                            // check build version for permission request
-                            if (Build.VERSION.SDK_INT >= 23)
-                                checkPermission(savedInstanceState, Util.PERMISSIONS_REQUEST_STORAGE_WITH_DEFAULT_CONTENT_NO);
-                            else {
-                                Pref.setPref_will_create_default_content(this, false);
-                                recreate();
-                            }
-                        };
-
-                        AlertDialog.Builder builder = new AlertDialog.Builder(mAct)
-                                .setTitle(R.string.sample_notes_title)
-                                .setMessage(R.string.sample_notes_message)
-                                .setCancelable(false)
-                                .setPositiveButton(R.string.confirm_dialog_button_yes, click_sample_Yes)
-                                .setNegativeButton(R.string.confirm_dialog_button_no, click_sample_No);
-                        builder.create().show();
-                    } else {
-                        // check build version for permission request
-                        if (Build.VERSION.SDK_INT >= 23)
-                            checkPermission(savedInstanceState, Util.PERMISSIONS_REQUEST_STORAGE_WITH_DEFAULT_CONTENT_NO);
-                        else {
-                            Pref.setPref_will_create_default_content(this, false);
-                            recreate();
-                        }
-                    }
-
-                }
-                else if((Define.DEFAULT_CONTENT == Define.BY_INITIAL_TABLES) && (Define.INITIAL_FOLDERS_COUNT > 0))
+                if((Define.DEFAULT_CONTENT == Define.BY_INITIAL_TABLES) && (Define.INITIAL_FOLDERS_COUNT > 0))
                 {
                     if(Build.VERSION.SDK_INT >= 23)
                         checkPermission(savedInstanceState, Util.PERMISSIONS_REQUEST_STORAGE_WITH_DEFAULT_CONTENT_YES);
@@ -329,9 +274,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
 
         // Will create default contents: by assets or by initial tables
         if(Pref.getPref_will_create_default_content(this)) {
-            if (Define.DEFAULT_CONTENT == Define.BY_ASSETS)
-                createDefaultContent_byAssets();
-            else if ((Define.DEFAULT_CONTENT == Define.BY_INITIAL_TABLES) && (Define.INITIAL_FOLDERS_COUNT > 0))
+            if ((Define.DEFAULT_CONTENT == Define.BY_INITIAL_TABLES) && (Define.INITIAL_FOLDERS_COUNT > 0))
                 createDefaultContent_byInitialTables();
         }
 
@@ -399,55 +342,6 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
             configLayoutView(); //createAssetsFile inside
     }
 
-
-    /**
-     *  Create default content
-     */
-    void createDefaultContent_byAssets()
-    {
-        System.out.println("MainAct / _createDefaultContent_byAssets");
-
-        String fileName;
-        File xmlFile = null;
-        // will create database first
-        DB_drawer dB_drawer = new DB_drawer(this);
-
-        // create asset files
-        // default image
-        String imageFileName = "local.jpg";
-        Util.createAssetsFile(this, imageFileName);
-
-        // default video
-        String videoFileName = "local.mp4";
-        Util.createAssetsFile(this, videoFileName);
-
-        // default audio
-        String audioFileName = "local.mp3";
-        Util.createAssetsFile(this, audioFileName);
-
-        fileName = "default_content_by_assets.xml";
-
-        // By assets file
-        xmlFile = Util.createAssetsFile(this,fileName);
-
-        // import content
-        if(xmlFile.exists()) {
-            //todo Could halt on this ?
-            Import_fileView.importDefaultContentByXml(this, xmlFile);
-
-            //set default position to 0
-            int folderTableId = dB_drawer.getFolderTableId(0, true);
-            Pref.setPref_focusView_folder_tableId(this, folderTableId);
-            DB_folder.setFocusFolder_tableId(folderTableId);
-        }
-
-
-        // already has preferred tables
-        Pref.setPref_will_create_default_content(this, false);
-
-        //workaround: fix blank page after adding default page (due to no TabsHost onPause/onResume cycles, but why?)
-        recreate();
-    }
 
     /**
      * Create initial tables
@@ -587,12 +481,8 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                     break;
 
                 case Util.PERMISSIONS_REQUEST_STORAGE_WITH_DEFAULT_CONTENT_YES:
-                    if(Define.DEFAULT_CONTENT == Define.BY_DOWNLOAD)
-                        createDefaultContent_byDownload();
-                    else {
-                        Pref.setPref_will_create_default_content(this, true);
-                        recreate();
-                    }
+                    Pref.setPref_will_create_default_content(this, true);
+                    recreate();
                 break;
 
                 case Util.PERMISSIONS_REQUEST_STORAGE_WITH_DEFAULT_CONTENT_NO:
@@ -608,21 +498,6 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
         }
 
         //normally, will go to _resume
-    }
-
-    //  Download XML file from Google drive
-    void createDefaultContent_byDownload()
-    {
-
-        /**
-         * audio7_default_content.xml
-         * Unit: folder
-         */
-        // audio7_default_content.xml
-        String srcUrl = "https://drive.google.com/uc?authuser=0&id=1qAfMUJ9DMsciVkb7hEQAwLrmcyfN95sF&export=download";
-
-        Async_default_byDownload async = new Async_default_byDownload(mAct,srcUrl);
-        async.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,"Downloading file ...");
     }
 
     @Override
@@ -990,6 +865,8 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
 
 //            mMenu.findItem(R.id.DELETE_FOLDERS).setVisible(foldersCnt >0);
 //            mMenu.findItem(R.id.ENABLE_FOLDER_DRAG_AND_DROP).setVisible(foldersCnt >1);
+            mMenu.findItem(R.id.ADD_NEW_NOTE).setVisible(false);
+            mMenu.findItem(R.id.HANDLE_CHECKED_NOTES).setVisible(false);
 
             mMenu.setGroupVisible(R.id.group_pages_and_more, false);
             mMenu.setGroupVisible(R.id.group_notes, false);
@@ -998,6 +875,9 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
         {
             if(Util.isLandscapeOrientation(mAct))
                 mMenu.setGroupVisible(R.id.group_folders, false);
+
+            mMenu.findItem(R.id.ADD_NEW_NOTE).setVisible(true);
+            mMenu.findItem(R.id.HANDLE_CHECKED_NOTES).setVisible(true);
 
             /**
              * Page group and more
@@ -1087,14 +967,14 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
         mPref_show_note_attribute = getSharedPreferences("show_note_attribute", 0);
 
         // enable larger view
-        if(mPref_show_note_attribute.getString("KEY_ENABLE_LARGE_VIEW", "yes").equalsIgnoreCase("yes"))
+        if (mPref_show_note_attribute.getString("KEY_ENABLE_LARGE_VIEW", "yes").equalsIgnoreCase("yes"))
             menu.findItem(R.id.ENABLE_NOTE_LARGE_VIEW)
                     .setIcon(R.drawable.btn_check_on_holo_light)
-                    .setTitle(R.string.large_view) ;
+                    .setTitle(R.string.large_view);
         else
             menu.findItem(R.id.ENABLE_NOTE_LARGE_VIEW)
                     .setIcon(R.drawable.btn_check_off_holo_light)
-                    .setTitle(R.string.large_view) ;
+                    .setTitle(R.string.large_view);
 
         // enable drag note
         if(mPref_show_note_attribute.getString("KEY_ENABLE_DRAGGABLE", "yes").equalsIgnoreCase("yes"))
@@ -1142,7 +1022,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
         setMenuUiState(item.getItemId());
         DB_drawer dB_drawer = new DB_drawer(this);
         DB_folder dB_folder = new DB_folder(this, Pref.getPref_focusView_folder_tableId(this));
-        DB_page dB_page = new DB_page(this,Pref.getPref_focusView_page_tableId(this));
+//        DB_page dB_page = new DB_page(this,Pref.getPref_focusView_page_tableId(this));
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 

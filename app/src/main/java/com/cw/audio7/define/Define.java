@@ -103,8 +103,6 @@ public class Define {
      * Flags for Default tables after App installation:
      * - default content: DEFAULT_CONTENT
      *      - by initial tables: INITIAL_FOLDERS_COUNT, INITIAL_PAGES_COUNT
-     *      - by assets XML
-     *      - by download XML
      * Note of flag setting: exclusive
      *
      * With default content
@@ -131,10 +129,6 @@ public class Define {
     public static int DEFAULT_CONTENT;
     // by none
     public static int BY_INITIAL_TABLES = 0;
-    // by assets XML file
-    public static int BY_ASSETS = 1;
-    // by downloaded XML file
-    public static int BY_DOWNLOAD = 2;
 
     /**
      * With initial tables: table count
