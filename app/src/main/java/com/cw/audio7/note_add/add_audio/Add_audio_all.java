@@ -16,16 +16,13 @@
 
 package com.cw.audio7.note_add.add_audio;
 
-import android.content.Context;
-import android.graphics.Typeface;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,93 +40,55 @@ import com.cw.audio7.util.Util;
 import com.cw.audio7.util.audio.UtilAudio;
 import com.cw.audio7.util.preferences.Pref;
 
-import org.apache.commons.io.FileUtils;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.ListFragment;
+import androidx.fragment.app.Fragment;
 
-public class Add_audio_auto extends ListFragment
+public class Add_audio_all extends Fragment
 {
-    private List<String> filePathArray = null;
+    List<String> filePathArray = null;
     List<String> fileNames = null;
     public View rootView;
-    ListView listView;
     int PAGES_PER_FOLDER = 7;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.import_sd_files_list, container, false);
-
+        rootView = inflater.inflate(R.layout.add_all, container, false);
         View view = rootView.findViewById(R.id.view_back_btn_bg);
-        view.setBackgroundColor(ColorSet.getBarColor(getActivity()));
+        view.setBackgroundColor(ColorSet.getBarColor(Objects.requireNonNull(getActivity())));
+
+        TextView titleViewText = (TextView) rootView.findViewById(R.id.add_all_message);
+        titleViewText.setText(R.string.note_add_all_title);
 
         // back button
         Button backButton = (Button) rootView.findViewById(R.id.view_back);
         backButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_menu_back, 0, 0, 0);
 
-        // update button
-        Button renewButton = (Button) rootView.findViewById(R.id.view_renew);
-        renewButton.setCompoundDrawablesWithIntrinsicBounds(android.R.drawable.ic_popup_sync , 0, 0, 0);
+        // renew button
+        Button addAllButton = (Button) rootView.findViewById(R.id.view_add_all);
+        addAllButton.setCompoundDrawablesWithIntrinsicBounds(android.R.drawable.ic_popup_sync , 0, 0, 0);
 
         // do cancel
         backButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                getActivity().getSupportFragmentManager().popBackStack();
+                Objects.requireNonNull(getActivity()).getSupportFragmentManager().popBackStack();
             }
         });
 
-        // do update
-        renewButton.setOnClickListener(new View.OnClickListener() {
+        // do Add all
+        addAllButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                // source dir: Download
-                String srcDirName = Util.getStorageDirName(getActivity());//"Download";//todo Could be empty
-                String srcDirPath = Environment.getExternalStorageDirectory().toString() +
-                        "/" +
-                        srcDirName;
-                System.out.println("srcDirPath = " + srcDirPath);
-
-                /**
-                 * Note about getExternalStorageDirectory:
-                 * don't be confused by the word "external" here.
-                 * This directory can better be thought as media/shared storage.
-                 * It is a filesystem that can hold a relatively large amount of data and
-                 * that is shared across all applications (does not enforce permissions).
-                 * Traditionally this is an SD card, but it may also be implemented as built-in storage in a device
-                 * that is distinct from the protected internal storage and can be mounted as a filesystem on a computer.
-                 */
-                // target dir
-                String targetDirPath = Environment.getExternalStorageDirectory().toString() +
-                        "/" +
-                        Util.getStorageDirName(getActivity());
-
-                // copy source files to target directory
-                File srcDir = new File(srcDirPath);
-
-                if(srcDir.exists()) {
-                    for (File srcFile : srcDir.listFiles()) {
-                        File targetFile = new File(targetDirPath + "/" + srcFile.getName());
-                        System.out.println("targetFile.getName() = " + targetFile.getName());
-                        try {
-                            if (srcFile.getName().contains("MP3") || srcFile.getName().contains("mp3l"))
-                                FileUtils.copyFile(srcFile, targetFile);
-                        } catch (IOException e) {
-
-                            e.printStackTrace();
-                        }
-                    }
-                }
-
-                // refresh list view
-                File dir = new File(targetDirPath);
-                getFilesList(dir.listFiles());
+                // Async for showing progress bar and do Add all
+                Add_audio_all_asyncTask task = new Add_audio_all_asyncTask(MainAct.mAct,rootView,currFilePath);
+                task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             }
         });
 
@@ -138,58 +97,19 @@ public class Add_audio_auto extends ListFragment
         return rootView;
     }
 
-    @Override
-    public void onCreate(Bundle bundle) 
-    {
-        super.onCreate(bundle);
-    }
 
     String appDir;
     String currFilePath;
     Integer existing_folders_count;
     Integer folders_count;
     Integer pages_count;
+    boolean isDoing;
 
     @Override
     public void onResume() {
         super.onResume();
-        listView = getListView();
-
-        List<StorageUtils.StorageInfo> storageList = StorageUtils.getStorageList();
-
-        existing_folders_count = Drawer.getFolderCount();
-        folders_count = 0;
-        pages_count = 0;
-
-        for(int i=0;i<storageList.size();i++) {
-            System.out.println("-->  storageList[" + i +"] name = "+ storageList.get(i).getDisplayName());
-            System.out.println("-->  storageList[" + i +"] path = "+ storageList.get(i).path);
-            System.out.println("-->  storageList[" + i +"] display number = "+ storageList.get(i).display_number);
-
-            String sdCardPath =  storageList.get(i).path;
-
-            appDir = sdCardPath;
-
-            if (appDir.contains("/mnt/media_rw"))
-                appDir = appDir.replace("mnt/media_rw","storage");
-
-            System.out.println("-->  storageList[" + i +"] appDir = "+ appDir);
-
-//            appDir = appDir.concat("/Music");//TODO direct assign dir
-
-            currFilePath = appDir;
-
-//            File dir = new File(currFilePath);
-//            if(!dir.exists())
-//                dir.mkdir();
-
-            // scan and save
-            scan_and_save(currFilePath,true);
-//            scan_and_save(currFilePath,false);
-        }
-
+        System.out.println("------------------- _onResume");
     }
-
 
     /**
      *  SD Card storage info:
@@ -216,21 +136,6 @@ public class Add_audio_auto extends ListFragment
     // Scan all storage devices and save audio links to DB
     void scan_and_save(String currFilePath, boolean beSaved)
     {
-
-//        String folderName = currFilePath.replace(appDir,"");
-//        String[] layers = folderName.split("/");
-        // check layers
-//        for(int i=0;i<layers.length;i++) {
-//            System.out.println("==>  layer[" + i + "] = " + layers[i]);
-//        }
-//        if(layers.length == 2 )
-//        {
-            // first level
-//            folderName = layers[1];
-//            System.out.println("==>  first level folderName = " + folderName);
-//        }
-
-
         List<String> list;
         list = getListInPath(currFilePath);
 
@@ -259,7 +164,7 @@ public class Add_audio_auto extends ListFragment
                         if (fileDir.listFiles() != null) {
                             dirsFilesCount = fileDir.listFiles().length;
 //                            System.out.println("--> dirsFilesCount : " + dirsFilesCount);
-                            dirs_count = getFilesList(fileDir.listFiles());
+                            dirs_count = getDirsCount(fileDir.listFiles());
 //                            System.out.println("--1 dirs_count : " + dirs_count);
                             int files_count =  dirsFilesCount - dirs_count;
 //                            System.out.println("--2 files_count : " + files_count);
@@ -416,6 +321,7 @@ public class Add_audio_auto extends ListFragment
             dB.insertNote("", "", audioUri, "", "", "", 1, (long) 0);// add new note, get return row Id
     }
 
+    // get list array in designated path
     List<String> getListInPath(String path)
     {
         File[] files = new File(path).listFiles();
@@ -453,68 +359,26 @@ public class Add_audio_auto extends ListFragment
                         fileNames.add(file.getName());
                     }
                 }
-
-                FileNameAdapter fileListAdapter = new FileNameAdapter(getActivity(),
-                        R.layout.import_sd_files_list_row,
-                        fileNames);
-                setListAdapter(fileListAdapter);
             }
         }
         return fileNames;
     }
 
-    // Get files list and show in list view, also return files count
-    int  getFilesList(File[] files)
+    // Get directories count
+    int  getDirsCount(File[] files)
     {
         int dirCount = 0;
-        if(files == null)
+        if(files != null)
         {
-        	Toast.makeText(getActivity(),"Please select audio file",Toast.LENGTH_SHORT).show();
-        }
-        else
-        {
-//        	System.out.println("files length = " + files.length);
-            filePathArray = new ArrayList<>();
-            fileNames = new ArrayList<>();
-            filePathArray.add("");
-
-            if(currFilePath.equalsIgnoreCase(new File(appDir).getParent()))
-                fileNames.add("ROOT");
-            else if(currFilePath.equalsIgnoreCase(appDir))
-                fileNames.add("..");
-            else
-                fileNames.add("..");
-
             // sort by alphabetic
             Arrays.sort(files, new FileNameComparator());
 
 	        for(File file : files)
 	        {
-                // add for filtering non-audio file
-                if(!file.isDirectory() &&
-                   (file.getName().contains("MP3") || file.getName().contains("mp3")))
-                {
-//                    System.out.println("=> _getFilesList / file name = " + file.getName());
-                    filePathArray.add(file.getPath());
-                    // file
-                    fileNames.add(file.getName());
-                }
-                else if(file.isDirectory())
-                {
-//                    System.out.println("=> _getFilesList / dir name = " + file.getName());
+                if(file.isDirectory())
                     dirCount++;
-                    filePathArray.add(file.getPath());
-                    // directory
-                    fileNames.add("[ " + file.getName() +" ]");
-                }
 	        }
-
-            FileNameAdapter fileListAdapter = new FileNameAdapter(getActivity(),
-                                                                  R.layout.import_sd_files_list_row,
-                                                                  fileNames);
-	        setListAdapter(fileListAdapter);
         }
-
         return dirCount;
     }
 
@@ -539,89 +403,107 @@ public class Add_audio_auto extends ListFragment
         }
     }
 
-
-    // File name array for setting focus and file name, note: without generic will cause unchecked or unsafe operations warning
-    class FileNameAdapter extends ArrayAdapter<String>
+    /**
+     *  Add all audio links to DB
+     */
+    void doAddAll()
     {
-        FileNameAdapter(Context context, int resource, List<String> objects) {
-            super(context, resource, objects);
+        List<StorageUtils.StorageInfo> storageList = StorageUtils.getStorageList();
+
+        existing_folders_count = Drawer.getFolderCount();
+        folders_count = 0;
+        pages_count = 0;
+        isDoing = true;
+
+        for(int i=0;i<storageList.size();i++) {
+            System.out.println("-->  storageList[" + i +"] name = "+ storageList.get(i).getDisplayName());
+            System.out.println("-->  storageList[" + i +"] path = "+ storageList.get(i).path);
+            System.out.println("-->  storageList[" + i +"] display number = "+ storageList.get(i).display_number);
+
+            String sdCardPath =  storageList.get(i).path;
+
+            appDir = sdCardPath;
+
+            if (appDir.contains("/mnt/media_rw"))
+                appDir = appDir.replace("mnt/media_rw","storage");
+
+            System.out.println("-->  storageList[" + i +"] appDir = "+ appDir);
+
+            currFilePath = appDir;
+
+            scan_and_save(currFilePath,true);
+        }
+
+        isDoing = false;
+    }
+
+    /**
+     *  Async: show progress bar and do Add all
+     */
+    class Add_audio_all_asyncTask extends AsyncTask<Void, Integer, Void> {
+
+        private ProgressBar progressBar;
+        AppCompatActivity act;
+        View rootView;
+        private TextView messageText;
+        private Button backButton;
+        private Button addAllButton;
+
+        String path;
+
+        Add_audio_all_asyncTask(AppCompatActivity _act, View _rootView, String _filePath) {
+            act = _act;
+            rootView = _rootView;
+            path = _filePath;
+
+            Util.lockOrientation(act);
+
+            messageText = (TextView) rootView.findViewById(R.id.add_all_message);
+            messageText.setText(R.string.note_add_all_title_adding);
+
+            progressBar = (ProgressBar) rootView.findViewById(R.id.add_all_progress);
+            progressBar.setVisibility(View.VISIBLE);
+
+            backButton = (Button) rootView.findViewById(R.id.view_back);
+            backButton.setVisibility(View.INVISIBLE);
+
+            addAllButton = (Button) rootView.findViewById(R.id.view_add_all);
+            addAllButton.setVisibility(View.INVISIBLE);
         }
 
         @Override
-        public View getView(int position, View convertView,ViewGroup parent) {
-            if(convertView == null)
+        protected void onProgressUpdate(Integer... values) {
+            super.onProgressUpdate(values);
+            if (this.progressBar != null) {
+                progressBar.setProgress(values[0]);
+            }
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+
+            // main function for adding audio links
+            doAddAll();
+
+            while (isDoing)
             {
-                convertView = getActivity().getLayoutInflater().inflate(R.layout.import_sd_files_list_row, parent, false);
+                System.out.println("doing");
             }
-
-            convertView.setFocusable(true);
-            convertView.setClickable(true);
-
-            convertView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    System.out.println("=> position  = " + position);
-                    v.setBackgroundColor(ColorSet.getHighlightColor(getActivity()));
-                }
-            });
-
-            TextView tv = (TextView)convertView.findViewById(R.id.text1);
-            String appName = getString(R.string.app_name);
-            tv.setText(fileNames.get(position));
-            if(fileNames.get(position).equalsIgnoreCase("sdcard")   ||
-               fileNames.get(position).equalsIgnoreCase(appName)    ||
-               fileNames.get(position).equalsIgnoreCase("[ audio7 ]") || //todo need to change for different app name
-               fileNames.get(position).equalsIgnoreCase("[ Download ]")   )
-                tv.setTypeface(null, Typeface.BOLD);
-            else
-                tv.setTypeface(null, Typeface.NORMAL);
-
-            return convertView;
+            return null;
         }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            super.onPostExecute(result);
+            System.out.println("------ onPostExecute");
+
+            progressBar.setVisibility(View.INVISIBLE);
+
+            messageText.setText(R.string.note_add_all_title_finish);
+
+            messageText.setVisibility(View.VISIBLE);
+            backButton.setVisibility(View.VISIBLE);
+            addAllButton.setVisibility(View.VISIBLE);
+        } // onPostExecute
     }
-
-    // add audio
-    void addAudio_byDir( File[] files,String pageName)
-    {
-        if(files == null)
-        {
-            Toast.makeText(getActivity(),"Please select audio folder",Toast.LENGTH_SHORT).show();
-        }
-        else {
-//        	System.out.println("files length = " + files.length);
-
-            // sort by alphabetic
-            Arrays.sort(files, new FileNameComparator());
-
-            for (File file : files) {
-                // add for filtering non-audio file
-                if (!file.isDirectory() &&
-                        (file.getName().contains("MP3") || file.getName().contains("mp3")))
-                {
-                    String uriStr = "file://".concat(file.getPath());
-
-                    DB_page dB = new DB_page(getActivity(), TabsHost.getCurrentPageTableId());
-                    if( !Util.isEmptyString(uriStr))
-                    {
-                        // insert
-                        // set marking to 1 for default
-                        //System.out.println("Add_audio_byFolder / _addAudio_byDir / uriStr = " + uriStr);
-
-                        dB.insertNote("", "", uriStr, "", "", "", 1, (long) 0);// add new note, get return row Id
-                    }
-
-                    if(!Util.isEmptyString(uriStr))
-                    {
-                        String[] audioName = Util.getDisplayNameByUriString(uriStr, getActivity());
-                    }
-
-                } else if (file.isDirectory()) {
-//                    System.out.println("=> is directory ,  file.getPath() = " +  file.getPath());
-                }
-            }
-
-            Util.showSavedFileToast(pageName +" Added",getActivity());
-        }
-    }
-
 }

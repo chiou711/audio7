@@ -22,6 +22,9 @@
     <string name="note_ready_audio_1by1">1 by 1</string>
     <string name="note_ready_audio_byFolder"> by folder</string>
     <string name="note_ready_audio_by_all">all</string>
+    <string name="note_add_all_title">Press \"Renew\" button to \n add all audio links</string>
+    <string name="note_add_all_title_adding">Adding links, please wait</string>
+    <string name="note_add_all_title_finish">Finish</string>
     <string name="note_recording">Recording</string>
     <string name="note_drawing">Doodle</string>
     <string name="note_take_picture">Take Picture</string>
