@@ -110,6 +110,7 @@ class Import_fileView_asyncTask extends AsyncTask<Void, Integer, Void> {
         {
             // show Import content
             titleViewText.setText(file.getName());
+//            System.out.println("------------------------ importObject.fileBody: " + importObject.fileBody);
             bodyViewText.setText(importObject.fileBody);
         }
     }

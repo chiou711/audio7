@@ -282,35 +282,28 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
 
 //		Context context = getApplicationContext();
 
-        //Add note with the link which got from other App
-        String intentLink = mMainUi.addNote_IntentLink(getIntent(), mAct);
-        if (!Util.isEmptyString(intentLink)) {
-            finish(); // audio7 not running at first, keep closing
-            return;
-        } else {
-            // check DB
-            final boolean ENABLE_DB_CHECK = false;//true;//false
-            if (ENABLE_DB_CHECK) {
-                // list all folder tables
-                FolderUi.listAllFolderTables(mAct);
+        // check DB
+        final boolean ENABLE_DB_CHECK = false;//true;//false
+        if (ENABLE_DB_CHECK) {
+            // list all folder tables
+            FolderUi.listAllFolderTables(mAct);
 
-                // recover focus
-                DB_folder.setFocusFolder_tableId(Pref.getPref_focusView_folder_tableId(this));
-                DB_page.setFocusPage_tableId(Pref.getPref_focusView_page_tableId(this));
-            }//if(ENABLE_DB_CHECK)
+            // recover focus
+            DB_folder.setFocusFolder_tableId(Pref.getPref_focusView_folder_tableId(this));
+            DB_page.setFocusPage_tableId(Pref.getPref_focusView_page_tableId(this));
+        }//if(ENABLE_DB_CHECK)
 
-            // enable ActionBar app icon to behave as action to toggle nav drawer
+        // enable ActionBar app icon to behave as action to toggle nav drawer
 //	        getActionBar().setDisplayHomeAsUpEnabled(true);
 //	        getActionBar().setHomeButtonEnabled(true);
 //			getActionBar().setBackgroundDrawable(new ColorDrawable(ColorSet.getBarColor(mAct)));
 
-            mContext = getBaseContext();
+        mContext = getBaseContext();
 
-            // add on back stack changed listener
-            mFragmentManager = getSupportFragmentManager();
-            mOnBackStackChangedListener = this;
-            mFragmentManager.addOnBackStackChangedListener(mOnBackStackChangedListener);
-        }
+        // add on back stack changed listener
+        mFragmentManager = getSupportFragmentManager();
+        mOnBackStackChangedListener = this;
+        mFragmentManager.addOnBackStackChangedListener(mOnBackStackChangedListener);
 
         // Register Bluetooth device receiver
         if (Build.VERSION.SDK_INT < 21) {

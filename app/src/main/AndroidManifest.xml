@@ -51,7 +51,6 @@
 
         <activity android:name="com.cw.audio7.note_add.Note_addAudio"
                   android:theme="@style/MyTheme"/>
-        <activity android:name="com.cw.audio7.util.drawing.Note_drawingAct" />
         <activity android:name="com.cw.audio7.note_edit.Note_edit"
                   android:windowSoftInputMode="adjustPan"/>
         <activity android:name="com.cw.audio7.note.Note"

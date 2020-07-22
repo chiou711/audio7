@@ -132,7 +132,7 @@ public class RecordingService extends Service {
             {
                 // insert
                 // set marking to 1 for default
-                noteId = dB.insertNote("", "", audioUriInDB, "", "", "", 1, (long) 0);// add new note, get return row Id
+                noteId = dB.insertNote("",  audioUriInDB, "",  1);// add new note, get return row Id
                 System.out.println("RecordingService / _stopRecording / noteId = " + noteId);
             }
 

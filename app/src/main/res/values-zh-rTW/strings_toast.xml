@@ -3,6 +3,4 @@
     <string name="toast_import_SDCard_no_file">還沒有檔案，請先匯出一個</string>
     <string name="toast_import_finished">所選檔案已匯入</string>
     <string name="toast_input_filename">請輸入一個檔案名稱</string>
-    <string name="toast_edit_drawing_to_landscape">要查看整個圖像，請將您的設備方向旋轉為橫向</string>
-    <string name="toast_edit_drawing_to_portrait">要查看整個圖像，請將您的設備方向旋轉為縱向</string>
 </resources>

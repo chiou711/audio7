@@ -66,7 +66,7 @@ public class Note_edit_ui {
 	private ProgressBar progressBarExpand;
 	private TouchImageView enlargedImage;
 
-	Note_edit_ui(Activity act, DB_page _db, Long noteId, String strTitle, String pictureUri, String audioUri, String drawingUri, String linkUri, String strBody, Long createdTime)
+	Note_edit_ui(Activity act, DB_page _db, Long noteId, String strTitle, String audioUri,  String strBody)
     {
     	this.act = act;
     	this.noteId = noteId;
@@ -75,7 +75,6 @@ public class Note_edit_ui {
 	    oriBody = strBody;
 	    oriAudioUri = audioUri;
 
-	    oriCreatedTime = createdTime;
 	    currAudioUri = audioUri;
 	    
 	    dB_page = _db;//Page.mDb_page;
@@ -217,7 +216,6 @@ public class Note_edit_ui {
     {
     	boolean bModified = false;
 //		System.out.println("Note_edit_ui / _isNoteModified / isTitleModified() = " + isTitleModified());
-//		System.out.println("Note_edit_ui / _isNoteModified / isPictureModified() = " + isPictureModified());
 //		System.out.println("Note_edit_ui / _isNoteModified / isAudioModified() = " + isAudioModified());
 //		System.out.println("Note_edit_ui / _isNoteModified / isBodyModified() = " + isBodyModified());
 //		System.out.println("Note_edit_ui / _isNoteModified / bRemoveAudioUri = " + bRemoveAudioUri);
@@ -232,7 +230,7 @@ public class Note_edit_ui {
     	return bModified;
     }
 
-	Long saveStateInDB(Long rowId,boolean enSaveDb, String pictureUri, String audioUri, String drawingUri)
+	Long saveStateInDB(Long rowId,boolean enSaveDb, String audioUri )
 	{
     	String title = titleEditText.getText().toString();
         String body = bodyEditText.getText().toString();
@@ -243,12 +241,11 @@ public class Note_edit_ui {
 	        {
 	        	if( (!Util.isEmptyString(title)) ||
 	        		(!Util.isEmptyString(body)) ||
-	        		(!Util.isEmptyString(pictureUri)) ||
 	        		(!Util.isEmptyString(audioUri))       )
 	        	{
 	        		// insert
 	        		System.out.println("Note_edit_ui / _saveStateInDB / insert");
-	        		rowId = dB_page.insertNote(title, pictureUri, audioUri, drawingUri, "linkUri", body, 0, (long) 0);// add new note, get return row Id
+	        		rowId = dB_page.insertNote(title,  audioUri,   body, 0);// add new note, get return row Id
 	        	}
         		currAudioUri = audioUri; // update file name
 	        } 
@@ -257,7 +254,6 @@ public class Note_edit_ui {
     	        Date now = new Date();
 	        	if( !Util.isEmptyString(title) ||
 	        		!Util.isEmptyString(body) ||
-	        		!Util.isEmptyString(pictureUri) ||
 	        		!Util.isEmptyString(audioUri)   )
 	        	{
 	        		// update
@@ -267,7 +263,7 @@ public class Note_edit_ui {
 	        			title = oriTitle;
 	        			body = oriBody;
 	        			Long time = oriCreatedTime;
-	        			dB_page.updateNote(rowId, title, pictureUri, audioUri, drawingUri, "linkUri", body, oriMarking, time,true);
+	        			dB_page.updateNote(rowId, title,  audioUri,   body, oriMarking, true);
 	        		}
 	        		else // update new
 	        		{
@@ -283,16 +279,13 @@ public class Note_edit_ui {
                             marking = oriMarking;
 
                         boolean isOK;
-	        			isOK = dB_page.updateNote(rowId, title, pictureUri, audioUri, drawingUri, "linkUri", body,
-												marking, now.getTime(),true); // update note
+	        			isOK = dB_page.updateNote(rowId, title,  audioUri,  body,marking, true); // update note
 	        			System.out.println("--- isOK = " + isOK);
 	        		}
 	        		currAudioUri = audioUri;
 	        	}
 	        	else if( Util.isEmptyString(title) &&
 	        			 Util.isEmptyString(body) &&
- 						 Util.isEmptyString(pictureUri) &&
-						 Util.isEmptyString(drawingUri) &&
 			        	 Util.isEmptyString(audioUri)      )
 	        	{
 	        		// delete
@@ -310,13 +303,10 @@ public class Note_edit_ui {
 	void removePictureStringFromOriginalNote(Long rowId) {
     	dB_page.updateNote(rowId,
 				oriTitle,
-    				   "",
 				oriAudioUri,
-				"",
-				"",
 				oriBody,
 				oriMarking,
-				oriCreatedTime, true );
+                true );
 	}
 
 	private void removePictureStringFromCurrentEditNote(Long rowId) {
@@ -325,25 +315,19 @@ public class Note_edit_ui {
         
     	dB_page.updateNote(rowId,
     				   title,
-    				   "",
 				oriAudioUri,
-				"",
-    				   "linkUri",
     				   body,
 				oriMarking,
-				oriCreatedTime, true );
+			    true );
 	}
 
 	void removeAudioStringFromOriginalNote(Long rowId) {
     	dB_page.updateNote(rowId,
 				oriTitle,
 				"",
-    				   "",
-				"",
-				"",
 				oriBody,
 				oriMarking,
-				oriCreatedTime, true );
+			    true );
 	}
 
 	void removeAudioStringFromCurrentEditNote(Long rowId) {
@@ -351,13 +335,10 @@ public class Note_edit_ui {
         String body = bodyEditText.getText().toString();
         dB_page.updateNote(rowId,
     				   title,
-				"",
-    				   "",
-				"",
     				   "",
     				   body,
-				oriMarking,
-				oriCreatedTime, true );
+						oriMarking,
+		               true );
 	}
 
 	public int getCount()

@@ -31,10 +31,10 @@ import com.cw.audio7.R;
 public class Note_addNew_option
 {
 	private RadioGroup mRadioGroup0;
-    private CheckedTextView check_add_folder_if_exists,check_add_link_if_exists;
+    private CheckedTextView check_add_folder_if_exists;
     private AlertDialog mDialog = null;
     private SharedPreferences mPref_add_new_note_location;
-    private boolean bAddToTop, bAddFolder, bAddLink;
+    private boolean bAddToTop, bAddFolder;
 
 	public Note_addNew_option(final Activity activity)
 	{
@@ -46,7 +46,6 @@ public class Note_addNew_option
 
 		mRadioGroup0 = (RadioGroup)view.findViewById(R.id.radioGroup_new_at);
 		check_add_folder_if_exists = (CheckedTextView)view.findViewById(R.id.check_add_folder_if_exists);
-		check_add_link_if_exists = (CheckedTextView)view.findViewById(R.id.check_add_link_if_exists);
 
 		AlertDialog.Builder builder = new AlertDialog.Builder(activity);
 	
@@ -113,32 +112,6 @@ public class Note_addNew_option
         }
         });
 
-		// add link: init
-		if (mPref_add_new_note_location.getString("KEY_ENABLE_LINK_TITLE_SAVE","yes").equalsIgnoreCase("yes") )
-		{
-			check_add_link_if_exists.setChecked(true);
-			bAddLink = true;
-		}
-		else if (mPref_add_new_note_location.getString("KEY_ENABLE_LINK_TITLE_SAVE","yes").equalsIgnoreCase("no") )
-		{
-            check_add_link_if_exists.setChecked(false);
-			bAddLink = false;
-		}
-
-		// add link: listener
-        check_add_link_if_exists.setOnClickListener(new View.OnClickListener()
-        {	@Override
-        public void onClick(View view)
-        {
-            boolean currentCheck = ((CheckedTextView)view).isChecked();
-            ((CheckedTextView)view).setChecked(!currentCheck);
-
-            if(((CheckedTextView)view).isChecked())
-				bAddLink = true;
-            else
-				bAddLink = false;
-        }
-        });
 
 		builder.setView(view);
   		mDialog = builder.create();
@@ -158,9 +131,5 @@ public class Note_addNew_option
 		else
 			mPref_add_new_note_location.edit().putString("KEY_ADD_DIRECTORY", "no").apply();
 
-		if(bAddLink)
-			mPref_add_new_note_location.edit().putString("KEY_ENABLE_LINK_TITLE_SAVE", "yes").apply();
-		else
-			mPref_add_new_note_location.edit().putString("KEY_ENABLE_LINK_TITLE_SAVE", "no").apply();
 	}
 }

@@ -393,7 +393,7 @@ public class Add_audio_byFolder extends ListFragment
                         // set marking to 1 for default
                         //System.out.println("Add_audio_byFolder / _addAudio_byDir / uriStr = " + uriStr);
 
-                        dB.insertNote("", "", uriStr, "", "", "", 1, (long) 0);// add new note, get return row Id
+                        dB.insertNote("",  uriStr, "",  1);// add new note, get return row Id
                     }
 
                     if(!Util.isEmptyString(uriStr))

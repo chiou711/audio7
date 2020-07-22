@@ -322,7 +322,7 @@ public class Add_audio_all extends Fragment
         DB_page dB = new DB_page(getActivity(), TabsHost.getCurrentPageTableId());
         // insert
         if (!Util.isEmptyString(audioUri))
-            dB.insertNote("", "", audioUri, "", "", "", 1, (long) 0);// add new note, get return row Id
+            dB.insertNote("",  audioUri, "",  1);// add new note, get return row Id
     }
 
     // get list array in designated path

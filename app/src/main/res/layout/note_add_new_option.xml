@@ -51,7 +51,6 @@
 	<View android:layout_width="match_parent" android:layout_height="1dip" android:background="#4f4f4f" />
 
 	<CheckedTextView
-		android:id="@+id/check_add_link_if_exists"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:textSize="18sp"

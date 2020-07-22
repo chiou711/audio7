@@ -122,12 +122,7 @@ public class Util
     public static String NEW_LINE = "\r" + System.getProperty("line.separator");
 
 	private static int STYLE_DEFAULT = 1;
-    
-    public static int ACTIVITY_TAKE_PICTURE = 3;
-    public static int CHOOSER_SET_PICTURE = 4;
 	public static int CHOOSER_SET_AUDIO = 5;
-	public static int DRAWING_ADD = 6;
-	public static int DRAWING_EDIT = 7;
 
 	private int defaultBgClr;
 	private int defaultTextClr;
@@ -180,6 +175,7 @@ public class Util
 
         exportToSdCardFile(filename,data);
 
+        //System.out.println("---------------- export to sd String: " + string);
 		return string;
 	}
 	
@@ -504,12 +500,8 @@ public class Util
 		String TITLE_TAG_E = "</title>";
 		String BODY_TAG_B = "<body>";
 		String BODY_TAG_E = "</body>";
-		String PICTURE_TAG_B = "<picture>";
-		String PICTURE_TAG_E = "</picture>";
 		String AUDIO_TAG_B = "<audio>";
 		String AUDIO_TAG_E = "</audio>";
-		String LINK_TAG_B = "<link>";
-		String LINK_TAG_E = "</link>";
 		String PAGE_TAG_E = "</page>";
 
 		String sentString = NEW_LINE;
@@ -552,9 +544,8 @@ public class Util
 			sentString = sentString.concat(NEW_LINE + NOTE_ITEM_TAG_B);
 			sentString = sentString.concat(NEW_LINE + TITLE_TAG_B + TITLE_TAG_E);
 			sentString = sentString.concat(NEW_LINE + BODY_TAG_B +  BODY_TAG_E);
-			sentString = sentString.concat(NEW_LINE + PICTURE_TAG_B + PICTURE_TAG_E);
+
 			sentString = sentString.concat(NEW_LINE + AUDIO_TAG_B + AUDIO_TAG_E);
-			sentString = sentString.concat(NEW_LINE + LINK_TAG_B + LINK_TAG_E);
 			sentString = sentString.concat(NEW_LINE + NOTE_ITEM_TAG_E);
 			sentString = sentString.concat(NEW_LINE + PAGE_TAG_E );
 			sentString = sentString.concat(NEW_LINE);
@@ -576,10 +567,6 @@ public class Util
 				String audioUrl = cursorNote.getString(cursorNote.getColumnIndexOrThrow(DB_page.KEY_NOTE_AUDIO_URI));
 				audioUrl = replaceEscapeCharacter(audioUrl);
 
-				String linkUrl = cursorNote.getString(cursorNote.getColumnIndexOrThrow(DB_page.KEY_NOTE_LINK_URI));
-
-				linkUrl = replaceEscapeCharacter(linkUrl);
-
 				int mark = cursorNote.getInt(cursorNote.getColumnIndexOrThrow(DB_page.KEY_NOTE_MARKING));
 				String srtMark = (mark == 1)? "[s]":"[n]";
 				dbPage.close();
@@ -594,9 +581,7 @@ public class Util
 				sentString = sentString.concat(NEW_LINE + NOTE_ITEM_TAG_B);
 				sentString = sentString.concat(NEW_LINE + TITLE_TAG_B + srtMark + title + TITLE_TAG_E);
 				sentString = sentString.concat(NEW_LINE + BODY_TAG_B + body + BODY_TAG_E);
-				sentString = sentString.concat(NEW_LINE + PICTURE_TAG_B + picUrl + PICTURE_TAG_E);
 				sentString = sentString.concat(NEW_LINE + AUDIO_TAG_B + audioUrl + AUDIO_TAG_E);
-				sentString = sentString.concat(NEW_LINE + LINK_TAG_B + linkUrl + LINK_TAG_E);
 				sentString = sentString.concat(NEW_LINE + NOTE_ITEM_TAG_E);
 				sentString = sentString.concat(NEW_LINE);
 				if(i==noteIdArray.size()-1)
@@ -651,19 +636,13 @@ public class Util
 		string = string.replace("[n]","");
 		string = string.replace("<title></title>"+NEW_LINE,"");
         string = string.replace("<body></body>"+NEW_LINE,"");
-        string = string.replace("<picture></picture>"+NEW_LINE,"");
         string = string.replace("<audio></audio>"+NEW_LINE,"");
-        string = string.replace("<link></link>"+NEW_LINE,"");
 		string = string.replace("<title>","Title: ");
 		string = string.replace("</title>","");
 		string = string.replace("<body>","Body: ");
 		string = string.replace("</body>","");
-		string = string.replace("<picture>","Picture: ");
-		string = string.replace("</picture>","");		
 		string = string.replace("<audio>","Audio: ");
 		string = string.replace("</audio>","");		
-		string = string.replace("<link>","Link: ");
-		string = string.replace("</link>","");		
 		string = string.replace("</note>","");
 		string = string.replace("</page>"," ");
 		string = string.replace("</LiteNote>","");
@@ -936,72 +915,6 @@ public class Util
 		return empty;
 	}
 	
-	/***
-	 * pictures directory or gallery directory
-	 * 
-	 * get: storage/emulated/0/
-	 * with: Environment.getExternalStorageDirectory();
-	 * 
-	 * get: storage/emulated/0/Pictures
-	 * with: Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
-	 * 
-	 * get: storage/emulated/0/DCIM
-	 * with: Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);
-	 * or with: Environment.getExternalStorageDirectory().getAbsolutePath() + "/DCIM";  
-	 *  
-	 * get: storage/emulated/0/Android/data/com.cwc.audio7/files
-	 * with: storageDir[0] got from File[] storageDir = context.getExternalFilesDirs(null);
-	 * 
-	 * get: storage/ext_sd/Android/data/com.cwc.audio7/files
-	 * with: storageDir[1] got from File[] storageDir = context.getExternalFilesDirs(null);
-	 *   
-	 */
-	public static File getPicturesDir(Context context)
-    {
-    	if(Define.PICTURE_PATH_BY_SYSTEM_DEFAULT)
-    	{
-    		// Notes: 
-    		// 1 for Google Camera App: 
-    		// 	 - default path is /storage/sdcard/DCIM/Camera
-    		// 	 - Can not save file to external SD card
-    		// 2 for hTC default camera App:
-    		//   - default path is /storage/ext_sd/DCIM/100MEDIA
-    		//   - Can save file to internal SD card and external SD card, it is decided by hTC App
-    		
-//    		// is saved to preference after taking picture
-//    		SharedPreferences pref_takePicture = context.getSharedPreferences("takePicutre", 0);	
-//    		String picDirPathPref = pref_takePicture.getString("KEY_SET_PICTURE_DIR","unknown");
-//    		System.out.println("--- Util / _getPicturesDir / pictureDirPath = " + picDirPathPref);
-    		
-    		String dirString;
-    		File dir = null;
-    		if(Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) 
-        	{
-    			dirString = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getPath();
-        		// add App name for sub-directory
-        		dirString = dirString.concat("/"+ Util.getStorageDirName(context));
-        		System.out.println("Util / _getPicturesDir / dirString = " + dirString);
-        		dir = new File(dirString);
-        	}
-    		return dir;
-    	}
-    	else
-    	{
-    		File[] storageDir = context.getExternalFilesDirs(null); 
-    		for(File dir:storageDir)
-    			System.out.println("storageDir[] = " + dir);
-    		// for Kitkat: write permission is off for external SD card, 
-    		// but App can freely access Android/data/com.example.foo/ 
-    		// on external storage devices with no permissions. 
-    		// i.e. 
-        	//		storageDir[1] = file:///storage/ext_sd/Android/data/com.cwc.audio7/files
-            File appPicturesDir = new File(storageDir[1]+"/"+"pictures");// 0: system 1:ext_sd    
-    		System.out.println("Util / _getPicturesDir / appPicturesDir = " + appPicturesDir);
-            return appPicturesDir;
-        }
-    }
-    
-    static boolean isValid = false;
     static String mStringUrl;
     public static int mResponseCode;
     static String mResponseMessage;

@@ -407,7 +407,6 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
                 i.putExtra(DB_page.KEY_NOTE_TITLE, db_page.getNoteTitle_byId(rowId));
                 i.putExtra(DB_page.KEY_NOTE_AUDIO_URI , db_page.getNoteAudioUri_byId(rowId));
                 i.putExtra(DB_page.KEY_NOTE_BODY, db_page.getNoteBody_byId(rowId));
-                i.putExtra(DB_page.KEY_NOTE_CREATED, db_page.getNoteCreatedTime_byId(rowId));
                 mAct.startActivity(i);
 
                 return true;
@@ -541,12 +540,12 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
         // toggle the marking
         if(db_page.getNoteMarking(position,false) == 0)
         {
-            db_page.updateNote(idNote, strNote, "", strAudioUri, "", "", strNoteBody, 1, 0, false);
+            db_page.updateNote(idNote, strNote,  strAudioUri, strNoteBody, 1,  false);
             marking = 1;
         }
         else
         {
-            db_page.updateNote(idNote, strNote, "", strAudioUri, "", "", strNoteBody, 0, 0, false);
+            db_page.updateNote(idNote, strNote,  strAudioUri,   strNoteBody, 0, false);
             marking = 0;
         }
         db_page.close();

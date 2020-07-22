@@ -57,7 +57,6 @@ public class Note_edit extends Activity
     DB_page dB;
     TouchImageView enlargedImage;
     int position;
-    final int EDIT_LINK = 1;
     @Override
     protected void onCreate(Bundle savedInstanceState) 
     {
@@ -89,11 +88,10 @@ public class Note_edit extends Activity
     	audioUri = extras.getString(DB_page.KEY_NOTE_AUDIO_URI);
     	title = extras.getString(DB_page.KEY_NOTE_TITLE);
     	body = extras.getString(DB_page.KEY_NOTE_BODY);
-    	createdTime = extras.getLong(DB_page.KEY_NOTE_CREATED);
-        
+
 
         //initialization
-        note_edit_ui = new Note_edit_ui(this, dB, noteId, title, picUriStr, audioUri, "", "", body, createdTime);
+        note_edit_ui = new Note_edit_ui(this, dB, noteId, title,  audioUri,  body);
         note_edit_ui.UI_init();
         bUseCameraImage = false;
 
@@ -102,7 +100,6 @@ public class Note_edit extends Activity
 	        System.out.println("Note_edit / onCreate / noteId =  " + noteId);
 	        if(noteId != null)
 	        {
-	        	picUriStr = dB.getNotePictureUri_byId(noteId);
 	        	audioUri = dB.getNoteAudioUri_byId(noteId);
 				note_edit_ui.currAudioUri = audioUri;
 	        }
@@ -235,20 +232,7 @@ public class Note_edit extends Activity
 					public void onClick(DialogInterface dialog, int which) 
 					{
 						Bundle extras = getIntent().getExtras();
-						String originalPictureFileName = extras.getString(DB_page.KEY_NOTE_PICTURE_URI);
 
-						if(Util.isEmptyString(originalPictureFileName))
-						{   // no picture at first
-							note_edit_ui.removePictureStringFromOriginalNote(noteId);
-		                    enSaveDb = false;
-						}
-						else
-						{	// roll back existing picture
-                            note_edit_ui.bRollBackData = true;
-							picUriStr = originalPictureFileName;
-							enSaveDb = true;
-						}	
-						
 						String originalAudioFileName = extras.getString(DB_page.KEY_NOTE_AUDIO_URI);
 
 						if(Util.isEmptyString(originalAudioFileName))
@@ -275,7 +259,7 @@ public class Note_edit extends Activity
         
         System.out.println("Note_edit / onPause / enSaveDb = " + enSaveDb);
         System.out.println("Note_edit / onPause / audioUri = " + audioUri);
-        noteId = note_edit_ui.saveStateInDB(noteId, enSaveDb, picUriStr, audioUri, "");
+        noteId = note_edit_ui.saveStateInDB(noteId, enSaveDb,  audioUri);
     }
 
     // for Rotate screen
@@ -283,7 +267,7 @@ public class Note_edit extends Activity
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         System.out.println("Note_edit / onSaveInstanceState / enSaveDb = " + enSaveDb);
-        noteId = note_edit_ui.saveStateInDB(noteId, enSaveDb, picUriStr, audioUri, "");
+        noteId = note_edit_ui.saveStateInDB(noteId, enSaveDb,  audioUri);
         outState.putSerializable(DB_page.KEY_NOTE_ID, noteId);
     }
     
@@ -435,7 +419,7 @@ public class Note_edit extends Activity
 				}
 
 //				System.out.println(" Note_edit / onActivityResult / Util.CHOOSER_SET_AUDIO / picUriStr = " + picUriStr);
-				note_edit_ui.saveStateInDB(noteId,true, picUriStr, audioUriStr, "");
+				note_edit_ui.saveStateInDB(noteId,true,  audioUriStr);
 
 				note_edit_ui.populateFields_all(noteId);
 	        	this.audioUri = audioUriStr;

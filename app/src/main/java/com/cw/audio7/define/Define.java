@@ -146,10 +146,6 @@ public class Define {
     public static boolean ENABLE_ADMOB = false; //true; //false;
 
 
-    // Apply system default for picture path
-    public static boolean PICTURE_PATH_BY_SYSTEM_DEFAULT = true;
-
-
     // default style
     public static int STYLE_DEFAULT = 1;
     public static int STYLE_PREFER = 2;

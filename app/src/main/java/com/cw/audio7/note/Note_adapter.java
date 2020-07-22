@@ -301,7 +301,6 @@ public class Note_adapter extends FragmentStatePagerAdapter
     	// replace note title
 		boolean bSetGray = false;
 
-    	Long createTime = db_page.getNoteCreatedTime(position,true);
     	String head = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>"+
 		       	  	  "<html><head>" +
 	  		       	  "<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\" />";

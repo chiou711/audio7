@@ -111,13 +111,9 @@ public class DB_folder
         String dB_insert_table = "CREATE TABLE IF NOT EXISTS " + DB_PAGE_TABLE_NAME + "(" +
         							DB_page.KEY_NOTE_ID + " INTEGER PRIMARY KEY," +
 									DB_page.KEY_NOTE_TITLE + " TEXT," +
-									DB_page.KEY_NOTE_PICTURE_URI + " TEXT," +
 									DB_page.KEY_NOTE_AUDIO_URI + " TEXT," +
-									DB_page.KEY_NOTE_DRAWING_URI + " TEXT," +
-									DB_page.KEY_NOTE_LINK_URI + " TEXT," +
 									DB_page.KEY_NOTE_BODY + " TEXT," +
-									DB_page.KEY_NOTE_MARKING + " INTEGER," +
-									DB_page.KEY_NOTE_CREATED + " INTEGER);";
+									DB_page.KEY_NOTE_MARKING + " INTEGER);";
         mSqlDb.execSQL(dB_insert_table);
 
         if(enDbOpenClose)

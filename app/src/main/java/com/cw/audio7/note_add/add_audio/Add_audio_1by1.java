@@ -370,7 +370,7 @@ public class Add_audio_1by1 extends ListFragment
             {
                 // insert
                 // set marking to 1 for default
-                dB.insertNote("", "", uriStr, "", "", "", 1, (long) 0);// add new note, get return row Id
+                dB.insertNote("",  uriStr, "",  1);// add new note, get return row Id
             }
 
 //            selectedAudioUri = uriStr;

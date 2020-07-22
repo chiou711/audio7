@@ -146,63 +146,41 @@ public class Page_recycler extends Fragment implements OnStartDragListener {
     {
         Long noteNumber1;
         String noteTitle1;
-        String notePictureUri1;
         String noteAudioUri1;
-        String noteDrawingUri1;
-        String noteLinkUri1;
         String noteBodyString1;
         int markingIndex1;
-        Long createTime1;
         Long noteNumber2 ;
-        String notePictureUri2;
         String noteAudioUri2;
-        String noteDrawingUri2;
-        String noteLinkUri2;
         String noteTitle2;
         String noteBodyString2;
         int markingIndex2;
-        Long createTime2;
 
         dB_page.open();
         noteNumber1 = dB_page.getNoteId(startPosition,false);
         noteTitle1 = dB_page.getNoteTitle(startPosition,false);
-        notePictureUri1 = dB_page.getNotePictureUri(startPosition,false);
-        noteDrawingUri1 = dB_page.getNoteDrawingUri(startPosition,false);
         noteAudioUri1 = dB_page.getNoteAudioUri(startPosition,false);
-        noteLinkUri1 = dB_page.getNoteLinkUri(startPosition,false);
         noteBodyString1 = dB_page.getNoteBody(startPosition,false);
         markingIndex1 = dB_page.getNoteMarking(startPosition,false);
-        createTime1 = dB_page.getNoteCreatedTime(startPosition,false);
 
         noteNumber2 = dB_page.getNoteId(endPosition,false);
         noteTitle2 = dB_page.getNoteTitle(endPosition,false);
-        notePictureUri2 = dB_page.getNotePictureUri(endPosition,false);
         noteAudioUri2 = dB_page.getNoteAudioUri(endPosition,false);
-        noteDrawingUri2 = dB_page.getNoteDrawingUri(endPosition,false);
-        noteLinkUri2 = dB_page.getNoteLinkUri(endPosition,false);
         noteBodyString2 = dB_page.getNoteBody(endPosition,false);
         markingIndex2 = dB_page.getNoteMarking(endPosition,false);
-        createTime2 = dB_page.getNoteCreatedTime(endPosition,false);
 
         dB_page.updateNote(noteNumber2,
                 noteTitle1,
-                notePictureUri1,
                 noteAudioUri1,
-                noteDrawingUri1,
-                noteLinkUri1,
                 noteBodyString1,
                 markingIndex1,
-                createTime1,false);
+               false);
 
         dB_page.updateNote(noteNumber1,
                 noteTitle2,
-                notePictureUri2,
                 noteAudioUri2,
-                noteDrawingUri2,
-                noteLinkUri2,
                 noteBodyString2,
                 markingIndex2,
-                createTime2,false);
+                false);
 
         dB_page.close();
     }

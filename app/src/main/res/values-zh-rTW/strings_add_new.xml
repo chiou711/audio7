@@ -7,7 +7,6 @@
     <string name="add_new_link_title_also">新增連結時,也包括連結的標題</string>
     <string name="add_new_note_title">新增記事</string>
     <string name="add_new_note_button_add">新增</string>
-    <string name="add_new_note_confirm_save">已經有內容在新記事中，您想要保存它嗎?</string>
     <string name="dialog_add_new_option_title">設定新增記事的操作：</string>
     <string name="dialog_add_new_multiple">新增現成文件記事時：包括目錄中的所有同類文件</string>
     <string name="note_text">文字</string>
@@ -33,26 +32,4 @@
     <string name="add_new_start">開始新增筆記</string>
     <string name="add_new_stop">停止新增筆記</string>
     <string name="add_new_file_error">新增多個文件時，請確認您的選擇是本地文件。</string>
-    <string name="add_drawing">新增塗鴉</string>
-    <string name="edit_drawing">編輯塗鴉</string>
-    <string name="button_set_color">設置顏色</string>
-    <string name="button_set_line_width">設置線寬</string>
-    <string name="label_alpha">Alpha</string>
-    <string name="label_red">紅色</string>
-    <string name="label_green">綠色</string>
-    <string name="label_blue">藍色</string>
-    <string name="menuitem_clear">清空</string>
-    <string name="menuitem_color">顏色</string>
-    <string name="menuitem_erase">擦除</string>
-    <string name="menuitem_line_width">線寬</string>
-    <string name="menuitem_save_image">保存圖片</string>
-    <string name="menuitem_save_as_other_image">另存為其他圖片</string>
-    <string name="message_error_saving">
-       保存圖像時出錯</string>
-    <string name="message_saved">
-       您的繪畫已保存到圖庫中</string>
-    <string name="message_updated">
-       您的繪畫已更新到圖庫</string>
-    <string name="title_color_dialog">選擇顏色</string>
-    <string name="title_line_width_dialog">選擇線寬</string>
 </resources>

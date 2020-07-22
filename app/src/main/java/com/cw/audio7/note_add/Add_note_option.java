@@ -313,7 +313,7 @@ public class Add_note_option {
                 view.setTag(holder);
 
                 // set grid item background color
-                // text , drawing
+                // text
                 if( (position == 0) || (position == 1) )
                     view.setBackgroundColor( act.getResources().getColor(R.color.textGrid));
                 // recording, audio

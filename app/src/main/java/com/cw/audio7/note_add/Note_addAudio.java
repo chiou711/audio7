@@ -172,7 +172,7 @@ public class Note_addAudio extends AppCompatActivity {
 					{
 						// insert
 						// set marking to 1 for default
-						dB.insertNote("", "", uriStr, "", "", "", 1, (long) 0);// add new note, get return row Id
+						dB.insertNote("",  uriStr, "",  1);// add new note, get return row Id
 					}
 
 		        	selectedAudioUri = uriStr;
@@ -242,7 +242,7 @@ public class Note_addAudio extends AppCompatActivity {
                             {
                                 // insert
                                 // set marking to 1 for default
-                                dB.insertNote("", "", urlStr, "", "", "", 1, (long) 0);// add new note, get return row Id
+                                dB.insertNote("",  urlStr, "",  1);// add new note, get return row Id
                             }
                             selectedAudioUri = urlStr;
 
