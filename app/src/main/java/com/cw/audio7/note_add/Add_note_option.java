@@ -33,6 +33,7 @@ import android.widget.Toast;
 import com.cw.audio7.R;
 import com.cw.audio7.drawer.Drawer;
 import com.cw.audio7.folder.FolderUi;
+import com.cw.audio7.main.MainAct;
 import com.cw.audio7.note_add.add_audio.Add_audio_all;
 import com.cw.audio7.note_add.add_recording.Add_recording_act;
 import com.cw.audio7.note_add.add_audio.Add_audio_1by1;
@@ -205,6 +206,13 @@ public class Add_note_option {
             {
                 // replace fragment
                 dlgAddNew.dismiss();
+
+                //hide the menu
+                MainAct.mMenu.findItem(R.id.ADD_NEW_NOTE).setVisible(false);
+                MainAct.mMenu.setGroupVisible(R.id.group_notes, false);
+                MainAct.mMenu.findItem(R.id.HANDLE_CHECKED_NOTES).setVisible(false);
+                MainAct.mMenu.setGroupVisible(R.id.group_pages_and_more, false);
+
                 Add_audio_1by1 add_audio1by1 = new Add_audio_1by1();
                 FragmentTransaction transaction = act.getSupportFragmentManager().beginTransaction();
 
@@ -220,6 +228,12 @@ public class Add_note_option {
                 Add_audio_byFolder add_audio_byFolder = new Add_audio_byFolder();
                 FragmentTransaction transaction = act.getSupportFragmentManager().beginTransaction();
 
+                //hide the menu
+                MainAct.mMenu.findItem(R.id.ADD_NEW_NOTE).setVisible(false);
+                MainAct.mMenu.setGroupVisible(R.id.group_notes, false);
+                MainAct.mMenu.findItem(R.id.HANDLE_CHECKED_NOTES).setVisible(false);
+                MainAct.mMenu.setGroupVisible(R.id.group_pages_and_more, false);
+
                 transaction.setCustomAnimations(R.anim.fragment_slide_in_left, R.anim.fragment_slide_out_left, R.anim.fragment_slide_in_right, R.anim.fragment_slide_out_right);
                 transaction.replace(R.id.content_frame, add_audio_byFolder, "add_audio").addToBackStack(null).commit();
             }
@@ -229,6 +243,13 @@ public class Add_note_option {
             {
                 // replace fragment
                 dlgAddNew.dismiss();
+
+                //hide the menu
+                MainAct.mMenu.findItem(R.id.ADD_NEW_NOTE).setVisible(false);
+                MainAct.mMenu.setGroupVisible(R.id.group_notes, false);
+                MainAct.mMenu.findItem(R.id.HANDLE_CHECKED_NOTES).setVisible(false);
+                MainAct.mMenu.setGroupVisible(R.id.group_pages_and_more, false);
+
                 Add_audio_all add_audio_all = new Add_audio_all();
                 FragmentTransaction transaction = act.getSupportFragmentManager().beginTransaction();
 

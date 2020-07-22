@@ -109,6 +109,10 @@ public class Add_audio_all extends Fragment
     public void onResume() {
         super.onResume();
         System.out.println("------------------- _onResume");
+
+        // enable the following if Add all at the beginning
+//        Add_audio_all_asyncTask task = new Add_audio_all_asyncTask(MainAct.mAct,rootView,currFilePath);
+//        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     /**

@@ -866,10 +866,9 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
 //            mMenu.findItem(R.id.DELETE_FOLDERS).setVisible(foldersCnt >0);
 //            mMenu.findItem(R.id.ENABLE_FOLDER_DRAG_AND_DROP).setVisible(foldersCnt >1);
             mMenu.findItem(R.id.ADD_NEW_NOTE).setVisible(false);
-            mMenu.findItem(R.id.HANDLE_CHECKED_NOTES).setVisible(false);
-
-            mMenu.setGroupVisible(R.id.group_pages_and_more, false);
             mMenu.setGroupVisible(R.id.group_notes, false);
+            mMenu.findItem(R.id.HANDLE_CHECKED_NOTES).setVisible(false);
+            mMenu.setGroupVisible(R.id.group_pages_and_more, false);
         }
         else if(!drawer.isDrawerOpen())
         {
@@ -1205,7 +1204,9 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
 
             case MenuId.DELETE_PAGES:
                 //hide the menu
+                mMenu.findItem(R.id.ADD_NEW_NOTE).setVisible(false);
                 mMenu.setGroupVisible(R.id.group_notes, false);
+                mMenu.findItem(R.id.HANDLE_CHECKED_NOTES).setVisible(false);
                 mMenu.setGroupVisible(R.id.group_pages_and_more, false);
 
                 if(dB_folder.getPagesCount(true)>0)
@@ -1295,7 +1296,9 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                 }
                 else {
                     //hide the menu
+                    mMenu.findItem(R.id.ADD_NEW_NOTE).setVisible(false);
                     mMenu.setGroupVisible(R.id.group_notes, false);
+                    mMenu.findItem(R.id.HANDLE_CHECKED_NOTES).setVisible(false);
                     mMenu.setGroupVisible(R.id.group_pages_and_more, false);
                     // replace fragment
                     Import_filesList importFragment = new Import_filesList();
@@ -1317,8 +1320,11 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                 }
                 else {
                     //hide the menu
+                    mMenu.findItem(R.id.ADD_NEW_NOTE).setVisible(false);
                     mMenu.setGroupVisible(R.id.group_notes, false);
+                    mMenu.findItem(R.id.HANDLE_CHECKED_NOTES).setVisible(false);
                     mMenu.setGroupVisible(R.id.group_pages_and_more, false);
+
                     if (dB_folder.getPagesCount(true) > 0) {
                         Export_toSDCardFragment exportFragment = new Export_toSDCardFragment();
                         transaction.setCustomAnimations(R.anim.fragment_slide_in_left, R.anim.fragment_slide_out_left, R.anim.fragment_slide_in_right, R.anim.fragment_slide_out_right);
@@ -1330,8 +1336,11 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                 return true;
 
             case MenuId.CONFIG:
+                mMenu.findItem(R.id.ADD_NEW_NOTE).setVisible(false);
                 mMenu.setGroupVisible(R.id.group_notes, false); //hide the menu
+                mMenu.findItem(R.id.HANDLE_CHECKED_NOTES).setVisible(false);
                 mMenu.setGroupVisible(R.id.group_pages_and_more, false);
+
                 setTitle(R.string.settings);
 
                 mConfigFragment = new Config();
@@ -1341,8 +1350,11 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                 return true;
 
             case MenuId.ABOUT:
+                mMenu.findItem(R.id.ADD_NEW_NOTE).setVisible(false);
                 mMenu.setGroupVisible(R.id.group_notes, false); //hide the menu
+                mMenu.findItem(R.id.HANDLE_CHECKED_NOTES).setVisible(false);
                 mMenu.setGroupVisible(R.id.group_pages_and_more, false);
+
                 setTitle(R.string.about_title);
 
                 mAboutFragment = new About();

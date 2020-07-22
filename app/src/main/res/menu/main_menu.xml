@@ -15,7 +15,7 @@
         android:id="@+id/group_notes"
         android:title="notes"
         app:showAsAction="ifRoom|withText"
-        android:orderInCategory="0">
+        android:orderInCategory="1">
 
     <!-- Play -->
     <item
@@ -51,7 +51,7 @@
         android:id="@+id/group_pages_and_more"
         android:title="more"
         app:showAsAction="never"
-        android:orderInCategory="1">
+        android:orderInCategory="3">
 
         <!-- Note operation -->
         <item
