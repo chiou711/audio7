@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="default_folder_name">文件夾</string>
-    <string name="prefer_folder_name_local">本地</string>
     <string name="default_page_name">記事頁</string>
     <string name="prefer_page_name">新頁面</string>
 </resources>

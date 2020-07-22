@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/scrollView1"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
-<LinearLayout 
-    android:id="@+id/addAudioOptional"
+<LinearLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
 	android:layout_margin="5dp"
@@ -23,16 +21,14 @@
 		>
 
 		<RadioButton
-			android:id="@+id/radio_new_at_top"
-			android:layout_width="0dp"
+            android:layout_width="0dp"
 			android:layout_height="50dp"
 			android:layout_weight="1"
 			android:textSize="18sp"
 			android:text="@string/add_new_note_top" />
 
 		<RadioButton
-			android:id="@+id/radio_new_at_bottom"
-			android:layout_width="0dp"
+            android:layout_width="0dp"
 			android:layout_height="50dp"
 			android:layout_weight="1"
 			android:textSize="18sp"

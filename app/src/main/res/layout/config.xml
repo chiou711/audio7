@@ -25,9 +25,8 @@
         android:layout_marginRight="0dp"
         android:src="@drawable/ic_color_a"
         android:contentDescription="style"/>    
-	<TextView 
-		android:id="@+id/TextViewStyleTitle"
-		android:layout_width="0dp"
+	<TextView
+        android:layout_width="0dp"
 		android:layout_height="wrap_content"
 		android:minHeight="50dp"
 		android:gravity="center_vertical"
@@ -65,9 +64,8 @@
         android:layout_marginRight="0dp"
         android:src="@drawable/ic_vibrate"
         android:contentDescription="style"/>   
-    <TextView 
-		android:id="@+id/TextViewVibrationTitle"
-		android:layout_width="0dp"
+    <TextView
+        android:layout_width="0dp"
 		android:layout_height="wrap_content"
 		android:minHeight="50dp"
 		android:gravity="center_vertical"

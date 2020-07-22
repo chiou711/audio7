@@ -26,8 +26,7 @@
         android:src="@android:drawable/ic_menu_compass"
         android:contentDescription="Show licenses"/>
     <TextView
-		android:id="@+id/showLicensesText"
-		android:layout_width="0dp"
+        android:layout_width="0dp"
 		android:layout_height="wrap_content"
  		android:minHeight="50dp"
 		android:layout_weight="1"
@@ -54,8 +53,7 @@
         android:src="@android:drawable/ic_menu_info_details"
         android:contentDescription="Show about"/>
     <TextView
-		android:id="@+id/showAbout1"
-		android:layout_width="0dp"
+        android:layout_width="0dp"
 		android:layout_height="wrap_content"
 		android:minHeight="50dp"
 		android:gravity="center_vertical"

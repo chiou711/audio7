@@ -58,7 +58,6 @@
 
     <!-- start: note view audio control -->
     <LinearLayout
-        android:id="@+id/pager_audio_control"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"

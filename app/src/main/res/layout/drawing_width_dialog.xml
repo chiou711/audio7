@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-   android:id="@+id/widthDialogLinearLayout"
-   android:layout_width="match_parent"  android:minWidth="300dp"
+    android:layout_width="match_parent"  android:minWidth="300dp"
    android:layout_height="match_parent" android:orientation="vertical">
    <ImageView android:id="@+id/widthImageView"
       android:layout_width="match_parent" android:layout_height="50dp"

@@ -10,7 +10,6 @@
     <!--<color name="button_color">#ffA09070</color>-->
     <!--<color name="highlight_color">#ff0080ff</color>-->
 
-    <color name="background_tab_pressed">#6633B5E5</color>
     <color name="pause_color">#ffA0A0A0</color>
 
 
@@ -23,15 +22,10 @@
 
 
     <color name="blue_grey">#455A64</color>
-    <color name="cyan">#00BCD4</color>
-    <color name="amber">#FFC107</color>
-    <color name="bg_light">#FAFAFA</color>
 
     <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
 
-    <color name="colorBlack">#000000</color>
     <color name="colorWhite">#FFFFFF</color>
     <color name="colorGray">#bFbFbF</color>
 

@@ -84,7 +84,6 @@
 
         <!-- Page operation -->
         <item
-            android:id="@+id/page_operation"
             android:orderInCategory="4"
             app:showAsAction="never"
             android:title="@string/page_operation"
@@ -119,7 +118,6 @@
 
         <!-- backup operation -->
         <item
-            android:id="@+id/backup_operation"
             android:orderInCategory="5"
             app:showAsAction="never"
             android:title="@string/backup_operation"

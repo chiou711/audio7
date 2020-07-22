@@ -5,18 +5,12 @@
     <string name="add_new_note_top">到顶部</string>
     <string name="add_new_note_bottom">到底部</string>
     <string name="add_new_link_title_also">新增连结时,也包括连结的标题</string>
-    <string name="add_new_note_option_title">新增笔记：</string>
     <string name="add_new_note_title">新增笔记</string>
-    <string name="add_new_note_message">笔记内容:</string>
     <string name="add_new_note_button_add">新增</string>
     <string name="add_new_note_confirm_save">已经有内容在新笔记中，您要保存它吗？</string>
     <string name="dialog_add_new_option_title">设定新增笔记的操作：</string>
     <string name="dialog_add_new_multiple">新增本地文件笔记时：包括目录中的所有同类文件</string>
     <string name="note_text">文字</string>
-    <string name="note_camera_image">摄像机图像</string>
-    <string name="note_camera_video">摄像机视频</string>
-    <string name="note_ready_image">现成图像</string>
-    <string name="note_ready_video">现成视频</string>
     <string name="note_audio">音讯</string>
     <string name="note_ready_audio">现成音讯</string>
     <string name="note_ready_audio_1by1">1 by 1</string>
@@ -26,13 +20,8 @@
     <string name="note_add_all_title_adding">正在添加链接，请稍候</string>
     <string name="note_add_all_title_finish">完成</string>
     <string name="note_recording">录音</string>
-    <string name="note_drawing">涂鸦</string>
-    <string name="note_take_picture">拍照</string>
-    <string name="note_take_picture_OK">完成</string>
     <string name="note_cancel_add_new">取消</string>
-    <string name="note_take_picture_continue_dlg_title">继续拍照？</string>
-    <string name="note_ready_picture_continue_dlg_title">继续选择现成的图片?</string>
-    <string name="add_new_chooser_audio">选择音讯</string>    
+    <string name="add_new_chooser_audio">选择音讯</string>
     <string name="add_new_chooser_image">选择图片</string>    
     <string name="add_new_chooser_video">选择视频</string>    
     <string name="audio_message_no_media_file_is_found">没有找到媒体档</string>
@@ -46,7 +35,6 @@
     <string name="add_new_file_error">新增多个文件时，请确认您的选择是本地文件。</string>
     <string name="add_drawing">新增涂鸦</string>
     <string name="edit_drawing">编辑涂鸦</string>
-    <string name="button_erase">擦除</string>
     <string name="button_set_color">设置颜色</string>
     <string name="button_set_line_width">設置線寬</string>
     <string name="label_alpha">Alpha</string>
@@ -59,7 +47,6 @@
     <string name="menuitem_line_width">線寬</string>
     <string name="menuitem_save_image">保存图片</string>
     <string name="menuitem_save_as_other_image">另存为其他图片</string>
-    <string name="message_erase">擦除绘图？</string>
     <string name="message_error_saving">
        保存图像时出错</string>
     <string name="message_saved">

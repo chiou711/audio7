@@ -30,20 +30,6 @@
     <style name="AppTheme" parent="AppBaseTheme">
     <!-- All customizations that are NOT specific to a particular API-level can go here. -->
     </style>
-    
-    <style name="CustomTheme" parent="@android:style/Theme.Holo">
-        <item name="android:tabWidgetStyle">@style/CustomTabWidget</item>
-    	<item name="android:actionBarStyle">@style/ActionBarStyle</item>
-    </style>
-
-    <style name="CustomTabWidget" parent="@android:style/Widget.TabWidget">
-        <item name="android:textAppearance">@style/CustomTabWidgetText</item>  
-    </style>
-    
-    <style name="CustomTabWidgetText" parent="@android:style/TextAppearance.Widget.TabWidget">
-        <item name="android:textSize">20sp</item>
-        <item name="android:textStyle">normal</item>
-    </style>
 
     <style name="ToolbarTitleTheme" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Title">
         <item name="android:textSize">18dp</item>
@@ -66,5 +52,4 @@
         <item name="android:height">92sp</item>
     </style>
  -->
-    <style name="ProgressBarStyle" parent="@android:style/Widget.ProgressBar.Horizontal"/>
 </resources>

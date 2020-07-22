@@ -72,15 +72,13 @@
         android:layout_marginTop="5dp"
         android:orientation="vertical">
         <RadioButton
-            android:id="@+id/radio_new_folder_at_top"
-			android:layout_width="match_parent"
+            android:layout_width="match_parent"
 			android:layout_height="0dp"
             android:layout_weight="1"
             android:layout_marginStart="5dp"
             android:layout_marginLeft="5dp"
             android:text="@string/add_new_note_top" />
         <RadioButton
-            android:id="@+id/radio_new_folder_at_bottom"
             android:layout_width="match_parent"
             android:layout_weight="1"
 			android:layout_height="0dp"

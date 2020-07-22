@@ -1,20 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="config_confirm_taken_picture">Show camera picture just taken:</string>
-    <string name="config_delete_warning">Need confirmation before deleting</string>
-    <string name="config_warning_title">Enabled items:</string>
-    <string name="config_checkbox_warn_delete_note">A single note</string>
-    <string name="config_checkbox_warn_delete_page">A page of notes</string>
-    <string name="config_checkbox_warn_delete_drawer">A folder of notes</string>
-    <string name="config_checkbox_warn_delete_checked">The selected notes in current page</string>
-    <string name="config_set_slideshow_sw_time">Set slideshow switch time:</string>
-    <string name="config_set_slideshow_dlg_title">Set switch time:</string>
-    <string name="config_set_slideshow_dlg_message">Count in seconds:</string>
     <string name="config_set_vibration_title">Enable vibration to remind deleting: </string>
-    <string name="config_status_enabled">Enabled</string>
     <string name="config_status_disabled">Disabled</string>
     <string name="config_set_style_title">New page background color:</string>
-    <string name="config_add_new_note_location">Add new note location</string>
     <string name="config_delete_DB_title">Delete all pages</string>
     <string name="config_recover_all_settings">Recover all settings to default</string>
     <string name="config_delete_DB_btn">delete</string>
@@ -22,7 +10,6 @@
     <string name="config_delete_DB_toast">All pages have been deleted.</string>
     <string name="config_export_SDCard_title">Export notes to SD card</string>
     <string name="config_export_SDCard_btn">export</string>
-    <string name="config_export_SDCard_toast">Export notes to SD card: OK</string>
     <string name="config_export_none_toast">No note yet</string>
     <string name="config_export_SDCard_edit_filename">Edit file name</string>
     <string name="config_SDCard_filename">file name: </string>
