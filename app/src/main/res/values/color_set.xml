@@ -30,11 +30,9 @@
     <color name="colorGray">#bFbFbF</color>
 
     <!-- grid item of Add new   -->
-    <color name="textGrid">#034906</color>
-    <color name="audioGrid">#b32d00</color>
-    <color name="pictureGrid">#191970</color>
-    <color name="videoGrid">#0047b3</color>
-    <color name="linkGrid">#107d1d</color>
+    <color name="localGrid">#034906</color>
+    <color name="appGrid">#b32d00</color>
+    <color name="settingGrid">#191970</color>
     <color name="otherGrid">#202020</color>
 
     <color name="audioBg">#661400</color>

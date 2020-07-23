@@ -90,23 +90,10 @@ public class Add_note_option {
 
         int foldersCount = Drawer.getFolderCount();
 
-        // recording
-        if(pagesCount>0)
-            addNoteList.add(new Add_note_option(ID_NEW_RECORDING,
-                    R.drawable.ic_mic,
-                    R.string.note_recording));
-
-        // audio
-        if(pagesCount>0)
-            addNoteList.add(new Add_note_option(ID_NEW_AUDIO,
-                    R.drawable.ic_audio_unselected,
-                    R.string.note_ready_audio));
-
-        // audio 1by1
-        if(pagesCount>0)
-            addNoteList.add(new Add_note_option(ID_NEW_AUDIO_1by1,
-                    R.drawable.ic_audio_unselected,
-                    R.string.note_ready_audio_1by1));
+        // audio by all
+        addNoteList.add(new Add_note_option(ID_NEW_AUDIO_all,
+                R.drawable.ic_color_a,
+                R.string.note_ready_audio_by_all));
 
         // audio by folder
         if(foldersCount>0)
@@ -114,20 +101,33 @@ public class Add_note_option {
                     R.drawable.ic_audio_unselected,
                     R.string.note_ready_audio_byFolder));
 
-        // audio by auto
-        addNoteList.add(new Add_note_option(ID_NEW_AUDIO_all,
-                R.drawable.ic_color_a,
-                R.string.note_ready_audio_by_all));
+        // audio 1by1
+        if(pagesCount>0)
+            addNoteList.add(new Add_note_option(ID_NEW_AUDIO_1by1,
+                    R.drawable.ic_audio_unselected,
+                    R.string.note_ready_audio_1by1));
 
-        // Back
-        addNoteList.add(new Add_note_option(ID_NEW_BACK,
-                R.drawable.ic_menu_back,
-                R.string.btn_Cancel));
+        // recording
+        if(pagesCount>0)
+            addNoteList.add(new Add_note_option(ID_NEW_RECORDING,
+                    R.drawable.ic_mic,
+                    R.string.note_recording));
+
+        // audio app
+        if(pagesCount>0)
+            addNoteList.add(new Add_note_option(ID_NEW_AUDIO,
+                    R.drawable.ic_audio_unselected,
+                    R.string.note_ready_audio));
 
         // Setting
         addNoteList.add(new Add_note_option(ID_NEW_SETTING,
                 android.R.drawable.ic_menu_preferences,
                 R.string.settings));
+
+        // Back
+        addNoteList.add(new Add_note_option(ID_NEW_BACK,
+                R.drawable.ic_menu_back,
+                R.string.btn_Cancel));
 
         gridView = (GridView) rootView.findViewById(R.id.option_grid_view);
 
@@ -313,23 +313,14 @@ public class Add_note_option {
                 view.setTag(holder);
 
                 // set grid item background color
-                // text
-                if( (position == 0) || (position == 1) )
-                    view.setBackgroundColor( act.getResources().getColor(R.color.textGrid));
-                // recording, audio
-                else if((position == 2) || (position == 3))
-                    view.setBackgroundColor( act.getResources().getColor(R.color.audioGrid));
-                // picture, ready picture
-                else if ( (position == 4) || (position == 5) )
-                    view.setBackgroundColor( act.getResources().getColor(R.color.pictureGrid));
-                // video , ready video
-                else if((position == 6) || (position == 7))
-                    view.setBackgroundColor( act.getResources().getColor(R.color.videoGrid));
-                // link
-                else if((position == 8) || (position == 9))
-                    view.setBackgroundColor( act.getResources().getColor(R.color.linkGrid));
-                // others
-                else if((position == 10) || (position == 11))
+                // local audio
+                if( (position == 0) || (position == 1) || (position == 2))
+                    view.setBackgroundColor( act.getResources().getColor(R.color.localGrid));
+                // recording, app chooser, setting
+                else if( (position == 3)|| (position == 4) || (position == 5))
+                    view.setBackgroundColor( act.getResources().getColor(R.color.appGrid));
+                // cancel
+                else if((position == 6))
                     view.setBackgroundColor( act.getResources().getColor(R.color.otherGrid));
 
             } else {

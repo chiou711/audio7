@@ -48,16 +48,5 @@
 		android:clickable="true"
 		android:gravity="center_vertical" />
 
-	<View android:layout_width="match_parent" android:layout_height="1dip" android:background="#4f4f4f" />
-
-	<CheckedTextView
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:textSize="18sp"
-		android:text="@string/add_new_link_title_also"
-		android:drawableLeft="?android:attr/listChoiceIndicatorMultiple"
-		android:clickable="true"
-		android:gravity="center_vertical" />
-
 </LinearLayout>
 </ScrollView>
