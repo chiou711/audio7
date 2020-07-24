@@ -96,9 +96,9 @@ public class Dialog_EULA {
                 .setTitle(title)
                 .setMessage(welcome)
                 .setCancelable(false)
-                .setPositiveButton(R.string.accept, clickListener_Ok)
-                .setNeutralButton(R.string.agreement, clickListener_ReadAgreement)
-                .setNegativeButton(android.R.string.cancel,clickListener_No);
+                .setNeutralButton(android.R.string.cancel,clickListener_No)
+                .setNegativeButton(R.string.read_agreement, clickListener_ReadAgreement)
+                .setPositiveButton(R.string.accept, clickListener_Ok);
         builder.create().show();
     }
 
@@ -107,8 +107,8 @@ public class Dialog_EULA {
         AlertDialog.Builder builder = new AlertDialog.Builder(mAct)
                 .setTitle(title)
                 .setMessage(agreement)
-                .setCancelable(false)
-                .setNegativeButton(android.R.string.cancel,clickListener_back);
+                .setCancelable(true)
+                .setNegativeButton(R.string.btn_back,clickListener_back);
         builder.create().show();
     }
 }

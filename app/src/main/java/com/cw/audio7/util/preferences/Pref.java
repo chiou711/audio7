@@ -123,30 +123,12 @@ public class Pref
         return pref.getInt(keyName, 0);
     }
 
-    // set key: has answered if default content needed dialog
-    public static void setPref_has_answered_if_default_content_needed(Activity act, boolean will)
-    {
-        SharedPreferences pref = act.getSharedPreferences("create_view", 0);
-        String keyName = "KEY_HAS_ANSWERED_IF_DEFAULT_CONTENT_NEEDED";
-        pref.edit().putBoolean(keyName, will).apply();
-    }
-
-    // get key: has answered if default content needed dialog
-    public static boolean getPref_has_answered_if_default_content_needed(Context context)
-    {
-        SharedPreferences pref = context.getSharedPreferences("create_view", 0);
-        String keyName = "KEY_HAS_ANSWERED_IF_DEFAULT_CONTENT_NEEDED";
-        return pref.getBoolean(keyName, false);
-    }
-
     // set key: will create default content
     public static void setPref_will_create_default_content(Activity act, boolean will)
     {
         SharedPreferences pref = act.getSharedPreferences("create_view", 0);
         String keyName = "KEY_WILL_CREATE_DEFAULT_CONTENT";
-        pref.edit().putBoolean(keyName, will).apply();
-
-        setPref_has_answered_if_default_content_needed(act,true);
+        pref.edit().putBoolean(keyName, will).commit();
     }
 
     // get key: will create default content

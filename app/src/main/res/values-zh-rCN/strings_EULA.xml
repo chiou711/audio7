@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-<string name="accept">接受</string>
-<string name="agreement">协议</string>
+<string name="accept">允许</string>
+<string name="read_agreement">阅读协议</string>
 <string name="welcome_string">
 欢迎开启此应用程序。\n\n
 请阅读与允许最终用户许可证协议，并在下一个对话框中允许存取装置内的档案以开始使用此应用程式。

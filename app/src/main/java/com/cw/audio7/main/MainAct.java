@@ -213,7 +213,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                 if((Define.DEFAULT_CONTENT == Define.BY_INITIAL_TABLES) && (Define.INITIAL_FOLDERS_COUNT > 0))
                 {
                     if(Build.VERSION.SDK_INT >= 23)
-                        checkPermission(savedInstanceState, Util.PERMISSIONS_REQUEST_STORAGE_WITH_DEFAULT_CONTENT_YES);
+                        checkPermission(savedInstanceState, Util.PERMISSIONS_REQUEST_STORAGE);
                     else
                     {
                         Pref.setPref_will_create_default_content(this, true);
@@ -282,7 +282,8 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
         System.out.println("MainAct / _doCreate");
 
         // Will create default contents: by assets or by initial tables
-        if(Pref.getPref_will_create_default_content(this)) {
+        if(Pref.getPref_will_create_default_content(this))
+        {
             if ((Define.DEFAULT_CONTENT == Define.BY_INITIAL_TABLES) && (Define.INITIAL_FOLDERS_COUNT > 0))
                 createDefaultContent_byInitialTables();
         }
@@ -384,8 +385,8 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
             }
         }
 
-        recreate();
         Pref.setPref_will_create_default_content(this,false);
+        recreate();
     }
 
     Intent intentReceive;
@@ -454,7 +455,6 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
         return false;
     }
 
-    private boolean isStorageRequested = false;
     private boolean isStorageRequestedImport = false;
     private boolean isStorageRequestedExport = false;
 
@@ -471,7 +471,12 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
             switch (requestCode)
             {
                 case Util.PERMISSIONS_REQUEST_STORAGE:
-                    isStorageRequested = true;
+                    Pref.setPref_will_create_default_content(this, true);
+                    recreate();
+                    break;
+
+                case Util.PERMISSIONS_REQUEST_STORAGE_ADD_NEW:
+                    Add_note_option.createSelection(this,true);
                     break;
 
                 case Util.PERMISSIONS_REQUEST_STORAGE_IMPORT:
@@ -481,22 +486,20 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                 case Util.PERMISSIONS_REQUEST_STORAGE_EXPORT:
                     isStorageRequestedExport = true;
                     break;
-
-                case Util.PERMISSIONS_REQUEST_STORAGE_WITH_DEFAULT_CONTENT_YES:
-                    Pref.setPref_will_create_default_content(this, true);
-                    recreate();
-                break;
-
-                case Util.PERMISSIONS_REQUEST_STORAGE_WITH_DEFAULT_CONTENT_NO:
-                    Pref.setPref_will_create_default_content(this, false);
-                    recreate();
-                break;
             }
         }
         else
         {
-            Pref.setPref_will_create_default_content(this, false);
-            recreate();
+            switch (requestCode) {
+                case Util.PERMISSIONS_REQUEST_STORAGE_ADD_NEW:
+                    Add_note_option.createSelection(this, false);
+                    break;
+
+                case Util.PERMISSIONS_REQUEST_STORAGE:
+                    Pref.setPref_will_create_default_content(this, true); //also create as granted
+                    recreate();
+                    break;
+            }
         }
 
         //normally, will go to _resume
@@ -615,8 +618,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
         System.out.println("MainAct / _onResumeFragments ");
         super.onResumeFragments();
 
-        if( isStorageRequested ||
-            isStorageRequestedImport ||
+        if( isStorageRequestedImport ||
             isStorageRequestedExport   )
         {
             //hide the menu
@@ -1128,10 +1130,17 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                 {
                     // check permission
                     int permissionWriteExtStorage = ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-                    if(permissionWriteExtStorage == PackageManager.PERMISSION_GRANTED)
-                        Add_note_option.createSelection(this,true);
-                    else
-                        Add_note_option.createSelection(this,false);
+
+                    if(permissionWriteExtStorage != PackageManager.PERMISSION_GRANTED ) {
+                        ActivityCompat.requestPermissions(mAct,
+                                new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                                        Manifest.permission.READ_EXTERNAL_STORAGE },
+                                   Util.PERMISSIONS_REQUEST_STORAGE_ADD_NEW);
+                    }
+                    else {
+                            Add_note_option.createSelection(this,true);
+                    }
+
                 }
                 else
                     Add_note_option.createSelection(this,true);

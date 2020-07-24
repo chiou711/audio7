@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 <string name="accept">Accept</string>
-<string name="agreement">Agreement</string>
+<string name="read_agreement">Read agreement</string>
 <string name="welcome_string">
 Welcome starting this App.\n\n
 Please read and accept end user license agreement and allow accessing the files within storage device in next dialog to start using this App.
