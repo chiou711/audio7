@@ -124,42 +124,6 @@ public class UtilImage
 		}
 	}
 	
-	public static Uri getPictureUri(String pictureName, Activity act)
-    {
-		// main directory
-	    String dirString = Environment.getExternalStorageDirectory().toString() + 
-	    		              "/" + Util.getStorageDirName(act);
-	    
-		File dir = new File(dirString);
-		if(!dir.isDirectory())
-			dir.mkdir();
-
-		// picture directory
-	    String picDirString = Environment.getExternalStorageDirectory().toString() + 
-	              "/" + Util.getStorageDirName(act) +"/picture";
-
-		File picDir = new File(picDirString);
-		if(!picDir.isDirectory())
-			picDir.mkdir();
-		
-
-		File photo = new File(picDirString,  pictureName);
-	    return Uri.fromFile(photo);
-    }
-	
-	public static String getPicturePath(String pictureName, Activity act)
-    {
-	    String dirString = Environment.getExternalStorageDirectory().toString() + 
-	    		              "/" + Util.getStorageDirName(act) +"/picture";
-	    
-		File dir = new File(dirString);
-		if(!dir.isDirectory())
-			dir.mkdir();
-
-		File photo = new File(dir,  pictureName);
-	    return photo.getPath();
-    }	
-	
     /**
     * "Zooms" in a thumbnail view by assigning the high resolution image to a hidden "zoomed-in"
     * image view and animating its bounds to fit the entire activity content area. More

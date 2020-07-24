@@ -41,10 +41,13 @@ public class Dialog_EULA {
     private SharedPreferences prefs;
     private String eulaKey;
     public DialogInterface.OnClickListener clickListener_Ok;
+    public DialogInterface.OnClickListener clickListener_ReadAgreement;
     public DialogInterface.OnClickListener clickListener_No;
+    public DialogInterface.OnClickListener clickListener_back;
 
     private String title;
-    private String message;
+    public String agreement;
+    public String welcome;
 
     public Dialog_EULA(AppCompatActivity act ){
         mAct = act;
@@ -54,7 +57,8 @@ public class Dialog_EULA {
                 getPackageInfo().versionName;
 
         // EULA text
-        message = mAct.getString(R.string.EULA_string);
+        agreement = mAct.getString(R.string.EULA_string);
+        welcome = mAct.getString(R.string.welcome_string);
     }
 
     public boolean isEulaAlreadyAccepted() {
@@ -90,10 +94,21 @@ public class Dialog_EULA {
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(mAct)
                 .setTitle(title)
-                .setMessage(message)
+                .setMessage(welcome)
                 .setCancelable(false)
                 .setPositiveButton(R.string.accept, clickListener_Ok)
+                .setNeutralButton(R.string.agreement, clickListener_ReadAgreement)
                 .setNegativeButton(android.R.string.cancel,clickListener_No);
+        builder.create().show();
+    }
+
+    public void show_read_agreement()
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder(mAct)
+                .setTitle(title)
+                .setMessage(agreement)
+                .setCancelable(false)
+                .setNegativeButton(android.R.string.cancel,clickListener_back);
         builder.create().show();
     }
 }

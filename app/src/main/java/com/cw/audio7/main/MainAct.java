@@ -16,7 +16,6 @@
 
 package com.cw.audio7.main;
 
-import java.io.File;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.lang.reflect.Method;
@@ -37,7 +36,6 @@ import com.cw.audio7.operation.audio.AudioPlayer_page;
 import com.cw.audio7.operation.audio.BackgroundAudioService;
 import com.cw.audio7.operation.delete.DeleteFolders;
 import com.cw.audio7.operation.delete.DeletePages;
-import com.cw.audio7.operation.import_export.Import_fileView;
 import com.cw.audio7.page.Checked_notes_option;
 import com.cw.audio7.page.PageUi;
 import com.cw.audio7.page.Page_recycler;
@@ -56,13 +54,11 @@ import com.cw.audio7.util.preferences.Pref;
 import com.mobeta.android.dslv.DragSortListView;
 
 import android.Manifest;
-import android.app.AlertDialog;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.RemoteException;
 import android.os.StrictMode;
@@ -228,12 +224,25 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                 }
             };
 
+            // Read agreement button listener
+            dialog_EULA.clickListener_ReadAgreement = (DialogInterface dialog, int i) -> {
+                dialog_EULA.show_read_agreement();
+            };
+
             // No button listener
             dialog_EULA.clickListener_No = (DialogInterface dialog, int which) -> {
                     // Close the activity as they have declined
                     // the EULA
                     dialog.dismiss();
                     mAct.finish();
+            };
+
+            // back button listener
+            dialog_EULA.clickListener_back = (DialogInterface dialog, int which) -> {
+                // Close the activity as they have declined
+                // the EULA
+                dialog.dismiss();
+                dialog_EULA.show();
             };
 
             dialog_EULA.show();

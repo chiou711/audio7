@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 <string name="accept">接受</string>
+<string name="agreement">協議</string>
+<string name="welcome_string">
+歡迎開啟此應用程式。\n\n
+請閱讀與允許最終用戶許可證協議，並在下一個對話框中允許存取裝置內的檔案以開始使用此應用程式。</string>
 <string name="EULA_string">
 著作權 &#169; 2020 CW(Chui-Wei) Chiu
 \n\n
