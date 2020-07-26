@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="add_new_note">新增記事</string>
-    <string name="add_new_note_position">頁面新筆記位置：</string>
+    <string name="add_new_note">新增連結</string>
+    <string name="add_new_note_position">清單中新連結位置：</string>
     <string name="add_new_note_top">到頂部</string>
     <string name="add_new_note_bottom">到底部</string>
-    <string name="add_new_note_title">新增記事</string>
+    <string name="add_new_note_title">新增連結</string>
     <string name="add_new_note_button_add">新增</string>
-    <string name="dialog_add_new_option_title">設定新增記事的操作：</string>
-    <string name="dialog_add_new_multiple">新增現成文件記事時：包括目錄中的所有同類文件</string>
+    <string name="dialog_add_new_option_title">設定新增連結的操作：</string>
+    <string name="dialog_add_new_multiple">新增現成音訊連結時：包括目錄中的所有同類連結</string>
     <string name="note_text">文字</string>
     <string name="note_audio">音訊</string>
     <string name="note_ready_audio">選擇應用</string>
@@ -28,7 +28,7 @@
     <string name="audio_message_preparing_to_play">準備播放 &#8230;</string>
     <string name="audio_message_preparing_time_out">準備已經超時</string>
     <string name="audio_file_not_found">找不到或未選擇音訊檔案</string>
-    <string name="add_new_start">開始新增筆記</string>
-    <string name="add_new_stop">停止新增筆記</string>
-    <string name="add_new_file_error">新增多個文件時，請確認您的選擇是本地文件。</string>
+    <string name="add_new_start">開始新增連結</string>
+    <string name="add_new_stop">停止新增連結</string>
+    <string name="add_new_file_error">新增多個連結時，請確認您的選擇是本地連結。</string>
 </resources>

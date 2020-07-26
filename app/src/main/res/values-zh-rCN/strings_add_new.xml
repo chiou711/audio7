@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="add_new_note">新增笔记</string>
-    <string name="add_new_note_position">页面新笔记位置：</string>
+    <string name="add_new_note">新增连结</string>
+    <string name="add_new_note_position">清单中新连结位置：</string>
     <string name="add_new_note_top">到顶部</string>
     <string name="add_new_note_bottom">到底部</string>
-    <string name="add_new_note_title">新增笔记</string>
+    <string name="add_new_note_title">新增连结</string>
     <string name="add_new_note_button_add">新增</string>
-    <string name="dialog_add_new_option_title">设定新增笔记的操作：</string>
-    <string name="dialog_add_new_multiple">新增本地文件笔记时：包括目录中的所有同类文件</string>
+    <string name="dialog_add_new_option_title">设定新增连结的操作：</string>
+    <string name="dialog_add_new_multiple">新增本地音讯连结时：包括目录中的所有同类连结</string>
     <string name="note_text">文字</string>
     <string name="note_audio">音讯</string>
     <string name="note_ready_audio">选择应用</string>
@@ -28,7 +28,7 @@
     <string name="audio_message_preparing_to_play">准备播放 &#8230;</string>
     <string name="audio_message_preparing_time_out">准备已经超时</string>
     <string name="audio_file_not_found">找不到或未选择音讯文件</string>
-    <string name="add_new_start">开始新增笔记</string>
-    <string name="add_new_stop">停止新增笔记</string>
-    <string name="add_new_file_error">新增多个文件时，请确认您的选择是本地文件。</string>
+    <string name="add_new_start">开始新增连结</string>
+    <string name="add_new_stop">停止新增连结</string>
+    <string name="add_new_file_error">新增多个连结时，请确认您的选择是本地连结。</string>
 </resources>

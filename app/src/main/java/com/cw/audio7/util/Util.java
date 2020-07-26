@@ -121,7 +121,6 @@ public class Util
     private static DB_folder mDbFolder;
     public static String NEW_LINE = "\r" + System.getProperty("line.separator");
 
-	private static int STYLE_DEFAULT = 1;
 	public static int CHOOSER_SET_AUDIO = 5;
 
 	private int defaultBgClr;
@@ -449,7 +448,7 @@ public class Util
 	{
 		SharedPreferences mPref_style;
 		mPref_style = context.getSharedPreferences("style", 0);
-		return mPref_style.getInt("KEY_STYLE",STYLE_DEFAULT);
+		return mPref_style.getInt("KEY_STYLE",Define.STYLE_DEFAULT);
 	}
 	
 	

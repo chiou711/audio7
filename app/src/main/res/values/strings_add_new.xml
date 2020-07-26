@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="add_new_note">Add new note</string>
-    <string name="add_new_note_position">New note position at page:</string>
+    <string name="add_new_note">Add new link</string>
+    <string name="add_new_note_position">New link position at list:</string>
     <string name="add_new_note_top">To the top</string>
     <string name="add_new_note_bottom">To the bottom</string>
-    <string name="add_new_note_title">Add new note</string>
+    <string name="add_new_note_title">Add new link</string>
     <string name="add_new_note_button_add">Add</string>
-    <string name="dialog_add_new_option_title">Set the operation for new note:</string>
-    <string name="dialog_add_new_multiple">Adding ready file note: involve all same kind files in the directory</string>
+    <string name="dialog_add_new_option_title">Set the operation for new link:</string>
+    <string name="dialog_add_new_multiple">Adding ready audio link: involve all same kind links in the directory</string>
     <string name="note_text">text</string>
     <string name="note_audio">Audio</string>
     <string name="note_ready_audio">Choose App</string>
@@ -28,7 +28,7 @@
     <string name="audio_message_preparing_to_play">Preparing to play &#8230;</string>
     <string name="audio_message_preparing_time_out">Preparing has timed out</string>
     <string name="audio_file_not_found">Audio file not found or not selected</string>
-    <string name="add_new_start">Start adding note</string>
-    <string name="add_new_stop">Stop adding note</string>
-    <string name="add_new_file_error">Adding multiple files, please confirm your selection is a local file.</string>
+    <string name="add_new_start">Start adding link</string>
+    <string name="add_new_stop">Stop adding link</string>
+    <string name="add_new_file_error">Adding multiple links please confirm your selection is a local link.</string>
 </resources>

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="edit_note_title">Edit the note</string>
+    <string name="edit_note_title">Edit the link</string>
     <string name="edit_note_button_save">OK</string>
     <string name="edit_note_button_back">Cancel</string>
-    <string name="edit_note_confirm_update">Current note has been changed, do you want to update it?</string>
+    <string name="edit_note_confirm_update">Current link has been changed, do you want to update it?</string>
     <string name="edit_note_button_delete">Delete</string>
     <string name="edit_note_set_audio_dlg_title">Set audio</string>
     <string name="edit_note_dlg_title">Title:</string>

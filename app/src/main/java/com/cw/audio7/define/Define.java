@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 CW Chiu
+ * Copyright (C) 2020 CW Chiu
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,17 +21,14 @@ import android.content.Context;
 import com.cw.audio7.R;
 
 /**
- * Created by CW on 2016/6/16.
- * Modified by CW on 2018/11/07
+ * data definition in this App:
+ * audio link: basic item
+ * audio list: multiple audio links
+ * audio group: multiple audio lists
  *
- * build apk file size:
- * 1) prefer w/ assets files: 15,483 KB
- *
- * 2) default w/ assets files: 15,483 KB
- *
- * 3) default w/o assets files: 1,173 KB
- *
- * 4) release: 706 KB
+ * 音頻 連結 连结
+ * 音頻 清單 清单
+ * 音頻 群組 群组
  */
 public class Define {
 
@@ -39,9 +36,8 @@ public class Define {
         return app_build_mode;
     }
 
-    //
     public final static int DEBUG_DEFAULT_BY_INITIAL = 0;
-    public final static int RELEASE_DEFAULT_BY_INITIAL = 3;
+    public final static int RELEASE_DEFAULT_BY_INITIAL = 1;
     public final static String  DB_FILE_NAME = "audio7.db";
 
     public static void setAppBuildMode()
@@ -93,7 +89,7 @@ public class Define {
      * - RELEASE_MODE
      * - DEBUG_MODE
      ***************************************************************************/
-    public static int CODE_MODE;// = DEBUG_MODE; //DEBUG_MODE; //RELEASE_MODE;
+    public static int CODE_MODE;// could be DEBUG_MODE or RELEASE_MODE
     public static int DEBUG_MODE = 0;
     public static int RELEASE_MODE = 1;
 
@@ -146,9 +142,8 @@ public class Define {
     public static boolean ENABLE_ADMOB = false; //true; //false;
 
 
-    // default style
-    public static int STYLE_DEFAULT = 1;
-    public static int STYLE_PREFER = 2;
+    // default style for Insert page table
+    public static int STYLE_DEFAULT = 1; //1: white
 
     public static String getTabTitle(Context context, Integer Id)
     {

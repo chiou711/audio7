@@ -11,9 +11,9 @@
     <string name="app_name_dir">audio7</string>
     <string name="drag_handler">drag_handler</string>
     <string name="confirm_dialog_title">確認</string>
-    <string name="confirm_dialog_message">確定要刪除這一項記事？</string>
-    <string name="confirm_dialog_message_page">確定要刪除這一頁記事？</string>
-    <string name="confirm_dialog_message_folder">確定要刪除這一文件夾？</string>
+    <string name="confirm_dialog_message">確定要刪除這一項連結？</string>
+    <string name="confirm_dialog_message_page">確定要刪除這一清单？</string>
+    <string name="confirm_dialog_message_folder">確定要刪除這一群组？</string>
     <string name="confirm_dialog_message_file">確定要刪除這個檔案?</string>
     <string name="confirm_dialog_message_selection">要刪除選擇嗎？</string>
     <string name="confirm_dialog_button_no">否</string>
@@ -26,9 +26,9 @@
     <string name="edit_page_button_delete">刪除</string>
     <string name="edit_page_button_ignore">取消</string>
     <string name="file_not_found">找不到檔案</string>
-    <string name="folder_operation">文件夾操作</string>
-    <string name="page_operation">記事頁操作</string>
-    <string name="note_operation">記事操作</string>
+    <string name="folder_operation">群组操作</string>
+    <string name="page_operation">清單操作</string>
+    <string name="note_operation">連結操作</string>
     <string name="backup_operation">備份操作</string>
     <string name="settings_operation">設定</string>
     <string name="set_enable">啟用</string>

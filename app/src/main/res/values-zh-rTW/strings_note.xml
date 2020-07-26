@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="edit_note_title">編輯記事</string>
+    <string name="edit_note_title">編輯連結</string>
     <string name="edit_note_button_save">確定</string>
     <string name="edit_note_button_back">取消</string>
-    <string name="edit_note_confirm_update">目前記事已被更改，您要更新它嗎？</string>
+    <string name="edit_note_confirm_update">目前連結已被更改，您要更新它嗎？</string>
     <string name="edit_note_button_delete">刪除</string>
     <string name="edit_note_set_audio_dlg_title">設置音訊</string>
     <string name="edit_note_dlg_title">標題:</string>

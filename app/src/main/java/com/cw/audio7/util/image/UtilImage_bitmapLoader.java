@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 CW Chiu
+ * Copyright (C) 2020 CW Chiu
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,17 +19,13 @@ package com.cw.audio7.util.image;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.ThumbnailUtils;
 import android.net.Uri;
-import android.os.AsyncTask;
-import android.provider.MediaStore;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import com.cw.audio7.R;
 import com.cw.audio7.util.uil.UilCommon;
-import com.cw.audio7.util.Util;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingProgressListener;
@@ -38,7 +34,6 @@ import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListene
 
 public class UtilImage_bitmapLoader
 {
-	private Bitmap thumbnail;
 	private SimpleImageLoadingListener mSimpleUilListener, mSimpleUilListenerForVideo;
 	private ImageLoadingProgressListener mUilProgressListener;
 	private ProgressBar mProgressBar;
@@ -156,7 +151,7 @@ public class UtilImage_bitmapLoader
   				mProgressBar.setVisibility(View.GONE);
   				mPicImageView.setVisibility(View.VISIBLE);
   				// set thumb nail bitmap instead of video play icon
-				mPicImageView.setImageBitmap(UtilImage.getRoundedCornerBitmap(thumbnail,10));
+				mPicImageView.setImageBitmap(UtilImage.getRoundedCornerBitmap(loadedImage,10));
   			}
   		};
 

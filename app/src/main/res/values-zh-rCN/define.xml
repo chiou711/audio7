@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="default_folder_name">文件夹</string>
-    <string name="default_page_name">笔记页</string>
-    <string name="prefer_page_name">新页面</string>
+    <string name="default_folder_name">群组</string>
+    <string name="default_page_name">清单</string>
+    <string name="prefer_page_name">新清单</string>
 </resources>

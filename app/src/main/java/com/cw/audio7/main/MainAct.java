@@ -375,10 +375,10 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                     String folder_table = DB_FOLDER_TABLE_PREFIX.concat(String.valueOf(i));
                     db_folder.open();
                     db_folder.insertPage(db_folder.mSqlDb ,
-                            folder_table,
-                            Define.getTabTitle(this,j),
-                            1,
-                            Define.STYLE_DEFAULT);//Define.STYLE_PREFER
+                                                        folder_table,
+                                                        Define.getTabTitle(this,j),
+                                                        1,
+                                                        Define.STYLE_DEFAULT);
                     db_folder.close();
                     //db_folder.insertPage(sqlDb,folder_table,"N2",2,1);
                 }
