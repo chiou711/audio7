@@ -94,7 +94,6 @@ public class Note_addAudio extends AppCompatActivity {
         super.onPause();
     }
 
-    // for Add new picture (stage 2)
     // for Rotate screen (stage 2)
     @Override
     protected void onSaveInstanceState(Bundle outState) {

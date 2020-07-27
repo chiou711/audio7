@@ -16,7 +16,6 @@
     <string name="edit_page_color_title">设定颜色:</string>
     <string name="settings">设置</string>
     <string name="add_new_folder">新增群组</string>
-    <string name="gallery_toast_no_file">还没有文件，请您先建立一个</string>
     <string name="select_note">勾选连结</string>
     <string name="drag_note">拖放连结</string>
     <string name="large_view">大视图</string>

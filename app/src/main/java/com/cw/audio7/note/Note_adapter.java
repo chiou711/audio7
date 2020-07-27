@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 CW Chiu
+ * Copyright (C) 2020 CW Chiu
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,37 +20,28 @@ import com.cw.audio7.R;
 import com.cw.audio7.db.DB_page;
 import com.cw.audio7.operation.audio.Audio_manager;
 import com.cw.audio7.tabs.TabsHost;
-import com.cw.audio7.util.uil.UilCommon;
 import com.cw.audio7.util.audio.UtilAudio;
 import com.cw.audio7.util.image.AsyncTaskAudioBitmap;
 import com.cw.audio7.util.image.TouchImageView;
-import com.cw.audio7.util.image.UtilImage;
-import com.cw.audio7.util.image.UtilImage_bitmapLoader;
 import com.cw.audio7.util.ColorSet;
 import com.cw.audio7.util.CustomWebView;
 import com.cw.audio7.util.Util;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableString;
-import android.text.TextUtils;
 import android.text.Layout.Alignment;
 import android.text.style.AlignmentSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.util.Linkify;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebChromeClient;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -89,7 +80,7 @@ public class Note_adapter extends FragmentStatePagerAdapter
     {
     	System.out.println("Note_adapter / instantiateItem / position = " + position);
     	// Inflate the layout containing 
-    	// 1. picture group: image,video, thumb nail, control buttons
+    	// 1. picture group:  thumb nail
     	// 2. text group: title, body, time 
     	View pagerView = inflater.inflate(R.layout.note_view_adapter, container, false);
     	int style = Note.getStyle();
@@ -173,15 +164,8 @@ public class Note_adapter extends FragmentStatePagerAdapter
     {
 		String audioUri = db_page.getNoteAudioUri(position,true);
 
-        // show image view
-  		if( Util.isEmptyString(audioUri) ) // for wrong path icon
-  		{
-			System.out.println("Note_adapter / _showPictureView / show image view");
-  			imageView.setVisibility(View.VISIBLE);
-  			showImageByTouchImageView(spinner, imageView, "",position);
-  		}
   		// show audio thumb nail view
-  		else if(!Util.isEmptyString(audioUri)    )
+  		if(!Util.isEmptyString(audioUri)    )
   		{
 			System.out.println("Note_adapter / _showPictureView / show audio thumb nail view");
   			imageView.setVisibility(View.VISIBLE);
@@ -379,34 +363,4 @@ public class Note_adapter extends FragmentStatePagerAdapter
 		         "</body></html>";
     }
 
-    // show image by touch image view
-    private void showImageByTouchImageView(final ProgressBar spinner, final TouchImageView pictureView, String strPicture,final Integer position)
-    {
-        if(Util.isEmptyString(strPicture))
-        {
-            pictureView.setImageResource(Note.mStyle%2 == 1 ?
-                    R.drawable.btn_radio_off_holo_light:
-                    R.drawable.btn_radio_off_holo_dark);//R.drawable.ic_empty);
-        }
-        else if(!Util.isUriExisted(strPicture, act))
-        {
-            pictureView.setImageResource(R.drawable.ic_not_found);
-        }
-        else
-        {
-			// load bitmap to image view
-			try
-			{
-				new UtilImage_bitmapLoader(pictureView,
-						strPicture,
-						spinner,
-						UilCommon.optionsForFadeIn,
-						act);
-			}
-			catch(Exception e)
-			{
-				Log.e("Note_adapter", "UtilImage_bitmapLoader error");
-			}
-        }
-    }
 }

@@ -72,47 +72,6 @@ public class UtilImage
         return px;
     }
     
-    // check if file has image extension
-    // refer to http://developer.android.com/intl/zh-tw/guide/appendix/media-formats.html
-    public static boolean hasImageExtension(File file)
-    {
-    	boolean has = false;
-    	String fn = file.getName().toLowerCase(Locale.getDefault());
-    	if(	fn.endsWith("jpg") || fn.endsWith("gif") ||
-    		fn.endsWith("png") || fn.endsWith("bmp") || fn.endsWith("webp") ) 
-	    	has = true;
-	    
-    	return has;
-    } 
-    
-    // check if string has image extension
-    public static boolean hasImageExtension(String string, Activity act)
-    {
-    	boolean has = false;
-    	if(!Util.isEmptyString(string))
-    	{
-	    	String fn = string.toLowerCase(Locale.getDefault());
-	    	if(	fn.endsWith("jpg") || fn.endsWith("gif") ||
-	    		fn.endsWith("png") || fn.endsWith("bmp") || fn.endsWith("webp") ) 
-		    	has = true;
-    	}
-		else
-			return has;
-    	
-    	if(!has)
-    	{
-    		String fn = Util.getDisplayNameByUriString(string, act)[0];
-
-    		if(!Util.isEmptyString(fn)) {
-				fn = fn.toLowerCase(Locale.getDefault());
-				if (fn.endsWith("jpg") || fn.endsWith("gif") ||
-						fn.endsWith("png") || fn.endsWith("bmp") || fn.endsWith("webp"))
-					has = true;
-			}
-    	}    	
-    	return has;
-    }        
-    
 	public static Bitmap getRoundedCornerBitmap(Bitmap bitmap, int percent)
 	{
 		Bitmap output = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);

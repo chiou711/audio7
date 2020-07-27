@@ -302,7 +302,7 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
             holder.audioBlock.setVisibility(View.GONE);
         }
 
-		// case : show audio thumb nail if picture Uri is none and audio Uri exists
+		// case : show audio thumb nail if audio Uri exists
 		if(UtilAudio.hasAudioExtension(audioUri) )
 		{
 			holder.thumbBlock.setVisibility(View.VISIBLE);

@@ -105,8 +105,6 @@ public class Note extends AppCompatActivity
 
 	} //onCreate end
 
-	// Add to prevent resizing full screen picture,
-	// when popup menu shows up at picture mode
 	@Override
 	public void onWindowFocusChanged(boolean hasFocus) {
 		super.onWindowFocusChanged(hasFocus);
@@ -179,7 +177,6 @@ public class Note extends AppCompatActivity
 	{
         System.out.println("Note / _setLayoutView");
 
-		// video view will be reset after _setContentView
 		if(Util.isLandscapeOrientation(this))
 			setContentView(R.layout.note_view_landscape);
 		else
@@ -277,7 +274,6 @@ public class Note extends AppCompatActivity
                 audioUi_note.showAudioBlock();
             }
 
-			// stop video when changing note
             setOutline(act);
 		}
 	};
@@ -309,8 +305,6 @@ public class Note extends AppCompatActivity
 
     /** Set outline for selected view mode
     *
-    *   Determined by view mode: all, picture, text
-    *
     *   Controlled factor:
     *   - action bar: hide, show
     *   - full screen: full, not full
@@ -340,22 +334,6 @@ public class Note extends AppCompatActivity
         act.invalidateOptionsMenu();
 	}
 
-
-    //Refer to http://stackoverflow.com/questions/4434027/android-videoview-orientation-change-with-buffered-video
-	/***************************************************************
-	video play spec of Pause and Rotate:
-	1. Rotate: keep pause state
-	 pause -> rotate -> pause -> play -> continue
-
-	2. Rotate: keep play state
-	 play -> rotate -> continue play
-
-	3. Key guard: enable pause
-	 play -> key guard on/off -> pause -> play -> continue
-
-	4. Key guard and Rotate: keep pause
-	 play -> key guard on/off -> pause -> rotate -> pause
-	 ****************************************************************/	
 	@Override
 	public void onConfigurationChanged(Configuration newConfig) {
 	    super.onConfigurationChanged(newConfig);

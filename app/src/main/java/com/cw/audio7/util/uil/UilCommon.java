@@ -90,17 +90,6 @@ public class UilCommon
 			.showImageForEmptyUri(R.drawable.btn_radio_off_holo_dark)
 			.showImageOnFail(R.drawable.ic_not_found) //R.drawable.ic_media_play
 			.build();				
-		
-		optionsForRounded_light_playIcon = optionsForRounded
-			.showImageForEmptyUri(R.drawable.btn_radio_off_holo_light)
-			.showImageOnFail(R.drawable.ic_media_play)// for remote content video		
-			.build();		
-		
-		optionsForRounded_dark_playIcon = optionsForRounded
-			.showImageForEmptyUri(R.drawable.btn_radio_off_holo_dark)
-			.showImageOnFail(R.drawable.ic_media_play)// for remote content video		
-			.build();		
-		
 	}
 	
     public static ImageLoadingListener animateFirstListener = new AnimateFirstDisplayListener();

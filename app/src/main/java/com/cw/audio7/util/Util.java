@@ -747,13 +747,6 @@ public class Util
 					}
 				}
 
-				// add for video with mkv format
-				if(Util.isEmptyString(audio_title) &&
-				   Util.isEmptyString(audio_artist)   )
-				{
-					displayName[0] = uri.getLastPathSegment();
-					displayName[1] = "";
-				}
 			}
 			else {
 				displayName[0] = uri.getLastPathSegment();
@@ -974,8 +967,6 @@ public class Util
 
 	// get Url array of directory files
     public final static int AUDIO = 0;
-    public final static int IMAGE = 1;
-    public final static int VIDEO = 2;
     public static String[] getUrlsByFiles(File[] files,int type)
     {
         if(files == null)
@@ -989,8 +980,7 @@ public class Util
             
 	        for(File file : files)
 	        {
-		        if( ( (type == AUDIO) && (UtilAudio.hasAudioExtension(file)) ) ||
-		        	( (type == IMAGE) && (UtilImage.hasImageExtension(file)) )  )
+		        if(  (type == AUDIO) && (UtilAudio.hasAudioExtension(file))   )
 	            {
 		            if(i< files.length)
 		            {
@@ -1163,11 +1153,7 @@ public class Util
         // OK to put extra
         CharSequence charSeq = "";
         
-        if(type.startsWith("image"))
-        	charSeq = act.getResources().getText(R.string.add_new_chooser_image);
-        else if(type.startsWith("video"))
-        	charSeq = act.getResources().getText(R.string.add_new_chooser_video);
-        else if(type.startsWith("audio"))
+		 if(type.startsWith("audio"))
         	charSeq = act.getResources().getText(R.string.add_new_chooser_audio);
 
 		openInChooser = Intent.createChooser(intentList.remove(intentList.size()-1), charSeq);//remove duplicated item
