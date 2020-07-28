@@ -87,7 +87,7 @@ public class Add_audio_all extends Fragment
         addAllButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 // Async for showing progress bar and do Add all
-                Add_audio_all_asyncTask task = new Add_audio_all_asyncTask(MainAct.mAct,rootView,currFilePath);
+                Add_audio_all_asyncTask task = new Add_audio_all_asyncTask(MainAct.mAct,rootView);
                 task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             }
         });
@@ -110,9 +110,9 @@ public class Add_audio_all extends Fragment
         super.onResume();
         System.out.println("------------------- _onResume");
 
-        // enable the following if Add all at the beginning
-//        Add_audio_all_asyncTask task = new Add_audio_all_asyncTask(MainAct.mAct,rootView,currFilePath);
-//        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        // auto add all: no UI is needed
+        Add_audio_all_asyncTask task = new Add_audio_all_asyncTask(MainAct.mAct,rootView);
+        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     /**
@@ -453,12 +453,9 @@ public class Add_audio_all extends Fragment
         private Button backButton;
         private Button addAllButton;
 
-        String path;
-
-        Add_audio_all_asyncTask(AppCompatActivity _act, View _rootView, String _filePath) {
+        Add_audio_all_asyncTask(AppCompatActivity _act, View _rootView) {
             act = _act;
             rootView = _rootView;
-            path = _filePath;
 
             Util.lockOrientation(act);
 
@@ -508,6 +505,10 @@ public class Add_audio_all extends Fragment
             messageText.setVisibility(View.VISIBLE);
             backButton.setVisibility(View.VISIBLE);
             addAllButton.setVisibility(View.VISIBLE);
+
+            // auto add all: no UI is needed
+            Objects.requireNonNull(getActivity()).getSupportFragmentManager().popBackStack();
+
         } // onPostExecute
     }
 }

@@ -653,9 +653,8 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
         }
         // fix: home button failed after power off/on in Config fragment
         else {
-//		// fix: home button failed after power off/on in Config fragment
             if (bEULA_accepted) {
-	            if(mFragmentManager != null)
+                if(mFragmentManager != null)
                     mFragmentManager.popBackStack();
 
                 if (!mAct.isDestroyed()) {
