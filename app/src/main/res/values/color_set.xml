@@ -27,6 +27,7 @@
     <color name="colorAccent">#FF4081</color>
 
     <color name="colorWhite">#FFFFFF</color>
+    <color name="colorBlack">#000000</color>
     <color name="colorGray">#bFbFbF</color>
 
     <!-- grid item of Add new   -->

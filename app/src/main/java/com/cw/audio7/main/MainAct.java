@@ -31,6 +31,7 @@ import com.cw.audio7.drawer.Drawer;
 import com.cw.audio7.folder.Folder;
 import com.cw.audio7.folder.FolderUi;
 import com.cw.audio7.note_add.Add_note_option;
+import com.cw.audio7.note_add.add_audio.Add_audio_all_auto;
 import com.cw.audio7.operation.audio.Audio_manager;
 import com.cw.audio7.operation.audio.AudioPlayer_page;
 import com.cw.audio7.operation.audio.BackgroundAudioService;
@@ -75,6 +76,7 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -118,21 +120,6 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
-        ///
-//    	 StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
-//    	   .detectDiskReads()
-//    	   .detectDiskWrites()
-//    	   .detectNetwork() 
-//    	   .penaltyLog()
-//    	   .build());
-//
-//    	    StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
-////    	   .detectLeakedSqlLiteObjects() //??? unmark this line will cause strict mode error
-//    	   .penaltyLog() 
-//    	   .penaltyDeath()
-//    	   .build());     	
-        ///
-
         super.onCreate(savedInstanceState);
         Define.setAppBuildMode();
 
@@ -247,8 +234,8 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
 
             dialog_EULA.show();
         }
-        else
-            doCreate();
+//        else
+//            doCreate();
     }
 
     // check permission dialog
@@ -282,11 +269,11 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
         System.out.println("MainAct / _doCreate");
 
         // Will create default contents: by assets or by initial tables
-        if(Pref.getPref_will_create_default_content(this))
-        {
-            if ((Define.DEFAULT_CONTENT == Define.BY_INITIAL_TABLES) && (Define.INITIAL_FOLDERS_COUNT > 0))
-                createDefaultContent_byInitialTables();
-        }
+//        if(Pref.getPref_will_create_default_content(this))
+//        {
+//            if ((Define.DEFAULT_CONTENT == Define.BY_INITIAL_TABLES) && (Define.INITIAL_FOLDERS_COUNT > 0))
+//                createDefaultContent_byInitialTables();
+//        }
 
         mFolderTitles = new ArrayList<>();
 
@@ -596,8 +583,18 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
 
         // Sync the toggle state after onRestoreInstanceState has occurred.
         if(bEULA_accepted) {
+            doCreate();
+
             if(drawer != null)
                 drawer.drawerToggle.syncState();
+
+            if(Pref.getPref_will_create_default_content(this))
+            {
+                Add_audio_all_auto add_audio_all_auto = new Add_audio_all_auto();
+                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                transaction.setCustomAnimations(R.anim.fragment_slide_in_left, R.anim.fragment_slide_out_left, R.anim.fragment_slide_in_right, R.anim.fragment_slide_out_right);
+                transaction.replace(R.id.content_frame, add_audio_all_auto, "add_audio").addToBackStack(null).commit();
+            }
 
             // get focus folder table Id, default folder table Id: 1
             DB_drawer dB_drawer = new DB_drawer(this);
@@ -792,6 +789,8 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
     public void onBackStackChanged() {
         int backStackEntryCount = mFragmentManager.getBackStackEntryCount();
 //        System.out.println("MainAct / _onBackStackChanged / backStackEntryCount = " + backStackEntryCount);
+        if(Pref.getPref_will_create_default_content(this))
+            return;
 
         if(backStackEntryCount == 1) // fragment
         {
@@ -1129,7 +1128,6 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                 {
                     // check permission
                     int permissionWriteExtStorage = ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-
                     if(permissionWriteExtStorage != PackageManager.PERMISSION_GRANTED ) {
                         ActivityCompat.requestPermissions(mAct,
                                 new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -1436,6 +1434,19 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
         System.out.println("MainAct / _configLayoutView");
 
         setContentView(R.layout.drawer);
+
+        if(Pref.getPref_will_create_default_content(this)) {
+            findViewById(R.id.main_progress).setVisibility(View.VISIBLE);
+            findViewById(R.id.main_message).setVisibility(View.VISIBLE);
+            TextView titleViewText = (TextView) findViewById(R.id.main_message);
+            titleViewText.setText(R.string.note_add_all_title_adding);
+            return;
+        }
+        else {
+            findViewById(R.id.main_progress).setVisibility(View.INVISIBLE);
+            findViewById(R.id.main_message).setVisibility(View.INVISIBLE);
+        }
+
         initActionBar();
 
         // new drawer
