@@ -31,7 +31,7 @@ import com.cw.audio7.drawer.Drawer;
 import com.cw.audio7.folder.Folder;
 import com.cw.audio7.folder.FolderUi;
 import com.cw.audio7.note_add.Add_note_option;
-import com.cw.audio7.note_add.add_audio.Add_audio_all_auto;
+import com.cw.audio7.note_add.add_audio.Add_audio_all;
 import com.cw.audio7.operation.audio.Audio_manager;
 import com.cw.audio7.operation.audio.AudioPlayer_page;
 import com.cw.audio7.operation.audio.BackgroundAudioService;
@@ -588,12 +588,12 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
             if(drawer != null)
                 drawer.drawerToggle.syncState();
 
-            if(Pref.getPref_will_create_default_content(this))
-            {
-                Add_audio_all_auto add_audio_all_auto = new Add_audio_all_auto();
+            // do Add all
+            if(Pref.getPref_will_create_default_content(this)) {
+                Add_audio_all add_audio_all_ = new Add_audio_all();
                 FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                 transaction.setCustomAnimations(R.anim.fragment_slide_in_left, R.anim.fragment_slide_out_left, R.anim.fragment_slide_in_right, R.anim.fragment_slide_out_right);
-                transaction.replace(R.id.content_frame, add_audio_all_auto, "add_audio").addToBackStack(null).commit();
+                transaction.replace(R.id.content_frame, add_audio_all_, "add_audio").addToBackStack(null).commit();
             }
 
             // get focus folder table Id, default folder table Id: 1
@@ -787,11 +787,27 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
 
     @Override
     public void onBackStackChanged() {
+
+        // show progress bar when doing Add all
+        if(Pref.getPref_will_create_default_content(this)) {
+            getSupportActionBar().hide();
+
+            findViewById(R.id.main_progress).setVisibility(View.VISIBLE);
+            findViewById(R.id.main_message).setVisibility(View.VISIBLE);
+            TextView titleViewText = (TextView) findViewById(R.id.main_message);
+            titleViewText.setText(R.string.note_add_all_title_adding);
+            return;
+        }
+        // hide progress bar after Add all
+        else {
+            getSupportActionBar().show();
+
+            findViewById(R.id.main_progress).setVisibility(View.INVISIBLE);
+            findViewById(R.id.main_message).setVisibility(View.INVISIBLE);
+        }
+
         int backStackEntryCount = mFragmentManager.getBackStackEntryCount();
 //        System.out.println("MainAct / _onBackStackChanged / backStackEntryCount = " + backStackEntryCount);
-        if(Pref.getPref_will_create_default_content(this))
-            return;
-
         if(backStackEntryCount == 1) // fragment
         {
 //            System.out.println("MainAct / _onBackStackChanged / fragment");
@@ -1434,18 +1450,6 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
         System.out.println("MainAct / _configLayoutView");
 
         setContentView(R.layout.drawer);
-
-        if(Pref.getPref_will_create_default_content(this)) {
-            findViewById(R.id.main_progress).setVisibility(View.VISIBLE);
-            findViewById(R.id.main_message).setVisibility(View.VISIBLE);
-            TextView titleViewText = (TextView) findViewById(R.id.main_message);
-            titleViewText.setText(R.string.note_add_all_title_adding);
-            return;
-        }
-        else {
-            findViewById(R.id.main_progress).setVisibility(View.INVISIBLE);
-            findViewById(R.id.main_message).setVisibility(View.INVISIBLE);
-        }
 
         initActionBar();
 

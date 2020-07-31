@@ -19,8 +19,15 @@ package com.cw.audio7.note_add.add_audio;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.cw.audio7.R;
 import com.cw.audio7.db.DB_drawer;
 import com.cw.audio7.db.DB_folder;
 import com.cw.audio7.db.DB_page;
@@ -28,9 +35,12 @@ import com.cw.audio7.drawer.Drawer;
 import com.cw.audio7.folder.FolderUi;
 import com.cw.audio7.main.MainAct;
 import com.cw.audio7.tabs.TabsHost;
+import com.cw.audio7.util.BaseBackPressedListener;
+import com.cw.audio7.util.ColorSet;
 import com.cw.audio7.util.Util;
 import com.cw.audio7.util.audio.UtilAudio;
 import com.cw.audio7.util.preferences.Pref;
+
 
 import java.io.File;
 import java.util.ArrayList;
@@ -44,19 +54,55 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
-public class Add_audio_all_auto extends Fragment
+public class Add_audio_all_UI extends Fragment
 {
     List<String> filePathArray = null;
     List<String> fileNames = null;
+    public View rootView;
     int PAGES_PER_FOLDER = 7;
     AppCompatActivity act;
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        System.out.println("Add_audio_all / _onCreate");
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        rootView = inflater.inflate(R.layout.add_all, container, false);
+//        System.out.println("Add_audio_all / _onCreateView");
         act = (AppCompatActivity) getActivity();
+
+        View view = rootView.findViewById(R.id.view_back_btn_bg);
+        view.setBackgroundColor(ColorSet.getBarColor(Objects.requireNonNull(getActivity())));
+
+        TextView titleViewText = (TextView) rootView.findViewById(R.id.add_all_message);
+        titleViewText.setText(R.string.note_add_all_title);
+
+        // back button
+        Button backButton = (Button) rootView.findViewById(R.id.view_back);
+        backButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_menu_back, 0, 0, 0);
+
+        // renew button
+        Button addAllButton = (Button) rootView.findViewById(R.id.view_add_all);
+        addAllButton.setCompoundDrawablesWithIntrinsicBounds(android.R.drawable.ic_popup_sync , 0, 0, 0);
+
+        // do cancel
+        backButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                Objects.requireNonNull(getActivity()).getSupportFragmentManager().popBackStack();
+            }
+        });
+
+        // do Add all
+        addAllButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                // Async for showing progress bar and do Add all
+                Add_audio_all_asyncTask task = new Add_audio_all_asyncTask(act,rootView);
+                task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            }
+        });
+
+        ((MainAct)getActivity()).setOnBackPressedListener(new BaseBackPressedListener(act));
+
+        return rootView;
     }
+
 
     String appDir;
     String currFilePath;
@@ -68,17 +114,11 @@ public class Add_audio_all_auto extends Fragment
     @Override
     public void onResume() {
         super.onResume();
-        System.out.println("Add_audio_all / _onResume");
+//        System.out.println("Add_audio_all / _onResume");
 
         // auto add all: no UI is needed
-        Add_audio_all_asyncTask task = new Add_audio_all_asyncTask(act);
+        Add_audio_all_asyncTask task = new Add_audio_all_asyncTask(act,rootView);
         task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        System.out.println("Add_audio_all / _onPause");
     }
 
     /**
@@ -118,7 +158,7 @@ public class Add_audio_all_auto extends Fragment
 //                System.out.println("==>  fileDir = " + fileDir.getPath());
 
                 if( !fileDir.getAbsolutePath().contains("..") ||
-                    (fileDir.getAbsolutePath().contains("..") &&  (file.length()!=2) ) )
+                        (fileDir.getAbsolutePath().contains("..") &&  (file.length()!=2) ) )
                 {
                     if (fileDir.isDirectory()) {
 
@@ -203,7 +243,6 @@ public class Add_audio_all_auto extends Fragment
     // add new folder
     void addNewFolder(String folderName)
     {
-//        DB_drawer dB_drawer = new DB_drawer(MainAct.mAct);
         DB_drawer dB_drawer = new DB_drawer(act);
         int folders_count = dB_drawer.getFoldersCount(true);
 
@@ -318,7 +357,7 @@ public class Add_audio_all_auto extends Fragment
                 for (File file : files) {
                     // add for filtering non-audio file
                     if (!file.isDirectory() &&
-                        (UtilAudio.hasAudioExtension(file))) {
+                            (UtilAudio.hasAudioExtension(file))) {
                         filePathArray.add(file.getPath());
                         // file
                         fileNames.add(file.getName());
@@ -342,11 +381,11 @@ public class Add_audio_all_auto extends Fragment
             // sort by alphabetic
             Arrays.sort(files, new FileNameComparator());
 
-	        for(File file : files)
-	        {
+            for(File file : files)
+            {
                 if(file.isDirectory())
                     dirCount++;
-	        }
+            }
         }
         return dirCount;
     }
@@ -411,16 +450,39 @@ public class Add_audio_all_auto extends Fragment
      */
     class Add_audio_all_asyncTask extends AsyncTask<Void, Integer, Void> {
 
+        private ProgressBar progressBar;
         AppCompatActivity act;
+        View rootView;
+        private TextView messageText;
+        private Button backButton;
+        private Button addAllButton;
 
-        Add_audio_all_asyncTask(AppCompatActivity _act) {
-            System.out.println("Add_audio_all / Add_audio_all_asyncTask / _constructor");
+        Add_audio_all_asyncTask(AppCompatActivity _act, View _rootView) {
+//            System.out.println("Add_audio_all / Add_audio_all_asyncTask / _constructor");
             act = _act;
+            rootView = _rootView;
+
+            Util.lockOrientation(act);
+
+            messageText = (TextView) rootView.findViewById(R.id.add_all_message);
+            messageText.setText(R.string.note_add_all_title_adding);
+
+            progressBar = (ProgressBar) rootView.findViewById(R.id.add_all_progress);
+            progressBar.setVisibility(View.VISIBLE);
+
+            backButton = (Button) rootView.findViewById(R.id.view_back);
+            backButton.setVisibility(View.INVISIBLE);
+
+            addAllButton = (Button) rootView.findViewById(R.id.view_add_all);
+            addAllButton.setVisibility(View.INVISIBLE);
         }
 
         @Override
         protected void onProgressUpdate(Integer... values) {
             super.onProgressUpdate(values);
+            if (this.progressBar != null) {
+                progressBar.setProgress(values[0]);
+            }
         }
 
         @Override
@@ -441,6 +503,14 @@ public class Add_audio_all_auto extends Fragment
             super.onPostExecute(result);
             System.out.println("------ onPostExecute");
 
+            progressBar.setVisibility(View.INVISIBLE);
+
+            messageText.setText(R.string.note_add_all_title_finish);
+
+            messageText.setVisibility(View.VISIBLE);
+            backButton.setVisibility(View.VISIBLE);
+            addAllButton.setVisibility(View.VISIBLE);
+
             // auto add all: no UI is needed
             Objects.requireNonNull(act).getSupportFragmentManager().popBackStack();
             Pref.setPref_will_create_default_content(act, false);
@@ -452,4 +522,5 @@ public class Add_audio_all_auto extends Fragment
 
         } // onPostExecute
     }
+
 }
