@@ -15,7 +15,7 @@
     <string name="note_ready_audio_byFolder">一次一目录</string>
     <string name="note_ready_audio_by_all">一次全部</string>
     <string name="note_add_all_title">按\"更新键\"添加\n所有音频连结</string>
-    <string name="note_add_all_title_adding">正在添加连结，请稍候</string>
+    <string name="note_add_all_title_adding">正在添加音频连结，请稍候</string>
     <string name="note_add_all_title_finish">完成</string>
     <string name="note_recording">录音</string>
     <string name="note_cancel_add_new">取消</string>

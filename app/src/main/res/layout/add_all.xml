@@ -25,30 +25,4 @@
 		android:paddingStart="3dp"
 		tools:ignore="RtlSymmetry" />
 
-	<View android:layout_width="match_parent" android:layout_height="1dip" android:background="#4f4f4f" />
-			
-	<LinearLayout
-		android:id="@+id/view_back_btn_bg"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:orientation="horizontal"
-		android:background="@color/bar_color"
-		android:gravity="center_horizontal">
-	<Button
-		android:id="@+id/view_back"
-		android:layout_width="120dp"
-	    android:layout_height="wrap_content"
-		android:text="@string/view_note_button_back"
-		android:background="@drawable/button"
-		android:layout_margin="5dp"
-		android:textColor="@android:color/white" />
-	<Button
-		android:id="@+id/view_add_all"
-		android:layout_width="120dp"
-		android:layout_height="wrap_content"
-		android:text="@string/btn_Renew"
-		android:background="@drawable/button"
-		android:layout_margin="5dp"
-		android:textColor="@android:color/white" />
-	</LinearLayout>
 </LinearLayout>

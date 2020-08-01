@@ -3,4 +3,5 @@
     <string name="toast_import_SDCard_no_file">No file yet, please export one first</string>
     <string name="toast_import_finished">The selected file has been imported</string>
     <string name="toast_input_filename">Please input a file name</string>
+    <string name="toast_not_working">Not working during database processing</string>
 </resources>

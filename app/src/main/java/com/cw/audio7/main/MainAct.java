@@ -76,7 +76,6 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -84,6 +83,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.view.GravityCompat;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -588,14 +588,6 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
             if(drawer != null)
                 drawer.drawerToggle.syncState();
 
-            // do Add all
-            if(Pref.getPref_will_create_default_content(this)) {
-                Add_audio_all add_audio_all_ = new Add_audio_all();
-                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                transaction.setCustomAnimations(R.anim.fragment_slide_in_left, R.anim.fragment_slide_out_left, R.anim.fragment_slide_in_right, R.anim.fragment_slide_out_right);
-                transaction.replace(R.id.content_frame, add_audio_all_, "add_audio").addToBackStack(null).commit();
-            }
-
             // get focus folder table Id, default folder table Id: 1
             DB_drawer dB_drawer = new DB_drawer(this);
             dB_drawer.open();
@@ -609,6 +601,22 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
         }
     }
 
+    @Override
+    public void onAttachedToWindow() {
+        super.onAttachedToWindow();
+
+        // do Add all
+        if(Pref.getPref_will_create_default_content(this)) {
+
+            getSupportActionBar().hide();
+
+            Add_audio_all add_audio_all = new Add_audio_all();
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.setCustomAnimations(R.anim.fragment_slide_in_left, R.anim.fragment_slide_out_left, R.anim.fragment_slide_in_right, R.anim.fragment_slide_out_right);
+            transaction.add(R.id.content_frame, add_audio_all, "add_audio").addToBackStack(null).commit();
+        }
+
+    }
 
     @Override
     protected void onResumeFragments() {
@@ -752,7 +760,11 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
     public void onBackPressed()
     {
         System.out.println("MainAct / _onBackPressed");
-        doBackKeyEvent();
+        Fragment f = getSupportFragmentManager().findFragmentById(R.id.content_frame);
+        if (f instanceof Add_audio_all)
+            Toast.makeText(this, R.string.toast_not_working,Toast.LENGTH_SHORT).show();
+        else
+            doBackKeyEvent();
     }
 
     void doBackKeyEvent()
@@ -787,27 +799,9 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
 
     @Override
     public void onBackStackChanged() {
-
-        // show progress bar when doing Add all
-        if(Pref.getPref_will_create_default_content(this)) {
-            getSupportActionBar().hide();
-
-            findViewById(R.id.main_progress).setVisibility(View.VISIBLE);
-            findViewById(R.id.main_message).setVisibility(View.VISIBLE);
-            TextView titleViewText = (TextView) findViewById(R.id.main_message);
-            titleViewText.setText(R.string.note_add_all_title_adding);
-            return;
-        }
-        // hide progress bar after Add all
-        else {
-            getSupportActionBar().show();
-
-            findViewById(R.id.main_progress).setVisibility(View.INVISIBLE);
-            findViewById(R.id.main_message).setVisibility(View.INVISIBLE);
-        }
-
         int backStackEntryCount = mFragmentManager.getBackStackEntryCount();
-//        System.out.println("MainAct / _onBackStackChanged / backStackEntryCount = " + backStackEntryCount);
+//        System.out.println("MainAct+ / _onBackStackChanged / backStackEntryCount = " + backStackEntryCount);
+
         if(backStackEntryCount == 1) // fragment
         {
 //            System.out.println("MainAct / _onBackStackChanged / fragment");
