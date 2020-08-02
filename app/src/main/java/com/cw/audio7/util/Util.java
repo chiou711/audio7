@@ -756,6 +756,12 @@ public class Util
 //		System.out.println("displayName[0] = " + displayName[0]);
 //		System.out.println("displayName[1] = " + displayName[1]);
 
+		// MP3 with path but no title and no artist
+		if(Util.isEmptyString(displayName[0]) && Util.isEmptyString(displayName[1]) &&UtilAudio.hasAudioExtension(uriString)) {
+			displayName[0] = uriString;
+			displayName[1] = "";
+		}
+
         return displayName;
 	}
 	
