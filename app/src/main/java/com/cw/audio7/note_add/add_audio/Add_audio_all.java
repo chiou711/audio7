@@ -465,8 +465,8 @@ public class Add_audio_all extends Fragment
             messageText.setVisibility(View.VISIBLE);
 
             // auto add all: no UI is needed
-            Objects.requireNonNull(act).getSupportFragmentManager().popBackStack();
             Pref.setPref_will_create_default_content(act, false);
+            Objects.requireNonNull(act).getSupportFragmentManager().popBackStack();
             act.finish();
             Intent intent  = new Intent(act,MainAct.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
