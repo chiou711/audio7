@@ -90,7 +90,6 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
         ImageView btnMarking;
 		TextView rowId;
 		View audioBlock;
-		ImageView iconAudio;
         TextView audioTitle;
         TextView audioArtist;
 		TextView textTitle;
@@ -111,7 +110,6 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
 
             rowId= (TextView) v.findViewById(R.id.row_id);
             audioBlock = v.findViewById(R.id.audio_block);
-            iconAudio = (ImageView) v.findViewById(R.id.img_audio);
             audioTitle = (TextView) v.findViewById(R.id.row_audio_title);
             audioArtist = (TextView) v.findViewById(R.id.row_audio_artist);
             btnMarking = (ImageView) v.findViewById(R.id.btn_marking);
@@ -142,8 +140,7 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
 
         int resource_id;
-        SharedPreferences   mPref_show_note_attribute = MainAct.mAct.getSharedPreferences("show_note_attribute", 0);
-        if(mPref_show_note_attribute.getString("KEY_ENABLE_LARGE_VIEW", "yes").equalsIgnoreCase("yes"))
+        if(Pref.getPref_card_view_enable_large_view(mAct))
             resource_id = R.layout.page_view_card_high;
         else
             resource_id = R.layout.page_view_card;
@@ -168,11 +165,8 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
 
 
         // get DB data
-        String pictureUri = null;
         String audioUri = null;
         int marking = 0;
-
-		SharedPreferences pref_show_note_attribute = MainAct.mAct.getSharedPreferences("show_note_attribute", 0);
 
 	    mDb_page = new DB_page(mAct, page_table_id);
 	    mDb_page.open();
@@ -191,7 +185,7 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
         holder.rowId.setTextColor(ColorSet.mText_ColorArray[style]);
 
         // show marking check box
-        if(pref_show_note_attribute.getString("KEY_ENABLE_SELECT", "yes").equalsIgnoreCase("yes")) {
+        if(Pref.getPref_card_view_enable_select(mAct)) {
             // show checked icon
             holder.btnMarking.setVisibility(View.VISIBLE);
 
@@ -213,7 +207,7 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
         }
 
         // show drag button
-        if(pref_show_note_attribute.getString("KEY_ENABLE_DRAGGABLE", "yes").equalsIgnoreCase("yes"))
+        if(Pref.getPref_card_view_enable_draggable(mAct))
             holder.btnDrag.setVisibility(View.VISIBLE);
         else
             holder.btnDrag.setVisibility(View.GONE);
@@ -243,8 +237,15 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
 //			holder.audioName.setTextSize(12.0f);
 
         if(!Util.isEmptyString(audioUri)) {
-            holder.audioTitle.setTextColor(ColorSet.mText_ColorArray[style]);
-            holder.audioArtist.setTextColor(ColorSet.mText_ColorArray[style]);
+            if( marking == 1) {
+                holder.rowId.setTextColor(ColorSet.mText_ColorArray[style]);
+                holder.audioTitle.setTextColor(ColorSet.mText_ColorArray[style]);
+                holder.audioArtist.setTextColor(ColorSet.mText_ColorArray[style]);
+            } else {
+                holder.rowId.setTextColor(ColorSet.color_gray);
+                holder.audioTitle.setTextColor(ColorSet.color_gray);
+                holder.audioArtist.setTextColor(ColorSet.color_gray);
+            }
         }
 
         // show audio highlight if audio is not at Stop
@@ -260,13 +261,10 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
             holder.audioBlock.setVisibility(View.VISIBLE);
 
             // set type face
-//			holder.audioName.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
+            holder.rowId.setTextColor(ColorSet.getHighlightColor(mAct));
             holder.audioTitle.setTextColor(ColorSet.getHighlightColor(mAct));
             holder.audioArtist.setTextColor(ColorSet.getHighlightColor(mAct));
 
-            // set icon
-            holder.iconAudio.setVisibility(View.VISIBLE);
-            holder.iconAudio.setImageResource(R.drawable.ic_audio);
 
             // set animation
 //			Animation animation = AnimationUtils.loadAnimation(mContext , R.anim.right_in);
@@ -282,25 +280,11 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
             // set type face
 //			holder.audioName.setTypeface(Typeface.DEFAULT, Typeface.NORMAL);
 
-            // set icon
-//            holder.iconAudio.setVisibility(View.VISIBLE);
-            if(marking == 1)
-                holder.iconAudio.setVisibility(View.VISIBLE);
-            else
-                holder.iconAudio.setVisibility(View.INVISIBLE);
-
-            if(style % 2 == 0)
-                holder.iconAudio.setImageResource(R.drawable.ic_audio_off_white);
-            else
-                holder.iconAudio.setImageResource(R.drawable.ic_audio_off_black);
         }
 
         // show audio icon and block
         if(Util.isEmptyString(audioUri))
-        {
-            holder.iconAudio.setVisibility(View.GONE);
             holder.audioBlock.setVisibility(View.GONE);
-        }
 
 		// case : show audio thumb nail if audio Uri exists
 		if(UtilAudio.hasAudioExtension(audioUri) )

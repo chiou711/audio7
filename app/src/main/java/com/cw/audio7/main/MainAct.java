@@ -944,8 +944,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                 mMenu.findItem(R.id.PLAY).setVisible( (pgsCnt >0) && (notesCnt>0) );
 
                 // HANDLE CHECKED NOTES
-                mPref_show_note_attribute = mContext.getSharedPreferences("show_note_attribute", 0);
-                if(mPref_show_note_attribute.getString("KEY_ENABLE_SELECT", "yes").equalsIgnoreCase("yes"))
+	            if(Pref.getPref_card_view_enable_select(mAct))
                     mMenu.findItem(R.id.HANDLE_CHECKED_NOTES).setVisible( (pgsCnt >0) && (notesCnt>0) );
                 else
                     mMenu.findItem(R.id.HANDLE_CHECKED_NOTES).setVisible( false );
@@ -978,7 +977,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
         mPref_show_note_attribute = getSharedPreferences("show_note_attribute", 0);
 
         // enable larger view
-        if (mPref_show_note_attribute.getString("KEY_ENABLE_LARGE_VIEW", "yes").equalsIgnoreCase("yes"))
+        if(Pref.getPref_card_view_enable_large_view(mAct))
             menu.findItem(R.id.ENABLE_NOTE_LARGE_VIEW)
                     .setIcon(R.drawable.btn_check_on_holo_light)
                     .setTitle(R.string.large_view);
@@ -988,7 +987,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                     .setTitle(R.string.large_view);
 
         // enable drag note
-        if(mPref_show_note_attribute.getString("KEY_ENABLE_DRAGGABLE", "yes").equalsIgnoreCase("yes"))
+        if(Pref.getPref_card_view_enable_draggable(mAct))
             menu.findItem(R.id.ENABLE_NOTE_DRAG_AND_DROP)
                     .setIcon(R.drawable.btn_check_on_holo_light)
                     .setTitle(R.string.drag_note) ;
@@ -998,7 +997,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                     .setTitle(R.string.drag_note) ;
 
         // enable select note
-        if(mPref_show_note_attribute.getString("KEY_ENABLE_SELECT", "yes").equalsIgnoreCase("yes"))
+	    if(Pref.getPref_card_view_enable_select(mAct))
             menu.findItem(R.id.ENABLE_NOTE_SELECT)
                     .setIcon(R.drawable.btn_check_on_holo_light)
                     .setTitle(R.string.select_note) ;
@@ -1241,16 +1240,15 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
             return true;
 
             case MenuId.ENABLE_NOTE_LARGE_VIEW:
-                mPref_show_note_attribute = mContext.getSharedPreferences("show_note_attribute", 0);
-                if(mPref_show_note_attribute.getString("KEY_ENABLE_LARGE_VIEW", "yes").equalsIgnoreCase("yes")) {
-                    mPref_show_note_attribute.edit().putString("KEY_ENABLE_LARGE_VIEW", "no").apply();
+                if(Pref.getPref_card_view_enable_large_view(mAct)) {
+                    Pref.setPref_card_view_enable_large_view(mAct,false);
                     Toast.makeText(this,getResources().getString(R.string.large_view)+
                                     ": " +
                                     getResources().getString(R.string.set_disable),
                             Toast.LENGTH_SHORT).show();
                 }
                 else {
-                    mPref_show_note_attribute.edit().putString("KEY_ENABLE_LARGE_VIEW", "yes").apply();
+                    Pref.setPref_card_view_enable_large_view(mAct,true);
                     Toast.makeText(this,getResources().getString(R.string.large_view) +
                                     ": " +
                                     getResources().getString(R.string.set_enable),
@@ -1261,16 +1259,15 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                 return true;
 
             case MenuId.ENABLE_NOTE_DRAG_AND_DROP:
-                mPref_show_note_attribute = mContext.getSharedPreferences("show_note_attribute", 0);
-                if(mPref_show_note_attribute.getString("KEY_ENABLE_DRAGGABLE", "yes").equalsIgnoreCase("yes")) {
-                    mPref_show_note_attribute.edit().putString("KEY_ENABLE_DRAGGABLE", "no").apply();
+                  if(Pref.getPref_card_view_enable_draggable(mAct)) {
+                    Pref.setPref_card_view_enable_draggable(mAct,false);
                     Toast.makeText(this,getResources().getString(R.string.drag_note)+
                                         ": " +
                                         getResources().getString(R.string.set_disable),
                                    Toast.LENGTH_SHORT).show();
                 }
                 else {
-                    mPref_show_note_attribute.edit().putString("KEY_ENABLE_DRAGGABLE", "yes").apply();
+                    Pref.setPref_card_view_enable_draggable(mAct,true);
                     Toast.makeText(this,getResources().getString(R.string.drag_note) +
                                         ": " +
                                         getResources().getString(R.string.set_enable),
@@ -1281,16 +1278,15 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                 return true;
 
             case MenuId.ENABLE_NOTE_SELECT:
-                mPref_show_note_attribute = mContext.getSharedPreferences("show_note_attribute", 0);
-                if(mPref_show_note_attribute.getString("KEY_ENABLE_SELECT", "yes").equalsIgnoreCase("yes")) {
-                    mPref_show_note_attribute.edit().putString("KEY_ENABLE_SELECT", "no").apply();
+	            if(Pref.getPref_card_view_enable_select(mAct)) {
+		            Pref.setPref_card_view_enable_select(mAct,false);
                     Toast.makeText(this,getResources().getString(R.string.select_note)+
                                     ": " +
                                     getResources().getString(R.string.set_disable),
                             Toast.LENGTH_SHORT).show();
                 }
                 else {
-                    mPref_show_note_attribute.edit().putString("KEY_ENABLE_SELECT", "yes").apply();
+	                Pref.setPref_card_view_enable_select(mAct,true);
                     Toast.makeText(this,getResources().getString(R.string.select_note) +
                                     ": " +
                                     getResources().getString(R.string.set_enable),

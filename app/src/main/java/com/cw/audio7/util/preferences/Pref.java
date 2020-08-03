@@ -168,4 +168,53 @@ public class Pref
         String key = "KEY_PREF_HIGH_QUALITY";
         return pref.getBoolean(key, false);
     }
+
+    // set card view enable large view
+    public static void setPref_card_view_enable_large_view(Activity act, boolean enable )
+    {
+        SharedPreferences pref = act.getSharedPreferences("show_note_attribute", 0);
+        String key = "KEY_ENABLE_LARGE_VIEW";
+        pref.edit().putBoolean(key, enable).apply();
+    }
+
+    // get card view enable larger view
+    public static boolean getPref_card_view_enable_large_view(Activity act)
+    {
+        SharedPreferences pref = act.getSharedPreferences("show_note_attribute", 0);
+        String key = "KEY_ENABLE_LARGE_VIEW";
+        return pref.getBoolean(key, true);
+    }
+
+    // set card view enable select
+    public static void setPref_card_view_enable_select(Activity act, boolean enable )
+    {
+        SharedPreferences pref = act.getSharedPreferences("show_note_attribute", 0);
+        String key = "KEY_ENABLE_SELECT";
+        pref.edit().putBoolean(key, enable).apply();
+    }
+
+    // get card view enable select
+    public static boolean getPref_card_view_enable_select(Activity act)
+    {
+        SharedPreferences pref = act.getSharedPreferences("show_note_attribute", 0);
+        String key = "KEY_ENABLE_SELECT";
+        return pref.getBoolean(key, false);
+    }
+
+    // set card view enable draggable
+    public static void setPref_card_view_enable_draggable(Activity act, boolean enable )
+    {
+        SharedPreferences pref = act.getSharedPreferences("show_note_attribute", 0);
+        String key = "KEY_ENABLE_DRAGGABLE";
+        pref.edit().putBoolean(key, enable).apply();
+    }
+
+    // get card view enable draggable
+    public static boolean getPref_card_view_enable_draggable(Activity act)
+    {
+        SharedPreferences pref = act.getSharedPreferences("show_note_attribute", 0);
+        String key = "KEY_ENABLE_DRAGGABLE";
+        return pref.getBoolean(key, false);
+    }
+
 }

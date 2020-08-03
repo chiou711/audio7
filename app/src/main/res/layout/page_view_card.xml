@@ -31,19 +31,6 @@
             android:src="@drawable/btn_check_off_holo_light"
             android:contentDescription="img_check"/>
 
-        <!-- row Id -->
-        <TextView
-            android:id="@+id/row_id"
-            android:layout_width="30dp"
-            android:layout_height="20dp"
-            android:layout_marginLeft="1dp"
-            android:layout_marginStart="1dp"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:maxLines="1"
-            android:textSize="12sp"
-            android:textStyle="italic"/>
-
         <!-- drag button -->
         <com.cw.audio7.page.ImageViewCustom
             android:id="@+id/btn_drag"
@@ -90,15 +77,18 @@
             android:layout_height="match_parent"
             android:layout_margin="0dp"
             android:orientation="horizontal">
-        <!-- audio icon -->
-        <ImageView
-            android:id="@+id/img_audio"
-            android:layout_width="20dp"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:layout_margin="1dp"
-            android:adjustViewBounds="false"
-            android:contentDescription="img_audio"/>
+        <!-- row Id -->
+        <TextView
+            android:id="@+id/row_id"
+            android:layout_width="30dp"
+            android:layout_height="20dp"
+            android:layout_marginLeft="1dp"
+            android:layout_marginStart="1dp"
+            android:layout_gravity="top"
+            android:gravity="top"
+            android:maxLines="1"
+            android:textSize="12sp"
+            android:textStyle="italic|bold"/>
 
          <LinearLayout
              android:layout_width="match_parent"

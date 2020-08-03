@@ -50,6 +50,7 @@ public class ColorSet
 
     public static int color_white = Color.rgb(255,255,255);
     public static int color_black = Color.rgb(0,0,0);
+    public static int color_gray = Color.rgb(120,120,120);
 
     public static int getBarColor(Activity act)
     {
