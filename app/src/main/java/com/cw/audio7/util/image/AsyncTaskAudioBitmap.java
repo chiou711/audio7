@@ -44,13 +44,16 @@ public class AsyncTaskAudioBitmap extends AsyncTask<String,Integer,String>
 	 Bitmap bitmap;
 	 ProgressBar mProgressBar;
      boolean enRounded;
-	 public AsyncTaskAudioBitmap(Activity act,String audioString, ImageView view, ProgressBar progressBar, boolean enableRounded)
+     int inSampleSize;
+
+	 public AsyncTaskAudioBitmap(Activity act,String audioString, ImageView view, ProgressBar progressBar, boolean enableRounded, int in_sample_size)
 	 {
 		 mAct = act;
 		 mAudioUri = audioString;
 		 mImageView = view;
 		 mProgressBar = progressBar;
          enRounded = enableRounded;
+		 inSampleSize = in_sample_size;
 	 }	 
 	 
 	 @Override
@@ -76,13 +79,18 @@ public class AsyncTaskAudioBitmap extends AsyncTask<String,Integer,String>
 			 byte[] artBytes =  mmr.getEmbeddedPicture();
 			 if(artBytes != null)
 			 {
+				 //https://stackoverflow.com/questions/11820266/android-bitmapfactory-decodestream-out-of-memory-with-a-400kb-file-with-2mb-f
 				 InputStream is = new ByteArrayInputStream(mmr.getEmbeddedPicture());
-				 bitmap = BitmapFactory.decodeStream(is);
+//				 bitmap = BitmapFactory.decodeStream(is); // with this will cause OOM issue
+				 BitmapFactory.Options options = new BitmapFactory.Options();
+				 options.inJustDecodeBounds = false;
+				 options.inSampleSize = inSampleSize;
+				 bitmap = BitmapFactory.decodeStream(is, null, options);
 			 }
 			 mmr.release();
 		 }
 		 catch(Exception e)
-		 { 
+		 {
 			 Log.e("AsyncTaskAudioBitmap", "setDataSource / illegal argument");
 		 }
 

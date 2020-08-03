@@ -180,7 +180,8 @@ public class Note_adapter extends FragmentStatePagerAdapter
 						    							  audioUri, 
 						    							  imageView,
 						    							  null,
-														  false);
+														  false,
+					                                        1);
 				audioAsyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,"Searching media ...");
 			}
 			catch(Exception e)

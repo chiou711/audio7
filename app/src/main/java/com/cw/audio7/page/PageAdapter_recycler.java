@@ -292,13 +292,20 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
 			holder.thumbBlock.setVisibility(View.VISIBLE);
 			holder.thumbAudio.setVisibility(View.VISIBLE);
 
+			int in_sample_size;
+			if(Pref.getPref_card_view_enable_large_view(mAct))
+                in_sample_size = 1;
+			else
+                in_sample_size = 8;
+
             try {
                 AsyncTaskAudioBitmap audioAsyncTask;
                 audioAsyncTask = new AsyncTaskAudioBitmap(mAct,
                         audioUri,
                         holder.thumbAudio,
                         holder.progressBar,
-                        false);
+                        false,
+                        in_sample_size);
                 audioAsyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "Searching media ...");
             } catch (Exception e) {
                 Log.e("PageAdapter", "AsyncTaskAudioBitmap error");
