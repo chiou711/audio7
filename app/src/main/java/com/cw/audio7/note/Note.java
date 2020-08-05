@@ -101,7 +101,7 @@ public class Note extends AppCompatActivity
 
 		act = this;
 
-        MainAct.mMediaBrowserCompat = null;
+//        MainAct.mMediaBrowserCompat = null;
 
 	} //onCreate end
 
@@ -242,7 +242,7 @@ public class Note extends AppCompatActivity
 		backButton.setOnClickListener(new View.OnClickListener()
 		{
 			public void onClick(View view) {
-				stopAV();
+				stopNoteAudio();
 				finish();
 			}
 		});
@@ -293,7 +293,7 @@ public class Note extends AppCompatActivity
 		System.out.println("Note / _onActivityResult ");
         if((requestCode==EDIT_CURRENT_VIEW) )
         {
-			stopAV();
+			stopNoteAudio();
         }
 
 	    // check if there is one note at least in the pager
@@ -384,17 +384,18 @@ public class Note extends AppCompatActivity
 			// Media session: to receive media button event of bluetooth device
 			// new media browser instance and create BackgroundAudioService instance: support notification
 
-			if(MainAct.mMediaBrowserCompat == null) {
-				MainAct.mMediaBrowserCompat = new MediaBrowserCompat(act,
-						new ComponentName(act, BackgroundAudioService.class),
-						MainAct.mMediaBrowserCompatConnectionCallback,
-						act.getIntent().getExtras());
-			}
-
-			if(!MainAct.mMediaBrowserCompat.isConnected())
-				MainAct.mMediaBrowserCompat.connect();
-
-			MainAct.mCurrentState = MainAct.STATE_PAUSED;
+//				if (MainAct.mMediaBrowserCompat == null) {
+//					MainAct.mMediaBrowserCompat = new MediaBrowserCompat(act,
+//							new ComponentName(act, BackgroundAudioService.class),
+//							MainAct.mMediaBrowserCompatConnectionCallback,
+//							act.getIntent().getExtras());
+//				}
+//
+//				if (  (MainAct.mMediaBrowserCompat != null) &&
+//						!MainAct.mMediaBrowserCompat.isConnected()) {
+//					MainAct.mMediaBrowserCompat.connect();//???
+//				}
+//					MainAct.mCurrentState = MainAct.STATE_PAUSED;
 		}
 	}
 	
@@ -424,10 +425,13 @@ public class Note extends AppCompatActivity
 		}
 
         // disconnect MediaBrowserCompat
-		if(Build.VERSION.SDK_INT >= 21) {
-			if (MainAct.mMediaBrowserCompat.isConnected())
-				MainAct.mMediaBrowserCompat.disconnect();
-		}
+//		if(Audio_manager.getAudioPlayMode() != Audio_manager.PAGE_PLAY_MODE) {
+//			if (Build.VERSION.SDK_INT >= 21) {
+//				if( (MainAct.mMediaBrowserCompat != null) &&
+//					 MainAct.mMediaBrowserCompat.isConnected() )
+//					MainAct.mMediaBrowserCompat.disconnect();
+//			}
+//		}
 	}
 
 	// avoid exception: has leaked window android.widget.ZoomButtonsController
@@ -481,7 +485,7 @@ public class Note extends AppCompatActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-				stopAV();
+				stopNoteAudio();
                 finish();
                 return true;
 
@@ -504,7 +508,7 @@ public class Note extends AppCompatActivity
     @Override
     public void onBackPressed() {
 		System.out.println("Note / _onBackPressed");
-		stopAV();
+		stopNoteAudio();
         finish();
     }
     
@@ -524,7 +528,7 @@ public class Note extends AppCompatActivity
 		   						  .apply();
     }
     
-	public static void stopAV()
+	public static void stopNoteAudio()
 	{
 		if(Audio_manager.getAudioPlayMode() == Audio_manager.NOTE_PLAY_MODE)
             Audio_manager.stopAudioPlayer();

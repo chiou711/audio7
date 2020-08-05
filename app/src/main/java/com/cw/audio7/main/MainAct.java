@@ -234,8 +234,8 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
 
             dialog_EULA.show();
         }
-//        else
-//            doCreate();
+        else
+            doCreate();
     }
 
     // check permission dialog
@@ -268,27 +268,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
     {
         System.out.println("MainAct / _doCreate");
 
-        // Will create default contents: by assets or by initial tables
-//        if(Pref.getPref_will_create_default_content(this))
-//        {
-//            if ((Define.DEFAULT_CONTENT == Define.BY_INITIAL_TABLES) && (Define.INITIAL_FOLDERS_COUNT > 0))
-//                createDefaultContent_byInitialTables();
-//        }
-
-        mFolderTitles = new ArrayList<>();
-
 //		Context context = getApplicationContext();
-
-        // check DB
-        final boolean ENABLE_DB_CHECK = false;//true;//false
-        if (ENABLE_DB_CHECK) {
-            // list all folder tables
-            FolderUi.listAllFolderTables(mAct);
-
-            // recover focus
-            DB_folder.setFocusFolder_tableId(Pref.getPref_focusView_folder_tableId(this));
-            DB_page.setFocusPage_tableId(Pref.getPref_focusView_page_tableId(this));
-        }//if(ENABLE_DB_CHECK)
 
         // enable ActionBar app icon to behave as action to toggle nav drawer
 //	        getActionBar().setDisplayHomeAsUpEnabled(true);
@@ -327,9 +307,6 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
         MainAct.mPlaying_folderPos = -1;
         Audio_manager.setPlayerState(Audio_manager.PLAYER_AT_STOP);
         TabsHost.audioPlayTabPos = -1;
-
-        if(bEULA_accepted)
-            configLayoutView(); //createAssetsFile inside
     }
 
 
@@ -583,7 +560,29 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
 
         // Sync the toggle state after onRestoreInstanceState has occurred.
         if(bEULA_accepted) {
-            doCreate();
+
+            // Will create default contents: by assets or by initial tables
+//        if(Pref.getPref_will_create_default_content(this))
+//        {
+//            if ((Define.DEFAULT_CONTENT == Define.BY_INITIAL_TABLES) && (Define.INITIAL_FOLDERS_COUNT > 0))
+//                createDefaultContent_byInitialTables();
+//        }
+
+            mFolderTitles = new ArrayList<>();
+
+            // check DB
+            final boolean ENABLE_DB_CHECK = false;//true;//false
+            if (ENABLE_DB_CHECK) {
+                // list all folder tables
+                FolderUi.listAllFolderTables(mAct);
+
+                // recover focus
+                DB_folder.setFocusFolder_tableId(Pref.getPref_focusView_folder_tableId(this));
+                DB_page.setFocusPage_tableId(Pref.getPref_focusView_page_tableId(this));
+            }//if(ENABLE_DB_CHECK)
+
+            if(bEULA_accepted)
+                configLayoutView(); //createAssetsFile inside
 
             if(drawer != null)
                 drawer.drawerToggle.syncState();
