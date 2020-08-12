@@ -532,7 +532,7 @@ public class AudioPlayer_page
         Async_audioUrlVerify.mIsOkUrl = false;
 
 	    if( (Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE) &&
-			    (Audio_manager.getCheckedAudio(Audio_manager.mAudioPos) == 0)          )
+			(Audio_manager.getCheckedAudio(Audio_manager.mAudioPos) == 0)          )
 	    {
 		    mAudioHandler.postDelayed(page_runnable,Util.oneSecond/4);
 	    }
@@ -554,8 +554,8 @@ public class AudioPlayer_page
 			    showAudioPanel(act, true);
 
 			    // launch handler
-			    if ((Audio_manager.getPlayerState() != Audio_manager.PLAYER_AT_STOP) &&
-					    (Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE)) {
+			    if ( (Audio_manager.getPlayerState() != Audio_manager.PLAYER_AT_STOP) &&
+					 (Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE)) {
 				    mAudioHandler.postDelayed(page_runnable, Util.oneSecond / 4);
 			    }
 

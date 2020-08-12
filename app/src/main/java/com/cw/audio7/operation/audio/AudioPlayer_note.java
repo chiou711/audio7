@@ -29,9 +29,7 @@ import com.cw.audio7.R;
 import com.cw.audio7.note.AudioUi_note;
 import com.cw.audio7.note.Note;
 import com.cw.audio7.note.NoteUi;
-import com.cw.audio7.note.Note_adapter;
 import com.cw.audio7.util.Util;
-import com.cw.audio7.util.preferences.Pref;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
@@ -129,28 +127,25 @@ public class AudioPlayer_note
                     System.out.println("AudioPlayer_note / mRunOneTimeMode / Audio_manager.isRunnableOn_note = " + Audio_manager.isRunnableOn_note);
 
 				    //create a MediaPlayer
-                    BackgroundAudioService.mMediaPlayer = new MediaPlayer();
-                    BackgroundAudioService.mMediaPlayer.reset();
+				    BackgroundAudioService.mMediaPlayer = new MediaPlayer();
+				    BackgroundAudioService.mMediaPlayer.reset();
 
-	   				//set audio player listeners
-                    setMediaPlayerListeners(notePager);
-	   				
-	   				try
-	   				{
-                        BackgroundAudioService.mMediaPlayer.setDataSource(act, Uri.parse(audioStr));
-	   					
-					    // prepare the MediaPlayer to play, this will delay system response 
-                        BackgroundAudioService.mMediaPlayer.prepare();
-   						
-	   					//Note: below
-	   					//Set 1 second will cause Media player abnormal on Power key short click
-	   					mAudioHandler.postDelayed(mRunOneTimeMode,DURATION_1S * 2);
-	   				}
-	   				catch(Exception e)
-	   				{
-	   					Toast.makeText(act,R.string.audio_message_could_not_open_file,Toast.LENGTH_SHORT).show();
-	   					Audio_manager.stopAudioPlayer();
-	   				}
+				    //set audio player listeners
+				    setMediaPlayerListeners(notePager);
+
+				    try {
+					    BackgroundAudioService.mMediaPlayer.setDataSource(act, Uri.parse(audioStr));
+
+					    // prepare the MediaPlayer to play, this will delay system response
+					    BackgroundAudioService.mMediaPlayer.prepare();
+
+					    //Note: below
+					    //Set 1 second will cause Media player abnormal on Power key short click
+					    mAudioHandler.postDelayed(mRunOneTimeMode, DURATION_1S * 2);
+				    } catch (Exception e) {
+					    Toast.makeText(act, R.string.audio_message_could_not_open_file, Toast.LENGTH_SHORT).show();
+					    Audio_manager.stopAudioPlayer();
+				    }
 	   			}
 	   			else
 	   			{

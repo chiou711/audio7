@@ -49,12 +49,10 @@ public class AudioUi_page {
     public ImageView audioPanel_previous_btn;
     public SeekBar seekBarProgress;
     public static int mProgress;
-    RecyclerView listView;
 
-    public AudioUi_page(AppCompatActivity act, RecyclerView _listView)
+    public AudioUi_page(AppCompatActivity act)
     {
         this.mAct = act;
-        listView = _listView;
     }
 
 

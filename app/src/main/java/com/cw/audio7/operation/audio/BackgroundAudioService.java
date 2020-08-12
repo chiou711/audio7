@@ -135,7 +135,9 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
 
             // update panel status: play
             Audio_manager.setPlayerState(Audio_manager.PLAYER_AT_PLAY);
-            TabsHost.audioUi_page.audioPanel_play_button.setImageResource(R.drawable.ic_media_pause);
+
+            if(Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE)
+                TabsHost.audioUi_page.audioPanel_play_button.setImageResource(R.drawable.ic_media_pause);
         }
 
         @Override
@@ -155,7 +157,9 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
 
             // update panel status: pause
             Audio_manager.setPlayerState(Audio_manager.PLAYER_AT_PAUSE);
-            TabsHost.audioUi_page.audioPanel_play_button.setImageResource(R.drawable.ic_media_play);
+
+            if(Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE)
+                TabsHost.audioUi_page.audioPanel_play_button.setImageResource(R.drawable.ic_media_play);
         }
 
         @Override
