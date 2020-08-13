@@ -102,7 +102,12 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
 
             setMediaPlaybackState(PlaybackStateCompat.STATE_SKIPPING_TO_NEXT);
             mMediaSessionCompat.setActive(true);
-            TabsHost.audioUi_page.audioPanel_next_btn.performClick();
+            if(Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE)
+                TabsHost.audioUi_page.audioPanel_next_btn.performClick();
+            else {
+                AudioUi_note.audioPanel_next_btn.performClick();
+                AudioUi_note.mPager_audio_play_button.performClick();
+            }
         }
 
         @Override
@@ -112,7 +117,13 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
             System.out.println("BackgroundAudioService / mMediaSessionCallback / _onSkipToPrevious");
             setMediaPlaybackState(PlaybackStateCompat.STATE_SKIPPING_TO_PREVIOUS);
             mMediaSessionCompat.setActive(true);
-            TabsHost.audioUi_page.audioPanel_previous_btn.performClick();
+
+            if(Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE)
+                TabsHost.audioUi_page.audioPanel_previous_btn.performClick();
+            else {
+                AudioUi_note.audioPanel_previous_btn.performClick();
+                AudioUi_note.mPager_audio_play_button.performClick();
+            }
         }
 
         @Override
@@ -218,6 +229,7 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
 
                     if(mMediaPlayer != null) {
                         mMediaPlayer.release();
+
                         // disconnect media browser
                         if( MainAct.mMediaControllerCompat.getPlaybackState().getState() == PlaybackStateCompat.STATE_PLAYING ) {
                             MainAct.mMediaControllerCompat.getTransportControls().stop();// .pause();
@@ -244,8 +256,10 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
                 @Override
                 public void onBufferingUpdate(MediaPlayer mp, int percent) {
                     System.out.println("BackgroundAudioService / _setAudioPlayerListeners / _onBufferingUpdate");
-                    if (TabsHost.getCurrentPage().seekBarProgress != null)
-                        TabsHost.getCurrentPage().seekBarProgress.setSecondaryProgress(percent);
+                    if (Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE) {
+                        if (TabsHost.getCurrentPage().seekBarProgress != null)
+                            TabsHost.getCurrentPage().seekBarProgress.setSecondaryProgress(percent);
+                    }
                 }
             });
         }

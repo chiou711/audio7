@@ -22,10 +22,12 @@ import android.media.MediaPlayer.OnErrorListener;
 import android.media.MediaPlayer.OnPreparedListener;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Handler;
 import android.widget.Toast;
 
 import com.cw.audio7.R;
+import com.cw.audio7.main.MainAct;
 import com.cw.audio7.note.AudioUi_note;
 import com.cw.audio7.note.Note;
 import com.cw.audio7.note.NoteUi;
@@ -78,7 +80,7 @@ public class AudioPlayer_note
             else
                 Audio_manager.setPlayerState(Audio_manager.PLAYER_AT_PAUSE);//just slide the progress bar
 
-            startNewAudio();
+            startNewAudio_note();
 		}
 		else
 		{
@@ -121,31 +123,15 @@ public class AudioPlayer_note
 
             if(!BackgroundAudioService.mIsPrepared)
 	   		{
-	   			String audioStr = Audio_manager.getAudioStringAt(mAudioPos);
 	   			if(Async_audioUrlVerify.mIsOkUrl)
 	   			{
                     System.out.println("AudioPlayer_note / mRunOneTimeMode / Audio_manager.isRunnableOn_note = " + Audio_manager.isRunnableOn_note);
 
-				    //create a MediaPlayer
-				    BackgroundAudioService.mMediaPlayer = new MediaPlayer();
-				    BackgroundAudioService.mMediaPlayer.reset();
+				    // add for calling runnable
+				    if (Audio_manager.getAudioPlayMode() == Audio_manager.NOTE_PLAY_MODE)
+					    mAudioHandler.postDelayed(mRunOneTimeMode, Util.oneSecond / 4);
 
-				    //set audio player listeners
-				    setMediaPlayerListeners(notePager);
-
-				    try {
-					    BackgroundAudioService.mMediaPlayer.setDataSource(act, Uri.parse(audioStr));
-
-					    // prepare the MediaPlayer to play, this will delay system response
-					    BackgroundAudioService.mMediaPlayer.prepare();
-
-					    //Note: below
-					    //Set 1 second will cause Media player abnormal on Power key short click
-					    mAudioHandler.postDelayed(mRunOneTimeMode, DURATION_1S * 2);
-				    } catch (Exception e) {
-					    Toast.makeText(act, R.string.audio_message_could_not_open_file, Toast.LENGTH_SHORT).show();
-					    Audio_manager.stopAudioPlayer();
-				    }
+				    BackgroundAudioService.mIsPrepared = false;
 	   			}
 	   			else
 	   			{
@@ -262,7 +248,7 @@ public class AudioPlayer_note
     /**
      * Start new audio
      */
-	private void startNewAudio()
+	private void startNewAudio_note()
 	{
 		// remove call backs to make sure next toast will appear soon
 		if(mAudioHandler != null)
@@ -304,6 +290,28 @@ public class AudioPlayer_note
             // during audio Preparing
             Async_audioPrepare mAsyncTaskAudioPrepare = new Async_audioPrepare(act);
             mAsyncTaskAudioPrepare.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,"Preparing to play ...");
+
+	        String audioStr = Audio_manager.getAudioStringAt(mAudioPos);
+	        if (Build.VERSION.SDK_INT >= 21) {
+		        MainAct.mMediaControllerCompat
+				        .getTransportControls()
+				        .playFromUri(Uri.parse(audioStr), null);//todo How to avoid null exception if not using recreate
+
+		        MainAct.mMediaControllerCompat.getTransportControls().play();
+	        } else {
+		        BackgroundAudioService.mMediaPlayer = new MediaPlayer();
+		        BackgroundAudioService.mMediaPlayer.reset();
+		        try {
+			        BackgroundAudioService.mMediaPlayer.setDataSource(act, Uri.parse(audioStr));
+
+			        // prepare the MediaPlayer to play, this will delay system response
+			        BackgroundAudioService.mMediaPlayer.prepare();
+			        setMediaPlayerListeners(notePager);
+		        } catch (Exception e) {
+			        Toast.makeText(act, R.string.audio_message_could_not_open_file, Toast.LENGTH_SHORT).show();
+			        Audio_manager.stopAudioPlayer();
+		        }
+	        }
         }
 
     }
@@ -325,7 +333,7 @@ public class AudioPlayer_note
 
         mPlaybackTime = 0;
         Audio_manager.setPlayerState(Audio_manager.PLAYER_AT_PLAY);
-        startNewAudio();
+        startNewAudio_note();
     }
 
 }

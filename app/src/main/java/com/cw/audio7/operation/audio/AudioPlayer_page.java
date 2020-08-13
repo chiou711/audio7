@@ -112,7 +112,7 @@ public class AudioPlayer_page
 
 				if( (UtilAudio.hasAudioExtension(audioUrl_page) && Util.isUriExisted(audioUrl_page,MainAct.mAct)) ||
 						audioUrl_page.contains("google")) {
-                    startNewAudio();
+                    startNewAudio_page();
                 }
                 else
                 {
@@ -514,7 +514,7 @@ public class AudioPlayer_page
     /**
      * Start new audio
      */
-    private void startNewAudio()
+    private void startNewAudio_page()
     {
         System.out.println("AudioPlayer_page / _startNewAudio / Audio_manager.mAudioPos = " + Audio_manager.mAudioPos);
 
@@ -613,7 +613,7 @@ public class AudioPlayer_page
 		    audioUrl_page = Audio_manager.getAudioStringAt(Audio_manager.mAudioPos);
 
 		    if(UtilAudio.hasAudioExtension(audioUrl_page) && Util.isUriExisted(audioUrl_page,MainAct.mAct))
-			    startNewAudio();
+			    startNewAudio_page();
 	    }
 	    else // try enough times: still no audio file is found
 	    {

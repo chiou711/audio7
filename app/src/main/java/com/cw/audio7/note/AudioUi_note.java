@@ -54,8 +54,8 @@ public class AudioUi_note
     private ViewGroup audioBlock;
     private static String mAudioUriInDB;
     private ViewPager mPager;
-    public ImageView audioPanel_next_btn;
-    public ImageView audioPanel_previous_btn;
+    public static ImageView audioPanel_next_btn;
+    public static ImageView audioPanel_previous_btn;
 
     // constructor
     AudioUi_note(AppCompatActivity act, String audioUriInDB)
@@ -132,8 +132,8 @@ public class AudioUi_note
         int curMin = Math.round((float)((mProgress - curHour * 60 * 60 * 1000) / 1000 / 60));
         int curSec = Math.round((float)((mProgress - curHour * 60 * 60 * 1000 - curMin * 60 * 1000)/ 1000));
         String curr_pos_str = String.format(Locale.ENGLISH,"%2d", curHour)+":" +
-            String.format(Locale.ENGLISH,"%02d", curMin)+":" +
-            String.format(Locale.ENGLISH,"%02d", curSec);
+                                           String.format(Locale.ENGLISH,"%02d", curMin)+":" +
+                                           String.format(Locale.ENGLISH,"%02d", curSec);
 
         TextView audio_curr_pos = (TextView) act.findViewById(R.id.pager_audio_current_pos);
         audio_curr_pos.setText(curr_pos_str);
@@ -292,18 +292,12 @@ public class AudioUi_note
         if(Audio_manager.getAudioPlayMode()  == Audio_manager.PAGE_PLAY_MODE)
             Audio_manager.stopAudioPlayer();
 
-        if(Build.VERSION.SDK_INT >= 21) {
-            if (MainAct.mMediaBrowserCompat.isConnected())
-                MainAct.mMediaBrowserCompat.disconnect();
-        }
-
-        NotificationManagerCompat.from(MainAct.mAct).cancel(BackgroundAudioService.id);
-
         String[] audioName = Util.getDisplayNameByUriString(audioStr, act);
         if(UtilAudio.hasAudioExtension(audioStr) ||
            UtilAudio.hasAudioExtension(audioName[0]))
         {
             AudioPlayer_note.mAudioPos = NoteUi.getFocus_notePos();
+            Audio_manager.mAudioPos = NoteUi.getFocus_notePos();
             MainAct.mPlaying_pageTableId = TabsHost.getCurrentPageTableId();
 
             Audio_manager.setAudioPlayMode(Audio_manager.NOTE_PLAY_MODE);
@@ -330,8 +324,8 @@ public class AudioUi_note
         int curMin = Math.round((float)((currentPos - curHour * 60 * 60 * 1000) / 1000 / 60));
         int curSec = Math.round((float)((currentPos - curHour * 60 * 60 * 1000 - curMin * 60 * 1000)/ 1000));
         String curr_time_str = String.format(Locale.ENGLISH,"%2d", curHour)+":" +
-            String.format(Locale.ENGLISH,"%02d", curMin)+":" +
-            String.format(Locale.ENGLISH,"%02d", curSec);
+                                             String.format(Locale.ENGLISH,"%02d", curMin)+":" +
+                                             String.format(Locale.ENGLISH,"%02d", curSec);
         TextView audio_curr_pos = (TextView) act.findViewById(R.id.pager_audio_current_pos);
         // set current play time and the play length of audio file
         if(audio_curr_pos != null)
