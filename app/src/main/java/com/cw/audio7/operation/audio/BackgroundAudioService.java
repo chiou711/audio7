@@ -104,10 +104,8 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
             mMediaSessionCompat.setActive(true);
             if(Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE)
                 TabsHost.audioUi_page.audioPanel_next_btn.performClick();
-            else {
+            else
                 AudioUi_note.audioPanel_next_btn.performClick();
-                AudioUi_note.mPager_audio_play_button.performClick();
-            }
         }
 
         @Override
@@ -120,10 +118,8 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
 
             if(Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE)
                 TabsHost.audioUi_page.audioPanel_previous_btn.performClick();
-            else {
+            else
                 AudioUi_note.audioPanel_previous_btn.performClick();
-                AudioUi_note.mPager_audio_play_button.performClick();
-            }
         }
 
         @Override

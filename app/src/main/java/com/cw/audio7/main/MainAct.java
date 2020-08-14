@@ -388,7 +388,6 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
             case KeyEvent.KEYCODE_MEDIA_NEXT: //87
                 if(TabsHost.audioUi_page != null)
                     TabsHost.audioUi_page.audioPanel_next_btn.performClick();
-
                 return true;
 
             case KeyEvent.KEYCODE_MEDIA_PLAY: //126

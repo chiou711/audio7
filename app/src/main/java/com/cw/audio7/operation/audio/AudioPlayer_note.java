@@ -43,13 +43,11 @@ public class AudioPlayer_note
 	public static int mAudioPos; // index of current media to play
 	private static int mPlaybackTime; // time in miniSeconds from which media should play
     private AppCompatActivity act;
-	private ViewPager notePager;
     private Async_audioUrlVerify mAudioUrlVerifyTask;
     static Handler mAudioHandler; // used to update the slide show
 
-    public AudioPlayer_note(AppCompatActivity act, ViewPager pager){
+    public AudioPlayer_note(AppCompatActivity act){
         this.act = act;
-        this.notePager = pager;
 
 		// start a new handler
 		mAudioHandler = new Handler();
@@ -183,7 +181,7 @@ public class AudioPlayer_note
     /**
      * Set audio player listeners
      */
-	private void setMediaPlayerListeners(final ViewPager pager)
+	private void setMediaPlayerListeners()
 	{
         // - on prepared listener
         BackgroundAudioService.mMediaPlayer.setOnPreparedListener(new OnPreparedListener()
@@ -226,7 +224,7 @@ public class AudioPlayer_note
             if(Audio_manager.getAudioPlayMode() == Audio_manager.NOTE_PLAY_MODE) // one time mode
             {
                     Audio_manager.stopAudioPlayer();
-                    AudioUi_note.initAudioProgress(act, Note.mAudioUriInDB,pager);
+                    AudioUi_note.initAudioProgress(act, Note.mAudioUriInDB);
                     AudioUi_note.updateAudioPlayState(act);
             }
         }
@@ -306,7 +304,7 @@ public class AudioPlayer_note
 
 			        // prepare the MediaPlayer to play, this will delay system response
 			        BackgroundAudioService.mMediaPlayer.prepare();
-			        setMediaPlayerListeners(notePager);
+			        setMediaPlayerListeners();
 		        } catch (Exception e) {
 			        Toast.makeText(act, R.string.audio_message_could_not_open_file, Toast.LENGTH_SHORT).show();
 			        Audio_manager.stopAudioPlayer();

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 CW Chiu
+ * Copyright (C) 2020 CW Chiu
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@ package com.cw.audio7.note;
 
 import android.media.MediaPlayer;
 import android.net.Uri;
-import android.os.Build;
 import android.text.method.ScrollingMovementMethod;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,12 +38,12 @@ import com.cw.audio7.util.audio.UtilAudio;
 import java.util.Locale;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.NotificationManagerCompat;
 import androidx.viewpager.widget.ViewPager;
 
 
 /**
  * Created by cw on 2017/10/26.
+ * Modified by cw on 2020/08/14
  */
 
 public class AudioUi_note
@@ -53,7 +52,6 @@ public class AudioUi_note
     TextView audio_title;
     private ViewGroup audioBlock;
     private static String mAudioUriInDB;
-    private ViewPager mPager;
     public static ImageView audioPanel_next_btn;
     public static ImageView audioPanel_previous_btn;
 
@@ -67,8 +65,6 @@ public class AudioUi_note
     // initialize audio block
     void init_audio_block()
     {
-        mPager = (ViewPager) act.findViewById(R.id.tabs_pager);
-
         // audio block
         audioPanel_previous_btn = (ImageView) act.findViewById(R.id.audioPanel_previous);
         audioPanel_previous_btn.setImageResource(R.drawable.ic_media_previous);
@@ -101,20 +97,20 @@ public class AudioUi_note
         if(UtilAudio.hasAudioExtension(mAudioUriInDB))
         {
             audioBlock.setVisibility(View.VISIBLE);
-            initAudioProgress(act,mAudioUriInDB,mPager);
+            initAudioProgress(act,mAudioUriInDB);
         }
         else
             audioBlock.setVisibility(View.GONE);
     }
 
     // initialize audio progress
-    public static void initAudioProgress(AppCompatActivity act,String audioUriInDB,ViewPager _pager)
+    public static void initAudioProgress(AppCompatActivity act,String audioUriInDB)
     {
         SeekBar seekBar = (SeekBar) act.findViewById(R.id.pager_img_audio_seek_bar);
         ImageView mPager_audio_play_button = (ImageView) act.findViewById(R.id.pager_btn_audio_play);
 
         // set audio block listeners
-        setAudioBlockListener(act,audioUriInDB,_pager);
+        setAudioBlockListener(act,audioUriInDB);
 
         mProgress = 0;
 
@@ -196,7 +192,7 @@ public class AudioUi_note
     public static int mAnchorPosition;
 
     // set audio block listener
-    private static void setAudioBlockListener(final AppCompatActivity act, final String audioStr, final ViewPager _pager)
+    private static void setAudioBlockListener(final AppCompatActivity act, final String audioStr)
     {
         SeekBar seekBarProgress = (SeekBar) act.findViewById(R.id.pager_img_audio_seek_bar);
         ImageView mPager_audio_play_button = (ImageView) act.findViewById(R.id.pager_btn_audio_play);
@@ -214,7 +210,7 @@ public class AudioUi_note
                     // use this flag to determine new play or not in note
                     BackgroundAudioService.mIsPrepared = false;
                 }
-                playAudioInPager(act,audioStr,_pager);
+                playAudioInPager(act,audioStr);
             }
         });
 
@@ -234,7 +230,7 @@ public class AudioUi_note
                     // note audio: slide seek bar anchor from stop to pause
                     isPausedAtSeekerAnchor = true;
                     mAnchorPosition = (int) (((float)(mediaFileLength / 100)) * seekBar.getProgress());
-                    playAudioInPager(act,audioStr,_pager);
+                    playAudioInPager(act,audioStr);
                 }
             }
 
@@ -287,7 +283,7 @@ public class AudioUi_note
     }
 
     //  play audio in pager
-    private static void playAudioInPager(AppCompatActivity act, String audioStr, ViewPager pager)
+    private static void playAudioInPager(AppCompatActivity act, String audioStr)
     {
         if(Audio_manager.getAudioPlayMode()  == Audio_manager.PAGE_PLAY_MODE)
             Audio_manager.stopAudioPlayer();
@@ -303,7 +299,7 @@ public class AudioUi_note
             Audio_manager.setAudioPlayMode(Audio_manager.NOTE_PLAY_MODE);
 
             // new instance
-            AudioPlayer_note audioPlayer_note = new AudioPlayer_note(act,pager);
+            AudioPlayer_note audioPlayer_note = new AudioPlayer_note(act);
             AudioPlayer_note.prepareAudioInfo();
             audioPlayer_note.runAudioState();
 

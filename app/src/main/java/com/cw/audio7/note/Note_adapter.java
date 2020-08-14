@@ -224,9 +224,6 @@ public class Note_adapter extends FragmentStatePagerAdapter
 		return view.equals(object);
 	}
 	
-	static Intent mIntentView;
-	static NoteUi picUI_primary;
-
 	@Override
 	public void setPrimaryItem(final ViewGroup container, int position, Object object) 
 	{
@@ -253,7 +250,7 @@ public class Note_adapter extends FragmentStatePagerAdapter
 			if(UtilAudio.hasAudioExtension(audioUri) ||
                UtilAudio.hasAudioExtension(Util.getDisplayNameByUriString(audioUri, act)[0] ))
 			{
-				AudioUi_note.initAudioProgress(act,audioUri,pager);
+				AudioUi_note.initAudioProgress(act,audioUri);
 
 				if(Audio_manager.getAudioPlayMode() == Audio_manager.NOTE_PLAY_MODE)
 				{
@@ -265,6 +262,10 @@ public class Note_adapter extends FragmentStatePagerAdapter
 			}
 			else
 				audioBlock.setVisibility(View.GONE);
+
+			//auto play
+			System.out.println("------> setPrimaryItem / auto play ");
+			AudioUi_note.mPager_audio_play_button.performClick();
 		}
 	    mLastPosition = position;
 	    
