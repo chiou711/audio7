@@ -129,7 +129,6 @@ public class Note extends AppCompatActivity
 				BackgroundAudioService.mIsPrepared = false;
 				BackgroundAudioService.mMediaPlayer = null;
 				Audio_manager.isRunnableOn_page = false;
-				findViewById(R.id.pager_btn_audio_play).performClick();
 				return true;
 
 			case KeyEvent.KEYCODE_MEDIA_NEXT: //87
@@ -144,13 +143,9 @@ public class Note extends AppCompatActivity
 				BackgroundAudioService.mIsPrepared = false;
 				BackgroundAudioService.mMediaPlayer = null;
 				Audio_manager.isRunnableOn_page = false;
-				AudioUi_note.mPager_audio_play_button.performClick();
 				return true;
 
 			case KeyEvent.KEYCODE_MEDIA_PLAY: //126
-				AudioUi_note.mPager_audio_play_button.performClick();
-				return true;
-
 			case KeyEvent.KEYCODE_MEDIA_PAUSE: //127
 				AudioUi_note.mPager_audio_play_button.performClick();
 				return true;

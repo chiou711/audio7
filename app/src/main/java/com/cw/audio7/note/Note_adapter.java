@@ -265,7 +265,8 @@ public class Note_adapter extends FragmentStatePagerAdapter
 
 			//auto play
 			System.out.println("------> setPrimaryItem / auto play ");
-			AudioUi_note.mPager_audio_play_button.performClick();
+			if(Audio_manager.getPlayerState() == Audio_manager.PLAYER_AT_STOP)
+				AudioUi_note.mPager_audio_play_button.performClick();
 		}
 	    mLastPosition = position;
 	    

@@ -1,5 +1,7 @@
 package com.cw.audio7.operation.audio;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -12,6 +14,7 @@ import android.media.AudioManager;
 import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.os.ResultReceiver;
@@ -51,7 +54,7 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
     public static MediaSessionCompat mMediaSessionCompat;
     public static boolean mIsPrepared;
     public static boolean mIsCompleted;
-    final public static int id = 99;
+    final public static int id = 77;
 
     BroadcastReceiver audioNoisyReceiver = new BroadcastReceiver() {
         @Override
@@ -145,6 +148,8 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
 
             if(Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE)
                 TabsHost.audioUi_page.audioPanel_play_button.setImageResource(R.drawable.ic_media_pause);
+            else
+                AudioUi_note.mPager_audio_play_button.setImageResource(R.drawable.ic_media_pause);
         }
 
         @Override
@@ -167,6 +172,8 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
 
             if(Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE)
                 TabsHost.audioUi_page.audioPanel_play_button.setImageResource(R.drawable.ic_media_play);
+            else
+                AudioUi_note.mPager_audio_play_button.setImageResource(R.drawable.ic_media_play);
         }
 
         @Override
@@ -302,21 +309,30 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
         NotificationManagerCompat.from(this).cancel(id);
     }
 
+    NotificationCompat.Builder builder;
+    NotificationManagerCompat manager;
+    String CHANNEL_ID = "77";
     private void initMediaPlayer() {
         System.out.println("BackgroundAudioService / _initMediaPlayer");
         mMediaPlayer = new MediaPlayer();
         mMediaPlayer.setWakeMode(getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
         mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         mMediaPlayer.setVolume(1.0f, 1.0f);
+
+        manager = NotificationManagerCompat.from(this);
+
+        if (Build.VERSION.SDK_INT >= 26) {
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID,
+                                                                                    getResources().getString(R.string.app_name),
+                                                                                    NotificationManager.IMPORTANCE_DEFAULT);
+            manager.createNotificationChannel(channel);
+        }
     }
 
     private void showPlayingNotification() {
         System.out.println("BackgroundAudioService / _showPlayingNotification");
 
-        NotificationCompat.Builder builder = MediaStyleHelper.from(this, mMediaSessionCompat);
-        if( builder == null ) {
-            return;
-        }
+        builder = MediaStyleHelper.from(this, mMediaSessionCompat);
 
         builder.addAction(new NotificationCompat.Action(android.R.drawable.ic_media_previous,
                 "Previous",
@@ -327,18 +343,21 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
         builder.addAction(new NotificationCompat.Action(android.R.drawable.ic_media_next,
                 "Next",
                 MediaButtonReceiver.buildMediaButtonPendingIntent(this, PlaybackStateCompat.ACTION_SKIP_TO_NEXT)));
-        builder.setStyle(new androidx.media.app.NotificationCompat.MediaStyle().setShowActionsInCompactView(0).setMediaSession(mMediaSessionCompat.getSessionToken()));
+        builder.setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
+                                                .setShowActionsInCompactView(1)
+                                                .setMediaSession(mMediaSessionCompat.getSessionToken()));
         builder.setSmallIcon(R.mipmap.ic_launcher);
         builder.setShowWhen(false);
-        NotificationManagerCompat.from(this).notify(id, builder.build());
+
+        if (Build.VERSION.SDK_INT >= 26)
+            manager.notify(id,builder.setChannelId(CHANNEL_ID).build());
+        else
+            manager.notify(id, builder.build());
     }
 
     private void showPausedNotification() {
         System.out.println("BackgroundAudioService / _showPausedNotification");
-        NotificationCompat.Builder builder = MediaStyleHelper.from(this, mMediaSessionCompat);
-        if( builder == null ) {
-            return;
-        }
+        builder = MediaStyleHelper.from(this, mMediaSessionCompat);
 
         builder.addAction(new NotificationCompat.Action(android.R.drawable.ic_media_previous,
                 "Previous",
@@ -349,10 +368,16 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
         builder.addAction(new NotificationCompat.Action(android.R.drawable.ic_media_next,
                 "Next",
                 MediaButtonReceiver.buildMediaButtonPendingIntent(this, PlaybackStateCompat.ACTION_SKIP_TO_NEXT)));
-        builder.setStyle(new androidx.media.app.NotificationCompat.MediaStyle().setShowActionsInCompactView(0).setMediaSession(mMediaSessionCompat.getSessionToken()));
+        builder.setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
+                                            .setShowActionsInCompactView(1)
+                                            .setMediaSession(mMediaSessionCompat.getSessionToken()));
         builder.setSmallIcon(R.mipmap.ic_launcher);
         builder.setShowWhen(false);
-        NotificationManagerCompat.from(this).notify(id, builder.build());
+
+        if (Build.VERSION.SDK_INT >= 26)
+            manager.notify(id,builder.setChannelId(CHANNEL_ID).build());
+        else
+            manager.notify(id, builder.build());
     }
 
 
