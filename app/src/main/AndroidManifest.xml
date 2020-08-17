@@ -43,9 +43,6 @@
 			   <category android:name="android.intent.category.DEFAULT" />
 			   <data android:mimeType="text/*" />
 			</intent-filter>
-            <intent-filter android:priority="0">
-                <action android:name="android.intent.action.MEDIA_BUTTON" />
-            </intent-filter>
         </activity>
 
         <activity android:name="com.cw.audio7.note_add.Note_addAudio"
@@ -55,9 +52,6 @@
         <activity android:name="com.cw.audio7.note.Note"
                   android:theme="@style/MyTheme"
             	  android:configChanges="orientation|keyboard|keyboardHidden|screenSize|screenLayout|uiMode">
-            <intent-filter android:priority="0">
-                <action android:name="android.intent.action.MEDIA_BUTTON" />
-            </intent-filter>
         </activity>
         <!-- note: add orientation above, when doing Rotate, activity will not go through the following states:
              onPause/onSaveInstanceState/onStop/onDestroy/
@@ -75,7 +69,7 @@
 
         <!--receiver-->
         <receiver android:name="androidx.media.session.MediaButtonReceiver" >
-            <intent-filter>
+            <intent-filter android:priority="0">
                 <action android:name="android.intent.action.MEDIA_BUTTON" />
                 <action android:name="android.media.AUDIO_BECOMING_NOISY" />
             </intent-filter>
@@ -84,8 +78,8 @@
         <!-- will create BackgroundAudioService instance when notification button is pressed -->
         <service android:name="com.cw.audio7.operation.audio.BackgroundAudioService">
         <intent-filter>
-            <action android:name="android.intent.action.MEDIA_BUTTON" />
-            <action android:name="android.media.AUDIO_BECOMING_NOISY" />
+<!--            <action android:name="android.intent.action.MEDIA_BUTTON" />-->
+<!--            <action android:name="android.media.AUDIO_BECOMING_NOISY" />-->
             <action android:name="android.media.browse.MediaBrowserService" />
         </intent-filter>
         </service>
