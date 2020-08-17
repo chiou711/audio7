@@ -182,7 +182,7 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
          */
         // show row Id
         holder.rowId.setText(String.valueOf(position+1));
-        holder.rowId.setTextColor(ColorSet.mText_ColorArray[style]);
+        holder.rowId.setTextColor(ColorSet.color_white);
 
         // show marking check box
         if(Pref.getPref_card_view_enable_select(mAct)) {
@@ -212,40 +212,28 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
         else
             holder.btnDrag.setVisibility(View.GONE);
 
-        // set audio name
-        String[] audio_name = null;
-        if(!Util.isEmptyString(audioUri))
-            audio_name = Util.getDisplayNameByUriString(audioUri, mAct);
-
-//        System.out.println("-> title = " + audio_name[0]);
-//        System.out.println("-> artist = " + audio_name[1]);
-
         // show audio name
         if(Util.isUriExisted(audioUri, mAct)) {
+
+            // set audio name
+            String[] audio_name = null;
+            if(!Util.isEmptyString(audioUri))
+                audio_name = Util.getDisplayNameByUriString(audioUri, mAct);
+
+//            System.out.println("-> title = " + audio_name[0]);
+//            System.out.println("-> artist = " + audio_name[1]);
+
             holder.audioTitle.setText(audio_name[0]);
 
             if(!Util.isEmptyString(audio_name[1]))
                 holder.audioArtist.setText(audio_name[1]);
             else
-                holder.audioArtist.setVisibility(View.GONE);
+                holder.audioArtist.setText("N/A");
+//                holder.audioArtist.setVisibility(View.INVISIBLE);
         }
         else {
             holder.audioTitle.setText(R.string.file_not_found);
             holder.audioArtist.setText("");
-        }
-
-//			holder.audioName.setTextSize(12.0f);
-
-        if(!Util.isEmptyString(audioUri)) {
-            if( marking == 1) {
-                holder.rowId.setTextColor(ColorSet.mText_ColorArray[style]);
-                holder.audioTitle.setTextColor(ColorSet.mText_ColorArray[style]);
-                holder.audioArtist.setTextColor(ColorSet.mText_ColorArray[style]);
-            } else {
-                holder.rowId.setTextColor(ColorSet.color_gray);
-                holder.audioTitle.setTextColor(ColorSet.color_gray);
-                holder.audioArtist.setTextColor(ColorSet.color_gray);
-            }
         }
 
         // show audio highlight if audio is not at Stop
@@ -257,13 +245,12 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
         {
 //            System.out.println("PageAdapter / _getView / show highlight / position = " + position);
             TabsHost.getCurrentPage().mHighlightPosition = position;
-            holder.audioBlock.setBackgroundResource(R.drawable.bg_highlight_border);
+//            holder.audioBlock.setBackgroundResource(R.drawable.bg_highlight_border);
             holder.audioBlock.setVisibility(View.VISIBLE);
 
             // set type face
-            holder.rowId.setTextColor(ColorSet.getHighlightColor(mAct));
-            holder.audioTitle.setTextColor(ColorSet.getHighlightColor(mAct));
-            holder.audioArtist.setTextColor(ColorSet.getHighlightColor(mAct));
+            holder.audioTitle.setBackgroundColor(ColorSet.getHighlightColor(mAct));
+            holder.audioArtist.setBackgroundColor(ColorSet.getHighlightColor(mAct));
 
 
             // set animation
@@ -274,12 +261,23 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
         {
 
 //			System.out.println("PageAdapter / _getView / not show highlight ");
-            holder.audioBlock.setBackgroundResource(R.drawable.bg_gray_border);
+//            holder.audioBlock.setBackgroundResource(R.drawable.bg_gray_border);
             holder.audioBlock.setVisibility(View.VISIBLE);
 
             // set type face
 //			holder.audioName.setTypeface(Typeface.DEFAULT, Typeface.NORMAL);
+            holder.audioTitle.setBackgroundColor(ColorSet.mBG_ColorArray[style]);
+            holder.audioArtist.setBackgroundColor(ColorSet.mBG_ColorArray[style]);
+        }
 
+        if(!Util.isEmptyString(audioUri)) {
+            if( marking == 1) {
+                holder.audioTitle.setTextColor(ColorSet.mText_ColorArray[style]);
+                holder.audioArtist.setTextColor(ColorSet.mText_ColorArray[style]);
+            } else {
+                holder.audioTitle.setTextColor(ColorSet.color_gray);
+                holder.audioArtist.setTextColor(ColorSet.color_gray);
+            }
         }
 
         // show audio icon and block

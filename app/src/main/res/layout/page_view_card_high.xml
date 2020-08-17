@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- whole -->
-<!--  [id | check | drag-drop | thumb nail  | audio name ] -->
+<!--  [ check | drag-drop | thumb nail  ] -->
+<!--  [id |  audio title ] -->
+<!--  [    |  audio artist ] -->
 
 <!-- whole start -->
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
@@ -89,11 +91,9 @@
             android:id="@+id/row_id"
             android:layout_width="30dp"
             android:layout_height="match_parent"
-            android:layout_marginLeft="1dp"
-            android:layout_marginStart="1dp"
-            android:layout_marginRight="2dp"
-            android:layout_marginEnd="2dp"
-            android:layout_gravity="center"
+            android:layout_margin="0dp"
+            android:layout_gravity="bottom"
+            android:background="@drawable/bg_text_rounded_high"
             android:gravity="center"
             android:maxLines="1"
             android:textSize="18sp"
@@ -112,7 +112,9 @@
                 android:layout_gravity="start"
                 android:maxLines="2"
                 android:textStyle="bold"
-                android:textSize="16sp"/>
+                android:textSize="16sp"
+                android:paddingLeft="2dp"
+                android:paddingRight="2dp"/>
             <!-- audio artist -->
             <TextView
                 android:id="@+id/row_audio_artist"
@@ -121,9 +123,10 @@
                 android:layout_weight="1"
                 android:layout_gravity="start"
                 android:maxLines="1"
-                android:layout_marginBottom="2dp"
                 android:textStyle="normal|italic"
-                android:textSize="12sp"/>
+                android:textSize="12sp"
+                android:paddingLeft="2dp"
+                android:paddingRight="2dp"/>
         </LinearLayout>
     </LinearLayout>
     <!-- audio block end -->
