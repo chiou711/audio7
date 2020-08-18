@@ -17,12 +17,12 @@
         android:layout_gravity="center"
         android:visibility="gone" />
 
-    <com.cw.audio7.util.image.TouchImageView
+    <ImageView
         android:id="@+id/image_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
 		android:layout_gravity="center"
-		android:scaleType="fitCenter"
+		android:scaleType="centerCrop"
   		android:contentDescription="image_view" />
 
     </FrameLayout>
@@ -31,21 +31,15 @@
 	<View android:id="@+id/line_view" android:layout_width="match_parent" android:layout_height="1dip" android:background="#40404040" />
 
     <!-- bottom block of pager -->
-    <LinearLayout
-        android:id="@+id/textGroup"     
-		android:layout_width="match_parent"
-    	android:layout_height="0dp"
-    	android:layout_weight="1"
-    	android:orientation="vertical" >
     <com.cw.audio7.util.CustomWebView
         android:id="@+id/textBody"
         android:layout_width="match_parent"
-    	android:layout_height="match_parent" 
+    	android:layout_height="0dp"
+		android:layout_weight="1"
         style="?android:textAppearanceMedium"
         android:lineSpacingMultiplier="1.2"
         android:autoLink="all"
         android:layout_marginBottom="0dp" />
-    </LinearLayout>
 
 	 <!-- footer -->
 	<TextView

@@ -42,6 +42,7 @@ import android.text.util.Linkify;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -87,7 +88,7 @@ public class Note_adapter extends FragmentStatePagerAdapter
         pagerView.setBackgroundColor(ColorSet.mBG_ColorArray[style]);
 
         // image view
-    	TouchImageView imageView = ((TouchImageView) pagerView.findViewById(R.id.image_view));
+	    ImageView imageView = ((ImageView) pagerView.findViewById(R.id.image_view));
         String tagImageStr = "current"+ position +"imageView";
         imageView.setTag(tagImageStr);
 
@@ -96,15 +97,8 @@ public class Note_adapter extends FragmentStatePagerAdapter
         // line view
         View line_view = pagerView.findViewById(R.id.line_view);
 
-    	// text group
-        ViewGroup textGroup = (ViewGroup) pagerView.findViewById(R.id.textGroup);
-
         // Set tag for text web view
-    	CustomWebView textWebView = ((CustomWebView) textGroup.findViewById(R.id.textBody));
-
-    	// set accessibility
-        textGroup.setContentDescription(act.getResources().getString(R.string.note_text));
-		textWebView.getRootView().setContentDescription(act.getResources().getString(R.string.note_text));
+    	CustomWebView textWebView = ((CustomWebView) pagerView.findViewById(R.id.textBody));
 
         String strTitle = db_page.getNoteTitle(position,true);
         String strBody = db_page.getNoteBody(position,true);
@@ -115,7 +109,7 @@ public class Note_adapter extends FragmentStatePagerAdapter
         showPictureView(position,imageView,spinner);
 
         line_view.setVisibility(View.VISIBLE);
-        textGroup.setVisibility(View.VISIBLE);
+	    textWebView.setVisibility(View.VISIBLE);
 
 		// text
 	    if( !Util.isEmptyString(strTitle)||
@@ -125,7 +119,7 @@ public class Note_adapter extends FragmentStatePagerAdapter
 	    }
 	    else
 	    {
-		    textGroup.setVisibility(View.GONE);
+		    textWebView.setVisibility(View.GONE);
 	    }
 
 		// footer of note view
@@ -159,7 +153,7 @@ public class Note_adapter extends FragmentStatePagerAdapter
 
     // show picture view
     private void showPictureView(int position,
-    		             TouchImageView imageView,
+    		             ImageView imageView,
     		             ProgressBar spinner          )
     {
 		String audioUri = db_page.getNoteAudioUri(position,true);
@@ -171,7 +165,7 @@ public class Note_adapter extends FragmentStatePagerAdapter
   			imageView.setVisibility(View.VISIBLE);
 
   			// workaround to fix no image in View note
-		    imageView.setZoom((float) 0.999);
+//		    imageView.setZoom((float) 0.999);
 
   			try
 			{

@@ -215,32 +215,6 @@ public class Note extends AppCompatActivity
 		//       be called again after rotation
 		viewPager.setOnPageChangeListener(onPageChangeListener);//todo deprecated
 
-		// edit note button
-		editButton = (Button) findViewById(R.id.view_edit);
-		editButton.setCompoundDrawablesWithIntrinsicBounds(android.R.drawable.ic_menu_edit, 0, 0, 0);
-		editButton.setOnClickListener(new View.OnClickListener()
-		{
-			public void onClick(View view)
-			{
-				Intent intent = new Intent(Note.this, Note_edit.class);
-				intent.putExtra(DB_page.KEY_NOTE_ID, mNoteId);
-				intent.putExtra(DB_page.KEY_NOTE_TITLE, mDb_page.getNoteTitle_byId(mNoteId));
-				intent.putExtra(DB_page.KEY_NOTE_AUDIO_URI , mDb_page.getNoteAudioUri_byId(mNoteId));
-				intent.putExtra(DB_page.KEY_NOTE_BODY, mDb_page.getNoteBody_byId(mNoteId));
-				startActivityForResult(intent, EDIT_CURRENT_VIEW);
-			}
-		});
-
-		// back button
-		backButton = (Button) findViewById(R.id.view_back);
-		backButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_menu_back, 0, 0, 0);
-		backButton.setOnClickListener(new View.OnClickListener()
-		{
-			public void onClick(View view) {
-				stopNoteAudio();
-				finish();
-			}
-		});
 	}
 
 	// on page change listener
@@ -313,10 +287,6 @@ public class Note extends AppCompatActivity
 
         // renew pager
         showSelectedView();
-
-		LinearLayout buttonGroup = (LinearLayout) act.findViewById(R.id.view_button_group);
-        // button group
-		buttonGroup.setVisibility(View.VISIBLE);
 
 		TextView audioTitle = (TextView) act.findViewById(R.id.pager_audio_title);
         // audio title
@@ -484,16 +454,24 @@ public class Note extends AppCompatActivity
                 finish();
                 return true;
 
-			case R.id.VIEW_NOTE_CHECK:
-				int markingNow = PageAdapter_recycler.toggleNoteMarking(this,NoteUi.getFocus_notePos());
+	        case R.id.VIEW_NOTE_CHECK:
+		        int markingNow = PageAdapter_recycler.toggleNoteMarking(this,NoteUi.getFocus_notePos());
 
-				// update marking
-				if(markingNow == 1)
-					mMenu.findItem(R.id.VIEW_NOTE_CHECK).setIcon(R.drawable.btn_check_on_holo_dark);
-				else
-					mMenu.findItem(R.id.VIEW_NOTE_CHECK).setIcon(R.drawable.btn_check_off_holo_dark);
+		        // update marking
+		        if(markingNow == 1)
+			        mMenu.findItem(R.id.VIEW_NOTE_CHECK).setIcon(R.drawable.btn_check_on_holo_dark);
+		        else
+			        mMenu.findItem(R.id.VIEW_NOTE_CHECK).setIcon(R.drawable.btn_check_off_holo_dark);
+		        return true;
 
-				return true;
+	        case R.id.VIEW_NOTE_EDIT:
+		        Intent intent = new Intent(Note.this, Note_edit.class);
+		        intent.putExtra(DB_page.KEY_NOTE_ID, mNoteId);
+		        intent.putExtra(DB_page.KEY_NOTE_TITLE, mDb_page.getNoteTitle_byId(mNoteId));
+		        intent.putExtra(DB_page.KEY_NOTE_AUDIO_URI , mDb_page.getNoteAudioUri_byId(mNoteId));
+		        intent.putExtra(DB_page.KEY_NOTE_BODY, mDb_page.getNoteBody_byId(mNoteId));
+		        startActivityForResult(intent, EDIT_CURRENT_VIEW);
+		        return true;
         }
 
         return super.onOptionsItemSelected(item);
