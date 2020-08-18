@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- title header 		   --> 
-<!-- title Edit and Picture-->
-<!-- body header 		   -->
+<!-- title header 		   -->
+<!-- thumb image 	   -->
+<!-- title Edit               -->
+<!-- body header 	   -->
 <!-- body Edit 			   -->
-<!-- bottoms 			   -->
+<!-- buttons 			   -->
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
 			android:layout_width="match_parent"
     		android:layout_height="match_parent"
@@ -37,6 +38,23 @@
 	</LinearLayout>    
 	<View android:layout_width="match_parent" android:layout_height="1dip" android:background="#4f4f4f" />
 
+	<!-- thumb image -->
+	<com.cw.audio7.util.image.TouchImageView
+		android:id="@+id/thumb_image"
+		android:layout_width="200dp"
+		android:layout_height="150dp"
+		android:visibility="gone"
+		android:layout_margin="5dp"
+		android:layout_gravity="center"
+		android:contentDescription="description_zoom_touch_close" />
+	<ProgressBar
+		android:id="@+id/progress_bar_thumb"
+		android:layout_width="150dp"
+		android:layout_height="200dp"
+		android:visibility="gone"
+		android:layout_margin="5dp"
+		android:layout_gravity="center"
+		android:contentDescription="ProgressBarExpand"/>
 
 			
 <!-- title header -->
@@ -58,15 +76,14 @@
 			android:textColor="@android:color/white"
 			android:text="@string/edit_note_dlg_title" />
 	</LinearLayout>
-	
-<!-- title Edit and Picture -->
+
+<!-- title Edit  -->
 	<LinearLayout
 		android:id="@+id/edit_title_block"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
         android:orientation="horizontal"
         >
-        <!-- expanded image -->
 	<EditText
     	android:id="@+id/edit_title" 
 	  	android:layout_width="0dp"
@@ -76,21 +93,8 @@
 		android:layout_gravity="center"
 	    android:inputType=""
 	    android:textSize="18sp"
-	    android:minLines="2"
+	    android:minLines="1"
 	    android:maxLines="20" />
-	<ImageView
-          android:id="@+id/edit_picture"
-          android:layout_width="100dp"
-          android:layout_height="75dp"
-          android:layout_margin="3dp"
-          android:contentDescription="ImageView"/>
-	<ProgressBar
-          android:id="@+id/edit_progress_bar"
-          android:layout_width="100dp"
-          android:layout_height="75dp"
-          android:paddingRight="5dp"
-          android:visibility="gone"
-          android:contentDescription="ProgressBar"/>	
 	</LinearLayout>
 
 <!-- body header -->
@@ -122,7 +126,7 @@
         android:layout_weight="1"
 		android:textCursorDrawable="@null"
 	    android:inputType=""
-	    android:minLines="5"
+	    android:minLines="3"
 		android:maxLines="1000"
 	    android:autoLink="all"
 	    android:textSize="18sp"
@@ -130,26 +134,7 @@
 		android:gravity="top"
 		/>
 
-<!-- expanded image  -->
-
-	<com.cw.audio7.util.image.TouchImageView
-        android:id="@+id/expanded_image"
-        android:layout_width="400dp"
-		android:layout_height="300dp"
-		android:visibility="gone"
-		android:layout_margin="5dp"
-		android:layout_gravity="center"
-        android:contentDescription="description_zoom_touch_close" />
-	<ProgressBar
-        android:id="@+id/edit_progress_bar_expand"
-        android:layout_width="150dp"
-		android:layout_height="200dp"
-        android:visibility="gone"
-		android:layout_margin="5dp"
-		android:layout_gravity="center"
-        android:contentDescription="ProgressBarExpand"/>
-<!-- buttons  -->
-	
+	<!-- buttons  -->
 	<LinearLayout
 	    android:layout_width="match_parent"
 	    android:layout_height="wrap_content"

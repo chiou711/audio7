@@ -49,14 +49,13 @@ import android.widget.Toast;
 public class Note_edit extends Activity 
 {
 
-    private Long noteId, createdTime;
-    private String title, picUriStr,  audioUri, body;
+    private Long noteId;
+    private String title,   audioUri, body;
     Note_edit_ui note_edit_ui;
     private boolean enSaveDb = true;
-    boolean bUseCameraImage;
     DB_page dB;
-    TouchImageView enlargedImage;
     int position;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) 
     {
@@ -76,8 +75,6 @@ public class Note_edit extends Activity
     	
         System.out.println("Note_edit / onCreate");
         
-		enlargedImage = (TouchImageView)findViewById(R.id.expanded_image);
-
 		ActionBar actionBar = getActionBar();
 		actionBar.setDisplayHomeAsUpEnabled(true);
 		actionBar.setBackgroundDrawable(new ColorDrawable(ColorSet.getBarColor(this)));
@@ -93,7 +90,6 @@ public class Note_edit extends Activity
         //initialization
         note_edit_ui = new Note_edit_ui(this, dB, noteId, title,  audioUri,  body);
         note_edit_ui.UI_init();
-        bUseCameraImage = false;
 
         if(savedInstanceState != null)
         {
@@ -116,10 +112,6 @@ public class Note_edit extends Activity
 
             public void onClick(View view) {
                 setResult(RESULT_OK);
-				if(note_edit_ui.bRemovePictureUri)
-				{
-					picUriStr = "";
-				}
 				if(note_edit_ui.bRemoveAudioUri)
 				{
 					audioUri = "";
@@ -209,10 +201,6 @@ public class Note_edit extends Activity
 					@Override
 					public void onClick(DialogInterface dialog, int which) 
 					{
-						if(note_edit_ui.bRemovePictureUri)
-						{
-							picUriStr = "";
-						}
 						if(note_edit_ui.bRemoveAudioUri)
 						{
 							audioUri = "";

@@ -23,6 +23,7 @@ import com.cw.audio7.main.MainAct;
 import com.cw.audio7.R;
 import com.cw.audio7.db.DB_page;
 import com.cw.audio7.tabs.TabsHost;
+import com.cw.audio7.util.image.AsyncTaskAudioBitmap;
 import com.cw.audio7.util.image.TouchImageView;
 import com.cw.audio7.util.ColorSet;
 import com.cw.audio7.util.preferences.Pref;
@@ -30,6 +31,8 @@ import com.cw.audio7.util.Util;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.AsyncTask;
+import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -51,26 +54,20 @@ public class Note_edit_ui {
 	private String oriTitle;
 	private String oriBody;
 
-	private Long noteId;
-	private Long oriCreatedTime;
 	private Long oriMarking;
 
 	boolean bRollBackData;
-	boolean bRemovePictureUri = false;
 	boolean bRemoveAudioUri = false;
 
     private DB_page dB_page;
 	private Activity act;
 	private int style;
-	private ProgressBar progressBar;
-	private ProgressBar progressBarExpand;
-	private TouchImageView enlargedImage;
+	private ProgressBar progressBarThumb;
+	private TouchImageView thumbImage;
 
 	Note_edit_ui(Activity act, DB_page _db, Long noteId, String strTitle, String audioUri,  String strBody)
     {
     	this.act = act;
-    	this.noteId = noteId;
-    			
     	oriTitle = strTitle;
 	    oriBody = strBody;
 	    oriAudioUri = audioUri;
@@ -90,21 +87,19 @@ public class Note_edit_ui {
 		UI_init_text();
 
     	audioTextView = (TextView) act.findViewById(R.id.edit_audio);
-        picImageView = (ImageView) act.findViewById(R.id.edit_picture);
-
-        progressBar = (ProgressBar) act.findViewById(R.id.edit_progress_bar);
-        progressBarExpand = (ProgressBar) act.findViewById(R.id.edit_progress_bar_expand);
+	    thumbImage = (TouchImageView)act.findViewById(R.id.thumb_image);
+        progressBarThumb = (ProgressBar) act.findViewById(R.id.progress_bar_thumb);
 
 		DB_folder dbFolder = new DB_folder(act, Pref.getPref_focusView_folder_tableId(act));
 		style = dbFolder.getPageStyle(TabsHost.getFocus_tabPos(), true);
 
-		enlargedImage = (TouchImageView)act.findViewById(R.id.expanded_image);
+		thumbImage = (TouchImageView)act.findViewById(R.id.thumb_image);
 
 		//set audio color
 //		audioTextView.setTextColor(Util.mText_ColorArray[style]);
 //		audioTextView.setBackgroundColor(Util.mBG_ColorArray[style]);
 
-		picImageView.setBackgroundColor(ColorSet.mBG_ColorArray[style]);
+		thumbImage.setBackgroundColor(ColorSet.mBG_ColorArray[style]);
 
 	    final InputMethodManager imm = (InputMethodManager) act.getSystemService(Context.INPUT_METHOD_SERVICE);
     }
@@ -175,8 +170,36 @@ public class Note_edit_ui {
 			populateFields_text(rowId);
 
 			// load bitmap to image view
+		    String audioUri = dB_page.getNoteAudioUri_byId(rowId);;
+
+		    // show audio thumb nail view
+		    if(!Util.isEmptyString(audioUri)    )
+		    {
+			    System.out.println("Note_adapter / _showPictureView / show audio thumb nail view");
+			    thumbImage.setVisibility(View.VISIBLE);
+
+			    // workaround to fix no image in View note
+//		    imageView.setZoom((float) 0.999);
+
+			    try
+			    {
+				    AsyncTaskAudioBitmap audioAsyncTask;
+				    audioAsyncTask = new AsyncTaskAudioBitmap(act,
+						    audioUri,
+						    thumbImage,
+						    progressBarThumb,
+						    false,
+						    1);
+				    audioAsyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,"Searching media ...");
+			    }
+			    catch(Exception e)
+			    {
+				    System.out.println("Note_adapter / _AsyncTaskAudioBitmap / exception");
+			    }
+		    }
+		    else
 			{
-	    		picImageView.setImageResource(style %2 == 1 ?
+				thumbImage.setImageResource(style %2 == 1 ?
 		    			R.drawable.btn_radio_off_holo_light:
 		    			R.drawable.btn_radio_off_holo_dark);
 			}
@@ -262,7 +285,6 @@ public class Note_edit_ui {
 			        	System.out.println("Note_edit_ui / _saveStateInDB / update: roll back");
 	        			title = oriTitle;
 	        			body = oriBody;
-	        			Long time = oriCreatedTime;
 	        			dB_page.updateNote(rowId, title,  audioUri,   body, oriMarking, true);
 	        		}
 	        		else // update new
@@ -300,27 +322,6 @@ public class Note_edit_ui {
 	}
 
 	// for confirmation condition
-	void removePictureStringFromOriginalNote(Long rowId) {
-    	dB_page.updateNote(rowId,
-				oriTitle,
-				oriAudioUri,
-				oriBody,
-				oriMarking,
-                true );
-	}
-
-	private void removePictureStringFromCurrentEditNote(Long rowId) {
-        String title = titleEditText.getText().toString();
-        String body = bodyEditText.getText().toString();
-        
-    	dB_page.updateNote(rowId,
-    				   title,
-				oriAudioUri,
-    				   body,
-				oriMarking,
-			    true );
-	}
-
 	void removeAudioStringFromOriginalNote(Long rowId) {
     	dB_page.updateNote(rowId,
 				oriTitle,
