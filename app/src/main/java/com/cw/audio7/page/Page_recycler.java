@@ -58,12 +58,6 @@ public class Page_recycler extends Fragment implements OnStartDragListener {
     public Page_recycler(){
     }
 
-    @SuppressLint("ValidFragment")
-    public Page_recycler(int pos, int id){
-        page_pos = pos;
-        page_tableId = id;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

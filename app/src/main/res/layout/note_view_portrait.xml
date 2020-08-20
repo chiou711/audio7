@@ -14,6 +14,6 @@
 		/>
 
     <!-- start: audio group -->
-	<include layout = "@layout/note_view_portrait_audio_footer"/>
+	<include layout = "@layout/audio_panel_note_portrait"/>
 
 </LinearLayout>

@@ -1,8 +1,9 @@
- <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/content"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical" >
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	android:id="@+id/content"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:orientation="vertical">
 
 	<!-- top block of pager -->
     <!-- image view  -->
@@ -17,13 +18,14 @@
         android:layout_gravity="center"
         android:visibility="gone" />
 
-    <ImageView
+    <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/image_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
 		android:layout_gravity="center"
-		android:scaleType="centerCrop"
-  		android:contentDescription="image_view" />
+  		android:contentDescription="image_view"
+		app:civ_border_width="1dp"
+		app:civ_border_color="#00000000"/>
 
     </FrameLayout>
     

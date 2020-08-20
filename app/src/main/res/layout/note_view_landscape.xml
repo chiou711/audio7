@@ -17,7 +17,7 @@
 		android:layout_gravity="start"/>
 
     <!-- start: audio group -->
-	<include layout = "@layout/note_view_landscape_audio_footer"/>
+	<include layout = "@layout/audio_panel_note_landscape"/>
 	</LinearLayout>
 
 </LinearLayout>

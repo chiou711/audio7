@@ -68,7 +68,7 @@
 <!--            ads:adUnitId="@string/banner_ad_unit_id"/>-->
     </LinearLayout>
     <include
-        layout="@layout/audio_panel_landscape"
+        layout="@layout/audio_panel_page_landscape"
         />
     </LinearLayout>
 

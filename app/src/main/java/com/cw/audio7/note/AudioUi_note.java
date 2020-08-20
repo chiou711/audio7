@@ -172,15 +172,20 @@ public class AudioUi_note
     static void showAudioName(AppCompatActivity act)
     {
         TextView audio_title_text_view = (TextView) act.findViewById(R.id.pager_audio_title);
+        TextView audio_artist_text_view = (TextView) act.findViewById(R.id.pager_audio_artist);
         // title: set marquee
         if(Util.isUriExisted(mAudioUriInDB, act)) {
             String[] audio_name = Util.getDisplayNameByUriString(mAudioUriInDB, act);
-            audio_title_text_view.setText(audio_name[0] + " / " + audio_name[1]);
+            audio_title_text_view.setText(audio_name[0] );
+            audio_artist_text_view.setText(audio_name[1]);
         }
-        else
-            audio_title_text_view.setText(R.string.file_not_found);
+        else {
+            audio_title_text_view.setText("N/A");
+            audio_artist_text_view.setText("");
+        }
 
         audio_title_text_view.setSelected(false);
+        audio_artist_text_view.setSelected(false);
     }
 
     // Set audio block
@@ -344,6 +349,7 @@ public class AudioUi_note
             return;
 
         TextView audioTitle = (TextView) act.findViewById(R.id.pager_audio_title);
+        TextView audioArtist = (TextView) act.findViewById(R.id.pager_audio_artist);
         // update playing state
         if(Audio_manager.getPlayerState() == Audio_manager.PLAYER_AT_PLAY)
         {
@@ -351,6 +357,8 @@ public class AudioUi_note
             showAudioName(act);
             audioTitle.setTextColor(ColorSet.getHighlightColor(act) );
             audioTitle.setSelected(true);
+            audioArtist.setTextColor(ColorSet.getHighlightColor(act) );
+            audioArtist.setSelected(true);
         }
         else if( (Audio_manager.getPlayerState() == Audio_manager.PLAYER_AT_PAUSE) ||
                 (Audio_manager.getPlayerState() == Audio_manager.PLAYER_AT_STOP)    )
@@ -359,6 +367,8 @@ public class AudioUi_note
             showAudioName(act);
             audioTitle.setTextColor(ColorSet.getPauseColor(act));
             audioTitle.setSelected(false);
+            audioArtist.setTextColor(ColorSet.getPauseColor(act));
+            audioArtist.setSelected(false);
         }
     }
 
