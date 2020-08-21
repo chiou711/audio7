@@ -19,36 +19,81 @@
         android:layout_margin="0dp"
         android:orientation="horizontal">
 
+        <!-- row Id -->
+        <TextView
+            android:id="@+id/row_id"
+            android:layout_width="30dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="0dp"
+            android:layout_marginStart="0dp"
+            android:layout_gravity="center"
+            android:background="@drawable/bg_text_rounded"
+            android:gravity="center"
+            android:maxLines="1"
+            android:textSize="12sp"
+            android:textStyle="italic|bold"/>
+
         <!-- check box-->
         <ImageView
             android:id="@+id/btn_marking"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="1dp"
             android:layout_marginStart="1dp"
-            android:layout_gravity="center"
-            android:gravity="center"
+            android:layout_gravity="center_vertical"
             android:src="@drawable/btn_check_off_holo_light"
             android:contentDescription="img_check"/>
 
         <!-- drag button -->
         <com.cw.audio7.page.ImageViewCustom
             android:id="@+id/btn_drag"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginStart="3dp"
             android:layout_marginLeft="3dp"
             android:layout_gravity="center_vertical"
-            android:gravity="center_vertical"
             android:contentDescription="@string/drag_handler"
             android:src="@drawable/ic_drag_on"/>
+
+        <!-- audio block start -->
+        <LinearLayout
+            android:id="@+id/audio_block"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"   >
+            <!-- audio title -->
+            <TextView
+                android:id="@+id/row_audio_title"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="2"
+                android:layout_gravity="start"
+                android:maxLines="2"
+                android:textStyle="bold"
+                android:textSize="12sp"
+                android:paddingLeft="2dp"
+                android:paddingRight="2dp"/>
+            <!-- audio artist -->
+            <TextView
+                android:id="@+id/row_audio_artist"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:layout_gravity="start"
+                android:maxLines="1"
+                android:textStyle="normal|italic"
+                android:textSize="12sp"
+                android:paddingLeft="2dp"
+                android:paddingRight="2dp"/>
+        </LinearLayout>
+        <!-- audio block end -->
 
         <!-- thumb nail start -->
         <FrameLayout
             android:id="@+id/row_thumb_nail"
             android:layout_width="80dp"
             android:layout_height="match_parent"
-            android:layout_gravity="center"
             android:layout_margin="0dp"
             android:visibility="visible">
 
@@ -68,60 +113,6 @@
                 android:visibility="gone"/>
         </FrameLayout>
         <!-- thumb nail end -->
-
-        <!-- audio block start -->
-        <LinearLayout
-            android:id="@+id/audio_block"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="match_parent"
-            android:layout_margin="0dp"
-            android:orientation="horizontal">
-        <!-- row Id -->
-        <TextView
-            android:id="@+id/row_id"
-            android:layout_width="30dp"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="0dp"
-            android:layout_marginStart="0dp"
-            android:layout_gravity="center"
-            android:background="@drawable/bg_text_rounded"
-            android:gravity="center"
-            android:maxLines="1"
-            android:textSize="12sp"
-            android:textStyle="italic|bold"/>
-
-         <LinearLayout
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
-             android:orientation="vertical"   >
-        <!-- audio title -->
-        <TextView
-            android:id="@+id/row_audio_title"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="2"
-            android:layout_gravity="start"
-            android:maxLines="2"
-            android:textStyle="bold"
-            android:textSize="12sp"
-            android:paddingLeft="2dp"
-            android:paddingRight="2dp"/>
-        <!-- audio artist -->
-        <TextView
-            android:id="@+id/row_audio_artist"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:layout_gravity="start"
-            android:maxLines="1"
-            android:textStyle="normal|italic"
-            android:textSize="12sp"
-            android:paddingLeft="2dp"
-            android:paddingRight="2dp"/>
-        </LinearLayout>
-    </LinearLayout>
-    <!-- audio block end -->
 
     </LinearLayout>
 

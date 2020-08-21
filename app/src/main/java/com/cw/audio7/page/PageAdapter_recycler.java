@@ -131,7 +131,8 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
 
         @Override
         public void onItemClear() {
-            ((CardView)itemView).setCardBackgroundColor(ColorSet.mBG_ColorArray[style]);
+//            ((CardView)itemView).setCardBackgroundColor(ColorSet.mBG_ColorArray[style]);
+            ((CardView)itemView).setCardBackgroundColor(ColorSet.color_black);
         }
     }
 
@@ -161,7 +162,8 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
         // style
 	    style = dbFolder.getPageStyle(page_pos, true);
 
-        ((CardView)holder.itemView).setCardBackgroundColor(ColorSet.mBG_ColorArray[style]);
+//        ((CardView)holder.itemView).setCardBackgroundColor(ColorSet.mBG_ColorArray[style]);
+        ((CardView)holder.itemView).setCardBackgroundColor(ColorSet.color_black);
 
 
         // get DB data
