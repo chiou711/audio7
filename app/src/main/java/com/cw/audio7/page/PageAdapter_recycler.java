@@ -17,7 +17,6 @@
 package com.cw.audio7.page;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -28,7 +27,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.cw.audio7.R;
 import com.cw.audio7.db.DB_drawer;
@@ -50,7 +48,6 @@ import com.cw.audio7.util.ColorSet;
 import com.cw.audio7.util.Util;
 import com.cw.audio7.util.audio.UtilAudio;
 import com.cw.audio7.util.image.AsyncTaskAudioBitmap;
-import com.cw.audio7.util.image.UtilImage;
 import com.cw.audio7.util.preferences.Pref;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -92,6 +89,7 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
 		View audioBlock;
         TextView audioTitle;
         TextView audioArtist;
+        TextView thumbLength;
 		TextView textTitle;
         ImageViewCustom btnDrag;
 		View thumbBlock;
@@ -115,6 +113,7 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
             btnMarking = (ImageView) v.findViewById(R.id.btn_marking);
             thumbBlock = v.findViewById(R.id.row_thumb_nail);
             thumbAudio = (ImageView) v.findViewById(R.id.thumb_audio);
+            thumbLength = (TextView) v.findViewById(R.id.thumb_length);
             btnDrag = (ImageViewCustom) v.findViewById(R.id.btn_drag);
             progressBar = (ProgressBar) v.findViewById(R.id.thumb_progress);
         }
@@ -291,6 +290,7 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
 		{
 			holder.thumbBlock.setVisibility(View.VISIBLE);
 			holder.thumbAudio.setVisibility(View.VISIBLE);
+			holder.thumbLength.setVisibility(View.VISIBLE);
 
 			int in_sample_size;
 			if(Pref.getPref_card_view_enable_large_view(mAct))
@@ -304,6 +304,7 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
                         audioUri,
                         holder.thumbAudio,
                         holder.progressBar,
+                        holder.thumbLength,
                         false,
                         in_sample_size);
                 audioAsyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "Searching media ...");

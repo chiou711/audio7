@@ -28,9 +28,9 @@ import com.cw.audio7.tabs.TabsHost;
 import com.cw.audio7.util.ColorSet;
 import com.cw.audio7.util.Util;
 
-//import android.support.v7.app.AppCompatActivity;
-//import android.telephony.PhoneStateListener;
-//import android.telephony.TelephonyManager;
+import android.app.Activity;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -121,51 +121,43 @@ public class UtilAudio {
 	    		hasAudio = true;
     	}
     	return hasAudio;
-    }     
-    
-//    public static boolean mIsCalledWhilePlayingAudio;
-    // for Pause audio player when incoming phone call
-    // http://stackoverflow.com/questions/5610464/stopping-starting-music-on-incoming-calls
-//    public static PhoneStateListener phoneStateListener = new PhoneStateListener()
-//    {
-//        @Override
-//        public void onCallStateChanged(int state, String incomingNumber)
-//        {
-//			System.out.print("UtilAudio / _onCallStateChanged");
-//            if ( (state == TelephonyManager.CALL_STATE_RINGING) ||
-//                 (state == TelephonyManager.CALL_STATE_OFFHOOK )   )
-//            {
-//            	System.out.println(" -> Incoming phone call:");
-//
-//                //from Play to Pause
-//            	if(Audio_manager.getPlayerState() == Audio_manager.PLAYER_AT_PLAY)
-//            	{
-//                    if( (BackgroundAudioService.mMediaPlayer != null) &&
-//							BackgroundAudioService.mMediaPlayer.isPlaying() ) {
-//                        Audio_manager.setPlayerState(Audio_manager.PLAYER_AT_PAUSE);
-//						BackgroundAudioService.mMediaPlayer.pause();
-//                    }
-//            		mIsCalledWhilePlayingAudio = true;
-//            	}
-//            }
-//            else if(state == TelephonyManager.CALL_STATE_IDLE)
-//            {
-//            	System.out.println(" -> Not in phone call:");
-//                // from Pause to Play
-//            	if( (Audio_manager.getPlayerState() == Audio_manager.PLAYER_AT_PAUSE) &&
-//            		mIsCalledWhilePlayingAudio )
-//            	{
-//                    if( (BackgroundAudioService.mMediaPlayer != null) &&
-//                        !BackgroundAudioService.mMediaPlayer.isPlaying() ) {
-//                        Audio_manager.setPlayerState(Audio_manager.PLAYER_AT_PLAY);
-//						BackgroundAudioService.mMediaPlayer.start();
-//                    }
-//                    mIsCalledWhilePlayingAudio = false;
-//            	}
-//            }
-//            super.onCallStateChanged(state, incomingNumber);
-//        }
-//    };
-    
+    }
+
+	// get audio file length
+	public static int getAudioLength(Activity act, String audiUri) {
+		int len = 0;
+		try
+		{
+			if(Util.isUriExisted(audiUri, act)) {
+				MediaPlayer mp = MediaPlayer.create(act, Uri.parse(audiUri));
+				len = mp.getDuration();
+				mp.release();
+			}
+		}
+		catch(Exception e)
+		{
+			System.out.println("UtilAudio / _getAudioLength / exception");
+		}
+
+		return len;
+	}
+
+	// get audio file length string
+	public static String getAudioLengthString(Activity act, String audiUri) {
+
+		int len = getAudioLength(act,audiUri);
+
+		// set audio file length
+		int fileHour = Math.round((float)(len / 1000 / 60 / 60));
+		int fileMin = Math.round((float)((len - fileHour * 60 * 60 * 1000) / 1000 / 60));
+		int fileSec = Math.round((float)((len - fileHour * 60 * 60 * 1000 - fileMin * 1000 * 60 )/ 1000));
+
+		String strHour = String.format(Locale.ENGLISH,"%2d", fileHour);
+		String strMinute = String.format(Locale.ENGLISH,"%02d", fileMin);
+		String strSecond = String.format(Locale.ENGLISH,"%02d", fileSec);
+		String strLength = strHour + ":" + strMinute+ ":" + strSecond;
+
+    	return strLength;
+	}
     
 }

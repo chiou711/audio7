@@ -174,6 +174,7 @@ public class Note_adapter extends FragmentStatePagerAdapter
 						    							  audioUri, 
 						    							  imageView,
 						    							  null,
+														  null,
 														  false,
 					                                        1);
 				audioAsyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,"Searching media ...");

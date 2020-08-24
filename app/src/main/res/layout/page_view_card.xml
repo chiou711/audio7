@@ -7,7 +7,7 @@
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="64dp"
+    android:layout_height="70dp"
     card_view:cardCornerRadius="5dp"
     card_view:cardElevation="1dp"
     card_view:cardPreventCornerOverlap="true"
@@ -72,6 +72,8 @@
                 android:maxLines="2"
                 android:textStyle="bold"
                 android:textSize="12sp"
+                android:lineSpacingMultiplier="1.0"
+                android:lineSpacingExtra="0dp"
                 android:paddingLeft="2dp"
                 android:paddingRight="2dp"/>
             <!-- audio artist -->
@@ -90,7 +92,7 @@
         <!-- audio block end -->
 
         <!-- thumb nail start -->
-        <FrameLayout
+        <RelativeLayout
             android:id="@+id/row_thumb_nail"
             android:layout_width="80dp"
             android:layout_height="match_parent"
@@ -111,7 +113,18 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
                 android:visibility="gone"/>
-        </FrameLayout>
+
+            <TextView
+                android:id="@+id/thumb_length"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@id/thumb_audio"
+                android:textSize="12sp"
+                android:text="0:00:00"
+                android:textColor="#ffffff"
+                android:layout_marginLeft="20dp"
+                android:layout_marginStart="20dp" />
+        </RelativeLayout>
         <!-- thumb nail end -->
 
     </LinearLayout>

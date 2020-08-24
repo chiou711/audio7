@@ -284,12 +284,7 @@ public class AudioPlayer_page
 				} else {
 					if (BackgroundAudioService.mIsPrepared) {
 
-						// media file length //TODO temporary workaround for getDuration exception
-						if( BackgroundAudioService.mMediaPlayer != null)
-							media_file_length = BackgroundAudioService.mMediaPlayer.getDuration(); // gets the song length in milliseconds from URL
-						else
-							media_file_length = 0;
-
+						media_file_length = UtilAudio.getAudioLength(act,audioUrl_page);
 						System.out.println("AudioPlayer_page / _setAudioPlayerListeners / media_file_length = " + media_file_length);
 
 						// set footer message: media name
@@ -297,20 +292,8 @@ public class AudioPlayer_page
 
 							// set seek bar progress
 							TextView audioPanel_file_length = (TextView) act.findViewById(R.id.audioPanel_file_length);
-							// show audio file length of playing
-							int fileHour = Math.round((float) (media_file_length / 1000 / 60 / 60));
-							int fileMin = Math.round((float) ((media_file_length - fileHour * 60 * 60 * 1000) / 1000 / 60));
-							int fileSec = Math.round((float) ((media_file_length - fileHour * 60 * 60 * 1000 - fileMin * 1000 * 60) / 1000));
-							if (audioPanel_file_length != null) {
-								audioPanel_file_length.setText(String.format(Locale.US, "%2d", fileHour) + ":" +
-										String.format(Locale.US, "%02d", fileMin) + ":" +
-										String.format(Locale.US, "%02d", fileSec));
-							}
-
-							if (isOnAudioPlayingPage()) {
-								scrollHighlightAudioItemToVisible(TabsHost.getCurrentPage().recyclerView);
-								TabsHost.getCurrentPage().itemAdapter.notifyDataSetChanged();
-							}
+							if (audioPanel_file_length != null)
+								audioPanel_file_length.setText(UtilAudio.getAudioLengthString(act,audioUrl_page));
 						}
 
 						// add for calling runnable
