@@ -513,7 +513,7 @@ public class FolderUi
     // select folder
     public static void selectFolder(AppCompatActivity act,final int position)
     {
-    	System.out.println("FolderUi / _selectFolder / position = " + position);
+//    	System.out.println("FolderUi / _selectFolder / position = " + position);
         DB_drawer dB_drawer = new DB_drawer(act);
     	MainAct.mFolderTitle = dB_drawer.getFolderTitle(position,true);
 
@@ -531,10 +531,11 @@ public class FolderUi
 	        PowerManager pm = (PowerManager) act.getSystemService(Context.POWER_SERVICE);
 	        boolean isScreenOn = Objects.requireNonNull(pm).isScreenOn();
 	        if( isScreenOn) {
-		        System.out.println("FolderUi / _selectFolder / screen ON");
+//		        System.out.println("FolderUi / _selectFolder / screen ON");
 		        startTabsHostRun();
-	        } else
-		        System.out.println("FolderUi / _selectFolder / screen OFF");
+	        }
+//	        else
+//		        System.out.println("FolderUi / _selectFolder / screen OFF");
 
         }
     }
@@ -551,7 +552,7 @@ public class FolderUi
     public static Handler mHandler;
     // runnable to launch folder host, (press alt+enter to get lambda)
     public static Runnable mTabsHostRun = () -> {
-	    System.out.println("FolderUi / mTabsHostRun");
+//	    System.out.println("FolderUi / mTabsHostRun");
 
         TabsHost tabsHost = new TabsHost();
 

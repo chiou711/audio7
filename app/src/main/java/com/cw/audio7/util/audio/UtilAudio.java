@@ -126,17 +126,18 @@ public class UtilAudio {
 	// get audio file length
 	public static int getAudioLength(Activity act, String audiUri) {
 		int len = 0;
-		try
-		{
-			if(Util.isUriExisted(audiUri, act)) {
+		if (Util.isUriExisted(audiUri, act)) {
+			try {
 				MediaPlayer mp = MediaPlayer.create(act, Uri.parse(audiUri));
-				len = mp.getDuration();
-				mp.release();
+				if(mp!= null) {
+					len = mp.getDuration();
+					mp.release();
+				}
 			}
-		}
-		catch(Exception e)
-		{
-			System.out.println("UtilAudio / _getAudioLength / exception");
+			catch(Exception e)
+			{
+				System.out.println("UtilAudio / _getAudioLength / exception");
+			}
 		}
 
 		return len;

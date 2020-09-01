@@ -554,7 +554,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
     @Override
     protected void onResume() {
         super.onResume();
-    	System.out.println("MainAct / _onResume");
+//    	System.out.println("MainAct / _onResume");
         mAct = this;
 
         // Sync the toggle state after onRestoreInstanceState has occurred.
@@ -618,7 +618,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
 
     @Override
     protected void onResumeFragments() {
-        System.out.println("MainAct / _onResumeFragments ");
+//        System.out.println("MainAct / _onResumeFragments ");
         super.onResumeFragments();
 
         if( isStorageRequestedImport ||
@@ -661,10 +661,11 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                     mFragmentManager.popBackStack();
 
                 if (!mAct.isDestroyed()) {
-                    System.out.println("MainAct / _onResumeFragments / mAct is not Destroyed()");
+//                    System.out.println("MainAct / _onResumeFragments / mAct is not Destroyed()");
                     openFolder();
-                } else
-                    System.out.println("MainAct / _onResumeFragments / mAct is Destroyed()");
+                }
+//                else
+//                    System.out.println("MainAct / _onResumeFragments / mAct is Destroyed()");
             }
         }
     }
@@ -672,7 +673,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
     // open folder
     public static void openFolder()
     {
-        System.out.println("MainAct / _openFolder");
+//        System.out.println("MainAct / _openFolder");
 
         DB_drawer dB_drawer = new DB_drawer(mAct);
         int folders_count = dB_drawer.getFoldersCount(true);
@@ -1240,20 +1241,21 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
             case MenuId.ENABLE_NOTE_LARGE_VIEW:
                 if(Pref.getPref_card_view_enable_large_view(mAct)) {
                     Pref.setPref_card_view_enable_large_view(mAct,false);
-                    Toast.makeText(this,getResources().getString(R.string.large_view)+
-                                    ": " +
-                                    getResources().getString(R.string.set_disable),
-                            Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(this,getResources().getString(R.string.large_view)+
+//                                    ": " +
+//                                    getResources().getString(R.string.set_disable),
+//                            Toast.LENGTH_SHORT).show();
                 }
                 else {
                     Pref.setPref_card_view_enable_large_view(mAct,true);
-                    Toast.makeText(this,getResources().getString(R.string.large_view) +
-                                    ": " +
-                                    getResources().getString(R.string.set_enable),
-                            Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(this,getResources().getString(R.string.large_view) +
+//                                    ": " +
+//                                    getResources().getString(R.string.set_enable),
+//                            Toast.LENGTH_SHORT).show();
                 }
-                invalidateOptionsMenu();
-                TabsHost.reloadCurrentPage();
+//                invalidateOptionsMenu();
+//                TabsHost.reloadCurrentPage();//todo Need more to avoid system hang up
+                recreate();
                 return true;
 
             case MenuId.ENABLE_NOTE_DRAG_AND_DROP:
@@ -1434,7 +1436,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
     // configure layout view
     void configLayoutView()
     {
-        System.out.println("MainAct / _configLayoutView");
+//        System.out.println("MainAct / _configLayoutView");
 
         setContentView(R.layout.drawer);
 

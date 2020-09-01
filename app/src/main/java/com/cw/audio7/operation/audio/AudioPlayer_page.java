@@ -35,6 +35,7 @@ import com.cw.audio7.tabs.AudioUi_page;
 import com.cw.audio7.tabs.TabsHost;
 import com.cw.audio7.util.Util;
 import com.cw.audio7.util.audio.UtilAudio;
+import com.cw.audio7.util.preferences.Pref;
 
 import java.util.Locale;
 
@@ -53,6 +54,8 @@ public class AudioPlayer_page
 	private AudioUi_page audioUi_page;
     public static Handler mAudioHandler;
     private int notesCount;
+	public static boolean  isLimit;
+
 
 	public AudioPlayer_page(AppCompatActivity act, AudioUi_page audioUi_page){
 		this.act = act;
@@ -258,12 +261,20 @@ public class AudioPlayer_page
 		@Override
 		public void run() {
 //			System.out.println("AudioPlayer_page / _page_runnable");
-			if (!Audio_manager.isRunnableOn_page) {
+			if( (!Audio_manager.isRunnableOn_page)/* ||
+			    AudioPlayer_page.isLimit */)
+			{
 				stopHandler();
 				stopAsyncTask();
 
+//				if( AudioPlayer_page.isLimit ) {
+//					Audio_manager.stopAudioPlayer();
+//					showAudioPanel(act, false);
+//					AudioPlayer_page.isLimit = false;
+//				}
+
 				if ((audioUi_page != null) &&
-						(Audio_manager.getPlayerState() == Audio_manager.PLAYER_AT_STOP))
+					(Audio_manager.getPlayerState() == Audio_manager.PLAYER_AT_STOP))
 					showAudioPanel(act, false);
 				return;
 			}
@@ -285,7 +296,7 @@ public class AudioPlayer_page
 					if (BackgroundAudioService.mIsPrepared) {
 
 						media_file_length = UtilAudio.getAudioLength(act,audioUrl_page);
-						System.out.println("AudioPlayer_page / _setAudioPlayerListeners / media_file_length = " + media_file_length);
+//						System.out.println("AudioPlayer_page / _setAudioPlayerListeners / media_file_length = " + media_file_length);
 
 						// set footer message: media name
 						if (!Util.isEmptyString(audioUrl_page)) {
@@ -401,7 +412,7 @@ public class AudioPlayer_page
 	*/
 	public void scrollHighlightAudioItemToVisible(RecyclerView recyclerView)
 	{
-//		System.out.println("AudioPlayer_page / _scrollHighlightAudioItemToVisible");
+		System.out.println("AudioPlayer_page / _scrollHighlightAudioItemToVisible");
         if(recyclerView == null)
             return;
 
@@ -411,80 +422,89 @@ public class AudioPlayer_page
 		if(Build.VERSION.SDK_INT < 19)
 			return;
 
-		int pos;
 		int itemHeight = 50;//init
 		int dividerHeight;
-		int firstVisible_note_pos;
+		int firstCompleteVisible_note_pos = 0;
 		View v;
 
-        pos = layoutMgr.findFirstVisibleItemPosition();
-//			System.out.println("---------------- pos = " + pos);
+		if (layoutMgr != null) {
+			if(Pref.getPref_card_view_enable_large_view(act))
+				firstCompleteVisible_note_pos = layoutMgr.findFirstVisibleItemPosition();
+			else
+				firstCompleteVisible_note_pos = layoutMgr.findFirstCompletelyVisibleItemPosition();
+		}
+		System.out.println(">---------------- firstCompleteVisible_note_pos = " + firstCompleteVisible_note_pos);
 
 		View childView;
 		if(recyclerView.getAdapter() != null) {
-            childView = layoutMgr.findViewByPosition(pos);
+            childView = layoutMgr.findViewByPosition(firstCompleteVisible_note_pos);
 
             // avoid exception: audio playing and doing checked notes operation at non-playing page
             if(childView == null)
             	return;
 
-			childView.measure(UNBOUNDED, UNBOUNDED);
+			// https://stackoverflow.com/questions/6157652/android-getmeasuredheight-returns-wrong-values
+			ViewUtil.measure(childView);
 			itemHeight = childView.getMeasuredHeight();
-//                System.out.println("---------------- itemHeight = " + itemHeight);
+			System.out.println("---------------- itemHeight = " + itemHeight);
 		}
 
-//		dividerHeight = recyclerView.getDividerHeight();//todo temp
-        dividerHeight = 0;
-//			System.out.println("---------------- dividerHeight = " + dividerHeight);
+		float scale = act.getResources().getDisplayMetrics().density;
 
-        firstVisible_note_pos = layoutMgr.findFirstVisibleItemPosition();
-
-//		System.out.println("---------------- firstVisible_note_pos = " + firstVisible_note_pos);
+		// todo Need XMLPullParser to parse divider.XML
+		// manual set value: must be an even number
+		int size = 4; // check divider.xml size element
+		dividerHeight =  (int)(size * scale + 0.0f);
+		System.out.println("---------------- dividerHeight = " + dividerHeight);
 
 		v = recyclerView.getChildAt(0);
 
+		System.out.println("---------------- v.getTop() = " + v.getTop());
 		int firstVisibleNote_top = (v == null) ? 0 : v.getTop();
-//			System.out.println("---------------- firstVisibleNote_top = " + firstVisibleNote_top);
+		System.out.println("---------------- firstVisibleNote_top = " + firstVisibleNote_top);
 
-//		System.out.println("---------------- Audio_manager.mAudioPos = " + Audio_manager.mAudioPos);
-
-		if(firstVisibleNote_top < 0)
-		{
+		if(firstVisibleNote_top < 0) 	{
             // restore index and top position
             recyclerView.scrollBy(0,firstVisibleNote_top);
-//				System.out.println("----- scroll backwards by firstVisibleNote_top " + firstVisibleNote_top);
+			System.out.println("----- scroll backwards by firstVisibleNote_top " + firstVisibleNote_top);
 		}
 
+		System.out.println("----- Audio_manager.mAudioPos = " + Audio_manager.mAudioPos);
 		boolean noScroll = false;
+
+		int default_offset_position = 0;
+		if(Pref.getPref_card_view_enable_large_view(act))
+			default_offset_position = Audio_manager.mAudioPos;
+		else
+			default_offset_position = Audio_manager.mAudioPos - 1;
+
 		// base on Audio_manager.mAudioPos to scroll
-		if(firstVisible_note_pos != Audio_manager.mAudioPos)
+		if(firstCompleteVisible_note_pos != default_offset_position)
 		{
-			while ((firstVisible_note_pos != Audio_manager.mAudioPos) && (!noScroll))
+			while ((firstCompleteVisible_note_pos != default_offset_position) && (!noScroll))
 			{
 				int offset = itemHeight + dividerHeight;
+
 				// scroll forwards
-				if (firstVisible_note_pos > Audio_manager.mAudioPos)
+				if (firstCompleteVisible_note_pos > default_offset_position )
 				{
                     recyclerView.scrollBy(0,-offset);
-//						System.out.println("-----scroll forwards (to top)" + (-offset));
+						System.out.println("----- highlight item No. -1, offset = " + (-offset));
 				}
 				// scroll backwards
-				else if (firstVisible_note_pos < Audio_manager.mAudioPos)
+				else if (firstCompleteVisible_note_pos < default_offset_position)
 				{
 					// when real item height could be larger than visible item height, so
 					// scroll twice here in odder to do scroll successfully, otherwise scroll could fail
-                    recyclerView.scrollBy(0,offset/2);
-                    recyclerView.scrollBy(0,offset/2);
-//					System.out.println("-----scroll backwards (to bottom) " + offset);
+					recyclerView.scrollBy(0,offset);
+					System.out.println("----- highlight item No. +1, offset =  " + offset);
 				}
 
-//					System.out.println("---------------- firstVisible_note_pos = " + firstVisible_note_pos);
-//					System.out.println("---------------- Page.drag_listView.getFirstVisiblePosition() = " + listView.getFirstVisiblePosition());
-				if(firstVisible_note_pos == layoutMgr.findFirstVisibleItemPosition())
+				if(firstCompleteVisible_note_pos == layoutMgr.findFirstVisibleItemPosition())
 					noScroll = true;
 				else {
 					// update first visible index
-					firstVisible_note_pos = layoutMgr.findFirstVisibleItemPosition();
+					firstCompleteVisible_note_pos = layoutMgr.findFirstVisibleItemPosition();
 				}
 			}
 

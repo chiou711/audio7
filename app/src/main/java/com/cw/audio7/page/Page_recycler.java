@@ -34,8 +34,12 @@ import com.cw.audio7.tabs.TabsHost;
 import com.cw.audio7.util.preferences.Pref;
 import com.cw.audio7.util.uil.UilCommon;
 
+import java.util.Objects;
+
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -69,7 +73,7 @@ public class Page_recycler extends Fragment implements OnStartDragListener {
         Bundle args = getArguments();
         page_pos = args.getInt("page_pos");
         page_tableId = args.getInt("page_table_id");
-        System.out.println("Page_recycler / _onCreateView / page_tableId = " + page_tableId);
+        //System.out.println("Page_recycler / _onCreateView / page_tableId = " + page_tableId);
 
         View rootView = inflater.inflate(R.layout.recycler_view_frag, container, false);
         act = MainAct.mAct;
@@ -81,18 +85,22 @@ public class Page_recycler extends Fragment implements OnStartDragListener {
         // to the way ListView would layout elements. The RecyclerView.LayoutManager defines how
         // elements are laid out.
         layoutMgr = new LinearLayoutManager(getActivity());
+        recyclerView.setLayoutManager(layoutMgr);
 
         int scrollPosition = 0;
-
         // If a layout manager has already been set, get current scroll position.
         if (recyclerView.getLayoutManager() != null) {
             scrollPosition = ((LinearLayoutManager) recyclerView.getLayoutManager())
                     .findFirstCompletelyVisibleItemPosition();
         }
-
-        layoutMgr = new LinearLayoutManager(getActivity());
-        recyclerView.setLayoutManager(layoutMgr);
         recyclerView.scrollToPosition(scrollPosition);
+
+        // add divider
+//        recyclerView.addItemDecoration(new DividerItemDecoration(getContext(),
+//                DividerItemDecoration.VERTICAL));
+        DividerItemDecoration itemDecorator = new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL);
+        itemDecorator.setDrawable(Objects.requireNonNull(ContextCompat.getDrawable(getContext(), R.drawable.divider)));
+        recyclerView.addItemDecoration(itemDecorator);
 
         UilCommon.init();
 
@@ -129,7 +137,7 @@ public class Page_recycler extends Fragment implements OnStartDragListener {
 
     private void fillData()
     {
-        System.out.println("Page_recycler / _fillData / page_tableId = " + page_tableId);
+        //System.out.println("Page_recycler / _fillData / page_tableId = " + page_tableId);
         itemAdapter = new PageAdapter_recycler(page_pos, page_tableId, this);
         // Set PageAdapter_recycler as the adapter for RecyclerView.
         recyclerView.setAdapter(itemAdapter);

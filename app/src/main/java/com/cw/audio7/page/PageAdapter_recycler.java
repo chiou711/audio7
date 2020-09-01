@@ -53,6 +53,8 @@ import com.cw.audio7.util.preferences.Pref;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
+import pl.droidsonroids.gif.GifDrawable;
+import pl.droidsonroids.gif.GifImageView;
 
 import static com.cw.audio7.db.DB_page.KEY_NOTE_AUDIO_URI;
 import static com.cw.audio7.db.DB_page.KEY_NOTE_MARKING;
@@ -95,6 +97,7 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
 		View thumbBlock;
 		ImageView thumbAudio;
 		ProgressBar progressBar;
+        GifImageView gifAudio;
 
         public ViewHolder(View v) {
             super(v);
@@ -116,6 +119,7 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
             thumbLength = (TextView) v.findViewById(R.id.thumb_length);
             btnDrag = (ImageViewCustom) v.findViewById(R.id.btn_drag);
             progressBar = (ProgressBar) v.findViewById(R.id.thumb_progress);
+            gifAudio = v.findViewById(R.id.row_audio_gif);
         }
 
         public TextView getTextView() {
@@ -242,33 +246,48 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
             (marking !=0) &&
             (position == Audio_manager.mAudioPos)  &&
             (Audio_manager.getPlayerState() != Audio_manager.PLAYER_AT_STOP) &&
-            (Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE) 	)
+            (Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE) 	/*&&
+            (!AudioPlayer_page.isLimit)*/)
         {
 //            System.out.println("PageAdapter / _getView / show highlight / position = " + position);
             TabsHost.getCurrentPage().mHighlightPosition = position;
+//            holder.audioBlock.setVisibility(View.VISIBLE);
+
+            // background case 1: border
 //            holder.audioBlock.setBackgroundResource(R.drawable.bg_highlight_border);
-            holder.audioBlock.setVisibility(View.VISIBLE);
 
-            // set type face
-            holder.audioTitle.setBackgroundColor(ColorSet.getHighlightColor(mAct));
-            holder.audioArtist.setBackgroundColor(ColorSet.getHighlightColor(mAct));
+            // background case 2: normal
+//            holder.audioTitle.setBackgroundColor(ColorSet.mBG_ColorArray[style]);
+//            holder.audioArtist.setBackgroundColor(ColorSet.mBG_ColorArray[style]);
 
+            // background case 3: fill highlight
+//            holder.audioTitle.setBackgroundColor(ColorSet.getHighlightColor(mAct));
+//            holder.audioArtist.setBackgroundColor(ColorSet.getHighlightColor(mAct));
 
-            // set animation
-//			Animation animation = AnimationUtils.loadAnimation(mContext , R.anim.right_in);
-//			holder.audioBlock.startAnimation(animation);
+            // gif case
+            // cf: https://stackoverflow.com/questions/6533942/adding-gif-image-in-an-imageview-in-android
+            if(BackgroundAudioService.mMediaPlayer!= null)
+            {
+                if(BackgroundAudioService.mMediaPlayer.isPlaying())
+                    ((GifDrawable) holder.gifAudio.getDrawable()).start();
+                else
+                    ((GifDrawable) holder.gifAudio.getDrawable()).pause();
+            }
+            holder.gifAudio.setVisibility(View.VISIBLE);
         }
         else
         {
 
 //			System.out.println("PageAdapter / _getView / not show highlight ");
-//            holder.audioBlock.setBackgroundResource(R.drawable.bg_gray_border);
-            holder.audioBlock.setVisibility(View.VISIBLE);
 
-            // set type face
-//			holder.audioName.setTypeface(Typeface.DEFAULT, Typeface.NORMAL);
-            holder.audioTitle.setBackgroundColor(ColorSet.mBG_ColorArray[style]);
-            holder.audioArtist.setBackgroundColor(ColorSet.mBG_ColorArray[style]);
+            // background case: normal
+//            holder.audioTitle.setBackgroundColor(ColorSet.mBG_ColorArray[style]);
+//            holder.audioArtist.setBackgroundColor(ColorSet.mBG_ColorArray[style]);
+
+            // gif case
+            holder.audioBlock.setVisibility(View.VISIBLE);
+            holder.audioBlock.setBackgroundColor(ColorSet.mBG_ColorArray[style]);
+            holder.gifAudio.setVisibility(View.GONE);
         }
 
         if(!Util.isEmptyString(audioUri)) {

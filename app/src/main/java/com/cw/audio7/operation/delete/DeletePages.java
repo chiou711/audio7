@@ -197,7 +197,7 @@ public class DeletePages extends Fragment {
                     newFirstPageTblId = mDbFolder.getPageTableId(i,false);
                 i++;
             }
-            System.out.println("TabsHost / _postDeletePage / newFirstPageTblId = " + newFirstPageTblId);
+//            System.out.println("TabsHost / _postDeletePage / newFirstPageTblId = " + newFirstPageTblId);
             Pref.setPref_focusView_page_tableId(act, newFirstPageTblId);
         }
         else if(pgsCnt ==0)

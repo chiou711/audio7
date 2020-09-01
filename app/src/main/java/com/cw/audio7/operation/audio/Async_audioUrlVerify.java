@@ -171,7 +171,7 @@ class Async_audioUrlVerify extends AsyncTask<String,Integer,String>
     @Override
 	protected void onPostExecute(String result)
 	{
-	    System.out.println("AudioUrlVerifyTask / onPostExecute / result = " + result);
+//	    System.out.println("AudioUrlVerifyTask / onPostExecute / result = " + result);
 		
 	 	// dialog off
 		if((mUrlVerifyDialog != null) && mUrlVerifyDialog.isShowing() )

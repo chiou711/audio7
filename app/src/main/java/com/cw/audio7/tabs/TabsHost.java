@@ -98,7 +98,7 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        System.out.println("TabsHost / _onCreateView");
+//        System.out.println("TabsHost / _onCreateView");
 
         View rootView;
 
@@ -241,7 +241,7 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
     {
         lastPageTableId = 0;
         int pageCount = adapter.dbFolder.getPagesCount(true);
-        System.out.println("TabsHost / _addPages / pagesCount = " + pageCount);
+//        System.out.println("TabsHost / _addPages / pagesCount = " + pageCount);
 
         if(pageCount > 0) {
             for (int i = 0; i < pageCount; i++) {
@@ -258,7 +258,7 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
                 args.putInt("page_pos",i);
                 args.putInt("page_table_id",pageTableId);
                 page.setArguments(args);
-                System.out.println("TabsHost / _addPages / page_tableId = " + pageTableId);
+//                System.out.println("TabsHost / _addPages / page_tableId = " + pageTableId);
                 adapter.addFragment(page);
             }
         }
@@ -317,10 +317,10 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
         if((page != null) && (page.itemAdapter != null))
         {
             page.itemAdapter.notifyDataSetChanged();
-            System.out.println("TabsHost / _onTabSelected / notifyDataSetChanged ");
+//            System.out.println("TabsHost / _onTabSelected / notifyDataSetChanged ");
         }
-        else
-            System.out.println("TabsHost / _onTabSelected / not notifyDataSetChanged ");
+//        else
+//            System.out.println("TabsHost / _onTabSelected / not notifyDataSetChanged ");
 
         // set tab audio icon when audio playing
         if ( (MainAct.mPlaying_folderPos == FolderUi.getFocus_folderPos()) &&
@@ -375,19 +375,19 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
 
         // restore focus view page
         int pageCount = mTabsPagerAdapter.dbFolder.getPagesCount(true);
-        System.out.println("TabsHost / _onResume / pageCount = " + pageCount);
+//        System.out.println("TabsHost / _onResume / pageCount = " + pageCount);
         for(int pos=0; pos<pageCount; pos++)
         {
             int pageTableId = mTabsPagerAdapter.dbFolder.getPageTableId(pos, true);
 
             if(pageTableId == Pref.getPref_focusView_page_tableId(MainAct.mAct)) {
-                System.out.println("TabsHost / _onResume / set focus tab pos = " + pos);
+//                System.out.println("TabsHost / _onResume / set focus tab pos = " + pos);
                 setFocus_tabPos(pos);
                 setCurrentPageTableId(pageTableId);
             }
         }
 
-        System.out.println("TabsHost / _onResume / _getFocus_tabPos = " + getFocus_tabPos());
+//        System.out.println("TabsHost / _onResume / _getFocus_tabPos = " + getFocus_tabPos());
 
         // auto scroll to show focus tab
         new Handler().postDelayed(
@@ -444,7 +444,7 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
     @Override
     public void onPause() {
         super.onPause();
-        System.out.println("TabsHost / _onPause");
+//        System.out.println("TabsHost / _onPause");
 
         //  Remove fragments
         if(!MainAct.mAct.isDestroyed())
@@ -513,7 +513,7 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
 
     public static void reloadCurrentPage()
     {
-        System.out.println("TabsHost / _reloadCurrentPage");
+//        System.out.println("TabsHost / _reloadCurrentPage");
         int pagePos = getFocus_tabPos();
         mViewPager.setAdapter(mTabsPagerAdapter);
         mViewPager.setCurrentItem(pagePos);
@@ -670,8 +670,8 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
         {
             //if current page is the first page and will be delete,
             //try to get next existence of note page
-            System.out.println("TabsHost / deletePage / tabPos = " + tabPos);
-            System.out.println("TabsHost / deletePage / mFirstPos_PageId = " + mFirstPos_PageId);
+//            System.out.println("TabsHost / deletePage / tabPos = " + tabPos);
+//            System.out.println("TabsHost / deletePage / mFirstPos_PageId = " + mFirstPos_PageId);
             if(pageId == mFirstPos_PageId)
             {
                 int cGetNextExistIndex = getFocus_tabPos() +1;
@@ -692,10 +692,10 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
                 if(	mDbFolder.getPageId(i, false)== mFirstPos_PageId)
                 {
                     newFirstPageTblId =  mDbFolder.getPageTableId(i, false);
-                    System.out.println("TabsHost / deletePage / newFirstPageTblId = " + newFirstPageTblId);
+//                    System.out.println("TabsHost / deletePage / newFirstPageTblId = " + newFirstPageTblId);
                 }
             }
-            System.out.println("TabsHost / deletePage / --- after delete / newFirstPageTblId = " + newFirstPageTblId);
+//            System.out.println("TabsHost / deletePage / --- after delete / newFirstPageTblId = " + newFirstPageTblId);
             Pref.setPref_focusView_page_tableId(activity, newFirstPageTblId);//todo Could be 0?
         }
 //		else
@@ -707,7 +707,7 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
 
         // get page table Id for dropping
         int pageTableId = mDbFolder.getPageTableId(tabPos, true);
-        System.out.println("TabsHost / _deletePage / pageTableId =  " + pageTableId);
+//        System.out.println("TabsHost / _deletePage / pageTableId =  " + pageTableId);
 
         // delete tab name
         mDbFolder.dropPageTable(pageTableId,true);
@@ -782,7 +782,7 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
 
     public static void removeTabs()
     {
-        System.out.println("TabsHost / _removeTabs");
+//        System.out.println("TabsHost / _removeTabs");
     	if(TabsHost.mTabsPagerAdapter == null)
     		return;
 
@@ -796,7 +796,7 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
                 TabsHost.store_listView_vScroll(listView);
 
             for (int i = 0; i < fragmentList.size(); i++) {
-                System.out.println("TabsHost / _removeTabs / i = " + i);
+//                System.out.println("TabsHost / _removeTabs / i = " + i);
                 MainAct.mAct.getSupportFragmentManager().beginTransaction().remove(fragmentList.get(i)).commit();
             }
         }

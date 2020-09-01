@@ -55,7 +55,6 @@ public class AudioUi_page {
         this.mAct = act;
     }
 
-
     /**
      * init audio block
      */
@@ -188,17 +187,24 @@ public class AudioUi_page {
             @Override
             public void onClick(View v)
             {
+//                AudioPlayer_page.isLimit = false;
                 do {
                     if(Audio_manager.mAudioPos > 0)
                         Audio_manager.mAudioPos--;
+                    //todo add option for circle
                     else if( Audio_manager.mAudioPos == 0)
                     {
                         Audio_manager.mAudioPos = Audio_manager.getPlayingPage_notesCount()-1;
+//                        Toast.makeText(mAct,"top limit",Toast.LENGTH_SHORT).show();
+//                        AudioPlayer_page.isLimit = true;
+//                        TabsHost.getCurrentPage().itemAdapter.notifyDataSetChanged();
+//                        break;
                     }
                 }
                 while (Audio_manager.getCheckedAudio(Audio_manager.mAudioPos) == 0);
 
-                nextAudio_panel();
+//                if(!AudioPlayer_page.isLimit)
+                    nextAudio_panel();
             }
         });
 
@@ -208,15 +214,24 @@ public class AudioUi_page {
             @Override
             public void onClick(View v)
             {
+//                AudioPlayer_page.isLimit = false;
                 do
                 {
                     Audio_manager.mAudioPos++;
-                    if( Audio_manager.mAudioPos >= Audio_manager.getPlayingPage_notesCount())
+                    //todo add option for circle
+                    if( Audio_manager.mAudioPos >= Audio_manager.getPlayingPage_notesCount()) {
                         Audio_manager.mAudioPos = 0; //back to first index
+//                        Audio_manager.mAudioPos = Audio_manager.getPlayingPage_notesCount();
+//                        Toast.makeText(mAct,"bottom limit",Toast.LENGTH_SHORT).show();
+//                        AudioPlayer_page.isLimit = true;
+//                        TabsHost.getCurrentPage().itemAdapter.notifyDataSetChanged();
+//                        break;
+                    }
                 }
                 while (Audio_manager.getCheckedAudio(Audio_manager.mAudioPos) == 0);
 
-                nextAudio_panel();
+//                if(!AudioPlayer_page.isLimit)
+                    nextAudio_panel();
             }
         });
     }
@@ -246,6 +261,7 @@ public class AudioUi_page {
         // update status
         UtilAudio.updateAudioPanel(audioPanel_play_button, audio_panel_title_textView);
 
+        // gif case: add this will cause program hang up
         if(Audio_manager.getPlayerState() != Audio_manager.PLAYER_AT_STOP)
             TabsHost.audioPlayer_page.scrollHighlightAudioItemToVisible(TabsHost.getCurrentPage().recyclerView);
 
