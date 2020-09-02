@@ -21,6 +21,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.cw.audio7.R;
 import com.cw.audio7.operation.audio.Audio_manager;
@@ -28,11 +29,11 @@ import com.cw.audio7.operation.audio.AudioPlayer_page;
 import com.cw.audio7.operation.audio.BackgroundAudioService;
 import com.cw.audio7.util.Util;
 import com.cw.audio7.util.audio.UtilAudio;
+import com.cw.audio7.util.preferences.Pref;
 
 import java.util.Locale;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * Created by cw on 2017/10/21.
@@ -187,23 +188,29 @@ public class AudioUi_page {
             @Override
             public void onClick(View v)
             {
-//                AudioPlayer_page.isLimit = false;
                 do {
-                    if(Audio_manager.mAudioPos > 0)
+                    if(Audio_manager.mAudioPos > 0) {
                         Audio_manager.mAudioPos--;
+                    }
                     //todo add option for circle
                     else if( Audio_manager.mAudioPos == 0)
                     {
-                        Audio_manager.mAudioPos = Audio_manager.getPlayingPage_notesCount()-1;
-//                        Toast.makeText(mAct,"top limit",Toast.LENGTH_SHORT).show();
-//                        AudioPlayer_page.isLimit = true;
-//                        TabsHost.getCurrentPage().itemAdapter.notifyDataSetChanged();
-//                        break;
+                        if(Pref.getPref_cyclic_play_enable(mAct)) {
+                            Audio_manager.mAudioPos = Audio_manager.getPlayingPage_notesCount() - 1;
+                        }
+                        else {
+                            Audio_manager.mAudioPos = -1;
+                            Toast.makeText(mAct,R.string.toast_cyclic_play_disabled, Toast.LENGTH_SHORT).show();
+                            TabsHost.getCurrentPage().itemAdapter.notifyDataSetChanged();
+                            break;
+                        }
                     }
                 }
                 while (Audio_manager.getCheckedAudio(Audio_manager.mAudioPos) == 0);
 
-//                if(!AudioPlayer_page.isLimit)
+                if(Audio_manager.mAudioPos == -1)
+                    Audio_manager.stopAudioPlayer();
+                else
                     nextAudio_panel();
             }
         });
@@ -214,23 +221,27 @@ public class AudioUi_page {
             @Override
             public void onClick(View v)
             {
-//                AudioPlayer_page.isLimit = false;
                 do
                 {
                     Audio_manager.mAudioPos++;
                     //todo add option for circle
                     if( Audio_manager.mAudioPos >= Audio_manager.getPlayingPage_notesCount()) {
-                        Audio_manager.mAudioPos = 0; //back to first index
-//                        Audio_manager.mAudioPos = Audio_manager.getPlayingPage_notesCount();
-//                        Toast.makeText(mAct,"bottom limit",Toast.LENGTH_SHORT).show();
-//                        AudioPlayer_page.isLimit = true;
-//                        TabsHost.getCurrentPage().itemAdapter.notifyDataSetChanged();
-//                        break;
+                        if(Pref.getPref_cyclic_play_enable(mAct)) {
+                            Audio_manager.mAudioPos = 0; //back to first index
+                        }
+                        else {
+                            Audio_manager.mAudioPos = Audio_manager.getPlayingPage_notesCount();
+                            Toast.makeText(mAct,R.string.toast_cyclic_play_disabled,Toast.LENGTH_SHORT).show();
+                            TabsHost.getCurrentPage().itemAdapter.notifyDataSetChanged();
+                            break;
+                        }
                     }
                 }
                 while (Audio_manager.getCheckedAudio(Audio_manager.mAudioPos) == 0);
 
-//                if(!AudioPlayer_page.isLimit)
+                if(Audio_manager.mAudioPos == Audio_manager.getPlayingPage_notesCount())
+                    Audio_manager.stopAudioPlayer();
+                else
                     nextAudio_panel();
             }
         });

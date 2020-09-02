@@ -54,8 +54,6 @@ public class AudioPlayer_page
 	private AudioUi_page audioUi_page;
     public static Handler mAudioHandler;
     private int notesCount;
-	public static boolean  isLimit;
-
 
 	public AudioPlayer_page(AppCompatActivity act, AudioUi_page audioUi_page){
 		this.act = act;
@@ -261,17 +259,15 @@ public class AudioPlayer_page
 		@Override
 		public void run() {
 //			System.out.println("AudioPlayer_page / _page_runnable");
-			if( (!Audio_manager.isRunnableOn_page)/* ||
-			    AudioPlayer_page.isLimit */)
+			if( !Audio_manager.isRunnableOn_page)
 			{
 				stopHandler();
 				stopAsyncTask();
 
-//				if( AudioPlayer_page.isLimit ) {
-//					Audio_manager.stopAudioPlayer();
-//					showAudioPanel(act, false);
-//					AudioPlayer_page.isLimit = false;
-//				}
+				if( (!Pref.getPref_cyclic_play_enable(act))   ) {
+					Audio_manager.stopAudioPlayer();
+					showAudioPanel(act, false);
+				}
 
 				if ((audioUi_page != null) &&
 					(Audio_manager.getPlayerState() == Audio_manager.PLAYER_AT_STOP))

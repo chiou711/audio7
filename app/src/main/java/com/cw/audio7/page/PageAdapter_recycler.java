@@ -246,8 +246,7 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
             (marking !=0) &&
             (position == Audio_manager.mAudioPos)  &&
             (Audio_manager.getPlayerState() != Audio_manager.PLAYER_AT_STOP) &&
-            (Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE) 	/*&&
-            (!AudioPlayer_page.isLimit)*/)
+            (Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE)   )
         {
 //            System.out.println("PageAdapter / _getView / show highlight / position = " + position);
             TabsHost.getCurrentPage().mHighlightPosition = position;

@@ -4,4 +4,5 @@
     <string name="toast_import_finished">所选档案已汇入</string>
     <string name="toast_input_filename">请输入一个档案名称</string>
     <string name="toast_not_working">在数据库处理期间不起作用</string>
+    <string name="toast_cyclic_play_disabled">循环播放未启用</string>
 </resources>

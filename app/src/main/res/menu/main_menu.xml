@@ -33,6 +33,12 @@
             app:showAsAction="never"
             android:title="@string/menu_button_play_audio"
             android:icon="@drawable/ic_menu_play_clip"/>
+        <item
+            android:id="@+id/PLAY_CYCLIC"
+            android:orderInCategory="0"
+            app:showAsAction="never"
+            android:title="@string/menu_button_cyclic_play"
+            android:icon="@drawable/btn_check_on_holo_light"/>
     </menu>
     </item>
     </group>

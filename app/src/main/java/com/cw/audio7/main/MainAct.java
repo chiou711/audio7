@@ -39,7 +39,6 @@ import com.cw.audio7.operation.delete.DeleteFolders;
 import com.cw.audio7.operation.delete.DeletePages;
 import com.cw.audio7.page.Checked_notes_option;
 import com.cw.audio7.page.PageUi;
-import com.cw.audio7.page.Page_recycler;
 import com.cw.audio7.tabs.AudioUi_page;
 import com.cw.audio7.tabs.TabsHost;
 import com.cw.audio7.operation.import_export.Export_toSDCardFragment;
@@ -941,6 +940,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
 
                 // play
                 mMenu.findItem(R.id.PLAY).setVisible( (pgsCnt >0) && (notesCnt>0) );
+                mMenu.findItem(R.id.PLAY_CYCLIC).setVisible( (pgsCnt >0) && (notesCnt>0) );
 
                 // HANDLE CHECKED NOTES
 	            if(Pref.getPref_card_view_enable_select(mAct))
@@ -974,6 +974,16 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
 
         playOrStopMusicButton = menu.findItem(R.id.PLAY_OR_STOP_MUSIC);
         mPref_show_note_attribute = getSharedPreferences("show_note_attribute", 0);
+
+        // enable cyclic play
+        if(Pref.getPref_cyclic_play_enable(mAct))
+            menu.findItem(R.id.PLAY_CYCLIC)
+                    .setIcon(R.drawable.btn_check_on_holo_light)
+                    .setTitle(R.string.menu_button_cyclic_play);
+        else
+            menu.findItem(R.id.PLAY_CYCLIC)
+                    .setIcon(R.drawable.btn_check_off_holo_light)
+                    .setTitle(R.string.menu_button_cyclic_play);
 
         // enable larger view
         if(Pref.getPref_card_view_enable_large_view(mAct))
@@ -1186,6 +1196,24 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                 {
                     playFirstAudio();
                 }
+                return true;
+
+            case MenuId.PLAY_CYCLIC:
+                if(Pref.getPref_cyclic_play_enable(mAct)) {
+                    Pref.setPref_cyclic_play_enable(mAct,false);
+                    Toast.makeText(this,getResources().getString(R.string.menu_button_cyclic_play)+
+                                    ": " +
+                                    getResources().getString(R.string.set_disable),
+                            Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    Pref.setPref_cyclic_play_enable(mAct,true);
+                    Toast.makeText(this,getResources().getString(R.string.menu_button_cyclic_play) +
+                                    ": " +
+                                    getResources().getString(R.string.set_enable),
+                            Toast.LENGTH_SHORT).show();
+                }
+                invalidateOptionsMenu();
                 return true;
 
             case MenuId.CHECKED_OPERATION:

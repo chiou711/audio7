@@ -3,6 +3,7 @@
     <string name="menu_button_play">播放</string>
     <string name="menu_button_play_audio">播放音訊</string>
     <string name="menu_button_stop_audio">停止音訊</string>
+    <string name="menu_button_cyclic_play">循環播放</string>
     <string name="change_page_color">清單顏色</string>
     <string name="rearrange_page">清單順序</string>
     <string name="delete_pages">刪除清單</string>

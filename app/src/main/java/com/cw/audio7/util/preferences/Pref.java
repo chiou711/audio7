@@ -217,4 +217,20 @@ public class Pref
         return pref.getBoolean(key, false);
     }
 
+    // set cyclic play enable
+    public static void setPref_cyclic_play_enable(Activity act, boolean enable )
+    {
+        SharedPreferences pref = act.getSharedPreferences("show_note_attribute", 0);
+        String key = "KEY_ENABLE_CYCLIC_PLAY";
+        pref.edit().putBoolean(key, enable).apply();
+    }
+
+    // get cyclic play enable
+    public static boolean getPref_cyclic_play_enable(Activity act)
+    {
+        SharedPreferences pref = act.getSharedPreferences("show_note_attribute", 0);
+        String key = "KEY_ENABLE_CYCLIC_PLAY";
+        return pref.getBoolean(key, false);
+    }
+
 }
