@@ -153,6 +153,8 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
                 TabsHost.audioUi_page.audioPanel_play_button.setImageResource(R.drawable.ic_media_pause);
             else
                 AudioUi_note.mPager_audio_play_button.setImageResource(R.drawable.ic_media_pause);
+
+            TabsHost.getCurrentPage().itemAdapter.notifyDataSetChanged();
         }
 
         @Override
@@ -178,6 +180,8 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
                 TabsHost.audioUi_page.audioPanel_play_button.setImageResource(R.drawable.ic_media_play);
             else
                 AudioUi_note.mPager_audio_play_button.setImageResource(R.drawable.ic_media_play);
+
+            TabsHost.getCurrentPage().itemAdapter.notifyDataSetChanged();
         }
 
         @Override
@@ -369,7 +373,8 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
     }
 
     private void showPausedNotification() {
-        System.out.println("BackgroundAudioService / _showPausedNotification");
+        if(enDbgMsg)
+            System.out.println("BackgroundAudioService / _showPausedNotification");
         builder = MediaStyleHelper.from(this, mMediaSessionCompat);
 
         builder.addAction(new NotificationCompat.Action(android.R.drawable.ic_media_previous,
@@ -478,6 +483,9 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
         metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_SUBTITLE, displayItems[1]);
         metadataBuilder.putLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER, 1);
         metadataBuilder.putLong(MediaMetadataCompat.METADATA_KEY_NUM_TRACKS, 1);
+
+        // for wearable device title
+        metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_TITLE,  displayItems[0]);
 
         mMediaSessionCompat.setMetadata(metadataBuilder.build());
     }
