@@ -57,16 +57,11 @@
 
         <!-- audio block start -->
         <LinearLayout
+            android:id="@+id/audio_block"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:orientation="horizontal"   >
-            <LinearLayout
-                android:id="@+id/audio_block"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:orientation="vertical">
+            android:orientation="vertical">
             <!-- audio title -->
             <TextView
                 android:id="@+id/row_audio_title"
@@ -82,11 +77,16 @@
                 android:lineSpacingExtra="0dp"
                 android:paddingLeft="2dp"
                 android:paddingRight="2dp"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="horizontal"   >
             <!-- audio artist -->
             <TextView
                 android:id="@+id/row_audio_artist"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:layout_gravity="start"
                 android:maxLines="1"
@@ -95,8 +95,6 @@
                 android:textSize="12sp"
                 android:paddingLeft="2dp"
                 android:paddingRight="2dp"/>
-            </LinearLayout>
-
             <pl.droidsonroids.gif.GifImageView
                 android:id="@+id/row_audio_gif"
                 android:layout_width="match_parent"
@@ -108,6 +106,7 @@
                 android:padding="0dp"
                 android:layout_margin="0dp"
                 />
+            </LinearLayout>
         </LinearLayout>
         <!-- audio block end -->
 

@@ -260,8 +260,8 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
 //            holder.audioArtist.setBackgroundColor(ColorSet.mBG_ColorArray[style]);
 
             // background case 3: fill highlight
-//            holder.audioTitle.setBackgroundColor(ColorSet.getHighlightColor(mAct));
-//            holder.audioArtist.setBackgroundColor(ColorSet.getHighlightColor(mAct));
+            holder.audioTitle.setBackgroundColor(ColorSet.getHighlightColor(mAct));
+            holder.audioArtist.setBackgroundColor(ColorSet.getHighlightColor(mAct));
 
             // gif case
             // cf: https://stackoverflow.com/questions/6533942/adding-gif-image-in-an-imageview-in-android
@@ -280,8 +280,8 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
 //			System.out.println("PageAdapter / _getView / not show highlight ");
 
             // background case: normal
-//            holder.audioTitle.setBackgroundColor(ColorSet.mBG_ColorArray[style]);
-//            holder.audioArtist.setBackgroundColor(ColorSet.mBG_ColorArray[style]);
+            holder.audioTitle.setBackgroundColor(ColorSet.mBG_ColorArray[style]);
+            holder.audioArtist.setBackgroundColor(ColorSet.mBG_ColorArray[style]);
 
             // gif case
             holder.audioBlock.setVisibility(View.VISIBLE);
