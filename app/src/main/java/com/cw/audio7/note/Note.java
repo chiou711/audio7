@@ -79,9 +79,6 @@ public class Note extends AppCompatActivity
     
     static SharedPreferences mPref_show_note_attribute;
 
-    Button editButton;
-    Button backButton;
-
 	public static String mAudioUriInDB;
 
     public AppCompatActivity act;
@@ -100,8 +97,6 @@ public class Note extends AppCompatActivity
 		Audio_manager.isRunnableOn_note = false;
 
 		act = this;
-
-//        MainAct.mMediaBrowserCompat = null;
 
 	} //onCreate end
 
@@ -344,24 +339,6 @@ public class Note extends AppCompatActivity
 			IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_ACL_CONNECTED);
 			this.registerReceiver(mReceiver, filter);
 		}
-		else // Build.VERSION.SDK_INT >= 21
-		{
-			// Media session: to receive media button event of bluetooth device
-			// new media browser instance and create BackgroundAudioService instance: support notification
-
-//				if (MainAct.mMediaBrowserCompat == null) {
-//					MainAct.mMediaBrowserCompat = new MediaBrowserCompat(act,
-//							new ComponentName(act, BackgroundAudioService.class),
-//							MainAct.mMediaBrowserCompatConnectionCallback,
-//							act.getIntent().getExtras());
-//				}
-//
-//				if (  (MainAct.mMediaBrowserCompat != null) &&
-//						!MainAct.mMediaBrowserCompat.isConnected()) {
-//					MainAct.mMediaBrowserCompat.connect();//???
-//				}
-//					MainAct.mCurrentState = MainAct.STATE_PAUSED;
-		}
 	}
 	
 	@Override
@@ -388,15 +365,6 @@ public class Note extends AppCompatActivity
 			BackgroundAudioService.mMediaPlayer = null;
 			Audio_manager.isRunnableOn_note = false;
 		}
-
-        // disconnect MediaBrowserCompat
-//		if(Audio_manager.getAudioPlayMode() != Audio_manager.PAGE_PLAY_MODE) {
-//			if (Build.VERSION.SDK_INT >= 21) {
-//				if( (MainAct.mMediaBrowserCompat != null) &&
-//					 MainAct.mMediaBrowserCompat.isConnected() )
-//					MainAct.mMediaBrowserCompat.disconnect();
-//			}
-//		}
 	}
 
 	// avoid exception: has leaked window android.widget.ZoomButtonsController

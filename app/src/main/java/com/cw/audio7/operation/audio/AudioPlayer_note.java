@@ -86,19 +86,29 @@ public class AudioPlayer_note
 			if(BackgroundAudioService.mMediaPlayer.isPlaying())
 			{
 				System.out.println("AudioPlayer_note / _runAudioState / play -> pause");
-                BackgroundAudioService.mMediaPlayer.pause();
 				mAudioHandler.removeCallbacks(mRunOneTimeMode);
                 Audio_manager.setPlayerState(Audio_manager.PLAYER_AT_PAUSE);
+
+				//for pause
+				if(Build.VERSION.SDK_INT >= 21)
+					MainAct.mMediaControllerCompat.getTransportControls().pause();
+				else
+					BackgroundAudioService.mMediaPlayer.pause();
 			}
 			else // from pause to play
 			{
 				System.out.println("AudioPlayer_note / _runAudioState / pause -> play");
-                BackgroundAudioService.mMediaPlayer.start();
 
 				if(Audio_manager.getAudioPlayMode() == Audio_manager.NOTE_PLAY_MODE)
 					mAudioHandler.post(mRunOneTimeMode);
 
                 Audio_manager.setPlayerState(Audio_manager.PLAYER_AT_PLAY);
+
+				//for play
+				if(Build.VERSION.SDK_INT >= 21)
+					MainAct.mMediaControllerCompat.getTransportControls().play();
+				else
+					BackgroundAudioService.mMediaPlayer.start();
 			}
 		}
 	}
@@ -111,6 +121,7 @@ public class AudioPlayer_note
 	{   @Override
 		public void run()
 		{
+//			System.out.println("AudioPlayer_note / mRunOneTimeMode");
             if(!Audio_manager.isRunnableOn_note)
             {
                 System.out.println("AudioPlayer_note / mRunOneTimeMode / Audio_manager.isRunnableOn_note = " + Audio_manager.isRunnableOn_note);
@@ -139,8 +150,18 @@ public class AudioPlayer_note
 	   		}
 	   		else//Audio_manager.mMediaPlayer != null
 	   		{
-	   			AudioUi_note.updateAudioProgress(act);
-				mAudioHandler.postDelayed(mRunOneTimeMode,DURATION_1S);
+			    if(BackgroundAudioService.mIsCompleted) {
+				    Audio_manager.setPlayerState(Audio_manager.PLAYER_AT_STOP);
+				    AudioUi_note.updateAudioPlayState(act);
+				    if(mAudioHandler != null)
+					    mAudioHandler.removeCallbacks(mRunOneTimeMode);
+				    mAudioHandler = null;
+			    }
+
+			    AudioUi_note.updateAudioProgress(act);
+
+			    if(mAudioHandler != null)
+					mAudioHandler.postDelayed(mRunOneTimeMode,DURATION_1S);
 	   		}		    		
 		} 
 	};

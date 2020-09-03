@@ -128,7 +128,6 @@ public class AudioPlayer_page
 			if(BackgroundAudioService.mMediaPlayer.isPlaying())
 			{
 				System.out.println("AudioPlayer_page / _runAudioState / play -> pause");
-				BackgroundAudioService.mMediaPlayer.pause();
 				mAudioHandler.removeCallbacks(page_runnable);
                 Audio_manager.setPlayerState(Audio_manager.PLAYER_AT_PAUSE);
 

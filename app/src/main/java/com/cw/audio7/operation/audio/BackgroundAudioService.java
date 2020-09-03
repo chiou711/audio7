@@ -54,7 +54,7 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
     public static boolean mIsPrepared;
     public static boolean mIsCompleted;
     final public static int id = 77;
-    boolean enDbgMsg = false;
+    boolean enDbgMsg = true;//false;
 
     BroadcastReceiver audioNoisyReceiver = new BroadcastReceiver() {
         @Override
@@ -149,12 +149,13 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
             // update panel status: play
             Audio_manager.setPlayerState(Audio_manager.PLAYER_AT_PLAY);
 
-            if(Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE)
+            if(Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE) {
                 TabsHost.audioUi_page.audioPanel_play_button.setImageResource(R.drawable.ic_media_pause);
+                TabsHost.getCurrentPage().itemAdapter.notifyDataSetChanged();
+            }
             else
                 AudioUi_note.mPager_audio_play_button.setImageResource(R.drawable.ic_media_pause);
 
-            TabsHost.getCurrentPage().itemAdapter.notifyDataSetChanged();
         }
 
         @Override
@@ -167,6 +168,7 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
                 if(mMediaPlayer.isPlaying())
                     mMediaPlayer.pause();
 
+                mMediaSessionCompat.setActive(true);
                 setMediaPlaybackState(PlaybackStateCompat.STATE_PAUSED);
 
                 initMediaSessionMetadata();
@@ -176,12 +178,13 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
             // update panel status: pause
             Audio_manager.setPlayerState(Audio_manager.PLAYER_AT_PAUSE);
 
-            if(Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE)
+            if(Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE) {
                 TabsHost.audioUi_page.audioPanel_play_button.setImageResource(R.drawable.ic_media_play);
+                TabsHost.getCurrentPage().itemAdapter.notifyDataSetChanged();
+            }
             else
                 AudioUi_note.mPager_audio_play_button.setImageResource(R.drawable.ic_media_play);
 
-            TabsHost.getCurrentPage().itemAdapter.notifyDataSetChanged();
         }
 
         @Override
@@ -375,6 +378,7 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
     private void showPausedNotification() {
         if(enDbgMsg)
             System.out.println("BackgroundAudioService / _showPausedNotification");
+
         builder = MediaStyleHelper.from(this, mMediaSessionCompat);
 
         builder.addAction(new NotificationCompat.Action(android.R.drawable.ic_media_previous,
@@ -448,13 +452,7 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
 //        metadataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher));
 
         String audioStr = Audio_manager.getAudioStringAt(Audio_manager.mAudioPos);
-//        String displayName = Util.getDisplayNameByUriString(audioStr, MainAct.mAct)[0];
         String[] displayItems=Util.getDisplayNameByUriString(audioStr, MainAct.mAct);
-
-//        if(displayName.contains(" / "))
-//            displayItems = displayName.split(" / ");
-//        else
-//            displayItems[0] = displayName;
 
         // prepare bit map
         MediaMetadataRetriever mmr = new MediaMetadataRetriever();
