@@ -181,33 +181,11 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
         // if ENABLE_ADMOB = true, enable the following
         // test app id
         if(Define.ENABLE_ADMOB) {
-            // old code
-//                if (Define.CODE_MODE == Define.DEBUG_MODE)
-//                    MobileAds.initialize(getActivity(), getActivity().getResources().getString(R.string.ad_mob_app_id_test));
-//                else // real app id
-//                    MobileAds.initialize(getActivity(), getActivity().getResources().getString(R.string.ad_mob_app_id));
-//
-//                // Load an ad into the AdMob banner view.
-//                AdView adView = (AdView) rootView.findViewById(R.id.adView);
-//                AdRequest adRequest = new AdRequest.Builder().build();
-//                adView.loadAd(adRequest);
-
-            // new code
             // Initialize the Mobile Ads SDK.
             MobileAds.initialize(getActivity(), new OnInitializationCompleteListener() {
                 @Override
                 public void onInitializationComplete(InitializationStatus initializationStatus) {}
             });
-
-            // get test ads on a physical device
-//            String android_id = Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID);
-//            String deviceId = md5(android_id).toUpperCase();
-//
-//            Log.d("TabsHost  <deviceId>" , deviceId);
-//
-//            MobileAds.setRequestConfiguration(
-//                    new RequestConfiguration.Builder().setTestDeviceIds(Arrays.asList(deviceId))
-//                            .build());
 
             // Create an ad request.
             AdRequest adRequest = new AdRequest.Builder().build();
@@ -218,21 +196,6 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
         }
         return rootView;
     }
-
-    // get MD5
-//    private String md5(String md5) {
-//        try {
-//            java.security.MessageDigest md = java.security.MessageDigest.getInstance("MD5");
-//            byte[] array = md.digest(md5.getBytes());
-//            StringBuffer sb = new StringBuffer();
-//            for (int i = 0; i < array.length; ++i) {
-//                sb.append(Integer.toHexString((array[i] & 0xFF) | 0x100).substring(1,3));
-//            }
-//            return sb.toString();
-//        } catch (java.security.NoSuchAlgorithmException e) {
-//        }
-//        return null;
-//    }
 
     /**
      * Add pages
@@ -360,6 +323,7 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
     public void onTabUnselected(TabLayout.Tab tab) {
     }
 
+    int pos;
     @Override
     public void onTabReselected(TabLayout.Tab tab) {
     }
@@ -426,9 +390,8 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
         {
             audioUi_page.initAudioBlock(MainAct.mAct);
 
-            audioPlayer_page.page_runnable.run();//todo Why exception when adding new text?
+            audioPlayer_page.page_runnable.run();
 
-            //todo Why dose this panel disappear?
             UtilAudio.updateAudioPanel(audioUi_page.audioPanel_play_button,
                                        audioUi_page.audio_panel_title_textView);
         }

@@ -261,7 +261,7 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
 
             // background case 3: fill highlight
             holder.audioTitle.setBackgroundColor(ColorSet.getHighlightColor(mAct));
-            holder.audioArtist.setBackgroundColor(ColorSet.getHighlightColor(mAct));
+            holder.audioArtist.setVisibility(View.GONE);
 
             // gif case
             // cf: https://stackoverflow.com/questions/6533942/adding-gif-image-in-an-imageview-in-android

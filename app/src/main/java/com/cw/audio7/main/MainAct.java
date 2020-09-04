@@ -661,7 +661,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
 
                 if (!mAct.isDestroyed()) {
 //                    System.out.println("MainAct / _onResumeFragments / mAct is not Destroyed()");
-                    openFolder();
+//                    openFolder();//todo Need this?
                 }
 //                else
 //                    System.out.println("MainAct / _onResumeFragments / mAct is Destroyed()");
