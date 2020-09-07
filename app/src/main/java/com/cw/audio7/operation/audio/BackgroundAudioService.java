@@ -54,48 +54,79 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
     public static boolean mIsPrepared;
     public static boolean mIsCompleted;
     final public static int id = 77;
-    boolean enDbgMsg = true;//false;
+    boolean enDbgMsg = true;
+//    boolean enDbgMsg = false;
 
     BroadcastReceiver audioNoisyReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent)
         {
 
+            // when phone jack is unplugged
             if (android.media.AudioManager.ACTION_AUDIO_BECOMING_NOISY.equals(intent.getAction()))
             {
                 if((BackgroundAudioService.mMediaPlayer != null) && BackgroundAudioService.mMediaPlayer.isPlaying() )
                 {
                     if(enDbgMsg)
                         System.out.println("BackgroundAudioService / audioNoisyReceiver / _onReceive / play -> pause");
-                    // when phone jack is unplugged
-                    if( mMediaPlayer != null  ) {
-                        if(mMediaPlayer.isPlaying())
-                            mMediaPlayer.pause();
-
-                        setMediaPlaybackState(PlaybackStateCompat.STATE_PAUSED);
-
-                        initMediaSessionMetadata();
-                        showPausedNotification();
-                    }
-
-                    // update panel status: pause
-                    Audio_manager.setPlayerState(Audio_manager.PLAYER_AT_PAUSE);
-
-                    //update audio panel button in Page view
-                    if(Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE)
-                        UtilAudio.updateAudioPanel(TabsHost.audioUi_page.audioPanel_play_button,TabsHost.audioUi_page.audio_panel_title_textView);
-
-                    //update audio play button in Note view
-                    if( (AudioUi_note.mPager_audio_play_button != null) &&
-                         AudioUi_note.mPager_audio_play_button.isShown()    )
-                    {
-                        AudioUi_note.mPager_audio_play_button.setImageResource(R.drawable.ic_media_play);
-                    }
+                    pauseAudio();
                 }
             }
 
         }
     };
+
+    // do audio play
+    void playAudio(){
+        mMediaSessionCompat.setActive(true);
+        setMediaPlaybackState(PlaybackStateCompat.STATE_PLAYING);
+
+        initMediaSessionMetadata();
+        showPlayingNotification();
+
+        if(mMediaPlayer != null)
+            mMediaPlayer.start();
+
+        mMediaPlayer.setVolume(1.0f, 1.0f);
+
+        // update panel status: play
+        Audio_manager.setPlayerState(Audio_manager.PLAYER_AT_PLAY);
+
+        if(Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE) {
+            TabsHost.audioUi_page.audioPanel_play_button.setImageResource(R.drawable.ic_media_pause);
+            TabsHost.getCurrentPage().itemAdapter.notifyDataSetChanged();
+        }
+        else
+            AudioUi_note.mPager_audio_play_button.setImageResource(R.drawable.ic_media_pause);
+    }
+
+    // do audio pause
+    void pauseAudio() {
+        if( mMediaPlayer != null  ) {
+            if(mMediaPlayer.isPlaying())
+                mMediaPlayer.pause();
+
+            setMediaPlaybackState(PlaybackStateCompat.STATE_PAUSED);
+
+            initMediaSessionMetadata();
+            showPausedNotification();
+        }
+
+        // update panel status: pause
+        Audio_manager.setPlayerState(Audio_manager.PLAYER_AT_PAUSE);
+
+        //update audio panel button in Page view
+        if(Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE)
+            UtilAudio.updateAudioPanel(TabsHost.audioUi_page.audioPanel_play_button,TabsHost.audioUi_page.audio_panel_title_textView);
+
+        //update audio play button in Note view
+        if( (AudioUi_note.mPager_audio_play_button != null) &&
+                AudioUi_note.mPager_audio_play_button.isShown()    )
+        {
+            AudioUi_note.mPager_audio_play_button.setImageResource(R.drawable.ic_media_play);
+        }
+    }
+
 
     private MediaSessionCompat.Callback mMediaSessionCallback = new MediaSessionCompat.Callback() {
 
@@ -136,26 +167,7 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
             if( !successfullyRetrievedAudioFocus() ) {
                 return;
             }
-
-            mMediaSessionCompat.setActive(true);
-            setMediaPlaybackState(PlaybackStateCompat.STATE_PLAYING);
-
-            initMediaSessionMetadata();
-            showPlayingNotification();
-
-            if(mMediaPlayer != null)
-                mMediaPlayer.start();
-
-            // update panel status: play
-            Audio_manager.setPlayerState(Audio_manager.PLAYER_AT_PLAY);
-
-            if(Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE) {
-                TabsHost.audioUi_page.audioPanel_play_button.setImageResource(R.drawable.ic_media_pause);
-                TabsHost.getCurrentPage().itemAdapter.notifyDataSetChanged();
-            }
-            else
-                AudioUi_note.mPager_audio_play_button.setImageResource(R.drawable.ic_media_pause);
-
+            playAudio();
         }
 
         @Override
@@ -163,28 +175,7 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
             super.onPause();
             if(enDbgMsg)
                 System.out.println("BackgroundAudioService / mMediaSessionCallback / _onPause");
-
-            if( mMediaPlayer != null  ) {
-                if(mMediaPlayer.isPlaying())
-                    mMediaPlayer.pause();
-
-                mMediaSessionCompat.setActive(true);
-                setMediaPlaybackState(PlaybackStateCompat.STATE_PAUSED);
-
-                initMediaSessionMetadata();
-                showPausedNotification();
-            }
-
-            // update panel status: pause
-            Audio_manager.setPlayerState(Audio_manager.PLAYER_AT_PAUSE);
-
-            if(Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE) {
-                TabsHost.audioUi_page.audioPanel_play_button.setImageResource(R.drawable.ic_media_play);
-                TabsHost.getCurrentPage().itemAdapter.notifyDataSetChanged();
-            }
-            else
-                AudioUi_note.mPager_audio_play_button.setImageResource(R.drawable.ic_media_play);
-
+            pauseAudio();
         }
 
         @Override
@@ -505,7 +496,6 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
         if(TextUtils.equals(clientPackageName, getPackageName())) {
             return new BrowserRoot(getString(R.string.app_name), null);
         }
-
         return null;
     }
 
@@ -515,27 +505,23 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
         result.sendResult(null);
     }
 
-    boolean isManualPause;
     @Override
     public void onAudioFocusChange(int focusChange) {
         System.out.println("BackgroundAudioService / _onAudioFocusChange");
 
         switch( focusChange ) {
-            case AudioManager.AUDIOFOCUS_LOSS: {
+            case AudioManager.AUDIOFOCUS_LOSS:
+            {
                 System.out.println("BackgroundAudioService / _onAudioFocusChange / AudioManager.AUDIOFOCUS_LOSS");
-                //Audio_manager.stopAudioPlayer(); //TODO Mark out this is OK?
+                // example: play YouTube
+                pauseAudio();
                 break;
             }
             case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT: {
-                // when phone call is coming in
+                // example: when phone call is coming in
+                // example: play video of FB
                 System.out.println("BackgroundAudioService / _onAudioFocusChange / AudioManager.AUDIOFOCUS_LOSS_TRANSIENT");
-
-                if(!mMediaPlayer.isPlaying())
-                    isManualPause = true;
-                else
-                    isManualPause = false;
-
-                mMediaPlayer.pause();
+                pauseAudio();
                 break;
             }
             case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK: {
@@ -547,13 +533,9 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
             }
             case AudioManager.AUDIOFOCUS_GAIN: {
                 System.out.println("BackgroundAudioService / _onAudioFocusChange / AudioManager.AUDIOFOCUS_GAIN");
-                // when phone call is off line
-                if( mMediaPlayer != null ) {
-                    if( (!mMediaPlayer.isPlaying()) && (!isManualPause) ) {
-                        mMediaPlayer.start();
-                    }
-                    mMediaPlayer.setVolume(1.0f, 1.0f);
-                }
+                // example: when incoming phone call is off line
+                // example: when pausing video of FB
+                playAudio();
                 break;
             }
         }
