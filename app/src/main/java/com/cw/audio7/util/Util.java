@@ -1055,7 +1055,7 @@ public class Util
 	    else {
 //		       act.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
 		       act.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
-	    }	    
+	    }
 	}
 
 	static public void unlockOrientation(Activity act) {

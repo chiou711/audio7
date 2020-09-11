@@ -49,10 +49,6 @@
                   android:theme="@style/MyTheme"/>
         <activity android:name="com.cw.audio7.note_edit.Note_edit"
                   android:windowSoftInputMode="adjustPan"/>
-        <activity android:name="com.cw.audio7.note.Note"
-                  android:theme="@style/MyTheme"
-            	  android:configChanges="orientation|keyboard|keyboardHidden|screenSize|screenLayout|uiMode">
-        </activity>
         <!-- note: add orientation above, when doing Rotate, activity will not go through the following states:
              onPause/onSaveInstanceState/onStop/onDestroy/
                                                 onCreate/onStart/onRestoreInstanceState/onResume    -->

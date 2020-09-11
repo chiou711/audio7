@@ -250,7 +250,7 @@ public class Note_adapter extends FragmentStatePagerAdapter
 				if(Audio_manager.getAudioPlayMode() == Audio_manager.NOTE_PLAY_MODE)
 				{
 					if (Audio_manager.getPlayerState() != Audio_manager.PLAYER_AT_STOP)
-						AudioUi_note.updateAudioProgress(act);
+						AudioUi_note.updateAudioProgress();
 				}
 
 				AudioUi_note.updateAudioPlayState(act);
@@ -259,7 +259,7 @@ public class Note_adapter extends FragmentStatePagerAdapter
 				audioBlock.setVisibility(View.GONE);
 
 			//auto play
-			System.out.println("------> setPrimaryItem / auto play ");
+			System.out.println("Note_adapter / _setPrimaryItem / auto play ");
 			if(Audio_manager.getPlayerState() == Audio_manager.PLAYER_AT_STOP)
 				AudioUi_note.mPager_audio_play_button.performClick();
 		}

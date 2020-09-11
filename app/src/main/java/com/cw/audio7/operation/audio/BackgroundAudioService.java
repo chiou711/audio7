@@ -186,8 +186,7 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
 
             mIsPrepared = false;
 
-            if(mMediaPlayer == null)
-                initMediaPlayer();
+            initMediaPlayer();
 
             setAudioPlayerListeners();
 
@@ -324,6 +323,15 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
     private void initMediaPlayer() {
         if(enDbgMsg)
             System.out.println("BackgroundAudioService / _initMediaPlayer");
+
+        if(mMediaPlayer != null) {
+            mMediaPlayer.pause();
+            mMediaPlayer.stop();
+            mMediaPlayer.release();
+        }
+
+        mMediaPlayer = null;
+
         mMediaPlayer = new MediaPlayer();
         mMediaPlayer.setWakeMode(getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
         mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);

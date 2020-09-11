@@ -19,6 +19,7 @@ package com.cw.audio7.page;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -52,6 +53,7 @@ import com.cw.audio7.util.preferences.Pref;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 import pl.droidsonroids.gif.GifDrawable;
 import pl.droidsonroids.gif.GifImageView;
@@ -395,10 +397,19 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
                 if(position < count)
                 {
                     // apply Note class
-                    Intent intent;
-                    intent = new Intent(mAct, Note.class);
-                    intent.putExtra("POSITION", position);
-                    mAct.startActivity(intent);
+//                    Intent intent;
+//                    intent = new Intent(mAct, Note.class);
+//                    intent.putExtra("POSITION", position);
+//                    mAct.startActivity(intent);
+
+                    Note noteFragment = new Note();
+                    final Bundle args = new Bundle();
+                    args.putInt("POSITION", position);
+                    noteFragment.setArguments(args);
+                    FragmentTransaction transaction = mAct.getSupportFragmentManager().beginTransaction();
+                    transaction.setCustomAnimations(R.anim.fragment_slide_in_left, R.anim.fragment_slide_out_left, R.anim.fragment_slide_in_right, R.anim.fragment_slide_out_right);
+                    transaction.replace(R.id.content_frame, noteFragment, "note").addToBackStack(null).commit();
+
                 }
             }
         });

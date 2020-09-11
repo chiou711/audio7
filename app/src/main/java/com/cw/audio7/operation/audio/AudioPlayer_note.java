@@ -121,7 +121,7 @@ public class AudioPlayer_note
 	{   @Override
 		public void run()
 		{
-//			System.out.println("AudioPlayer_note / mRunOneTimeMode");
+			System.out.println("AudioPlayer_note / mRunOneTimeMode");
             if(!Audio_manager.isRunnableOn_note)
             {
                 System.out.println("AudioPlayer_note / mRunOneTimeMode / Audio_manager.isRunnableOn_note = " + Audio_manager.isRunnableOn_note);
@@ -158,7 +158,7 @@ public class AudioPlayer_note
 				    mAudioHandler = null;
 			    }
 
-			    AudioUi_note.updateAudioProgress(act);
+			    AudioUi_note.updateAudioProgress();
 
 			    if(mAudioHandler != null)
 					mAudioHandler.postDelayed(mRunOneTimeMode,DURATION_1S);

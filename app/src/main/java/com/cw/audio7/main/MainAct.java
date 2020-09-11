@@ -553,7 +553,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
     @Override
     protected void onResume() {
         super.onResume();
-//    	System.out.println("MainAct / _onResume");
+    	System.out.println("MainAct / _onResume");
         mAct = this;
 
         // Sync the toggle state after onRestoreInstanceState has occurred.
@@ -591,7 +591,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
             for (int i = 0; i < dB_drawer.getFoldersCount(false); i++) {
                 if (dB_drawer.getFolderTableId(i, false) == Pref.getPref_focusView_folder_tableId(this)) {
                     FolderUi.setFocus_folderPos(i);
-                    System.out.println("MainAct / _mainAction / FolderUi.getFocus_folderPos() = " + FolderUi.getFocus_folderPos());
+                    System.out.println("MainAct / _onResume / FolderUi.getFocus_folderPos() = " + FolderUi.getFocus_folderPos());
                 }
             }
             dB_drawer.close();
@@ -672,7 +672,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
     // open folder
     public static void openFolder()
     {
-//        System.out.println("MainAct / _openFolder");
+        System.out.println("MainAct / _openFolder");
 
         DB_drawer dB_drawer = new DB_drawer(mAct);
         int folders_count = dB_drawer.getFoldersCount(true);
@@ -702,15 +702,12 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
     protected void onDestroy()
     {
         System.out.println("MainAct / onDestroy");
-
         if(bluetooth_device_receiver != null)
         {
-            try
-            {
+            try {
                 unregisterReceiver(bluetooth_device_receiver);
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
+                e.printStackTrace();
             }
             bluetooth_device_receiver = null;
         }
@@ -740,14 +737,16 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
         super.onConfigurationChanged(newConfig);
         System.out.println("MainAct / _onConfigurationChanged");
 
+        // keep fragment when Rotation
+        if(mFragmentManager.getBackStackEntryCount() != 0)
+            return;
+
         configLayoutView();
 
         // Pass any configuration change to the drawer toggles
         drawer.drawerToggle.onConfigurationChanged(newConfig);
 
 		drawer.drawerToggle.syncState();
-
-        FolderUi.startTabsHostRun();
     }
 
 
@@ -798,16 +797,16 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
     @Override
     public void onBackStackChanged() {
         int backStackEntryCount = mFragmentManager.getBackStackEntryCount();
-//        System.out.println("MainAct+ / _onBackStackChanged / backStackEntryCount = " + backStackEntryCount);
+        System.out.println("MainAct / _onBackStackChanged / backStackEntryCount = " + backStackEntryCount);
 
         if(backStackEntryCount == 1) // fragment
         {
-//            System.out.println("MainAct / _onBackStackChanged / fragment");
+            System.out.println("MainAct / _onBackStackChanged / fragment");
             initActionBar_home();
         }
         else if(backStackEntryCount == 0) // init
         {
-//            System.out.println("MainAct / _onBackStackChanged / init");
+            System.out.println("MainAct / _onBackStackChanged / init");
             onBackPressedListener = null;
 
             if(mFolder.adapter!=null)
@@ -816,6 +815,15 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
             configLayoutView();
 
             drawer.drawerToggle.syncState(); // make sure toggle icon state is correct
+
+            // stop audio play at Note
+            if(Audio_manager.isRunnableOn_note) {
+                BackgroundAudioService.mIsPrepared = false;
+                BackgroundAudioService.mMediaPlayer = null;
+                Audio_manager.isRunnableOn_note = false;
+
+                Audio_manager.stopAudioPlayer();
+            }
         }
     }
 
@@ -847,8 +855,12 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
     public boolean onPrepareOptionsMenu(android.view.Menu menu) {
         System.out.println("MainAct / _onPrepareOptionsMenu");
 
-        if((drawer == null) || (drawer.drawerLayout == null) || (!bEULA_accepted))
+        if( (drawer == null) ||
+            (Drawer.drawerLayout == null) ||
+            (!bEULA_accepted) ||
+            (mFragmentManager.getBackStackEntryCount() != 0) ) {
             return false;
+        }
 
         DB_drawer db_drawer = new DB_drawer(this);
         int foldersCnt = db_drawer.getFoldersCount(true);

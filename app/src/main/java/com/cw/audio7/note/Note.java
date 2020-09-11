@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 CW Chiu
+ * Copyright (C) 2020 CW Chiu
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,7 +32,6 @@ import com.cw.audio7.util.Util;
 
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -40,23 +39,23 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.media.MediaBrowserCompat;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
-public class Note extends AppCompatActivity
+public class Note extends Fragment
 {
     /**
      * The pager widget, which handles animation and allows swiping horizontally to access previous
@@ -84,101 +83,63 @@ public class Note extends AppCompatActivity
     public AppCompatActivity act;
     public AudioUi_note audioUi_note;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) 
-    {
-        super.onCreate(savedInstanceState);
-        System.out.println("Note / _onCreate");
-
-		// set current selection
-		mEntryPosition = getIntent().getExtras().getInt("POSITION");
+	@Override
+	public void onCreate(@Nullable Bundle savedInstanceState) {
+		System.out.println("Note/ _onCreate");
+		super.onCreate(savedInstanceState);
+		Bundle arguments = getArguments();
+		mEntryPosition = arguments.getInt("POSITION");
 		NoteUi.setFocus_notePos(mEntryPosition);
 
 		Audio_manager.isRunnableOn_note = false;
 
-		act = this;
-
-	} //onCreate end
-
-	@Override
-	public void onWindowFocusChanged(boolean hasFocus) {
-		super.onWindowFocusChanged(hasFocus);
-		System.out.println("Note / _onWindowFocusChanged");
+		act = MainAct.mAct;
+		setHasOptionsMenu(true);
 	}
 
-	// key event: 1 from bluetooth device 2 when notification bar dose not shown
+	public static View rootView;
 	@Override
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		int newPos;
-		System.out.println("Note / _onKeyDown / keyCode = " + keyCode);
-		switch (keyCode) {
-			case KeyEvent.KEYCODE_MEDIA_PREVIOUS: //88
-				if(viewPager.getCurrentItem() == 0)
-                    newPos = mPagerAdapter.getCount() - 1;//back to last one
-				else
-					newPos = NoteUi.getFocus_notePos()-1;
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		if(Util.isLandscapeOrientation(act))
+			rootView = inflater.inflate(R.layout.note_view_landscape, container, false);
+		else
+			rootView = inflater.inflate(R.layout.note_view_portrait, container, false);
 
-				NoteUi.setFocus_notePos(newPos);
-				viewPager.setCurrentItem(newPos);
-
-				BackgroundAudioService.mIsPrepared = false;
-				BackgroundAudioService.mMediaPlayer = null;
-				Audio_manager.isRunnableOn_page = false;
-				return true;
-
-			case KeyEvent.KEYCODE_MEDIA_NEXT: //87
-				if(viewPager.getCurrentItem() == (mPagerAdapter.getCount() - 1))
-					newPos = 0;
-				else
-					newPos = NoteUi.getFocus_notePos() + 1;
-
-				NoteUi.setFocus_notePos(newPos);
-				viewPager.setCurrentItem(newPos);
-
-				BackgroundAudioService.mIsPrepared = false;
-				BackgroundAudioService.mMediaPlayer = null;
-				Audio_manager.isRunnableOn_page = false;
-				return true;
-
-			case KeyEvent.KEYCODE_MEDIA_PLAY: //126
-			case KeyEvent.KEYCODE_MEDIA_PAUSE: //127
-				AudioUi_note.mPager_audio_play_button.performClick();
-				return true;
-
-			case KeyEvent.KEYCODE_BACK:
-                onBackPressed();
-				return true;
-
-			case KeyEvent.KEYCODE_MEDIA_FAST_FORWARD:
-				return true;
-
-			case KeyEvent.KEYCODE_MEDIA_REWIND:
-				return true;
-
-			case KeyEvent.KEYCODE_MEDIA_STOP:
-				return true;
-		}
-		return false;
+		return rootView;
 	}
 
+	Menu mMenu;
+	@Override
+	public void onCreateOptionsMenu( Menu menu, MenuInflater inflater) {
+		System.out.println("Note / _onCreateOptionsMenu");
+		menu.clear();
 
+		inflater.inflate(R.menu.pager_menu, menu);
+		mMenu = menu;
+
+		// menu item: checked status
+		// get checked or not
+		int isChecked = mDb_page.getNoteMarking(NoteUi.getFocus_notePos(),true);
+		if( isChecked == 0)
+			menu.findItem(R.id.VIEW_NOTE_CHECK).setIcon(R.drawable.btn_check_off_holo_dark);
+		else
+			menu.findItem(R.id.VIEW_NOTE_CHECK).setIcon(R.drawable.btn_check_on_holo_dark);
+
+
+		super.onCreateOptionsMenu(menu, inflater);
+	}
+
+	@Override
+	public void onPrepareOptionsMenu(Menu menu) {
+		mMenu.findItem(R.id.VIEW_NOTE_CHECK).setVisible(true);
+		super.onPrepareOptionsMenu(menu);
+	}
 
 	void setLayoutView()
 	{
         System.out.println("Note / _setLayoutView");
 
-		if(Util.isLandscapeOrientation(this))
-			setContentView(R.layout.note_view_landscape);
-		else
-			setContentView(R.layout.note_view_portrait);
-
-		Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
-		setSupportActionBar(mToolbar);
-		if (getSupportActionBar() != null) {
-			getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-		}
-
-		mPref_show_note_attribute = getSharedPreferences("show_note_attribute", 0);
+		mPref_show_note_attribute = act.getSharedPreferences("show_note_attribute", 0);
 
 		UilCommon.init();
 
@@ -189,8 +150,8 @@ public class Note extends AppCompatActivity
 		mDb_page = new DB_page(act, TabsHost.getCurrentPageTableId());
 
 		// Instantiate a ViewPager and a PagerAdapter.
-		viewPager = (ViewPager) findViewById(R.id.tabs_pager);
-		mPagerAdapter = new Note_adapter(viewPager,this);
+		viewPager = (ViewPager) rootView.findViewById(R.id.tabs_pager);
+		mPagerAdapter = new Note_adapter(viewPager,act);
 		viewPager.setAdapter(mPagerAdapter);
 		viewPager.setCurrentItem(NoteUi.getFocus_notePos());
 
@@ -201,7 +162,7 @@ public class Note extends AppCompatActivity
 
         if(UtilAudio.hasAudioExtension(mAudioUriInDB) ||
 		   UtilAudio.hasAudioExtension(Util.getDisplayNameByUriString(mAudioUriInDB, act)[0])) {
-            audioUi_note = new AudioUi_note(this, mAudioUriInDB);
+            audioUi_note = new AudioUi_note(act, mAudioUriInDB);
             audioUi_note.init_audio_block();
         }
 
@@ -218,8 +179,10 @@ public class Note extends AppCompatActivity
 		@Override
 		public void onPageSelected(int nextPosition)
 		{
-			if(Audio_manager.getAudioPlayMode()  == Audio_manager.NOTE_PLAY_MODE)
-                Audio_manager.stopAudioPlayer();
+			if(Audio_manager.getAudioPlayMode()  == Audio_manager.NOTE_PLAY_MODE) {
+				System.out.println("Note / onPageSelected / stop audio" );
+				Audio_manager.stopAudioPlayer();
+			}
 
 			NoteUi.setFocus_notePos(viewPager.getCurrentItem());
 			System.out.println("Note / _onPageSelected");
@@ -233,7 +196,7 @@ public class Note extends AppCompatActivity
 			System.out.println("Note / _onPageSelected / mAudioUriInDB = " + mAudioUriInDB);
 
 			if(UtilAudio.hasAudioExtension(mAudioUriInDB)) {
-                audioUi_note = new AudioUi_note(Note.this, mAudioUriInDB);
+                audioUi_note = new AudioUi_note(act, mAudioUriInDB);
                 audioUi_note.init_audio_block();
                 audioUi_note.showAudioBlock();
             }
@@ -260,11 +223,7 @@ public class Note extends AppCompatActivity
 			stopNoteAudio();
         }
 
-	    // check if there is one note at least in the pager
-		if( viewPager.getAdapter().getCount() > 0 )
-			setOutline(act);
-		else
-			finish();
+		getActivity().recreate();
 	}
 
     /** Set outline for selected view mode
@@ -283,7 +242,7 @@ public class Note extends AppCompatActivity
         // renew pager
         showSelectedView();
 
-		TextView audioTitle = (TextView) act.findViewById(R.id.pager_audio_title);
+		TextView audioTitle = (TextView) rootView.findViewById(R.id.pager_audio_title);
         // audio title
         if(!Util.isEmptyString(audioTitle.getText().toString()) )
             audioTitle.setVisibility(View.VISIBLE);
@@ -299,29 +258,16 @@ public class Note extends AppCompatActivity
 	    super.onConfigurationChanged(newConfig);
 	    System.out.println("Note / _onConfigurationChanged");
 
-		// dismiss popup menu
-		if(NoteUi.popup != null)
-		{
-			NoteUi.popup.dismiss();
-			NoteUi.popup = null;
-		}
-
-        setLayoutView();
-
-        Note.setViewAllMode();
-
-        // Set outline of view mode
-        setOutline(act);
+	    // restart current fragment to apply orientation change
+		getFragmentManager()
+				.beginTransaction()
+				.detach(Note.this)
+				.attach(Note.this)
+				.commit();
 	}
 
 	@Override
-	protected void onStart() {
-		super.onStart();
-		System.out.println("Note / _onStart");
-	}
-	
-	@Override
-	protected void onResume() {
+	public void onResume() {
 		super.onResume();
 		System.out.println("Note / _onResume");
 
@@ -337,12 +283,12 @@ public class Note extends AppCompatActivity
 		if(Build.VERSION.SDK_INT < 21)
 		{
 			IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_ACL_CONNECTED);
-			this.registerReceiver(mReceiver, filter);
+			act.registerReceiver(mReceiver, filter);
 		}
 	}
 	
 	@Override
-	protected void onPause() {
+	public void onPause() {
 		super.onPause();
 		System.out.println("Note / _onPause");
 
@@ -350,13 +296,7 @@ public class Note extends AppCompatActivity
 	}
 	
 	@Override
-	protected void onStop() {
-		super.onStop();
-		System.out.println("Note / _onStop");
-	}
-	
-	@Override
-	protected void onDestroy() {
+	public void onDestroy() {
 		super.onDestroy();
 		System.out.println("Note / _onDestroy");
 
@@ -367,63 +307,16 @@ public class Note extends AppCompatActivity
 		}
 	}
 
-	// avoid exception: has leaked window android.widget.ZoomButtonsController
-	@Override
-	public void finish() {
-		System.out.println("Note / _finish");
-
-		ViewGroup view = (ViewGroup) getWindow().getDecorView();
-	    view.setBackgroundColor(getResources().getColor(R.color.bar_color)); // avoid white flash
-	    view.removeAllViews();
-
-		super.finish();
-	}
-	
-	@Override
-	protected void onSaveInstanceState(Bundle outState) {
-		super.onSaveInstanceState(outState);
-		System.out.println("Note / _onSaveInstanceState");
-	}
-
-	Menu mMenu;
-	// On Create Options Menu
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) 
-    {
-        super.onCreateOptionsMenu(menu);
-
-		// inflate menu
-		getMenuInflater().inflate(R.menu.pager_menu, menu);
-		mMenu = menu;
-
-		// menu item: checked status
-		// get checked or not
-		int isChecked = mDb_page.getNoteMarking(NoteUi.getFocus_notePos(),true);
-		if( isChecked == 0)
-			menu.findItem(R.id.VIEW_NOTE_CHECK).setIcon(R.drawable.btn_check_off_holo_dark);
-		else
-			menu.findItem(R.id.VIEW_NOTE_CHECK).setIcon(R.drawable.btn_check_on_holo_dark);
-
-        return true;
-    }
-    
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-    	// called after _onCreateOptionsMenu
-        return true;
-    }  
-    
     // for menu buttons
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
 				stopNoteAudio();
-                finish();
                 return true;
 
 	        case R.id.VIEW_NOTE_CHECK:
-		        int markingNow = PageAdapter_recycler.toggleNoteMarking(this,NoteUi.getFocus_notePos());
+		        int markingNow = PageAdapter_recycler.toggleNoteMarking(act,NoteUi.getFocus_notePos());
 
 		        // update marking
 		        if(markingNow == 1)
@@ -433,7 +326,7 @@ public class Note extends AppCompatActivity
 		        return true;
 
 	        case R.id.VIEW_NOTE_EDIT:
-		        Intent intent = new Intent(Note.this, Note_edit.class);
+		        Intent intent = new Intent(act, Note_edit.class);
 		        intent.putExtra(DB_page.KEY_NOTE_ID, mNoteId);
 		        intent.putExtra(DB_page.KEY_NOTE_TITLE, mDb_page.getNoteTitle_byId(mNoteId));
 		        intent.putExtra(DB_page.KEY_NOTE_AUDIO_URI , mDb_page.getNoteAudioUri_byId(mNoteId));
@@ -445,14 +338,6 @@ public class Note extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-    // on back pressed
-    @Override
-    public void onBackPressed() {
-		System.out.println("Note / _onBackPressed");
-		stopNoteAudio();
-        finish();
-    }
-    
     // Show selected view
     static void showSelectedView()
     {
@@ -485,7 +370,7 @@ public class Note extends AppCompatActivity
 
 			if (BluetoothDevice.ACTION_ACL_CONNECTED.equals(action)) {
 				//Device is now connected
-				Toast.makeText(getApplicationContext(), "ACTION_ACL_CONNECTED: device is " + device, Toast.LENGTH_LONG).show();
+				Toast.makeText(act.getApplicationContext(), "ACTION_ACL_CONNECTED: device is " + device, Toast.LENGTH_LONG).show();
 			}
 
 			Intent intentReceive = intent;
@@ -494,5 +379,60 @@ public class Note extends AppCompatActivity
 				onKeyDown( keyEvent.getKeyCode(),keyEvent);
 		}
 	};
+
+	// key event: 1 from bluetooth device 2 when notification bar dose not shown
+//	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		int newPos;
+		System.out.println("Note / _onKeyDown / keyCode = " + keyCode);
+		switch (keyCode) {
+			case KeyEvent.KEYCODE_MEDIA_PREVIOUS: //88
+				if(viewPager.getCurrentItem() == 0)
+					newPos = mPagerAdapter.getCount() - 1;//back to last one
+				else
+					newPos = NoteUi.getFocus_notePos()-1;
+
+				NoteUi.setFocus_notePos(newPos);
+				viewPager.setCurrentItem(newPos);
+
+				BackgroundAudioService.mIsPrepared = false;
+				BackgroundAudioService.mMediaPlayer = null;
+				Audio_manager.isRunnableOn_page = false;
+				return true;
+
+			case KeyEvent.KEYCODE_MEDIA_NEXT: //87
+				if(viewPager.getCurrentItem() == (mPagerAdapter.getCount() - 1))
+					newPos = 0;
+				else
+					newPos = NoteUi.getFocus_notePos() + 1;
+
+				NoteUi.setFocus_notePos(newPos);
+				viewPager.setCurrentItem(newPos);
+
+				BackgroundAudioService.mIsPrepared = false;
+				BackgroundAudioService.mMediaPlayer = null;
+				Audio_manager.isRunnableOn_page = false;
+				return true;
+
+			case KeyEvent.KEYCODE_MEDIA_PLAY: //126
+			case KeyEvent.KEYCODE_MEDIA_PAUSE: //127
+				AudioUi_note.mPager_audio_play_button.performClick();
+				return true;
+
+			case KeyEvent.KEYCODE_BACK:
+//                onBackPressed();
+				return true;
+
+			case KeyEvent.KEYCODE_MEDIA_FAST_FORWARD:
+				return true;
+
+			case KeyEvent.KEYCODE_MEDIA_REWIND:
+				return true;
+
+			case KeyEvent.KEYCODE_MEDIA_STOP:
+				return true;
+		}
+		return false;
+	}
 
 }
