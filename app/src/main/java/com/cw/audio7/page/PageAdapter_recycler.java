@@ -407,9 +407,9 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
                     args.putInt("POSITION", position);
                     noteFragment.setArguments(args);
                     FragmentTransaction transaction = mAct.getSupportFragmentManager().beginTransaction();
-                    transaction.setCustomAnimations(R.anim.fragment_slide_in_left, R.anim.fragment_slide_out_left, R.anim.fragment_slide_in_right, R.anim.fragment_slide_out_right);
-                    transaction.replace(R.id.content_frame, noteFragment, "note").addToBackStack(null).commit();
-
+//                    transaction.setCustomAnimations(R.anim.fragment_slide_in_left, R.anim.fragment_slide_out_left, R.anim.fragment_slide_in_right, R.anim.fragment_slide_out_right);
+                    transaction.setCustomAnimations(R.anim.fragment_slide_up, R.anim.fragment_slide_down, R.anim.fragment_slide_up, R.anim.fragment_slide_down);
+                    transaction.replace(R.id.content_frame, noteFragment, "note").addToBackStack("note").commit();
                 }
             }
         });

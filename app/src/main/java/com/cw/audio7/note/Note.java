@@ -125,7 +125,6 @@ public class Note extends Fragment
 		else
 			menu.findItem(R.id.VIEW_NOTE_CHECK).setIcon(R.drawable.btn_check_on_holo_dark);
 
-
 		super.onCreateOptionsMenu(menu, inflater);
 	}
 
