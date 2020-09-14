@@ -79,7 +79,7 @@ public class Audio_manager
      */
     public static void stopAudioPlayer()
     {
-        System.out.println("Audio_manager / _stopAudio");
+        System.out.println("Audio_manager / _stopAudioPlayer");
 
         // stop media player
         if(BackgroundAudioService.mMediaPlayer != null) {

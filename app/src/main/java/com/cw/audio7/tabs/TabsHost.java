@@ -411,7 +411,7 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
 
         //  Remove fragments
         if(!MainAct.mAct.isDestroyed())
-            removeTabs();//Put here will solve onBackStackChanged issue (no Page_recycler / _onCreate)
+            removePages();//Put here will solve onBackStackChanged issue (no Page_recycler / _onCreate)
 
         if (adView != null) {
             adView.pause();
@@ -743,9 +743,9 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
     }
 
 
-    public static void removeTabs()
+    public static void removePages()
     {
-//        System.out.println("TabsHost / _removeTabs");
+//        System.out.println("TabsHost / _removePages");
     	if(TabsHost.mTabsPagerAdapter == null)
     		return;
 

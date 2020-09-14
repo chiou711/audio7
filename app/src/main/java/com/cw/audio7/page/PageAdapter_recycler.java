@@ -402,12 +402,15 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
 //                    intent.putExtra("POSITION", position);
 //                    mAct.startActivity(intent);
 
+                    // hide the tab layout
+                    TabsHost.mTabLayout.setVisibility(View.GONE);
+                    mAct.getSupportFragmentManager().findFragmentById(R.id.content_frame).getView().setBackgroundColor(ColorSet.color_black);
+
                     Note noteFragment = new Note();
                     final Bundle args = new Bundle();
                     args.putInt("POSITION", position);
                     noteFragment.setArguments(args);
                     FragmentTransaction transaction = mAct.getSupportFragmentManager().beginTransaction();
-//                    transaction.setCustomAnimations(R.anim.fragment_slide_in_left, R.anim.fragment_slide_out_left, R.anim.fragment_slide_in_right, R.anim.fragment_slide_out_right);
                     transaction.setCustomAnimations(R.anim.fragment_slide_up, R.anim.fragment_slide_down, R.anim.fragment_slide_up, R.anim.fragment_slide_down);
                     transaction.replace(R.id.content_frame, noteFragment, "note").addToBackStack("note").commit();
                 }

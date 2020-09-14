@@ -817,13 +817,8 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
             drawer.drawerToggle.syncState(); // make sure toggle icon state is correct
 
             // stop audio play at Note
-            if(Audio_manager.isRunnableOn_note) {
-                BackgroundAudioService.mIsPrepared = false;
-                BackgroundAudioService.mMediaPlayer = null;
-                Audio_manager.isRunnableOn_note = false;
-
+            if(Audio_manager.isRunnableOn_note)
                 Audio_manager.stopAudioPlayer();
-            }
         }
     }
 

@@ -294,7 +294,7 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
         super.onCreate();
         if(enDbgMsg)
             System.out.println("BackgroundAudioService / _onCreate");
-        initMediaPlayer();
+//        initMediaPlayer();
         initMediaSession();
         initNoisyReceiver();
     }
