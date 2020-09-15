@@ -54,12 +54,13 @@ import androidx.viewpager.widget.ViewPager;
 public class Note_adapter extends FragmentStatePagerAdapter
 {
 	static int mLastPosition;
-	private static LayoutInflater inflater;
+	private LayoutInflater inflater;
 	private AppCompatActivity act;
 	private ViewPager pager;
 	DB_page db_page;
+	AudioUi_note audioUi_note;
 
-    public Note_adapter(ViewPager viewPager, AppCompatActivity activity)
+    public Note_adapter(ViewPager viewPager, AudioUi_note ui,AppCompatActivity activity)
     {
     	super(activity.getSupportFragmentManager());
 		pager = viewPager;
@@ -67,6 +68,7 @@ public class Note_adapter extends FragmentStatePagerAdapter
         inflater = act.getLayoutInflater();
         mLastPosition = -1;
 	    db_page = new DB_page(act, TabsHost.getCurrentPageTableId());
+	    audioUi_note = ui;
         System.out.println("Note_adapter / constructor / mLastPosition = " + mLastPosition);
     }
     
@@ -245,15 +247,15 @@ public class Note_adapter extends FragmentStatePagerAdapter
 			if(UtilAudio.hasAudioExtension(audioUri) ||
                UtilAudio.hasAudioExtension(Util.getDisplayNameByUriString(audioUri, act)[0] ))
 			{
-				AudioUi_note.initAudioProgress(act,audioUri);
+				audioUi_note.initAudioProgress(act,audioUri);
 
 				if(Audio_manager.getAudioPlayMode() == Audio_manager.NOTE_PLAY_MODE)
 				{
 					if (Audio_manager.getPlayerState() != Audio_manager.PLAYER_AT_STOP)
-						AudioUi_note.updateAudioProgress();
+						audioUi_note.updateAudioProgress();
 				}
 
-				AudioUi_note.updateAudioPlayState(act);
+				audioUi_note.updateAudioPlayState(act);
 			}
 			else
 				audioBlock.setVisibility(View.GONE);

@@ -97,7 +97,7 @@ public class Note extends Fragment
 		setHasOptionsMenu(true);
 	}
 
-	public static View rootView;
+	public View rootView;
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		if(Util.isLandscapeOrientation(act))
@@ -148,23 +148,22 @@ public class Note extends Fragment
 
 		mDb_page = new DB_page(act, TabsHost.getCurrentPageTableId());
 
-		// Instantiate a ViewPager and a PagerAdapter.
-		viewPager = (ViewPager) rootView.findViewById(R.id.tabs_pager);
-		mPagerAdapter = new Note_adapter(viewPager,act);
-		viewPager.setAdapter(mPagerAdapter);
-		viewPager.setCurrentItem(NoteUi.getFocus_notePos());
-
 		if(mDb_page != null) {
 			mNoteId = mDb_page.getNoteId(NoteUi.getFocus_notePos(), true);
 			mAudioUriInDB = mDb_page.getNoteAudioUri_byId(mNoteId);
 		}
 
-        if(UtilAudio.hasAudioExtension(mAudioUriInDB) ||
-		   UtilAudio.hasAudioExtension(Util.getDisplayNameByUriString(mAudioUriInDB, act)[0])) {
-            audioUi_note = new AudioUi_note(act, mAudioUriInDB);
-            audioUi_note.init_audio_block();
-        }
+		if(UtilAudio.hasAudioExtension(mAudioUriInDB) ||
+				UtilAudio.hasAudioExtension(Util.getDisplayNameByUriString(mAudioUriInDB, act)[0])) {
+			audioUi_note = new AudioUi_note(act, mAudioUriInDB,rootView);
+			audioUi_note.init_audio_block();
+		}
 
+		// Instantiate a ViewPager and a PagerAdapter.
+		viewPager = (ViewPager) rootView.findViewById(R.id.tabs_pager);
+		mPagerAdapter = new Note_adapter(viewPager,audioUi_note,act);
+		viewPager.setAdapter(mPagerAdapter);
+		viewPager.setCurrentItem(NoteUi.getFocus_notePos());
 
 		// Note: if viewPager.getCurrentItem() is not equal to mEntryPosition, _onPageSelected will
 		//       be called again after rotation
@@ -195,7 +194,7 @@ public class Note extends Fragment
 			System.out.println("Note / _onPageSelected / mAudioUriInDB = " + mAudioUriInDB);
 
 			if(UtilAudio.hasAudioExtension(mAudioUriInDB)) {
-                audioUi_note = new AudioUi_note(act, mAudioUriInDB);
+                audioUi_note = new AudioUi_note(act, mAudioUriInDB,rootView);
                 audioUi_note.init_audio_block();
                 audioUi_note.showAudioBlock();
             }
@@ -231,7 +230,7 @@ public class Note extends Fragment
     *   - action bar: hide, show
     *   - full screen: full, not full
     */
-	public static void setOutline(AppCompatActivity act)
+	public void setOutline(AppCompatActivity act)
 	{
         // Set full screen or not, and action bar
 		Util.setFullScreen_noImmersive(act);

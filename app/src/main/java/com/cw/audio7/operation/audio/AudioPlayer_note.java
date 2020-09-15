@@ -45,9 +45,11 @@ public class AudioPlayer_note
     private AppCompatActivity act;
     private Async_audioUrlVerify mAudioUrlVerifyTask;
     static Handler mAudioHandler; // used to update the slide show
+	AudioUi_note audioUi_note;
 
-    public AudioPlayer_note(AppCompatActivity act){
+    public AudioPlayer_note(AppCompatActivity act, AudioUi_note ui){
         this.act = act;
+	    audioUi_note = ui;
 
 		// start a new handler
 		mAudioHandler = new Handler();
@@ -152,13 +154,13 @@ public class AudioPlayer_note
 	   		{
 			    if(BackgroundAudioService.mIsCompleted) {
 				    Audio_manager.setPlayerState(Audio_manager.PLAYER_AT_STOP);
-				    AudioUi_note.updateAudioPlayState(act);
+				    audioUi_note.updateAudioPlayState(act);
 				    if(mAudioHandler != null)
 					    mAudioHandler.removeCallbacks(mRunOneTimeMode);
 				    mAudioHandler = null;
 			    }
 
-			    AudioUi_note.updateAudioProgress();
+			    audioUi_note.updateAudioProgress();
 
 			    if(mAudioHandler != null)
 					mAudioHandler.postDelayed(mRunOneTimeMode,DURATION_1S);
@@ -225,7 +227,7 @@ public class AudioPlayer_note
                         else
                             BackgroundAudioService.mMediaPlayer.seekTo(AudioUi_note.mAnchorPosition);
 
-                        AudioUi_note.updateAudioPlayState(act);
+	                    audioUi_note.updateAudioPlayState(act);
                     }
                 }
             }
@@ -245,8 +247,8 @@ public class AudioPlayer_note
             if(Audio_manager.getAudioPlayMode() == Audio_manager.NOTE_PLAY_MODE) // one time mode
             {
                     Audio_manager.stopAudioPlayer();
-                    AudioUi_note.initAudioProgress(act, Note.mAudioUriInDB);
-                    AudioUi_note.updateAudioPlayState(act);
+	                audioUi_note.initAudioProgress(act, Note.mAudioUriInDB);
+	                audioUi_note.updateAudioPlayState(act);
             }
         }
         });
