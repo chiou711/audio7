@@ -44,12 +44,52 @@ public class Audio_manager
     public static boolean isRunnableOn_page;
     public static int mAudioPos; // index of current media to play
 
+	// control buttons
+	public static boolean playPrevious;
+	public static boolean playNext;
 
-    // constructor
+	public static boolean togglePlayerState;
+
+	// get play previous
+	public static boolean isPlayPrevious() {
+		return playPrevious;
+	}
+
+	// set play previous
+	public static void setPlayPrevious(boolean playPrevious) {
+		Audio_manager.playPrevious = playPrevious;
+	}
+
+	// get play next
+	public static boolean isPlayNext() {
+		return playNext;
+	}
+
+	// set play next
+	public static void setPlayNext(boolean playNext) {
+		Audio_manager.playNext = playNext;
+	}
+
+	// get toggle player state
+	public static boolean isTogglePlayerState() {
+		return togglePlayerState;
+	}
+
+	// set toggle player state
+	public static void setTogglePlayerState(boolean togglePlayerState) {
+		Audio_manager.togglePlayerState = togglePlayerState;
+	}
+
+	// constructor
     Audio_manager()
     {
         audioList = new ArrayList<>();
 	    audioList_checked = new ArrayList<>();
+
+	    // init
+	    setPlayPrevious(false);
+	    setTogglePlayerState(false);
+	    setPlayNext(false);
     }
 
     /**

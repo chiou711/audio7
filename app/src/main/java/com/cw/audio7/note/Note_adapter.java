@@ -263,7 +263,7 @@ public class Note_adapter extends FragmentStatePagerAdapter
 			//auto play
 			System.out.println("Note_adapter / _setPrimaryItem / auto play ");
 			if(Audio_manager.getPlayerState() == Audio_manager.PLAYER_AT_STOP)
-				AudioUi_note.mPager_audio_play_button.performClick();
+				audioUi_note.mPager_audio_play_button.performClick(); // todo This is the best way?
 		}
 	    mLastPosition = position;
 	    

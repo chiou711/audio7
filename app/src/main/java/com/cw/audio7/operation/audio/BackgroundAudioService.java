@@ -97,7 +97,7 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
             TabsHost.getCurrentPage().itemAdapter.notifyDataSetChanged();
         }
         else
-            AudioUi_note.mPager_audio_play_button.setImageResource(R.drawable.ic_media_pause);
+            Audio_manager.setTogglePlayerState(true);
     }
 
     // do audio pause
@@ -118,15 +118,10 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
         //update audio panel button in Page view
         if(Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE)
             UtilAudio.updateAudioPanel(TabsHost.audioUi_page.audioPanel_play_button,TabsHost.audioUi_page.audio_panel_title_textView);
-
         //update audio play button in Note view
-        if( (AudioUi_note.mPager_audio_play_button != null) &&
-                AudioUi_note.mPager_audio_play_button.isShown()    )
-        {
-            AudioUi_note.mPager_audio_play_button.setImageResource(R.drawable.ic_media_play);
-        }
+        else if(Audio_manager.getAudioPlayMode() == Audio_manager.NOTE_PLAY_MODE)
+            Audio_manager.setTogglePlayerState(true);
     }
-
 
     private MediaSessionCompat.Callback mMediaSessionCallback = new MediaSessionCompat.Callback() {
 
@@ -141,7 +136,7 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
             if(Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE)
                 TabsHost.audioUi_page.audioPanel_next_btn.performClick();
             else
-                AudioUi_note.audioPanel_next_btn.performClick();
+                Audio_manager.setPlayNext(true);
         }
 
         @Override
@@ -155,7 +150,7 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
             if(Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE)
                 TabsHost.audioUi_page.audioPanel_previous_btn.performClick();
             else
-                AudioUi_note.audioPanel_previous_btn.performClick();
+                Audio_manager.setPlayPrevious(true);
         }
 
         @Override

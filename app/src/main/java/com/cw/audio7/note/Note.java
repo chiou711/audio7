@@ -414,7 +414,7 @@ public class Note extends Fragment
 
 			case KeyEvent.KEYCODE_MEDIA_PLAY: //126
 			case KeyEvent.KEYCODE_MEDIA_PAUSE: //127
-				AudioUi_note.mPager_audio_play_button.performClick();
+				audioUi_note.mPager_audio_play_button.performClick();
 				return true;
 
 			case KeyEvent.KEYCODE_BACK:

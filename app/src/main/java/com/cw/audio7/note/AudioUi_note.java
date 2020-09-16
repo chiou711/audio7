@@ -52,8 +52,8 @@ public class AudioUi_note
     TextView audio_title;
     private ViewGroup audioBlock;
     private String mAudioUriInDB;
-    public static ImageView audioPanel_next_btn;//todo How to remove static?
-    public static ImageView audioPanel_previous_btn;//todo How to remove static?
+    public ImageView audioPanel_next_btn;
+    public ImageView audioPanel_previous_btn;
     View rootView;
 
     // constructor
@@ -191,7 +191,7 @@ public class AudioUi_note
     }
 
     // Set audio block
-    public static ImageView mPager_audio_play_button;
+    public ImageView mPager_audio_play_button;
     private static int mProgress;
     private static int mediaFileLength; // this value contains the song duration in milliseconds. Look at getDuration() method in MediaPlayer class
 
@@ -289,9 +289,12 @@ public class AudioUi_note
         });
     }
 
+    AudioPlayer_note audioPlayer_note;
     //  play audio in pager
     private void playAudioInPager(AppCompatActivity act, String audioStr)
     {
+        System.out.println("AudioUi_note / _playAudioInPager");
+
         if(Audio_manager.getAudioPlayMode()  == Audio_manager.PAGE_PLAY_MODE)
             Audio_manager.stopAudioPlayer();
 
@@ -306,9 +309,13 @@ public class AudioUi_note
             Audio_manager.setAudioPlayMode(Audio_manager.NOTE_PLAY_MODE);
 
             // new instance
-            AudioPlayer_note audioPlayer_note = new AudioPlayer_note(act,this);
-            audioPlayer_note.prepareAudioInfo();
-            audioPlayer_note.runAudioState();
+            if(audioPlayer_note == null) {
+                audioPlayer_note = new AudioPlayer_note(act, this);
+                audioPlayer_note.prepareAudioInfo();
+            }
+
+            if(audioPlayer_note != null)
+                audioPlayer_note.runAudioState();
 
             updateAudioPlayState(act);
         }
@@ -345,6 +352,7 @@ public class AudioUi_note
     // update audio play state
     public void updateAudioPlayState(AppCompatActivity act)
     {
+        System.out.println("AudioUi_note / _updateAudioPlayState");
         ImageView audio_play_btn = (ImageView) rootView.findViewById(R.id.pager_btn_audio_play);
 
         if(Audio_manager.getAudioPlayMode() != Audio_manager.NOTE_PLAY_MODE)

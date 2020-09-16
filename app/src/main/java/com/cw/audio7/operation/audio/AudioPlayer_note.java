@@ -34,7 +34,6 @@ import com.cw.audio7.note.NoteUi;
 import com.cw.audio7.util.Util;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.viewpager.widget.ViewPager;
 
 public class AudioPlayer_note
 {
@@ -58,10 +57,13 @@ public class AudioPlayer_note
     /**
      * prepare audio info
      */
-    public static void prepareAudioInfo()
+    public void prepareAudioInfo()
     {
-        mAudioManager = new Audio_manager();
-        mAudioManager.updateAudioInfo();
+    	if(mAudioManager == null)
+		    mAudioManager = new Audio_manager();
+
+    	if(mAudioManager != null)
+            mAudioManager.updateAudioInfo();
     }
 
 	/**
@@ -88,7 +90,6 @@ public class AudioPlayer_note
 			if(BackgroundAudioService.mMediaPlayer.isPlaying())
 			{
 				System.out.println("AudioPlayer_note / _runAudioState / play -> pause");
-				mAudioHandler.removeCallbacks(mRunOneTimeMode);
                 Audio_manager.setPlayerState(Audio_manager.PLAYER_AT_PAUSE);
 
 				//for pause
@@ -100,9 +101,6 @@ public class AudioPlayer_note
 			else // from pause to play
 			{
 				System.out.println("AudioPlayer_note / _runAudioState / pause -> play");
-
-				if(Audio_manager.getAudioPlayMode() == Audio_manager.NOTE_PLAY_MODE)
-					mAudioHandler.post(mRunOneTimeMode);
 
                 Audio_manager.setPlayerState(Audio_manager.PLAYER_AT_PLAY);
 
@@ -138,7 +136,7 @@ public class AudioPlayer_note
 	   			{
                     System.out.println("AudioPlayer_note / mRunOneTimeMode / Audio_manager.isRunnableOn_note = " + Audio_manager.isRunnableOn_note);
 
-				    // add for calling runnable
+				    // call runnable
 				    if (Audio_manager.getAudioPlayMode() == Audio_manager.NOTE_PLAY_MODE)
 					    mAudioHandler.postDelayed(mRunOneTimeMode, Util.oneSecond / 4);
 
@@ -150,22 +148,42 @@ public class AudioPlayer_note
    					Audio_manager.stopAudioPlayer();
 	   			}
 	   		}
-	   		else//Audio_manager.mMediaPlayer != null
+	   		else // BackgroundAudioService.mIsPrepared = true
 	   		{
 			    if(BackgroundAudioService.mIsCompleted) {
 				    Audio_manager.setPlayerState(Audio_manager.PLAYER_AT_STOP);
 				    audioUi_note.updateAudioPlayState(act);
+				    BackgroundAudioService.mIsCompleted = false;
+			    }
+
+			    // media control: play previous / next
+			    if(Audio_manager.isPlayPrevious() || Audio_manager.isPlayNext()) {
 				    if(mAudioHandler != null)
 					    mAudioHandler.removeCallbacks(mRunOneTimeMode);
 				    mAudioHandler = null;
+
+				    if(Audio_manager.isPlayPrevious() ){
+					    // play previous
+					    audioUi_note.audioPanel_previous_btn.performClick();
+					    Audio_manager.setPlayPrevious(false);
+				    } else if(Audio_manager.isPlayNext()) {
+				    	// play next
+					    audioUi_note.audioPanel_next_btn.performClick();
+					    Audio_manager.setPlayNext(false);
+				    }
 			    }
+			   else {
+				    // toggle play / pause
+				    if(Audio_manager.isTogglePlayerState()) {
+					    audioUi_note.updateAudioPlayState(act);
+					    Audio_manager.setTogglePlayerState(false);
+				    }
 
-			    audioUi_note.updateAudioProgress();
-
-			    if(mAudioHandler != null)
-					mAudioHandler.postDelayed(mRunOneTimeMode,DURATION_1S);
-	   		}		    		
-		} 
+				    audioUi_note.updateAudioProgress();
+				    mAudioHandler.postDelayed(mRunOneTimeMode, DURATION_1S); // loop for poling media control
+			    }
+	   		}
+		}
 	};
 
 	private void stopHandler()
@@ -271,9 +289,11 @@ public class AudioPlayer_note
      */
 	private void startNewAudio_note()
 	{
+		System.out.println("AudioPlayer_note / _startNewAudio_note");
 		// remove call backs to make sure next toast will appear soon
 		if(mAudioHandler != null)
 			mAudioHandler.removeCallbacks(mRunOneTimeMode);
+
         mAudioHandler = null;
         mAudioHandler = new Handler();
 
@@ -303,9 +323,8 @@ public class AudioPlayer_note
             // launch handler
             if(Audio_manager.getPlayerState() != Audio_manager.PLAYER_AT_STOP)
             {
-                if(Audio_manager.getAudioPlayMode() == Audio_manager.NOTE_PLAY_MODE) {
-                    mAudioHandler.postDelayed(mRunOneTimeMode, Util.oneSecond / 4);
-                }
+                if(Audio_manager.getAudioPlayMode() == Audio_manager.NOTE_PLAY_MODE)
+                    mAudioHandler.postDelayed(mRunOneTimeMode, Util.oneSecond / 4); // 1st time
             }
 
             // during audio Preparing
@@ -335,26 +354,6 @@ public class AudioPlayer_note
 	        }
         }
 
-    }
-	
-
-    /**
-     * Play next audio
-     */
-    private void playNextAudio()
-    {
-        System.out.println("AudioPlayer_note / _playNextAudio");
-        Audio_manager.stopAudioPlayer();
-
-        // new audio index
-        mAudioPos++;
-
-        if(mAudioPos >= NoteUi.getNotesCnt())
-            mAudioPos = 0; //back to first index
-
-        mPlaybackTime = 0;
-        Audio_manager.setPlayerState(Audio_manager.PLAYER_AT_PLAY);
-        startNewAudio_note();
     }
 
 }
