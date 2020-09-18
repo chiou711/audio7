@@ -1440,10 +1440,14 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
         // initial
         BackgroundAudioService.mMediaPlayer = null;//for first
 
-        TabsHost.audioUi_page = new AudioUi_page(this);
+        if(TabsHost.audioUi_page == null)
+            TabsHost.audioUi_page = new AudioUi_page(this);
+
         TabsHost.audioUi_page.initAudioBlock(this);
 
-        TabsHost.audioPlayer_page = new AudioPlayer_page(this,TabsHost.audioUi_page);
+        if(TabsHost.audioPlayer_page == null)
+            TabsHost.audioPlayer_page = new AudioPlayer_page(this,TabsHost.audioUi_page);
+
         TabsHost.audioPlayer_page.prepareAudioInfo();
         TabsHost.audioPlayer_page.runAudioState();
 

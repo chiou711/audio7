@@ -281,7 +281,7 @@ public class AudioUi_page {
     }
 
     // update page audio panel
-    public static void updateAudioPanel_page(ImageView playBtn, TextView titleTextView)
+    public void updateAudioPanel_page(ImageView playBtn, TextView titleTextView)
     {
         System.out.println("UtilAudio/ _updateAudioPanel / Audio_manager.getPlayerState() = " + Audio_manager.getPlayerState());
         titleTextView.setBackgroundColor(ColorSet.color_black);

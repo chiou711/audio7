@@ -109,7 +109,6 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
 
         // update panel status: pause
         Audio_manager.setPlayerState(Audio_manager.PLAYER_AT_PAUSE);
-
         Audio_manager.setTogglePlayerState(true);
     }
 
@@ -123,10 +122,7 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
 
             setMediaPlaybackState(PlaybackStateCompat.STATE_SKIPPING_TO_NEXT);
             mMediaSessionCompat.setActive(true);
-            if(Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE)
-                TabsHost.audioUi_page.audioPanel_next_btn.performClick();
-            else
-                Audio_manager.setPlayNext(true);
+            Audio_manager.setPlayNext(true);
         }
 
         @Override
@@ -136,11 +132,7 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
                 System.out.println("BackgroundAudioService / mMediaSessionCallback / _onSkipToPrevious");
             setMediaPlaybackState(PlaybackStateCompat.STATE_SKIPPING_TO_PREVIOUS);
             mMediaSessionCompat.setActive(true);
-
-            if(Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE)
-                TabsHost.audioUi_page.audioPanel_previous_btn.performClick();
-            else
-                Audio_manager.setPlayPrevious(true);
+            Audio_manager.setPlayPrevious(true);
         }
 
         @Override

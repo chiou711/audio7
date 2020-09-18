@@ -305,7 +305,6 @@ public class AudioPlayer_page
 						BackgroundAudioService.mIsPrepared = false;
 					}
 
-
 					if (BackgroundAudioService.mIsCompleted) {
 						// get next index
 						if (Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE) {
@@ -316,29 +315,45 @@ public class AudioPlayer_page
 								TabsHost.getCurrentPage().itemAdapter.notifyDataSetChanged();
 							}
 						}
-
 						BackgroundAudioService.mIsCompleted = false;
 					}
 				}
 
 				if (mAudio_tryTimes < Audio_manager.getAudioFilesCount()) {
-					// update page audio seek bar
-					if (audioUi_page != null)
-						update_audioPanel_progress(audioUi_page);
+					if(Audio_manager.isPlayPrevious() || Audio_manager.isPlayNext()) {
+						if(mAudioHandler != null)
+							mAudioHandler.removeCallbacks(page_runnable);
+						mAudioHandler = null;
 
-					// toggle play / pause
-					if(Audio_manager.isTogglePlayerState()) {
-						TabsHost.audioUi_page.updateAudioPanel_page(TabsHost.audioUi_page.audioPanel_play_button,TabsHost.audioUi_page.audio_panel_title_textView);
-						Audio_manager.setTogglePlayerState(false);
-					}
+						// play previous
+						if (Audio_manager.isPlayPrevious()) {
+							TabsHost.audioUi_page.audioPanel_previous_btn.performClick();
+							Audio_manager.setPlayPrevious(false);
+						}
 
-					if (mAudio_tryTimes == 0) {
-						// main post page_runnable
-						mAudioHandler.postDelayed(page_runnable, DURATION_1S);
-						System.out.println("AudioPlayer_page / _startNewAudio_page / main post page_runnable");
+						// play next
+						if (Audio_manager.isPlayNext()) {
+							TabsHost.audioUi_page.audioPanel_next_btn.performClick();
+							Audio_manager.setPlayNext(false);
+						}
+					} else {
+						// update page audio seek bar
+						if (audioUi_page != null)
+							update_audioPanel_progress(audioUi_page);
+
+						// toggle play / pause
+						if(Audio_manager.isTogglePlayerState()) {
+							TabsHost.audioUi_page.updateAudioPanel_page(TabsHost.audioUi_page.audioPanel_play_button,TabsHost.audioUi_page.audio_panel_title_textView);
+							Audio_manager.setTogglePlayerState(false);
+						}
+
+						if (mAudio_tryTimes == 0) {
+							// main post page_runnable
+							mAudioHandler.postDelayed(page_runnable, DURATION_1S);
+							System.out.println("AudioPlayer_page / _startNewAudio_page / main post page_runnable");
+						} else
+							mAudioHandler.postDelayed(page_runnable, DURATION_1S / 10);
 					}
-					else
-						mAudioHandler.postDelayed(page_runnable, DURATION_1S / 10);
 				}
 			}
 			else if( (Audio_manager.getCheckedAudio(Audio_manager.mAudioPos) == 0 ) )// for non-audio item

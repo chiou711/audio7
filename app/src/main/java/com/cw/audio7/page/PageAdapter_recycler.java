@@ -482,10 +482,14 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
                         Audio_manager.mAudioPos = position;
                         Audio_manager.setAudioPlayMode(Audio_manager.PAGE_PLAY_MODE);
 
-                        TabsHost.audioUi_page = new AudioUi_page(mAct);
+                        if(TabsHost.audioUi_page == null)
+                            TabsHost.audioUi_page = new AudioUi_page(mAct);
+
                         TabsHost.audioUi_page.initAudioBlock(MainAct.mAct);
 
-                        TabsHost.audioPlayer_page = new AudioPlayer_page(mAct,TabsHost.audioUi_page);
+                        if(TabsHost.audioPlayer_page == null)
+                            TabsHost.audioPlayer_page = new AudioPlayer_page(mAct,TabsHost.audioUi_page);
+
                         AudioPlayer_page.prepareAudioInfo();
                         TabsHost.audioPlayer_page.runAudioState();
 
