@@ -73,17 +73,6 @@
                     android:textSize="12sp"
                     android:paddingLeft="2dp"
                     android:paddingRight="2dp"/>
-                <pl.droidsonroids.gif.GifImageView
-                    android:id="@+id/row_audio_gif"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="fitXY"
-                    android:src="@drawable/audio3"
-                    android:layout_gravity="center"
-                    android:visibility="gone"
-                    android:padding="0dp"
-                    android:layout_margin="0dp"
-                    />
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>
@@ -153,6 +142,18 @@
                 android:textColor="#ffffff"
                 android:layout_marginLeft="2dp"
                 android:layout_marginStart="2dp" />
+
+            <pl.droidsonroids.gif.GifImageView
+                android:id="@+id/row_audio_gif"
+                android:layout_width="match_parent"
+                android:layout_height="15dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/audio3"
+                android:layout_gravity="top"
+                android:visibility="gone"
+                android:padding="0dp"
+                android:layout_margin="0dp"
+                />
         </FrameLayout>
         <!-- thumb nail end -->
 

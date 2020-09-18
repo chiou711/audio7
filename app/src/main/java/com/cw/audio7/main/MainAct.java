@@ -1275,21 +1275,21 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
             case MenuId.ENABLE_NOTE_LARGE_VIEW:
                 if(Pref.getPref_card_view_enable_large_view(mAct)) {
                     Pref.setPref_card_view_enable_large_view(mAct,false);
-//                    Toast.makeText(this,getResources().getString(R.string.large_view)+
-//                                    ": " +
-//                                    getResources().getString(R.string.set_disable),
-//                            Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this,getResources().getString(R.string.large_view)+
+                                    ": " +
+                                    getResources().getString(R.string.set_disable),
+                            Toast.LENGTH_SHORT).show();
                 }
                 else {
                     Pref.setPref_card_view_enable_large_view(mAct,true);
-//                    Toast.makeText(this,getResources().getString(R.string.large_view) +
-//                                    ": " +
-//                                    getResources().getString(R.string.set_enable),
-//                            Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this,getResources().getString(R.string.large_view) +
+                                    ": " +
+                                    getResources().getString(R.string.set_enable),
+                            Toast.LENGTH_SHORT).show();
                 }
-//                invalidateOptionsMenu();
-//                TabsHost.reloadCurrentPage();//todo Need more to avoid system hang up
-                recreate();
+                invalidateOptionsMenu();
+                TabsHost.reloadCurrentPage();//todo Need more to avoid system hang up?
+//                recreate();
                 return true;
 
             case MenuId.ENABLE_NOTE_DRAG_AND_DROP:

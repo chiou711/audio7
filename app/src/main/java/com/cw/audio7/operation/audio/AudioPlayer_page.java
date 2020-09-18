@@ -271,6 +271,7 @@ public class AudioPlayer_page
 				if ((audioUi_page != null) &&
 					(Audio_manager.getPlayerState() == Audio_manager.PLAYER_AT_STOP))
 					showAudioPanel(act, false);
+
 				return;
 			}
 

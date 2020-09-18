@@ -16,6 +16,7 @@
 
 package com.cw.audio7.page;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.AsyncTask;
@@ -51,6 +52,7 @@ import com.cw.audio7.util.audio.UtilAudio;
 import com.cw.audio7.util.image.AsyncTaskAudioBitmap;
 import com.cw.audio7.util.preferences.Pref;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.FragmentTransaction;
@@ -142,6 +144,7 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
     }
 
     // Create new views (invoked by the layout manager)
+    @NonNull
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
 
@@ -159,6 +162,7 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
     }
 
     // Replace the contents of a view (invoked by the layout manager)
+    @SuppressLint("UseCompatLoadingForDrawables")
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
 
@@ -237,6 +241,9 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
             else
                 holder.audioArtist.setText("N/A");
 //                holder.audioArtist.setVisibility(View.INVISIBLE);
+
+            holder.audioTitle.setBackgroundColor(ColorSet.mBG_ColorArray[style]);
+            holder.audioArtist.setBackgroundColor(ColorSet.mBG_ColorArray[style]);
         }
         else {
             holder.audioTitle.setText(R.string.file_not_found);
@@ -261,9 +268,11 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
 //            holder.audioTitle.setBackgroundColor(ColorSet.mBG_ColorArray[style]);
 //            holder.audioArtist.setBackgroundColor(ColorSet.mBG_ColorArray[style]);
 
+            holder.rowId.setBackgroundColor(ColorSet.getHighlightColor(mAct));
+
             // background case 3: fill highlight
-            holder.audioTitle.setBackgroundColor(ColorSet.getHighlightColor(mAct));
-            holder.audioArtist.setVisibility(View.GONE);
+//            holder.audioTitle.setBackgroundColor(ColorSet.getHighlightColor(mAct));
+//            holder.audioArtist.setVisibility(View.GONE);
 
             // gif case
             // cf: https://stackoverflow.com/questions/6533942/adding-gif-image-in-an-imageview-in-android
@@ -282,8 +291,10 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
 //			System.out.println("PageAdapter / _getView / not show highlight ");
 
             // background case: normal
-            holder.audioTitle.setBackgroundColor(ColorSet.mBG_ColorArray[style]);
-            holder.audioArtist.setBackgroundColor(ColorSet.mBG_ColorArray[style]);
+//            holder.audioTitle.setBackgroundColor(ColorSet.mBG_ColorArray[style]);
+//            holder.audioArtist.setBackgroundColor(ColorSet.mBG_ColorArray[style]);
+
+            holder.rowId.setBackground(mAct.getDrawable(R.drawable.bg_text_rounded));
 
             // gif case
             holder.audioBlock.setVisibility(View.VISIBLE);
