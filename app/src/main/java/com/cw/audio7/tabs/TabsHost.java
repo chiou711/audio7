@@ -52,7 +52,6 @@ import com.cw.audio7.operation.audio.BackgroundAudioService;
 import com.cw.audio7.page.Page_recycler;
 import com.cw.audio7.util.ColorSet;
 import com.cw.audio7.util.Util;
-import com.cw.audio7.util.audio.UtilAudio;
 import com.cw.audio7.util.preferences.Pref;
 
 //if(Define.ENABLE_ADMOB), enable the following
@@ -392,7 +391,7 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
 
             audioPlayer_page.page_runnable.run();
 
-            UtilAudio.updateAudioPanel(audioUi_page.audioPanel_play_button,
+            audioUi_page.updateAudioPanel_page(audioUi_page.audioPanel_play_button,
                                        audioUi_page.audio_panel_title_textView);
         }
 

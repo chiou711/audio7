@@ -22,13 +22,11 @@ import com.cw.audio7.operation.audio.Audio_manager;
 import com.cw.audio7.tabs.TabsHost;
 import com.cw.audio7.util.audio.UtilAudio;
 import com.cw.audio7.util.image.AsyncTaskAudioBitmap;
-import com.cw.audio7.util.image.TouchImageView;
 import com.cw.audio7.util.ColorSet;
 import com.cw.audio7.util.CustomWebView;
 import com.cw.audio7.util.Util;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -255,7 +253,7 @@ public class Note_adapter extends FragmentStatePagerAdapter
 						audioUi_note.updateAudioProgress();
 				}
 
-				audioUi_note.updateAudioPlayState(act);
+				audioUi_note.updateAudioPanel_note(act);
 			}
 			else
 				audioBlock.setVisibility(View.GONE);

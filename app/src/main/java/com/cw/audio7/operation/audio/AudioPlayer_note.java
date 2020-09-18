@@ -30,7 +30,6 @@ import com.cw.audio7.R;
 import com.cw.audio7.main.MainAct;
 import com.cw.audio7.note.AudioUi_note;
 import com.cw.audio7.note.Note;
-import com.cw.audio7.note.NoteUi;
 import com.cw.audio7.util.Util;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -152,7 +151,7 @@ public class AudioPlayer_note
 	   		{
 			    if(BackgroundAudioService.mIsCompleted) {
 				    Audio_manager.setPlayerState(Audio_manager.PLAYER_AT_STOP);
-				    audioUi_note.updateAudioPlayState(act);
+				    audioUi_note.updateAudioPanel_note(act);
 				    BackgroundAudioService.mIsCompleted = false;
 			    }
 
@@ -175,7 +174,7 @@ public class AudioPlayer_note
 			   else {
 				    // toggle play / pause
 				    if(Audio_manager.isTogglePlayerState()) {
-					    audioUi_note.updateAudioPlayState(act);
+					    audioUi_note.updateAudioPanel_note(act);
 					    Audio_manager.setTogglePlayerState(false);
 				    }
 
@@ -245,7 +244,7 @@ public class AudioPlayer_note
                         else
                             BackgroundAudioService.mMediaPlayer.seekTo(AudioUi_note.mAnchorPosition);
 
-	                    audioUi_note.updateAudioPlayState(act);
+	                    audioUi_note.updateAudioPanel_note(act);
                     }
                 }
             }
@@ -266,7 +265,7 @@ public class AudioPlayer_note
             {
                     Audio_manager.stopAudioPlayer();
 	                audioUi_note.initAudioProgress(act, Note.mAudioUriInDB);
-	                audioUi_note.updateAudioPlayState(act);
+	                audioUi_note.updateAudioPanel_note(act);
             }
         }
         });

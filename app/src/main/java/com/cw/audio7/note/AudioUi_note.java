@@ -317,7 +317,7 @@ public class AudioUi_note
             if(audioPlayer_note != null)
                 audioPlayer_note.runAudioState();
 
-            updateAudioPlayState(act);
+            updateAudioPanel_note(act);
         }
     }
 
@@ -349,10 +349,10 @@ public class AudioUi_note
             seekBar.setProgress(mProgress); // This math construction give a percentage of "was playing"/"song length"
     }
 
-    // update audio play state
-    public void updateAudioPlayState(AppCompatActivity act)
+    // update note audio panel
+    public void updateAudioPanel_note(AppCompatActivity act)
     {
-        System.out.println("AudioUi_note / _updateAudioPlayState");
+        System.out.println("AudioUi_note / _updateAudioPanel_note");
         ImageView audio_play_btn = (ImageView) rootView.findViewById(R.id.pager_btn_audio_play);
 
         if(Audio_manager.getAudioPlayMode() != Audio_manager.NOTE_PLAY_MODE)

@@ -92,12 +92,7 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
         // update panel status: play
         Audio_manager.setPlayerState(Audio_manager.PLAYER_AT_PLAY);
 
-        if(Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE) {
-            TabsHost.audioUi_page.audioPanel_play_button.setImageResource(R.drawable.ic_media_pause);
-            TabsHost.getCurrentPage().itemAdapter.notifyDataSetChanged();
-        }
-        else
-            Audio_manager.setTogglePlayerState(true);
+        Audio_manager.setTogglePlayerState(true);
     }
 
     // do audio pause
@@ -115,12 +110,7 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
         // update panel status: pause
         Audio_manager.setPlayerState(Audio_manager.PLAYER_AT_PAUSE);
 
-        //update audio panel button in Page view
-        if(Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE)
-            UtilAudio.updateAudioPanel(TabsHost.audioUi_page.audioPanel_play_button,TabsHost.audioUi_page.audio_panel_title_textView);
-        //update audio play button in Note view
-        else if(Audio_manager.getAudioPlayMode() == Audio_manager.NOTE_PLAY_MODE)
-            Audio_manager.setTogglePlayerState(true);
+        Audio_manager.setTogglePlayerState(true);
     }
 
     private MediaSessionCompat.Callback mMediaSessionCallback = new MediaSessionCompat.Callback() {

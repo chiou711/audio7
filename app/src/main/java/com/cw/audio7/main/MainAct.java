@@ -45,7 +45,6 @@ import com.cw.audio7.operation.import_export.Export_toSDCardFragment;
 import com.cw.audio7.operation.import_export.Import_filesList;
 import com.cw.audio7.db.DB_drawer;
 import com.cw.audio7.util.Dialog_EULA;
-import com.cw.audio7.util.audio.UtilAudio;
 import com.cw.audio7.util.image.UtilImage;
 import com.cw.audio7.define.Define;
 import com.cw.audio7.util.OnBackPressedListener;
@@ -1452,7 +1451,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
         TabsHost.audioPlayTabPos = TabsHost.getFocus_tabPos();
         TabsHost.mTabsPagerAdapter.notifyDataSetChanged();
 
-        UtilAudio.updateAudioPanel(TabsHost.audioUi_page.audioPanel_play_button,
+        TabsHost.audioUi_page.updateAudioPanel_page(TabsHost.audioUi_page.audioPanel_play_button,
                 TabsHost.audioUi_page.audio_panel_title_textView);
 
         // update playing page position

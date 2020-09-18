@@ -24,11 +24,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cw.audio7.R;
+import com.cw.audio7.main.MainAct;
 import com.cw.audio7.operation.audio.Audio_manager;
 import com.cw.audio7.operation.audio.AudioPlayer_page;
 import com.cw.audio7.operation.audio.BackgroundAudioService;
+import com.cw.audio7.util.ColorSet;
 import com.cw.audio7.util.Util;
-import com.cw.audio7.util.audio.UtilAudio;
 import com.cw.audio7.util.preferences.Pref;
 
 import java.util.Locale;
@@ -171,8 +172,8 @@ public class AudioUi_page {
 //                System.out.println("AudioUi_page / _initAudioBlock / audioPanel_play_button / _onClick");
                 TabsHost.audioPlayer_page.runAudioState();
 
-                // update status
-                UtilAudio.updateAudioPanel((ImageView)v, audio_panel_title_textView); // here v is audio play button
+                // update audio panel
+                updateAudioPanel_page((ImageView)v, audio_panel_title_textView); // here v is audio play button
 
                 if(AudioPlayer_page.isOnAudioPlayingPage())
                 {
@@ -269,14 +270,35 @@ public class AudioUi_page {
         // new audio player instance
         TabsHost.audioPlayer_page.runAudioState();
 
-        // update status
-        UtilAudio.updateAudioPanel(audioPanel_play_button, audio_panel_title_textView);
+        // update audio panel
+        updateAudioPanel_page(audioPanel_play_button, audio_panel_title_textView);
 
         // gif case: add this will cause program hang up
         if(Audio_manager.getPlayerState() != Audio_manager.PLAYER_AT_STOP)
             TabsHost.audioPlayer_page.scrollHighlightAudioItemToVisible(TabsHost.getCurrentPage().recyclerView);
 
         TabsHost.getCurrentPage().itemAdapter.notifyDataSetChanged();
+    }
+
+    // update page audio panel
+    public static void updateAudioPanel_page(ImageView playBtn, TextView titleTextView)
+    {
+        System.out.println("UtilAudio/ _updateAudioPanel / Audio_manager.getPlayerState() = " + Audio_manager.getPlayerState());
+        titleTextView.setBackgroundColor(ColorSet.color_black);
+        if(Audio_manager.getPlayerState() == Audio_manager.PLAYER_AT_PLAY)
+        {
+            titleTextView.setTextColor(ColorSet.getHighlightColor(MainAct.mAct));
+            titleTextView.setSelected(true);
+            playBtn.setImageResource(R.drawable.ic_media_pause);
+        }
+        else if( (Audio_manager.getPlayerState() == Audio_manager.PLAYER_AT_PAUSE) ||
+                (Audio_manager.getPlayerState() == Audio_manager.PLAYER_AT_STOP)    )
+        {
+            titleTextView.setSelected(false);
+            titleTextView.setTextColor(ColorSet.getPauseColor(MainAct.mAct));
+            playBtn.setImageResource(R.drawable.ic_media_play);
+        }
+
     }
 
 }

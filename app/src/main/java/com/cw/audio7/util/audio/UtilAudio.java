@@ -67,27 +67,6 @@ public class UtilAudio {
 		}
     }
     
-    // update audio panel
-    public static void updateAudioPanel(ImageView playBtn, TextView titleTextView)
-    {
-    	System.out.println("UtilAudio/ _updateAudioPanel / Audio_manager.getPlayerState() = " + Audio_manager.getPlayerState());
-		titleTextView.setBackgroundColor(ColorSet.color_black);
-		if(Audio_manager.getPlayerState() == Audio_manager.PLAYER_AT_PLAY)
-		{
-			titleTextView.setTextColor(ColorSet.getHighlightColor(MainAct.mAct));
-			titleTextView.setSelected(true);
-			playBtn.setImageResource(R.drawable.ic_media_pause);
-		}
-		else if( (Audio_manager.getPlayerState() == Audio_manager.PLAYER_AT_PAUSE) ||
-				 (Audio_manager.getPlayerState() == Audio_manager.PLAYER_AT_STOP)    )
-		{
-			titleTextView.setSelected(false);
-			titleTextView.setTextColor(ColorSet.getPauseColor(MainAct.mAct));
-			playBtn.setImageResource(R.drawable.ic_media_play);
-		}
-
-    }
-
     // check if file has audio extension
     // refer to http://developer.android.com/intl/zh-tw/guide/appendix/media-formats.html
     public static boolean hasAudioExtension(File file)

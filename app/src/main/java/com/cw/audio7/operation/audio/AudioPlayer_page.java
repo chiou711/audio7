@@ -291,7 +291,7 @@ public class AudioPlayer_page
 					if (BackgroundAudioService.mIsPrepared) {
 
 						media_file_length = UtilAudio.getAudioLength(act,audioUrl_page);
-//						System.out.println("AudioPlayer_page / _setAudioPlayerListeners / media_file_length = " + media_file_length);
+//						System.out.println("AudioPlayer_page / _page_runnable / media_file_length = " + media_file_length);
 
 						// set footer message: media name
 						if (!Util.isEmptyString(audioUrl_page)) {
@@ -301,10 +301,6 @@ public class AudioPlayer_page
 							if (audioPanel_file_length != null)
 								audioPanel_file_length.setText(UtilAudio.getAudioLengthString(act,audioUrl_page));
 						}
-
-						// add for calling runnable
-						if (Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE)
-							mAudioHandler.postDelayed(page_runnable, Util.oneSecond / 4);
 
 						BackgroundAudioService.mIsPrepared = false;
 					}
@@ -330,8 +326,17 @@ public class AudioPlayer_page
 					if (audioUi_page != null)
 						update_audioPanel_progress(audioUi_page);
 
-					if (mAudio_tryTimes == 0)
+					// toggle play / pause
+					if(Audio_manager.isTogglePlayerState()) {
+						TabsHost.audioUi_page.updateAudioPanel_page(TabsHost.audioUi_page.audioPanel_play_button,TabsHost.audioUi_page.audio_panel_title_textView);
+						Audio_manager.setTogglePlayerState(false);
+					}
+
+					if (mAudio_tryTimes == 0) {
+						// main post page_runnable
 						mAudioHandler.postDelayed(page_runnable, DURATION_1S);
+						System.out.println("AudioPlayer_page / _startNewAudio_page / main post page_runnable");
+					}
 					else
 						mAudioHandler.postDelayed(page_runnable, DURATION_1S / 10);
 				}
@@ -377,7 +382,6 @@ public class AudioPlayer_page
                 mAudioUrlVerifyTask.mAsyncTaskAudioPrepare.mPrepareDialog.dismiss();
             }
         }
-
     }
 
 
@@ -392,7 +396,6 @@ public class AudioPlayer_page
 
     public static int media_file_length;
 
-    private static final int UNBOUNDED = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
 	/**
 	* Scroll highlight audio item to visible position
 	*
@@ -514,7 +517,7 @@ public class AudioPlayer_page
      */
     private void startNewAudio_page()
     {
-        System.out.println("AudioPlayer_page / _startNewAudio / Audio_manager.mAudioPos = " + Audio_manager.mAudioPos);
+        System.out.println("AudioPlayer_page / _startNewAudio_page / Audio_manager.mAudioPos = " + Audio_manager.mAudioPos);
 
         // remove call backs to make sure next toast will appear soon
         if(mAudioHandler != null)
@@ -555,6 +558,7 @@ public class AudioPlayer_page
 			    if ( (Audio_manager.getPlayerState() != Audio_manager.PLAYER_AT_STOP) &&
 					 (Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE)) {
 				    mAudioHandler.postDelayed(page_runnable, Util.oneSecond / 4);
+				    System.out.println("AudioPlayer_page / _startNewAudio_page / 1st post page_runnable");
 			    }
 
 			    // during audio Preparing
