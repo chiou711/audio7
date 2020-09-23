@@ -351,7 +351,7 @@ public class AudioPlayer_page
 						if (mAudio_tryTimes == 0) {
 							// main post page_runnable
 							mAudioHandler.postDelayed(page_runnable, DURATION_1S);
-							System.out.println("AudioPlayer_page / _startNewAudio_page / main post page_runnable");
+//							System.out.println("AudioPlayer_page / _startNewAudio_page / main post page_runnable");
 						} else
 							mAudioHandler.postDelayed(page_runnable, DURATION_1S / 10);
 					}
@@ -447,7 +447,7 @@ public class AudioPlayer_page
 			else
 				firstCompleteVisible_note_pos = layoutMgr.findFirstCompletelyVisibleItemPosition();
 		}
-		System.out.println(">---------------- firstCompleteVisible_note_pos = " + firstCompleteVisible_note_pos);
+//		System.out.println(">---------------- firstCompleteVisible_note_pos = " + firstCompleteVisible_note_pos);
 
 		View childView;
 		if(recyclerView.getAdapter() != null) {
@@ -460,7 +460,7 @@ public class AudioPlayer_page
 			// https://stackoverflow.com/questions/6157652/android-getmeasuredheight-returns-wrong-values
 			ViewUtil.measure(childView);
 			itemHeight = childView.getMeasuredHeight();
-			System.out.println("---------------- itemHeight = " + itemHeight);
+//			System.out.println("---------------- itemHeight = " + itemHeight);
 		}
 
 		float scale = act.getResources().getDisplayMetrics().density;
@@ -469,21 +469,21 @@ public class AudioPlayer_page
 		// manual set value: must be an even number
 		int size = 4; // check divider.xml size element
 		dividerHeight =  (int)(size * scale + 0.0f);
-		System.out.println("---------------- dividerHeight = " + dividerHeight);
+//		System.out.println("---------------- dividerHeight = " + dividerHeight);
 
 		v = recyclerView.getChildAt(0);
 
-		System.out.println("---------------- v.getTop() = " + v.getTop());
+//		System.out.println("---------------- v.getTop() = " + v.getTop());
 		int firstVisibleNote_top = (v == null) ? 0 : v.getTop();
-		System.out.println("---------------- firstVisibleNote_top = " + firstVisibleNote_top);
+//		System.out.println("---------------- firstVisibleNote_top = " + firstVisibleNote_top);
 
 		if(firstVisibleNote_top < 0) 	{
             // restore index and top position
             recyclerView.scrollBy(0,firstVisibleNote_top);
-			System.out.println("----- scroll backwards by firstVisibleNote_top " + firstVisibleNote_top);
+//			System.out.println("----- scroll backwards by firstVisibleNote_top " + firstVisibleNote_top);
 		}
 
-		System.out.println("----- Audio_manager.mAudioPos = " + Audio_manager.mAudioPos);
+//		System.out.println("----- Audio_manager.mAudioPos = " + Audio_manager.mAudioPos);
 		boolean noScroll = false;
 
 		int default_offset_position = 0;
@@ -503,7 +503,7 @@ public class AudioPlayer_page
 				if (firstCompleteVisible_note_pos > default_offset_position )
 				{
                     recyclerView.scrollBy(0,-offset);
-						System.out.println("----- highlight item No. -1, offset = " + (-offset));
+//						System.out.println("----- highlight item No. -1, offset = " + (-offset));
 				}
 				// scroll backwards
 				else if (firstCompleteVisible_note_pos < default_offset_position)
@@ -511,7 +511,7 @@ public class AudioPlayer_page
 					// when real item height could be larger than visible item height, so
 					// scroll twice here in odder to do scroll successfully, otherwise scroll could fail
 					recyclerView.scrollBy(0,offset);
-					System.out.println("----- highlight item No. +1, offset =  " + offset);
+//					System.out.println("----- highlight item No. +1, offset =  " + offset);
 				}
 
 				if(firstCompleteVisible_note_pos == layoutMgr.findFirstVisibleItemPosition())

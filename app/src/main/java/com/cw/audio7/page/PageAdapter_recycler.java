@@ -57,8 +57,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
-import pl.droidsonroids.gif.GifDrawable;
-import pl.droidsonroids.gif.GifImageView;
+//import es.claucookie.miniequalizerlibrary.EqualizerView;
+//import pl.droidsonroids.gif.GifDrawable;
+//import pl.droidsonroids.gif.GifImageView;
 
 import static com.cw.audio7.db.DB_page.KEY_NOTE_AUDIO_URI;
 import static com.cw.audio7.db.DB_page.KEY_NOTE_MARKING;
@@ -101,7 +102,8 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
 		View thumbBlock;
 		ImageView thumbAudio;
 		ProgressBar progressBar;
-        GifImageView gifAudio;
+//        GifImageView gifAudio;
+        EqualizerView gifAudio;
 
         public ViewHolder(View v) {
             super(v);
@@ -274,16 +276,25 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
 //            holder.audioTitle.setBackgroundColor(ColorSet.getHighlightColor(mAct));
 //            holder.audioArtist.setVisibility(View.GONE);
 
-            // gif case
+            // gif case 1
             // cf: https://stackoverflow.com/questions/6533942/adding-gif-image-in-an-imageview-in-android
-            if(BackgroundAudioService.mMediaPlayer!= null)
-            {
-                if(BackgroundAudioService.mMediaPlayer.isPlaying())
-                    ((GifDrawable) holder.gifAudio.getDrawable()).start();
-                else
-                    ((GifDrawable) holder.gifAudio.getDrawable()).pause();
-            }
+//            if(BackgroundAudioService.mMediaPlayer!= null)
+//            {
+//                if(BackgroundAudioService.mMediaPlayer.isPlaying())
+//                    ((GifDrawable) holder.gifAudio.getDrawable()).start();
+//                else
+//                    ((GifDrawable) holder.gifAudio.getDrawable()).pause();
+//            }
+
+            // gif case 2
+            // cf: https://github.com/claucookie/mini-equalizer-library-android
+            if(Audio_manager.getPlayerState() == Audio_manager.PLAYER_AT_PLAY)
+                holder.gifAudio.animateBars();
+            else
+                holder.gifAudio.stopBars();
+
             holder.gifAudio.setVisibility(View.VISIBLE);
+
         }
         else
         {

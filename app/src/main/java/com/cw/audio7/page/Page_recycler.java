@@ -138,7 +138,8 @@ public class Page_recycler extends Fragment implements OnStartDragListener {
     private void fillData()
     {
         //System.out.println("Page_recycler / _fillData / page_tableId = " + page_tableId);
-        itemAdapter = new PageAdapter_recycler(page_pos, page_tableId, this);
+        if(itemAdapter == null)
+            itemAdapter = new PageAdapter_recycler(page_pos, page_tableId, this);
         // Set PageAdapter_recycler as the adapter for RecyclerView.
         recyclerView.setAdapter(itemAdapter);
     }

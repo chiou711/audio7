@@ -71,7 +71,8 @@ dependencies {
     }
 
     implementation 'de.hdodenhof:circleimageview:3.1.0'
-    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.20'
+//    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.20'
+//    implementation 'com.github.claucookie.miniequalizer:library:1.0.0'
 
     // group 1
     //    implementation files('libs/google-api-client-1.24.1.jar')

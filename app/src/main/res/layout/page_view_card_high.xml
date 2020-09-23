@@ -140,20 +140,28 @@
                 android:textSize="12sp"
                 android:text="0:00:00"
                 android:textColor="#ffffff"
-                android:layout_marginLeft="2dp"
                 android:layout_marginStart="2dp" />
 
-            <pl.droidsonroids.gif.GifImageView
+<!--            <pl.droidsonroids.gif.GifImageView-->
+<!--                android:id="@+id/row_audio_gif"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="15dp"-->
+<!--                android:scaleType="fitXY"-->
+<!--                android:src="@drawable/audio"-->
+<!--                android:layout_gravity="top"-->
+<!--                android:visibility="gone"-->
+<!--                android:padding="0dp"-->
+<!--                android:layout_margin="0dp"-->
+<!--                />-->
+
+            <com.cw.audio7.page.EqualizerView
+                xmlns:custom="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/row_audio_gif"
-                android:layout_width="match_parent"
+                android:layout_width="30dp"
                 android:layout_height="15dp"
-                android:scaleType="fitXY"
-                android:src="@drawable/audio3"
-                android:layout_gravity="top"
-                android:visibility="gone"
-                android:padding="0dp"
-                android:layout_margin="0dp"
-                />
+                custom:foregroundColor="@color/highlight_color"
+                custom:animDuration="3500"
+                android:visibility="gone"/>
         </FrameLayout>
         <!-- thumb nail end -->
 
