@@ -27,10 +27,8 @@ import android.util.Log;
 
 import com.cw.audio7.R;
 import com.cw.audio7.main.MainAct;
-import com.cw.audio7.note.AudioUi_note;
 import com.cw.audio7.tabs.TabsHost;
 import com.cw.audio7.util.Util;
-import com.cw.audio7.util.audio.UtilAudio;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -54,6 +52,10 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
     public static boolean mIsPrepared;
     public static boolean mIsCompleted;
     final public static int id = 77;
+
+    // for differentiate Pause source: manual or focus change
+    private boolean isPausedByButton;
+
     boolean enDbgMsg = true;
 //    boolean enDbgMsg = false;
 
@@ -93,6 +95,8 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
         Audio_manager.setPlayerState(Audio_manager.PLAYER_AT_PLAY);
 
         Audio_manager.setTogglePlayerState(true);
+
+        isPausedByButton = false;
     }
 
     // do audio pause
@@ -152,6 +156,8 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
             super.onPause();
             if(enDbgMsg)
                 System.out.println("BackgroundAudioService / mMediaSessionCallback / _onPause");
+
+            isPausedByButton = true;
             pauseAudio();
         }
 
@@ -503,7 +509,7 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
                 break;
             }
             case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT: {
-                // example: when phone call is coming in
+                // example: when phone call is coming in, when call out
                 // example: play video of FB
                 System.out.println("BackgroundAudioService / _onAudioFocusChange / AudioManager.AUDIOFOCUS_LOSS_TRANSIENT");
                 pauseAudio();
@@ -520,7 +526,10 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
                 System.out.println("BackgroundAudioService / _onAudioFocusChange / AudioManager.AUDIOFOCUS_GAIN");
                 // example: when incoming phone call is off line
                 // example: when pausing video of FB
-                playAudio();
+
+                // do not play if user pressed the play button
+                if(!isPausedByButton)
+                    playAudio();
                 break;
             }
         }
