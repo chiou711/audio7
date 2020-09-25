@@ -312,7 +312,7 @@ public class AudioPlayer_page
 							play_nextAudio();
 
 							if (isOnAudioPlayingPage()) {
-								scrollHighlightAudioItemToVisible(TabsHost.getCurrentPage().recyclerView);
+								scrollPlayingItemToBeVisible(TabsHost.getCurrentPage().recyclerView);
 								TabsHost.getCurrentPage().itemAdapter.notifyDataSetChanged();
 							}
 						}
@@ -363,7 +363,7 @@ public class AudioPlayer_page
 //	   			System.out.println("AudioPlayer_page / page_runnable / for non-audio item");
 				play_nextAudio();
 
-				TabsHost.audioPlayer_page.scrollHighlightAudioItemToVisible(TabsHost.getCurrentPage().recyclerView);
+				scrollPlayingItemToBeVisible(TabsHost.getCurrentPage().recyclerView);
 				TabsHost.getCurrentPage().itemAdapter.notifyDataSetChanged();
 			}
 		}
@@ -414,7 +414,7 @@ public class AudioPlayer_page
     public static int media_file_length;
 
 	/**
-	* Scroll highlight audio item to visible position
+	* Scroll playing item to be visible
 	*
 	* At the following conditions
 	* 	1) click audio item of list view (this highlight is not good for user expectation, so cancel this condition now)
@@ -425,7 +425,7 @@ public class AudioPlayer_page
 	* In order to view audio highlight item, playing(highlighted) audio item can be auto scrolled to top,
 	* unless it is at the end page of list view, there is no need to scroll.
 	*/
-	public void scrollHighlightAudioItemToVisible(RecyclerView recyclerView)
+	public void scrollPlayingItemToBeVisible(RecyclerView recyclerView)
 	{
 		System.out.println("AudioPlayer_page / _scrollHighlightAudioItemToVisible");
         if(recyclerView == null)
@@ -448,7 +448,7 @@ public class AudioPlayer_page
 			else
 				firstCompleteVisible_note_pos = layoutMgr.findFirstCompletelyVisibleItemPosition();
 		}
-//		System.out.println(">---------------- firstCompleteVisible_note_pos = " + firstCompleteVisible_note_pos);
+//		System.out.println("---------------- firstCompleteVisible_note_pos = " + firstCompleteVisible_note_pos);
 
 		View childView;
 		if(recyclerView.getAdapter() != null) {
@@ -468,13 +468,13 @@ public class AudioPlayer_page
 
 		// todo Need XMLPullParser to parse divider.XML
 		// manual set value: must be an even number
-		int size = 4; // check divider.xml size element
+		int size = 1; // check divider.xml size element
 		dividerHeight =  (int)(size * scale + 0.0f);
 //		System.out.println("---------------- dividerHeight = " + dividerHeight);
 
 		v = recyclerView.getChildAt(0);
 
-//		System.out.println("---------------- v.getTop() = " + v.getTop());
+		System.out.println("---------------- v.getTop() = " + v.getTop());
 		int firstVisibleNote_top = (v == null) ? 0 : v.getTop();
 //		System.out.println("---------------- firstVisibleNote_top = " + firstVisibleNote_top);
 

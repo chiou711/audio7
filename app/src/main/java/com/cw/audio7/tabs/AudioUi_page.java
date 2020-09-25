@@ -177,7 +177,7 @@ public class AudioUi_page {
 
                 if(AudioPlayer_page.isOnAudioPlayingPage())
                 {
-                    TabsHost.audioPlayer_page.scrollHighlightAudioItemToVisible(TabsHost.getCurrentPage().recyclerView);
+                    TabsHost.audioPlayer_page.scrollPlayingItemToBeVisible(TabsHost.getCurrentPage().recyclerView); //todo ??? hang up
                     TabsHost.getCurrentPage().itemAdapter.notifyDataSetChanged();
                 }
             }
@@ -275,7 +275,7 @@ public class AudioUi_page {
 
         // gif case: add this will cause program hang up
         if(Audio_manager.getPlayerState() != Audio_manager.PLAYER_AT_STOP)
-            TabsHost.audioPlayer_page.scrollHighlightAudioItemToVisible(TabsHost.getCurrentPage().recyclerView);
+            TabsHost.audioPlayer_page.scrollPlayingItemToBeVisible(TabsHost.getCurrentPage().recyclerView);
 
         TabsHost.getCurrentPage().itemAdapter.notifyDataSetChanged();
     }

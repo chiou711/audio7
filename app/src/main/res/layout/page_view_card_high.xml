@@ -161,10 +161,10 @@
                 android:layout_height="15dp"
                 custom:foregroundColor="@color/highlight_color"
                 custom:animDuration="3500"
-                android:visibility="gone"/>
+                android:visibility="gone"
+                android:layout_marginStart="5dp"/>
         </FrameLayout>
         <!-- thumb nail end -->
-
 
     </LinearLayout>
 

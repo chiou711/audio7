@@ -271,7 +271,7 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
                 (listView != null) &&
                 (Audio_manager.getPlayerState() != Audio_manager.PLAYER_AT_STOP)  )
             {
-                audioPlayer_page.scrollHighlightAudioItemToVisible(listView);
+                audioPlayer_page.scrollPlayingItemToBeVisible(listView); //todo Could hang up if page had too many notes (more then 1000)
             }
         }
 
