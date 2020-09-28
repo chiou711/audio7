@@ -65,7 +65,10 @@ class Async_audioUrlVerify extends AsyncTask<String,Integer,String>
 		// show dialog will affect full screen at Note play mode
 		if( Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE ) {
 		    if( (mUrlVerifyDialog != null) && (!mUrlVerifyDialog.isShowing()) )
-			    mUrlVerifyDialog.show();
+		    {
+			    if( !act.isFinishing() && !act.isDestroyed() )
+			    	mUrlVerifyDialog.show();
+		    }
 		}
 
 	}

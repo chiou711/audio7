@@ -345,7 +345,8 @@ public class AudioPlayer_page
 						// toggle play / pause
 						if(Audio_manager.isTogglePlayerState()) {
 							TabsHost.audioUi_page.updateAudioPanel_page(TabsHost.audioUi_page.audioPanel_play_button,TabsHost.audioUi_page.audio_panel_title_textView);
-							TabsHost.getCurrentPage().itemAdapter.notifyDataSetChanged();
+							if(TabsHost.getCurrentPage().itemAdapter != null)
+								TabsHost.getCurrentPage().itemAdapter.notifyDataSetChanged();
 							Audio_manager.setTogglePlayerState(false);
 						}
 

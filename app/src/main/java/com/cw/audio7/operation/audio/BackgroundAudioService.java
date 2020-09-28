@@ -86,10 +86,10 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
         initMediaSessionMetadata();
         showPlayingNotification();
 
-        if(mMediaPlayer != null)
+        if(mMediaPlayer != null) {
             mMediaPlayer.start();
-
-        mMediaPlayer.setVolume(1.0f, 1.0f);
+            mMediaPlayer.setVolume(1.0f, 1.0f);
+        }
 
         // update panel status: play
         Audio_manager.setPlayerState(Audio_manager.PLAYER_AT_PLAY);

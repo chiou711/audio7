@@ -54,7 +54,10 @@ public class Async_audioPrepare extends AsyncTask<String,Integer,String>
 		// only for Page play mode
 		// show dialog will affect full screen at Note play mode
         if( Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE)
-		    mPrepareDialog.show();
+        {
+	        if(!act.isFinishing() && !act.isDestroyed())
+		        mPrepareDialog.show();
+        }
 
         BackgroundAudioService.mIsPrepared = false;
 	 } 

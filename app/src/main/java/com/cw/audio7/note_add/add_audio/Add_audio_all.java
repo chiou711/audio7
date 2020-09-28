@@ -123,8 +123,11 @@ public class Add_audio_all extends Fragment
 //                System.out.println("==>  file = " + file);
 //                System.out.println("==>  fileDir = " + fileDir.getPath());
 
-                if( !fileDir.getAbsolutePath().contains("..") ||
-                        (fileDir.getAbsolutePath().contains("..") &&  (file.length()!=2) ) )
+                //Skip some directories which could cause playing hang-up issue
+                if( !fileDir.getAbsolutePath().contains("Android/data") &&
+                    !fileDir.getAbsolutePath().contains("Android/media") &&
+                    ( !fileDir.getAbsolutePath().contains("..") ||
+                      (fileDir.getAbsolutePath().contains("..") &&  (file.length()!=2) ) ) )
                 {
                     if (fileDir.isDirectory()) {
 
