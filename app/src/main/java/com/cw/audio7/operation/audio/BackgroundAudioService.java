@@ -56,8 +56,8 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
     // for differentiate Pause source: manual or focus change
     private boolean isPausedByButton;
 
-    boolean enDbgMsg = true;
-//    boolean enDbgMsg = false;
+//    boolean enDbgMsg = true;
+    boolean enDbgMsg = false;
 
     BroadcastReceiver audioNoisyReceiver = new BroadcastReceiver() {
         @Override

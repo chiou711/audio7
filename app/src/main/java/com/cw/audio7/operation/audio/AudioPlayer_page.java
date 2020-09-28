@@ -417,116 +417,97 @@ public class AudioPlayer_page
 	* Scroll playing item to be visible
 	*
 	* At the following conditions
-	* 	1) click audio item of list view (this highlight is not good for user expectation, so cancel this condition now)
+	* 	1) click audio item of list view
 	* 	2) click previous/next item in audio controller
 	* 	3) change tab to playing tab
-	* 	4) back from key protect off
+	* 	4) toggle play/pause button
 	* 	5) if seeker bar reaches the end
 	* In order to view audio highlight item, playing(highlighted) audio item can be auto scrolled to top,
 	* unless it is at the end page of list view, there is no need to scroll.
 	*/
 	public void scrollPlayingItemToBeVisible(RecyclerView recyclerView)
 	{
-		System.out.println("AudioPlayer_page / _scrollHighlightAudioItemToVisible");
-        if(recyclerView == null)
+		System.out.println("AudioPlayer_page / _scrollPlayingItemToBeVisible");
+        if ( (recyclerView == null) ||
+		     (recyclerView.getAdapter() == null) ||
+		     (Build.VERSION.SDK_INT < 19)            )
             return;
 
-        LinearLayoutManager layoutMgr = ((LinearLayoutManager) recyclerView.getLayoutManager());
-		// version limitation: _scrollListBy
-		// NoteFragment.drag_listView.scrollListBy(firstVisibleIndex_top);
-		if(Build.VERSION.SDK_INT < 19)
+		LinearLayoutManager layoutMgr = ((LinearLayoutManager) recyclerView.getLayoutManager());
+		if(layoutMgr == null)
 			return;
 
-		int itemHeight = 50;//init
+		int first_note_pos;
+		int itemHeight = 50;
+		int divider_size = 1; // todo check divider.xml size element
 		int dividerHeight;
-		int firstCompleteVisible_note_pos = 0;
-		View v;
 
-		if (layoutMgr != null) {
-			if(Pref.getPref_card_view_enable_large_view(act))
-				firstCompleteVisible_note_pos = layoutMgr.findFirstVisibleItemPosition();
-			else
-				firstCompleteVisible_note_pos = layoutMgr.findFirstCompletelyVisibleItemPosition();
-		}
-//		System.out.println("---------------- firstCompleteVisible_note_pos = " + firstCompleteVisible_note_pos);
+		first_note_pos = layoutMgr.findFirstCompletelyVisibleItemPosition();
+		System.out.println("---------------- first_note_pos = " + first_note_pos);
 
-		View childView;
-		if(recyclerView.getAdapter() != null) {
-            childView = layoutMgr.findViewByPosition(firstCompleteVisible_note_pos);
+		// no complete visible position, do offset
+		if(first_note_pos == RecyclerView.NO_POSITION)
+		{
+            int top_offset = recyclerView.getChildAt(0).getTop();
+            System.out.println("---------------- top_offset 1 = " + top_offset);
 
-            // avoid exception: audio playing and doing checked notes operation at non-playing page
-            if(childView == null)
-            	return;
+            if(top_offset < 0)
+                recyclerView.scrollBy(0,top_offset);
 
-			// https://stackoverflow.com/questions/6157652/android-getmeasuredheight-returns-wrong-values
-			ViewUtil.measure(childView);
-			itemHeight = childView.getMeasuredHeight();
-//			System.out.println("---------------- itemHeight = " + itemHeight);
-		}
+            first_note_pos = layoutMgr.findFirstCompletelyVisibleItemPosition();
+        }
 
+		// https://stackoverflow.com/questions/6157652/android-getmeasuredheight-returns-wrong-values
+		// item height
+		View childView = layoutMgr.findViewByPosition(first_note_pos);
+        if(childView != null) {
+            ViewUtil.measure(childView);
+            itemHeight = childView.getMeasuredHeight();
+        }
+		System.out.println("---------------- itemHeight = " + itemHeight);
+
+        // divider height
 		float scale = act.getResources().getDisplayMetrics().density;
+		dividerHeight =  (int)(divider_size * scale + 0.0f);
+		System.out.println("---------------- dividerHeight = " + dividerHeight);
 
-		// todo Need XMLPullParser to parse divider.XML
-		// manual set value: must be an even number
-		int size = 1; // check divider.xml size element
-		dividerHeight =  (int)(size * scale + 0.0f);
-//		System.out.println("---------------- dividerHeight = " + dividerHeight);
-
-		v = recyclerView.getChildAt(0);
-
-		System.out.println("---------------- v.getTop() = " + v.getTop());
-		int firstVisibleNote_top = (v == null) ? 0 : v.getTop();
-//		System.out.println("---------------- firstVisibleNote_top = " + firstVisibleNote_top);
-
-		if(firstVisibleNote_top < 0) 	{
-            // restore index and top position
-            recyclerView.scrollBy(0,firstVisibleNote_top);
-//			System.out.println("----- scroll backwards by firstVisibleNote_top " + firstVisibleNote_top);
-		}
-
-//		System.out.println("----- Audio_manager.mAudioPos = " + Audio_manager.mAudioPos);
-		boolean noScroll = false;
-
-		int default_offset_position = 0;
-		if(Pref.getPref_card_view_enable_large_view(act))
-			default_offset_position = Audio_manager.mAudioPos;
-		else
-			default_offset_position = Audio_manager.mAudioPos - 1;
+		int offset = itemHeight + dividerHeight;
 
 		// base on Audio_manager.mAudioPos to scroll
-		if(firstCompleteVisible_note_pos != default_offset_position)
+		System.out.println("----- Audio_manager.mAudioPos = " + Audio_manager.mAudioPos);
+		while ((first_note_pos != Audio_manager.mAudioPos) )
 		{
-			while ((firstCompleteVisible_note_pos != default_offset_position) && (!noScroll))
+			// scroll forwards
+			if (first_note_pos > Audio_manager.mAudioPos )
 			{
-				int offset = itemHeight + dividerHeight;
-
-				// scroll forwards
-				if (firstCompleteVisible_note_pos > default_offset_position )
-				{
-                    recyclerView.scrollBy(0,-offset);
-//						System.out.println("----- highlight item No. -1, offset = " + (-offset));
-				}
-				// scroll backwards
-				else if (firstCompleteVisible_note_pos < default_offset_position)
-				{
-					// when real item height could be larger than visible item height, so
-					// scroll twice here in odder to do scroll successfully, otherwise scroll could fail
-					recyclerView.scrollBy(0,offset);
-//					System.out.println("----- highlight item No. +1, offset =  " + offset);
-				}
-
-				if(firstCompleteVisible_note_pos == layoutMgr.findFirstVisibleItemPosition())
-					noScroll = true;
-				else {
-					// update first visible index
-					firstCompleteVisible_note_pos = layoutMgr.findFirstVisibleItemPosition();
-				}
+                recyclerView.scrollBy(0,-offset);
+				System.out.println("----- highlight item No. (-1), offset = " + (-offset));
+			}
+			// scroll backwards
+			else
+			{
+				// when real item height could be larger than visible item height, so
+				// scroll twice here in odder to do scroll successfully, otherwise scroll could fail
+				recyclerView.scrollBy(0,offset);
+				System.out.println("----- highlight item No. (+1), offset =  " + offset);
 			}
 
-			// do v scroll
-			TabsHost.store_listView_vScroll(recyclerView);
-			TabsHost.resume_listView_vScroll(recyclerView);
+			first_note_pos = layoutMgr.findFirstCompletelyVisibleItemPosition();
+
+			// no complete visible position, do offset
+			if(first_note_pos == RecyclerView.NO_POSITION) {
+				int top_offset = recyclerView.getChildAt(0).getTop();
+				System.out.println("---------------- top_offset 2 = " + top_offset);
+
+				if(top_offset < 0)
+					// restore index and top position
+					recyclerView.scrollBy(0,top_offset);
+			}
 		}
+
+		// do v scroll
+		TabsHost.store_listView_vScroll(recyclerView);
+		TabsHost.resume_listView_vScroll(recyclerView);
 	}
 
     /**
