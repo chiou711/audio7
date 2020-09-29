@@ -34,6 +34,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentManager;
+import androidx.appcompat.widget.Toolbar;
 
 /**
  * Created by CW on 2016/8/24.
@@ -47,7 +48,7 @@ public class Drawer {
     public static NavigationView mNavigationView;
     DragSortListView listView;
 
-    public Drawer(AppCompatActivity activity)
+    public Drawer(AppCompatActivity activity, Toolbar toolbar)
     {
         drawerLayout = (DrawerLayout) activity.findViewById(R.id.drawer_layout);
 
@@ -136,7 +137,7 @@ public class Drawer {
         // between the sliding drawer and the action bar app icon
         drawerToggle =new ActionBarDrawerToggle(act,                  /* host Activity */
                                                 drawerLayout,         /* DrawerLayout object */
-                                                MainAct.mToolbar,  /* tool bar */
+                                                toolbar,  /* tool bar */
                                                 R.string.drawer_open,  /* "open drawer" description for accessibility */
                                                 R.string.drawer_close  /* "close drawer" description for accessibility */
                                                 )
@@ -147,7 +148,7 @@ public class Drawer {
 
                     if(act.getSupportActionBar() != null) {
                         act.getSupportActionBar().setTitle(R.string.app_name);
-                        MainAct.mToolbar.setLogo(R.mipmap.ic_launcher);
+                        toolbar.setLogo(R.mipmap.ic_launcher);
                     }
 
                     act.invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
@@ -175,7 +176,7 @@ public class Drawer {
 
                             if(act.getSupportActionBar() != null) {
                                 act.getSupportActionBar().setTitle(MainAct.mFolderTitle);
-                                MainAct.mToolbar.setLogo(null);
+                                toolbar.setLogo(null);
                             }
                         }
                     } // onDrawerClosed

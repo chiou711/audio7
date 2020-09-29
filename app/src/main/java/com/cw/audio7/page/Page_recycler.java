@@ -17,7 +17,6 @@
 
 package com.cw.audio7.page;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;

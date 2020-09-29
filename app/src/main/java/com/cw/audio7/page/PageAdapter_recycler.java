@@ -16,7 +16,6 @@
 
 package com.cw.audio7.page;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.AsyncTask;
@@ -71,7 +70,6 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
 {
 	private AppCompatActivity mAct;
 	Cursor cursor;
-	private static int style;
     private DB_folder dbFolder;
 	private DB_page mDb_page;
 	private int page_pos;
@@ -91,13 +89,14 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
      * Provide a reference to the type of views that you are using (custom ViewHolder)
      */
     public static class ViewHolder extends RecyclerView.ViewHolder implements ItemTouchHelperViewHolder {
-        ImageView btnMarking;
 		TextView rowId;
 		View audioBlock;
         TextView audioTitle;
         TextView audioArtist;
         TextView thumbLength;
 		TextView textTitle;
+		View playlistOperation;
+        ImageView btnMarking;
         ImageViewCustom btnDrag;
 		View thumbBlock;
 		ImageView thumbAudio;
@@ -119,11 +118,12 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
             audioBlock = v.findViewById(R.id.audio_block);
             audioTitle = (TextView) v.findViewById(R.id.row_audio_title);
             audioArtist = (TextView) v.findViewById(R.id.row_audio_artist);
+            playlistOperation = v.findViewById(R.id.playlist_operation);
             btnMarking = (ImageView) v.findViewById(R.id.btn_marking);
+            btnDrag = (ImageViewCustom) v.findViewById(R.id.btn_drag);
             thumbBlock = v.findViewById(R.id.row_thumb_nail);
             thumbAudio = (ImageView) v.findViewById(R.id.thumb_audio);
             thumbLength = (TextView) v.findViewById(R.id.thumb_length);
-            btnDrag = (ImageViewCustom) v.findViewById(R.id.btn_drag);
             progressBar = (ProgressBar) v.findViewById(R.id.thumb_progress);
             gifAudio = v.findViewById(R.id.row_audio_gif);
         }
@@ -164,14 +164,13 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
     }
 
     // Replace the contents of a view (invoked by the layout manager)
-    @SuppressLint("UseCompatLoadingForDrawables")
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
 
 //        System.out.println("PageAdapter_recycler / _onBindViewHolder / position = " + position);
 
         // style
-	    style = dbFolder.getPageStyle(page_pos, true);
+        int style = dbFolder.getPageStyle(page_pos, true);
 
 //        ((CardView)holder.itemView).setCardBackgroundColor(ColorSet.mBG_ColorArray[style]);
         ((CardView)holder.itemView).setCardBackgroundColor(ColorSet.color_black);
@@ -196,6 +195,10 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
         // show row Id
         holder.rowId.setText(String.valueOf(position+1));
         holder.rowId.setTextColor(ColorSet.color_white);
+
+        if( Pref.getPref_card_view_enable_select(mAct) ||
+            Pref.getPref_card_view_enable_draggable(mAct) )
+            holder.playlistOperation.setBackgroundColor(ColorSet.mBG_ColorArray[style]);
 
         // show marking check box
         if(Pref.getPref_card_view_enable_select(mAct)) {

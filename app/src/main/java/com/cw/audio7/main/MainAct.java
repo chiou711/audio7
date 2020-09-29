@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 CW Chiu
+ * Copyright (C) 2020 CW Chiu
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -105,7 +105,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
     public Drawer drawer;
     public static Folder mFolder;
     public static MainUi mMainUi;
-    public static Toolbar mToolbar;
+    public Toolbar mToolbar;
 
     public static MediaBrowserCompat mMediaBrowserCompat;
     public static MediaControllerCompat mMediaControllerCompat;
@@ -1481,7 +1481,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
         initActionBar();
 
         // new drawer
-        drawer = new Drawer(this);
+        drawer = new Drawer(this,mToolbar);
         drawer.initDrawer();
 
         // new folder
