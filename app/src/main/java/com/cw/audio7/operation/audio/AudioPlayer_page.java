@@ -449,7 +449,11 @@ public class AudioPlayer_page
 		// no complete visible position, do offset
 		if(first_note_pos == RecyclerView.NO_POSITION)
 		{
-            int top_offset = recyclerView.getChildAt(0).getTop();
+            int top_offset = 0;
+            // check if child at 0 is null for changing to high card view to avoid exception
+            if( recyclerView.getChildAt(0) != null)
+            	top_offset = recyclerView.getChildAt(0).getTop();
+
             System.out.println("---------------- top_offset 1 = " + top_offset);
 
             if(top_offset < 0)
@@ -478,6 +482,7 @@ public class AudioPlayer_page
 		System.out.println("----- Audio_manager.mAudioPos = " + Audio_manager.mAudioPos);
 		while ((first_note_pos != Audio_manager.mAudioPos) )
 		{
+			int startPos = first_note_pos;
 			// scroll forwards
 			if (first_note_pos > Audio_manager.mAudioPos )
 			{
@@ -494,6 +499,10 @@ public class AudioPlayer_page
 			}
 
 			first_note_pos = layoutMgr.findFirstCompletelyVisibleItemPosition();
+
+			// check if recycler view reached the end
+			if(first_note_pos == startPos)
+				first_note_pos = Audio_manager.mAudioPos;
 
 			// no complete visible position, do offset
 			if(first_note_pos == RecyclerView.NO_POSITION) {
