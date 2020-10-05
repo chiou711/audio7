@@ -16,15 +16,14 @@
 
 package com.cw.audio7.note_edit;
 
-import com.cw.audio7.operation.audio.Audio_manager;
-import com.cw.audio7.operation.audio.AudioPlayer_page;
+import com.cw.audio7.audio.Audio_manager;
+import com.cw.audio7.audio.AudioPlayer_page;
 import com.cw.audio7.page.Page_recycler;
 import com.cw.audio7.R;
 import com.cw.audio7.db.DB_page;
 import com.cw.audio7.page.PageUi;
 import com.cw.audio7.tabs.TabsHost;
 import com.cw.audio7.util.audio.UtilAudio;
-import com.cw.audio7.util.image.TouchImageView;
 import com.cw.audio7.util.ColorSet;
 import com.cw.audio7.util.Util;
 

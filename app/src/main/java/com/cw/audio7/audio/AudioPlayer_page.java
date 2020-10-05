@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.cw.audio7.operation.audio;
+package com.cw.audio7.audio;
 
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnPreparedListener;
@@ -31,7 +31,6 @@ import com.cw.audio7.R;
 import com.cw.audio7.db.DB_page;
 import com.cw.audio7.folder.FolderUi;
 import com.cw.audio7.main.MainAct;
-import com.cw.audio7.tabs.AudioUi_page;
 import com.cw.audio7.tabs.TabsHost;
 import com.cw.audio7.util.Util;
 import com.cw.audio7.util.audio.UtilAudio;

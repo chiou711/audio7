@@ -16,13 +16,14 @@
 
 package com.cw.audio7.note;
 
+import com.cw.audio7.audio.AudioUi_note;
 import com.cw.audio7.note_edit.Note_edit;
 import com.cw.audio7.R;
 import com.cw.audio7.db.DB_folder;
 import com.cw.audio7.db.DB_page;
 import com.cw.audio7.main.MainAct;
-import com.cw.audio7.operation.audio.Audio_manager;
-import com.cw.audio7.operation.audio.BackgroundAudioService;
+import com.cw.audio7.audio.Audio_manager;
+import com.cw.audio7.audio.BackgroundAudioService;
 import com.cw.audio7.page.PageAdapter_recycler;
 import com.cw.audio7.tabs.TabsHost;
 import com.cw.audio7.util.audio.UtilAudio;

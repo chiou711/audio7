@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.cw.audio7.note;
+package com.cw.audio7.audio;
 
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -27,9 +27,7 @@ import android.widget.TextView;
 
 import com.cw.audio7.R;
 import com.cw.audio7.main.MainAct;
-import com.cw.audio7.operation.audio.Audio_manager;
-import com.cw.audio7.operation.audio.AudioPlayer_note;
-import com.cw.audio7.operation.audio.BackgroundAudioService;
+import com.cw.audio7.note.NoteUi;
 import com.cw.audio7.tabs.TabsHost;
 import com.cw.audio7.util.ColorSet;
 import com.cw.audio7.util.Util;
@@ -57,7 +55,7 @@ public class AudioUi_note
     View rootView;
 
     // constructor
-    AudioUi_note(AppCompatActivity act, String audioUriInDB, View root_view)
+    public AudioUi_note(AppCompatActivity act, String audioUriInDB, View root_view)
     {
         this.act = act;
         mAudioUriInDB = audioUriInDB;
@@ -65,7 +63,7 @@ public class AudioUi_note
     }
 
     // initialize audio block
-    void init_audio_block()
+    public void init_audio_block()
     {
         // audio block
         audioPanel_previous_btn = (ImageView) rootView.findViewById(R.id.audioPanel_previous);
@@ -94,7 +92,7 @@ public class AudioUi_note
     }
 
     // show audio block
-    void showAudioBlock()
+    public void showAudioBlock()
     {
         if(UtilAudio.hasAudioExtension(mAudioUriInDB))
         {

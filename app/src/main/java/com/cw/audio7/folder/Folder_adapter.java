@@ -27,8 +27,8 @@ import android.widget.TextView;
 import com.cw.audio7.R;
 import com.cw.audio7.db.DB_drawer;
 import com.cw.audio7.main.MainAct;
-import com.cw.audio7.operation.audio.Audio_manager;
-import com.cw.audio7.operation.audio.BackgroundAudioService;
+import com.cw.audio7.audio.Audio_manager;
+import com.cw.audio7.audio.BackgroundAudioService;
 import com.mobeta.android.dslv.SimpleDragSortCursorAdapter;
 
 /**

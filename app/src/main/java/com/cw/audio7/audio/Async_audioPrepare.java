@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.cw.audio7.operation.audio;
+package com.cw.audio7.audio;
 
 import com.cw.audio7.R;
 import com.cw.audio7.util.Util;

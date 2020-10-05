@@ -21,8 +21,8 @@ import java.io.File;
 import java.util.Objects;
 
 import com.cw.audio7.folder.FolderUi;
-import com.cw.audio7.operation.audio.Audio_manager;
-import com.cw.audio7.operation.audio.BackgroundAudioService;
+import com.cw.audio7.audio.Audio_manager;
+import com.cw.audio7.audio.BackgroundAudioService;
 import com.cw.audio7.tabs.TabsHost;
 import com.cw.audio7.util.BaseBackPressedListener;
 import com.cw.audio7.main.MainAct;
@@ -42,11 +42,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
-import android.widget.NumberPicker;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 

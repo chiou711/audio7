@@ -72,7 +72,7 @@
         </receiver>
 
         <!-- will create BackgroundAudioService instance when notification button is pressed -->
-        <service android:name="com.cw.audio7.operation.audio.BackgroundAudioService">
+        <service android:name=".audio.BackgroundAudioService">
         <intent-filter>
 <!--            <action android:name="android.intent.action.MEDIA_BUTTON" />-->
 <!--            <action android:name="android.media.AUDIO_BECOMING_NOISY" />-->

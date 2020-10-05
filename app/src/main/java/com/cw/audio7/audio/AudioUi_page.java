@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.cw.audio7.tabs;
+package com.cw.audio7.audio;
 
 import android.text.method.ScrollingMovementMethod;
 import android.view.View;
@@ -25,9 +25,7 @@ import android.widget.Toast;
 
 import com.cw.audio7.R;
 import com.cw.audio7.main.MainAct;
-import com.cw.audio7.operation.audio.Audio_manager;
-import com.cw.audio7.operation.audio.AudioPlayer_page;
-import com.cw.audio7.operation.audio.BackgroundAudioService;
+import com.cw.audio7.tabs.TabsHost;
 import com.cw.audio7.util.ColorSet;
 import com.cw.audio7.util.Util;
 import com.cw.audio7.util.preferences.Pref;

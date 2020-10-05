@@ -21,18 +21,15 @@ import java.util.Locale;
 
 import com.cw.audio7.folder.FolderUi;
 import com.cw.audio7.main.MainAct;
-import com.cw.audio7.operation.audio.Audio_manager;
 import com.cw.audio7.R;
-import com.cw.audio7.operation.audio.BackgroundAudioService;
+import com.cw.audio7.audio.Audio_manager;
+import com.cw.audio7.audio.BackgroundAudioService;
 import com.cw.audio7.tabs.TabsHost;
-import com.cw.audio7.util.ColorSet;
 import com.cw.audio7.util.Util;
 
 import android.app.Activity;
 import android.media.MediaPlayer;
 import android.net.Uri;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 //import static android.content.Context.TELEPHONY_SERVICE;
 

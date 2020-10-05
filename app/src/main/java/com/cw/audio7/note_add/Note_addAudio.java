@@ -18,8 +18,8 @@ package com.cw.audio7.note_add;
 
 import java.io.File;
 
-import com.cw.audio7.operation.audio.Audio_manager;
-import com.cw.audio7.operation.audio.AudioPlayer_page;
+import com.cw.audio7.audio.Audio_manager;
+import com.cw.audio7.audio.AudioPlayer_page;
 import com.cw.audio7.R;
 import com.cw.audio7.db.DB_page;
 import com.cw.audio7.page.PageUi;
