@@ -291,6 +291,9 @@ public class Note extends Fragment
 		System.out.println("Note / _onPause");
 
 		isPagerActive = false;
+
+		// disable full screen
+		Util.setNormalScreen(act);
 	}
 	
 	@Override

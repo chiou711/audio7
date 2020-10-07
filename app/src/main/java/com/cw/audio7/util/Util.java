@@ -1288,66 +1288,18 @@ public class Util
 	// set full screen for no immersive sticky
 	public static void setFullScreen_noImmersive(Activity act)
 	{
-//		System.out.println("Util / _setFullScreen_noImmersive");
-		Window win = act.getWindow();
-
-		if (Build.VERSION.SDK_INT < 16)
-		{
-			win.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-			win.setFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN,
-					WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
-		}
-		else
-		{
-			// show the status bar and navigation bar
-			View decorView = act.getWindow().getDecorView();
-			int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;//full screen
-			decorView.setSystemUiVisibility(uiOptions);
-		}
+		// show the status bar and navigation bar
+		View decorView = act.getWindow().getDecorView();
+		int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;//full screen
+		decorView.setSystemUiVisibility(uiOptions);
 	}
 
-	// Create assets file
-	public static File createAssetsFile(Activity act, String fileName)
+	// set normal screen
+	public static void setNormalScreen(Activity act)
 	{
-		System.out.println("Util / _createAssetsFile / fileName = " + fileName);
-
-        File file = null;
-		AssetManager am = act.getAssets();
-		InputStream inputStream = null;
-		try {
-			inputStream = am.open(fileName);
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
-
-		// main directory
-		String dirString = Environment.getExternalStorageDirectory().toString() +
-				"/" + Util.getStorageDirName(act);
-
-		File dir = new File(dirString);
-		if(!dir.isDirectory())
-			dir.mkdir();
-
-		String filePath = dirString + "/" + fileName;
-
-        if((inputStream != null)) {
-            try {
-                file = new File(filePath);
-                OutputStream outputStream = new FileOutputStream(file);
-                byte buffer[] = new byte[1024];
-                int length = 0;
-
-                while ((length = inputStream.read(buffer)) > 0) {
-                    outputStream.write(buffer, 0, length);
-                }
-                inputStream.close();
-                outputStream.close();
-            } catch (IOException e) {
-	            //Logging exception
-            	e.printStackTrace();
-            }
-        }
-		return file;
+		View decorView = act.getWindow().getDecorView();
+		int uiOptions = View.SYSTEM_UI_FLAG_VISIBLE;//not full screen
+		decorView.setSystemUiVisibility(uiOptions);
 	}
 
 	// Get external storage path for different devices
