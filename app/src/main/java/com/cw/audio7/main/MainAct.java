@@ -380,24 +380,24 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
         switch (keyCode) {
             case KeyEvent.KEYCODE_MEDIA_PREVIOUS: //88
                 if(TabsHost.audioUi_page != null)
-                    TabsHost.audioUi_page.audioPanel_previous_btn.performClick();
+                    TabsHost.audioUi_page.audio_previous_btn.performClick();
                 return true;
 
             case KeyEvent.KEYCODE_MEDIA_NEXT: //87
                 if(TabsHost.audioUi_page != null)
-                    TabsHost.audioUi_page.audioPanel_next_btn.performClick();
+                    TabsHost.audioUi_page.audio_next_btn.performClick();
                 return true;
 
             case KeyEvent.KEYCODE_MEDIA_PLAY: //126
                 if(TabsHost.audioUi_page != null)
-                    TabsHost.audioUi_page.audioPanel_play_button.performClick();
+                    TabsHost.audioUi_page.audio_play_btn.performClick();
                 else
                     playFirstAudio();
                 return true;
 
             case KeyEvent.KEYCODE_MEDIA_PAUSE: //127
                 if(TabsHost.audioUi_page != null)
-                    TabsHost.audioUi_page.audioPanel_play_button.performClick();
+                    TabsHost.audioUi_page.audio_play_btn.performClick();
                 return true;
 
             case KeyEvent.KEYCODE_BACK:
@@ -1440,8 +1440,11 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
         // initial
         BackgroundAudioService.mMediaPlayer = null;//for first
 
+        String uriString = new DB_page(mAct,TabsHost.getCurrentPageTableId())
+                .getNoteAudioUri(0,true);
+
         if(TabsHost.audioUi_page == null)
-            TabsHost.audioUi_page = new AudioUi_page(this);
+            TabsHost.audioUi_page = new AudioUi_page(this,uriString);
 
         TabsHost.audioUi_page.initAudioBlock(this);
 
@@ -1455,8 +1458,8 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
         TabsHost.audioPlayTabPos = TabsHost.getFocus_tabPos();
         TabsHost.mTabsPagerAdapter.notifyDataSetChanged();
 
-        TabsHost.audioUi_page.updateAudioPanel_page(TabsHost.audioUi_page.audioPanel_play_button,
-                TabsHost.audioUi_page.audio_panel_title_textView);
+        TabsHost.audioUi_page.updateAudioPanel_page(TabsHost.audioUi_page.audio_play_btn,
+                TabsHost.audioUi_page.audio_title);
 
         // update playing page position
         mPlaying_pagePos = TabsHost.getFocus_tabPos();

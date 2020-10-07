@@ -557,7 +557,7 @@ public class FolderUi
         TabsHost tabsHost = new TabsHost();
 
 	    FragmentTransaction fragmentTransaction = MainAct.mAct.getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.content_frame, tabsHost).commit();
+        fragmentTransaction.replace(R.id.content_frame, tabsHost).commitAllowingStateLoss();
 	    MainAct.mAct.getSupportFragmentManager().executePendingTransactions();
     };
     

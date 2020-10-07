@@ -156,8 +156,8 @@ public class Note extends Fragment
 
 		if(UtilAudio.hasAudioExtension(mAudioUriInDB) ||
 				UtilAudio.hasAudioExtension(Util.getDisplayNameByUriString(mAudioUriInDB, act)[0])) {
-			audioUi_note = new AudioUi_note(act, mAudioUriInDB,rootView);
-			audioUi_note.init_audio_block();
+			audioUi_note = new AudioUi_note(act, rootView);
+			audioUi_note.initAudioBlock(mAudioUriInDB);
 		}
 
 		// Instantiate a ViewPager and a PagerAdapter.
@@ -195,9 +195,8 @@ public class Note extends Fragment
 			System.out.println("Note / _onPageSelected / mAudioUriInDB = " + mAudioUriInDB);
 
 			if(UtilAudio.hasAudioExtension(mAudioUriInDB)) {
-                audioUi_note = new AudioUi_note(act, mAudioUriInDB,rootView);
-                audioUi_note.init_audio_block();
-                audioUi_note.showAudioBlock();
+                audioUi_note = new AudioUi_note(act, rootView);
+                audioUi_note.initAudioBlock(mAudioUriInDB);
             }
 
             setOutline(act);
@@ -415,7 +414,7 @@ public class Note extends Fragment
 
 			case KeyEvent.KEYCODE_MEDIA_PLAY: //126
 			case KeyEvent.KEYCODE_MEDIA_PAUSE: //127
-				audioUi_note.mPager_audio_play_button.performClick();
+				audioUi_note.audio_play_btn.performClick();
 				return true;
 
 			case KeyEvent.KEYCODE_BACK:

@@ -246,14 +246,7 @@ public class Note_adapter extends FragmentStatePagerAdapter
 			if(UtilAudio.hasAudioExtension(audioUri) ||
                UtilAudio.hasAudioExtension(Util.getDisplayNameByUriString(audioUri, act)[0] ))
 			{
-				audioUi_note.initAudioProgress(act,audioUri);
-
-				if(Audio_manager.getAudioPlayMode() == Audio_manager.NOTE_PLAY_MODE)
-				{
-					if (Audio_manager.getPlayerState() != Audio_manager.PLAYER_AT_STOP)
-						audioUi_note.updateAudioProgress();
-				}
-
+				audioUi_note.initAudioBlock(audioUri);
 				audioUi_note.updateAudioPanel_note(act);
 			}
 			else
@@ -262,7 +255,7 @@ public class Note_adapter extends FragmentStatePagerAdapter
 			//auto play
 			System.out.println("Note_adapter / _setPrimaryItem / auto play ");
 			if(Audio_manager.getPlayerState() == Audio_manager.PLAYER_AT_STOP)
-				audioUi_note.mPager_audio_play_button.performClick(); // todo This is the best way?
+				audioUi_note.audio_play_btn.performClick(); // todo This is the best way?
 		}
 	    mLastPosition = position;
 	    

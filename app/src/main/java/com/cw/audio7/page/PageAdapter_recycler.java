@@ -470,6 +470,7 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
 //                TabsHost.reloadCurrentPage();// after Drag and drop: this is needed to update thumb nail and title
 
                 Audio_manager.setAudioPlayMode(Audio_manager.PAGE_PLAY_MODE);
+
                 DB_page db_page = new DB_page(mAct, TabsHost.getCurrentPageTableId());
                 int notesCount = db_page.getNotesCount(true);
                 if(position >= notesCount) //end of list
@@ -508,7 +509,7 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
                         Audio_manager.setAudioPlayMode(Audio_manager.PAGE_PLAY_MODE);
 
                         if(TabsHost.audioUi_page == null)
-                            TabsHost.audioUi_page = new AudioUi_page(mAct);
+                            TabsHost.audioUi_page = new AudioUi_page(mAct,uriString);
 
                         TabsHost.audioUi_page.initAudioBlock(MainAct.mAct);
 
@@ -522,8 +523,8 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
                         TabsHost.audioPlayTabPos = page_pos;
 
                         // update audio panel
-                        TabsHost.audioUi_page.updateAudioPanel_page(TabsHost.audioUi_page.audioPanel_play_button,
-                                TabsHost.audioUi_page.audio_panel_title_textView);
+                        TabsHost.audioUi_page.updateAudioPanel_page(TabsHost.audioUi_page.audio_play_btn,
+                                TabsHost.audioUi_page.audio_title);
 
                         // update playing page position
                         MainAct.mPlaying_pagePos = TabsHost.getFocus_tabPos();

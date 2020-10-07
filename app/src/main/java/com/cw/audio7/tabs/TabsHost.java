@@ -392,8 +392,8 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
 
             audioPlayer_page.page_runnable.run();
 
-            audioUi_page.updateAudioPanel_page(audioUi_page.audioPanel_play_button,
-                                       audioUi_page.audio_panel_title_textView);
+            audioUi_page.updateAudioPanel_page(audioUi_page.audio_play_btn,
+                                       audioUi_page.audio_title);
         }
 
         // set long click listener

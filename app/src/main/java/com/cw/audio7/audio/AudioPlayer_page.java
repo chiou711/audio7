@@ -36,8 +36,6 @@ import com.cw.audio7.util.Util;
 import com.cw.audio7.util.audio.UtilAudio;
 import com.cw.audio7.util.preferences.Pref;
 
-import java.util.Locale;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -48,11 +46,11 @@ public class AudioPlayer_page
 	private static final int DURATION_1S = 1000; // 1 seconds per slide
     private static Audio_manager mAudioManager; // slide show being played
 	private static int mAudio_tryTimes; // use to avoid useless looping in Continue mode
-    private AppCompatActivity act;
-    private Async_audioUrlVerify mAudioUrlVerifyTask;
-	private AudioUi_page audioUi_page;
+    static private AppCompatActivity act;
+    static private Async_audioUrlVerify mAudioUrlVerifyTask;
+	static private AudioUi_page audioUi_page;
     public static Handler mAudioHandler;
-    private int notesCount;
+    static private int notesCount;
 
 	public AudioPlayer_page(AppCompatActivity act, AudioUi_page audioUi_page){
 		this.act = act;
@@ -159,7 +157,7 @@ public class AudioPlayer_page
     /**
      * Set audio listeners
      */
-	private void setAudioListeners()
+	static private void setAudioListeners()
     {
         // on prepared
         BackgroundAudioService.mMediaPlayer.setOnPreparedListener(new OnPreparedListener() {
@@ -207,7 +205,7 @@ public class AudioPlayer_page
     }
 
 	// set list view footer audio control
-	private void showAudioPanel(AppCompatActivity act,boolean enable)
+	static private void showAudioPanel(AppCompatActivity act,boolean enable)
 	{
 //		System.out.println("AudioPlayer_page / _showAudioPanel / enable = " + enable);
 
@@ -252,8 +250,8 @@ public class AudioPlayer_page
     /**
      * Continue mode runnable
      */
-	private String audioUrl_page;
-	public Runnable page_runnable = new Runnable() {
+	static private String audioUrl_page;
+	public static Runnable page_runnable = new Runnable() {
 		@Override
 		public void run() {
 //			System.out.println("AudioPlayer_page / _page_runnable");
@@ -327,23 +325,23 @@ public class AudioPlayer_page
 
 						// play previous
 						if (Audio_manager.isPlayPrevious()) {
-							TabsHost.audioUi_page.audioPanel_previous_btn.performClick();
+							TabsHost.audioUi_page.audio_previous_btn.performClick();
 							Audio_manager.setPlayPrevious(false);
 						}
 
 						// play next
 						if (Audio_manager.isPlayNext()) {
-							TabsHost.audioUi_page.audioPanel_next_btn.performClick();
+							TabsHost.audioUi_page.audio_next_btn.performClick();
 							Audio_manager.setPlayNext(false);
 						}
 					} else {
 						// update page audio seek bar
 						if (audioUi_page != null)
-							update_audioPanel_progress(audioUi_page);
+							audioUi_page.updateAudioProgress();
 
 						// toggle play / pause
 						if(Audio_manager.isTogglePlayerState()) {
-							TabsHost.audioUi_page.updateAudioPanel_page(TabsHost.audioUi_page.audioPanel_play_button,TabsHost.audioUi_page.audio_panel_title_textView);
+							TabsHost.audioUi_page.updateAudioPanel_page(TabsHost.audioUi_page.audio_play_btn,TabsHost.audioUi_page.audio_title);
 							if(TabsHost.getCurrentPage().itemAdapter != null)
 								TabsHost.getCurrentPage().itemAdapter.notifyDataSetChanged();
 							Audio_manager.setTogglePlayerState(false);
@@ -369,7 +367,7 @@ public class AudioPlayer_page
 		}
 	};
 
-	private void stopHandler()
+	static private void stopHandler()
     {
         if(mAudioHandler != null) {
             mAudioHandler.removeCallbacks(page_runnable);
@@ -377,7 +375,7 @@ public class AudioPlayer_page
         }
     }
 
-    private void stopAsyncTask()
+    static private void stopAsyncTask()
     {
         // stop async task
         // make sure progress dialog will disappear
@@ -425,7 +423,7 @@ public class AudioPlayer_page
 	* In order to view audio highlight item, playing(highlighted) audio item can be auto scrolled to top,
 	* unless it is at the end page of list view, there is no need to scroll.
 	*/
-	public void scrollPlayingItemToBeVisible(RecyclerView recyclerView)
+	static public void scrollPlayingItemToBeVisible(RecyclerView recyclerView)
 	{
 		System.out.println("AudioPlayer_page / _scrollPlayingItemToBeVisible");
         if ( (recyclerView == null) ||
@@ -522,7 +520,7 @@ public class AudioPlayer_page
     /**
      * Start new audio
      */
-    private void startNewAudio_page()
+    static private void startNewAudio_page()
     {
         System.out.println("AudioPlayer_page / _startNewAudio_page / Audio_manager.mAudioPos = " + Audio_manager.mAudioPos);
 
@@ -599,7 +597,7 @@ public class AudioPlayer_page
     /**
      * Play next audio at AudioPlayer_page
      */
-    private void play_nextAudio()
+    static private void play_nextAudio()
     {
 //		Toast.makeText(act,"Can not open file, try next one.",Toast.LENGTH_SHORT).show();
         System.out.println("AudioPlayer_page / _playNextAudio");
@@ -638,38 +636,4 @@ public class AudioPlayer_page
         System.out.println("AudioPlayer_page / _playNextAudio / Audio_manager.mAudioPos = " + Audio_manager.mAudioPos);
     }
 
-    private void update_audioPanel_progress(AudioUi_page audioUi_page)
-    {
-//        if(!listView.isShown())
-//            return;
-
-//		System.out.println("AudioPlayer_page / _update_audioPanel_progress");
-
-        // get current playing position
-        int currentPos = 0;
-        if(BackgroundAudioService.mMediaPlayer != null)
-            currentPos = BackgroundAudioService.mMediaPlayer.getCurrentPosition();
-
-        int curHour = Math.round((float)(currentPos / 1000 / 60 / 60));
-        int curMin = Math.round((float)((currentPos - curHour * 60 * 60 * 1000) / 1000 / 60));
-        int curSec = Math.round((float)((currentPos - curHour * 60 * 60 * 1000 - curMin * 60 * 1000)/ 1000));
-
-        // set current playing time
-	    if(media_file_length != 0) {
-		    audioUi_page.audioPanel_curr_pos.setText(String.format(Locale.US, "%2d", curHour) + ":" +
-				    String.format(Locale.US, "%02d", curMin) + ":" +
-				    String.format(Locale.US, "%02d", curSec));//??? why affect audio title?
-	    }
-	    else {
-		    audioUi_page.audioPanel_curr_pos.setText(String.format(Locale.US, "%2d", 0) + ":" +
-				    String.format(Locale.US, "%02d", 0) + ":" +
-				    String.format(Locale.US, "%02d", 0));
-	    }
-
-        // set current progress
-        AudioUi_page.mProgress = (int)(((float)currentPos/ media_file_length)*100);
-
-        if(media_file_length > 0 )
-            audioUi_page.seekBarProgress.setProgress(AudioUi_page.mProgress); // This math construction give a percentage of "was playing"/"media length"
-    }
 }
