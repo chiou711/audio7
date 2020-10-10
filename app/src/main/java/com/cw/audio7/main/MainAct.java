@@ -815,9 +815,8 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
 
             drawer.drawerToggle.syncState(); // make sure toggle icon state is correct
 
-            // stop audio play at Note
-            if(Audio_manager.isRunnableOn_note)
-                Audio_manager.stopAudioPlayer();
+            // todo Temp design
+            // do nothing about audio when back key pressed
         }
     }
 
@@ -1191,7 +1190,8 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                     Audio_manager.stopAudioPlayer();
 
                     // remove audio panel
-                    TabsHost.audioPlayer_page.page_runnable.run();
+                    if(TabsHost.audioPlayer_page != null)
+                        TabsHost.audioPlayer_page.page_runnable.run();
 
                     // refresh
                     TabsHost.reloadCurrentPage();

@@ -39,7 +39,7 @@ public class Audio_manager
     public static int PLAYER_AT_STOP = 0;
     public static int PLAYER_AT_PLAY = 1;
     public static int PLAYER_AT_PAUSE = 2;
-    public static boolean isRunnableOn_note;
+	public static boolean isRunnableOn;
     public static boolean isRunnableOn_page;
     public static int mAudioPos; // index of current media to play
 
@@ -131,10 +131,10 @@ public class Audio_manager
         }
 
         // stop handler and set flag to remove runnable
-        if( AudioPlayer_page.mAudioHandler != null)
-            Audio_manager.isRunnableOn_page = false;
-        else if(AudioPlayer_note.mAudioHandler != null)
-            Audio_manager.isRunnableOn_note = false;
+	    if( AudioPlayer.mAudioHandler != null)
+		    Audio_manager.isRunnableOn = false;
+	    if( AudioPlayer_page.mAudioHandler != null)
+		    Audio_manager.isRunnableOn_page = false;
 
         Audio_manager.setPlayerState(Audio_manager.PLAYER_AT_STOP);
 

@@ -239,23 +239,21 @@ public class Note_adapter extends FragmentStatePagerAdapter
 				textWebView.onResume();
 			}
 
-            ViewGroup audioBlock = (ViewGroup) act.findViewById(R.id.audioGroup);
-            audioBlock.setVisibility(View.VISIBLE);
+            ViewGroup audioPanel = (ViewGroup) act.findViewById(R.id.audioGroup);
 
-			// init audio block of pager
+			// init audio panel of pager
 			if(UtilAudio.hasAudioExtension(audioUri) ||
                UtilAudio.hasAudioExtension(Util.getDisplayNameByUriString(audioUri, act)[0] ))
-			{
-				audioUi_note.initAudioBlock(audioUri);
-				audioUi_note.updateAudioPanel_note(act);
-			}
+				audioPanel.setVisibility(View.VISIBLE);
 			else
-				audioBlock.setVisibility(View.GONE);
+				audioPanel.setVisibility(View.GONE);
 
 			//auto play
 			System.out.println("Note_adapter / _setPrimaryItem / auto play ");
-			if(Audio_manager.getPlayerState() == Audio_manager.PLAYER_AT_STOP)
-				audioUi_note.audio_play_btn.performClick(); // todo This is the best way?
+
+			// first audio play
+			Audio_manager.stopAudioPlayer();
+			audioUi_note.audio_play_btn.performClick();
 		}
 	    mLastPosition = position;
 	    

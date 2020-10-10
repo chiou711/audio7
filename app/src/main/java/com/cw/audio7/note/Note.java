@@ -92,8 +92,6 @@ public class Note extends Fragment
 		mEntryPosition = arguments.getInt("POSITION");
 		NoteUi.setFocus_notePos(mEntryPosition);
 
-		Audio_manager.isRunnableOn_note = false;
-
 		act = MainAct.mAct;
 		setHasOptionsMenu(true);
 	}
@@ -156,8 +154,7 @@ public class Note extends Fragment
 
 		if(UtilAudio.hasAudioExtension(mAudioUriInDB) ||
 				UtilAudio.hasAudioExtension(Util.getDisplayNameByUriString(mAudioUriInDB, act)[0])) {
-			audioUi_note = new AudioUi_note(act, rootView);
-			audioUi_note.initAudioBlock(mAudioUriInDB);
+			audioUi_note = new AudioUi_note(act, rootView, mAudioUriInDB);
 		}
 
 		// Instantiate a ViewPager and a PagerAdapter.
@@ -195,11 +192,10 @@ public class Note extends Fragment
 			System.out.println("Note / _onPageSelected / mAudioUriInDB = " + mAudioUriInDB);
 
 			if(UtilAudio.hasAudioExtension(mAudioUriInDB)) {
-                audioUi_note = new AudioUi_note(act, rootView);
-                audioUi_note.initAudioBlock(mAudioUriInDB);
+                audioUi_note = new AudioUi_note(act, rootView,mAudioUriInDB);
             }
 
-            setOutline(act);
+			setOutline(act);
 		}
 	};
 
@@ -283,6 +279,7 @@ public class Note extends Fragment
 			IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_ACL_CONNECTED);
 			act.registerReceiver(mReceiver, filter);
 		}
+
 	}
 	
 	@Override
@@ -300,12 +297,6 @@ public class Note extends Fragment
 	public void onDestroy() {
 		super.onDestroy();
 		System.out.println("Note / _onDestroy");
-
-		if(Audio_manager.isRunnableOn_note) {
-			BackgroundAudioService.mIsPrepared = false;
-			BackgroundAudioService.mMediaPlayer = null;
-			Audio_manager.isRunnableOn_note = false;
-		}
 	}
 
     // for menu buttons
@@ -398,7 +389,7 @@ public class Note extends Fragment
 
 				BackgroundAudioService.mIsPrepared = false;
 				BackgroundAudioService.mMediaPlayer = null;
-				Audio_manager.isRunnableOn_page = false;
+				Audio_manager.isRunnableOn = false;
 				return true;
 
 			case KeyEvent.KEYCODE_MEDIA_NEXT: //87
@@ -412,7 +403,7 @@ public class Note extends Fragment
 
 				BackgroundAudioService.mIsPrepared = false;
 				BackgroundAudioService.mMediaPlayer = null;
-				Audio_manager.isRunnableOn_page = false;
+				Audio_manager.isRunnableOn = false;
 				return true;
 
 			case KeyEvent.KEYCODE_MEDIA_PLAY: //126
