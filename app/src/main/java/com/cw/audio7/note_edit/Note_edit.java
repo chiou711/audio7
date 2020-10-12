@@ -16,8 +16,8 @@
 
 package com.cw.audio7.note_edit;
 
+import com.cw.audio7.audio.Audio7Player;
 import com.cw.audio7.audio.Audio_manager;
-import com.cw.audio7.audio.AudioPlayer_page;
 import com.cw.audio7.page.Page_recycler;
 import com.cw.audio7.R;
 import com.cw.audio7.db.DB_page;
@@ -149,7 +149,7 @@ public class Note_edit extends Activity
 
 
 								if(PageUi.isAudioPlayingPage())
-									AudioPlayer_page.prepareAudioInfo();
+									Audio7Player.prepareAudioInfo();
 
 								// Stop Play/Pause if current edit item is played and is not at Stop state
 								if(Page_recycler.mHighlightPosition == position)

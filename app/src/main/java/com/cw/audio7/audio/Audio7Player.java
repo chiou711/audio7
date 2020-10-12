@@ -46,7 +46,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class AudioPlayer
+public class Audio7Player
 {
 	private static final String TAG = "AUDIO_PLAYER"; // error logging tag
 	private static final int DURATION_1S = 1000; // 1 seconds per slide
@@ -54,17 +54,17 @@ public class AudioPlayer
 	private static int mAudio_tryTimes; // use to avoid useless looping in Continue mode
     static private AppCompatActivity act;
     static private Async_audioUrlVerify mAudioUrlVerifyTask;
-	static private ViewGroup audioPanel;
+	public ViewGroup audio_panel;
     public static Handler mAudioHandler;
     static private int notesCount;
 
-	public AudioPlayer(AppCompatActivity act, ViewGroup audio_panel,String audio_uri_str){
+	public Audio7Player(AppCompatActivity act, ViewGroup audio_panel, String audio_uri_str){
 		this.act = act;
-		this.audioPanel = audio_panel;
+		this.audio_panel = audio_panel;
 
 		initAudioBlock(audio_uri_str);
 
-		System.out.println("AudioPlayer / constructor ");
+		System.out.println("Audio7Player / constructor ");
 		// start a new handler
         mAudioHandler = new Handler();
 
@@ -87,7 +87,12 @@ public class AudioPlayer
      */
     public void runAudioState()
 	{
-	   	System.out.println("AudioPlayer / _runAudioState ");
+	   	System.out.println("Audio7Player / _runAudioState ");
+
+	   	if(audio_panel != null)
+			audio_panel.setVisibility(View.VISIBLE);
+	   	else
+		    System.out.println("Audio7Player / _runAudioState / audio_panel = null ");
 
 	   	// if media player is null, set new fragment
 		if(BackgroundAudioService.mMediaPlayer == null)//for first
@@ -132,7 +137,7 @@ public class AudioPlayer
 			// from play to pause
 			if(BackgroundAudioService.mMediaPlayer.isPlaying())
 			{
-				System.out.println("AudioPlayer / _runAudioState / play -> pause");
+				System.out.println("Audio7Player / _runAudioState / play -> pause");
                 Audio_manager.setPlayerState(Audio_manager.PLAYER_AT_PAUSE);
 
                 //for pause
@@ -143,7 +148,7 @@ public class AudioPlayer
 			}
 			else // from pause to play
 			{
-				System.out.println("AudioPlayer / _runAudioState / pause -> play");
+				System.out.println("Audio7Player / _runAudioState / pause -> play");
 				mAudio_tryTimes = 0;
 
                 Audio_manager.setPlayerState(Audio_manager.PLAYER_AT_PLAY);
@@ -166,7 +171,7 @@ public class AudioPlayer
         BackgroundAudioService.mMediaPlayer.setOnPreparedListener(new OnPreparedListener() {
             @Override
             public void onPrepared(MediaPlayer mp) {
-                System.out.println("AudioPlayer / _setAudioListeners / onPrepared");
+                System.out.println("Audio7Player / _setAudioListeners / onPrepared");
                 BackgroundAudioService.mIsPrepared = true;
                 BackgroundAudioService.mMediaPlayer.start();
                 BackgroundAudioService.mMediaPlayer.seekTo(0);
@@ -177,7 +182,7 @@ public class AudioPlayer
         BackgroundAudioService.mMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mp) {
-                System.out.println("AudioPlayer / _setAudioListeners / onCompletion");
+                System.out.println("Audio7Player / _setAudioListeners / onCompletion");
                 if(BackgroundAudioService.mMediaPlayer != null)
                     BackgroundAudioService.mMediaPlayer.release();
 
@@ -191,7 +196,7 @@ public class AudioPlayer
             @Override
             public boolean onError(MediaPlayer mp, int what, int extra) {
                 // more than one error when playing an index
-                System.out.println("AudioPlayer / _setAudioListeners / _onError / what = " + what + " , extra = " + extra);
+                System.out.println("Audio7Player / _setAudioListeners / _onError / what = " + what + " , extra = " + extra);
                 return false;
             }
         });
@@ -200,7 +205,7 @@ public class AudioPlayer
         BackgroundAudioService.mMediaPlayer.setOnBufferingUpdateListener(new MediaPlayer.OnBufferingUpdateListener() {
             @Override
             public void onBufferingUpdate(MediaPlayer mp, int percent) {
-                System.out.println("AudioPlayer / _setAudioListeners / _onBufferingUpdate");
+                System.out.println("Audio7Player / _setAudioListeners / _onBufferingUpdate");
                 if (TabsHost.getCurrentPage().seekBarProgress != null)
                     TabsHost.getCurrentPage().seekBarProgress.setSecondaryProgress(percent);
             }
@@ -208,34 +213,36 @@ public class AudioPlayer
     }
 
 	// set list view footer audio control
-	static private void showAudioPanel(AppCompatActivity act,boolean enable)
+	private void showAudioPanel(AppCompatActivity act,boolean enable)
 	{
-//		System.out.println("AudioPlayer / _showAudioPanel / enable = " + enable);
-		View audio_panel = act.findViewById(R.id.audio_panel);
+		System.out.println("Audio7Player / _showAudioPanel / enable = " + enable);
         if(audio_panel != null) {
-            TextView audio_panel_title_textView = (TextView) audio_panel.findViewById(R.id.audio_panel_title);
-            SeekBar seekBarProgress = (SeekBar) audio_panel.findViewById(R.id.audioPanel_seek_bar);
+            TextView audio_panel_title_textView = (TextView) audio_panel.findViewById(R.id.audio_title);
+            SeekBar seekBarProgress = (SeekBar) audio_panel.findViewById(R.id.seek_bar);
 
             // show audio panel
             if (enable) {
-                audio_panel.setVisibility(View.VISIBLE);
-                audio_panel_title_textView.setVisibility(View.VISIBLE);
+	            audio_panel.setVisibility(View.VISIBLE);
+                if(audio_panel_title_textView != null)
+                    audio_panel_title_textView.setVisibility(View.VISIBLE);
 
                 // set footer message with audio name
                 String audioStr = Audio_manager.getAudioStringAt(Audio_manager.mAudioPos);
                 String[] audioName = Util.getDisplayNameByUriString(audioStr, act);
-                audio_panel_title_textView.setText(audioName[0] .concat(" / ").concat(audioName[1]));
+                if(audio_panel_title_textView != null)
+                    audio_panel_title_textView.setText(audioName[0] .concat(" / ").concat(audioName[1]));
 
                 // show audio playing item number
                 TextView audioPanel_audio_number = (TextView) audio_panel.findViewById(R.id.audioPanel_audio_number);
                 String message = act.getResources().getString(R.string.menu_button_play) +
                         "#" +
                         (Audio_manager.mAudioPos +1);
-                audioPanel_audio_number.setText(message);
+                if(audioPanel_audio_number !=  null)
+                    audioPanel_audio_number.setText(message);
 
                 seekBarProgress.setVisibility(View.VISIBLE);
             } else {
-                audio_panel.setVisibility(View.GONE);
+	            audio_panel.setVisibility(View.GONE);
             }
         }
 	}
@@ -256,20 +263,17 @@ public class AudioPlayer
 	public Runnable audio_runnable = new Runnable() {
 		@Override
 		public void run() {
-//			System.out.println("AudioPlayer / _audio_runnable");
+//			System.out.println("Audio7Player / _audio_runnable");
 			if( !Audio_manager.isRunnableOn)
 			{
 				stopHandler();
 				stopAsyncTask();
 
-				if( (!Pref.getPref_cyclic_play_enable(act))   ) {
+				if( (Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE) &&
+					(!Pref.getPref_cyclic_play_enable(act))   ) {
 					Audio_manager.stopAudioPlayer();
 					showAudioPanel(act, false);
 				}
-
-				if ((audioPanel != null) &&
-					(Audio_manager.getPlayerState() == Audio_manager.PLAYER_AT_STOP))
-					showAudioPanel(act, false);
 
 				return;
 			}
@@ -277,8 +281,10 @@ public class AudioPlayer
 			if (Audio_manager.getCheckedAudio(Audio_manager.mAudioPos) == 1) {
 
 				// for incoming call case and after Key protection
-				if (!isAudioPanelOn(act))
+				if (  (Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE) &&
+						!isAudioPanelOn(act) ) {
 					showAudioPanel(act, true);
+				}
 
 				// check if audio file exists or not
 				audioUrl_page = Audio_manager.getAudioStringAt(Audio_manager.mAudioPos);
@@ -331,14 +337,20 @@ public class AudioPlayer
 							Audio_manager.setPlayNext(false);
 						}
 					} else {
-						// update page audio progress
+						/** update page audio progress */
 						updateAudioProgress();
 
 						// toggle play / pause
 						if(Audio_manager.isTogglePlayerState()) {
+
+							/** update audio panel  */
 							updateAudioPanel(act);
-							if(TabsHost.getCurrentPage().itemAdapter != null)
+
+							if(  (Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE) &&
+								 (TabsHost.getCurrentPage().itemAdapter != null)  ) {
 								TabsHost.getCurrentPage().itemAdapter.notifyDataSetChanged();
+							}
+
 							Audio_manager.setTogglePlayerState(false);
 						}
 
@@ -351,7 +363,7 @@ public class AudioPlayer
 			}
 			else if( (Audio_manager.getCheckedAudio(Audio_manager.mAudioPos) == 0 ) )// for non-audio item
 			{
-//	   			System.out.println("AudioPlayer / audio_runnable / for non-audio item");
+//	   			System.out.println("Audio7Player / audio_runnable / for non-audio item");
 //				audio_next_btn.performClick();
 
 				if(Audio_manager.getAudioPlayMode() == Audio_manager.NOTE_PLAY_MODE) {
@@ -424,7 +436,7 @@ public class AudioPlayer
 	*/
 	static public void scrollPlayingItemToBeVisible(RecyclerView recyclerView)
 	{
-		System.out.println("AudioPlayer / _scrollPlayingItemToBeVisible");
+		System.out.println("Audio7Player / _scrollPlayingItemToBeVisible");
         if ( (recyclerView == null) ||
 		     (recyclerView.getAdapter() == null) ||
 		     (Build.VERSION.SDK_INT < 19)            )
@@ -521,7 +533,7 @@ public class AudioPlayer
      */
     private void startNewAudio()
     {
-        System.out.println("AudioPlayer / _startNewAudio / Audio_manager.mAudioPos = " + Audio_manager.mAudioPos);
+        System.out.println("Audio7Player / _startNewAudio / Audio_manager.mAudioPos = " + Audio_manager.mAudioPos);
 
         // remove call backs to make sure next toast will appear soon
         if(mAudioHandler != null)
@@ -561,7 +573,7 @@ public class AudioPlayer
 			    if ( (Audio_manager.getPlayerState() != Audio_manager.PLAYER_AT_STOP) /*&&
 					 (Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE)*/) {
 				    mAudioHandler.postDelayed(audio_runnable, Util.oneSecond / 4);
-				    System.out.println("AudioPlayer / _startNewAudio / 1st post page_runnable");
+				    System.out.println("Audio7Player / _startNewAudio / 1st post page_runnable");
 			    }
 
 			    // during audio Preparing
@@ -598,7 +610,7 @@ public class AudioPlayer
     private void play_nextAudio()
     {
 //		Toast.makeText(act,"Can not open file, try next one.",Toast.LENGTH_SHORT).show();
-        System.out.println("AudioPlayer / _playNextAudio");
+        System.out.println("Audio7Player / _playNextAudio");
         if(BackgroundAudioService.mMediaPlayer != null)
         {
             BackgroundAudioService.mMediaPlayer.release();
@@ -612,7 +624,7 @@ public class AudioPlayer
             Audio_manager.mAudioPos = 0; //back to first index
 
         // check try times,had tried or not tried yet, anyway the audio file is found
-	    System.out.println("AudioPlayer / check mTryTimes = " + mAudio_tryTimes);
+	    System.out.println("Audio7Player / check mTryTimes = " + mAudio_tryTimes);
 	    if(mAudio_tryTimes < Audio_manager.getAudioFilesCount() )
 	    {
 		    audioUrl_page = Audio_manager.getAudioStringAt(Audio_manager.mAudioPos);
@@ -631,7 +643,7 @@ public class AudioPlayer
 		    // stop media player
 		    Audio_manager.stopAudioPlayer();
 	    }
-        System.out.println("AudioPlayer / _playNextAudio / Audio_manager.mAudioPos = " + Audio_manager.mAudioPos);
+        System.out.println("Audio7Player / _playNextAudio / Audio_manager.mAudioPos = " + Audio_manager.mAudioPos);
     }
 
 	public TextView audio_title;
@@ -650,6 +662,7 @@ public class AudioPlayer
 	// update audio progress
 	public void updateAudioProgress()
 	{
+//		System.out.println("Audio7Player / _updateAudioProgress");
 		int currentPos=0;
 
 		if(BackgroundAudioService.mMediaPlayer != null)
@@ -661,11 +674,10 @@ public class AudioPlayer
 		String curr_time_str = String.format(Locale.ENGLISH,"%2d", curHour)+":" +
 				String.format(Locale.ENGLISH,"%02d", curMin)+":" +
 				String.format(Locale.ENGLISH,"%02d", curSec);
-//		System.out.println("AudioPlayer / _updateAudioProgress / curr_time_str = " + curr_time_str);
+//		System.out.println("Audio7Player / _updateAudioProgress / curr_time_str = " + curr_time_str);
 
 		// set current play time and the play length of audio file
-		if(audio_curr_pos != null)
-		{
+		if(audio_curr_pos != null) {
 			audio_curr_pos.setText(curr_time_str);
 		}
 
@@ -679,10 +691,11 @@ public class AudioPlayer
 	// initialize audio block
 	public void initAudioBlock(String audio_uriStr)
 	{
-		audioPanel.setBackgroundColor(ColorSet.color_black);
+		System.out.println("Audio7Player / _initAudioBlock " );
+		audio_panel.setBackgroundColor(ColorSet.color_black);
 
-		audio_title = (TextView) audioPanel.findViewById(R.id.pager_audio_title); // first setting
-		audio_artist = (TextView) audioPanel.findViewById(R.id.pager_audio_artist);
+		audio_title = (TextView) audio_panel.findViewById(R.id.audio_title); // first setting
+		audio_artist = (TextView) audio_panel.findViewById(R.id.audio_artist);
 
 		audio_title.setTextColor(ColorSet.color_white);
 		if (Util.isLandscapeOrientation(act))
@@ -701,7 +714,7 @@ public class AudioPlayer
 		audio_title.setSelected(false);
 
 		// audio progress
-		audio_curr_pos = (TextView) audioPanel.findViewById(R.id.pager_audio_current_pos);
+		audio_curr_pos = (TextView) audio_panel.findViewById(R.id.audioPanel_current_pos);
 
 		// current position
 		mProgress = 0;
@@ -716,8 +729,8 @@ public class AudioPlayer
 		audio_curr_pos.setTextColor(ColorSet.color_white);
 
 		// audio seek bar
-		audio_seek_bar = (SeekBar) audioPanel.findViewById(R.id.pager_img_audio_seek_bar);
-		audio_length = (TextView) audioPanel.findViewById(R.id.pager_audio_file_length);
+		audio_seek_bar = (SeekBar) audio_panel.findViewById(R.id.seek_bar);
+		audio_length = (TextView) audio_panel.findViewById(R.id.audioPanel_file_length);
 
 		audio_seek_bar.setProgress(mProgress); // This math construction give a percentage of "was playing"/"song length"
 		audio_seek_bar.setMax(99); // It means 100% .0-99
@@ -734,7 +747,7 @@ public class AudioPlayer
 		}
 		catch(Exception e)
 		{
-			System.out.println("AudioPlayer / _initAudioBlock / exception");
+			System.out.println("Audio7Player / _initAudioBlock / exception");
 		}
 		// set audio file length
 		int fileHour = Math.round((float)(mediaFileLength / 1000 / 60 / 60));
@@ -750,25 +763,27 @@ public class AudioPlayer
 		audio_length.setTextColor(ColorSet.color_white);
 
 		// audio buttons
-		audio_previous_btn = (ImageView) audioPanel.findViewById(R.id.audioPanel_previous);
+		audio_previous_btn = (ImageView) audio_panel.findViewById(R.id.audioPanel_previous);
 		audio_previous_btn.setImageResource(R.drawable.ic_media_previous);
 
-		audio_play_btn = (ImageView) audioPanel.findViewById(R.id.pager_btn_audio_play);
+		audio_play_btn = (ImageView) audio_panel.findViewById(R.id.audioPanel_play);
 		audio_play_btn.setImageResource(R.drawable.ic_media_play);
 
-		audio_next_btn = (ImageView) audioPanel.findViewById(R.id.audioPanel_next);
+		audio_next_btn = (ImageView) audio_panel.findViewById(R.id.audioPanel_next);
 		audio_next_btn.setImageResource(R.drawable.ic_media_next);
 	}
 
 	// show audio name //todo Duplicate with AudioUi_note
 	void showAudioName(AppCompatActivity act,String audio_uriStr)
 	{
-		System.out.println("AudioPlayer / _showAudioName / audio_uriStr = " + audio_uriStr);
+		System.out.println("Audio7Player / _showAudioName / audio_uriStr = " + audio_uriStr);
 		// title: set marquee
 		if(Util.isUriExisted(audio_uriStr, act)) {
 			String[] audio_name = Util.getDisplayNameByUriString(audio_uriStr, act);
 			audio_title.setText(audio_name[0] );
-			audio_artist.setText(audio_name[1]);
+
+			if(audio_artist != null)
+				audio_artist.setText(audio_name[1]);
 		}
 		else {
 			audio_title.setText("N/A");
@@ -776,35 +791,42 @@ public class AudioPlayer
 		}
 
 		audio_title.setSelected(false);
-		audio_artist.setSelected(false);
+		if(audio_artist != null)
+			audio_artist.setSelected(false);
 	}
 
 	// update note audio panel
 	public void updateAudioPanel(AppCompatActivity act)
 	{
-		System.out.println("AudioPlayer / _updateAudioPanel");
+		System.out.println("Audio7Player / _updateAudioPanel");
 
 		// update playing state
 		if(Audio_manager.getPlayerState() == Audio_manager.PLAYER_AT_PLAY)
 		{
-			System.out.println("AudioPlayer / _updateAudioPanel / at play");
+			System.out.println("Audio7Player / _updateAudioPanel / at play");
 			audio_play_btn.setImageResource(R.drawable.ic_media_pause);
 			showAudioName(act, Audio_manager.getAudioStringAt(Audio_manager.mAudioPos));
 			audio_title.setTextColor(ColorSet.getHighlightColor(act) );
 			audio_title.setSelected(true);
-			audio_artist.setTextColor(ColorSet.getHighlightColor(act) );
-			audio_artist.setSelected(true);
+
+			if(audio_artist != null) {
+				audio_artist.setTextColor(ColorSet.getHighlightColor(act));
+				audio_artist.setSelected(true);
+			}
 		}
 		else if( (Audio_manager.getPlayerState() == Audio_manager.PLAYER_AT_PAUSE) ||
 				(Audio_manager.getPlayerState() == Audio_manager.PLAYER_AT_STOP)    )
 		{
-			System.out.println("AudioPlayer / _updateAudioPanel / not at play");
+			System.out.println("Audio7Player / _updateAudioPanel / not at play");
 			audio_play_btn.setImageResource(R.drawable.ic_media_play);
 			showAudioName(act, Audio_manager.getAudioStringAt(Audio_manager.mAudioPos));
 			audio_title.setTextColor(ColorSet.getPauseColor(act));
 			audio_title.setSelected(false);
-			audio_artist.setTextColor(ColorSet.getPauseColor(act));
-			audio_artist.setSelected(false);
+
+			if(audio_artist != null) {
+				audio_artist.setTextColor(ColorSet.getPauseColor(act));
+				audio_artist.setSelected(false);
+			}
 		}
 	}
 

@@ -548,7 +548,7 @@ public class FolderUi
         mHandler = new Handler();
         mHandler.post(mTabsHostRun);
     }
-    
+
     public static Handler mHandler;
     // runnable to launch folder host, (press alt+enter to get lambda)
     public static Runnable mTabsHostRun = () -> {

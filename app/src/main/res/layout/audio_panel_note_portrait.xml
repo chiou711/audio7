@@ -14,7 +14,7 @@
         android:background="@drawable/audio_bg"
         android:orientation="vertical">
     <TextView
-        android:id="@+id/pager_audio_title"
+        android:id="@+id/audio_title"
         android:layout_width="match_parent"
         android:layout_height="30dp"
         android:layout_gravity="center"
@@ -35,7 +35,7 @@
         />
     <!-- audio artist    -->
     <TextView
-        android:id="@+id/pager_audio_artist"
+        android:id="@+id/audio_artist"
         android:layout_width="match_parent"
         android:layout_height="30dp"
         android:layout_gravity="center"
@@ -66,7 +66,7 @@
         android:orientation="horizontal" >
         <!-- start: pager audio progress -->
         <TextView
-            android:id="@+id/pager_audio_current_pos"
+            android:id="@+id/audioPanel_current_pos"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -77,7 +77,7 @@
             android:layout_marginLeft="5dp"
             android:layout_marginStart="5dp" />
         <SeekBar
-            android:id="@+id/pager_img_audio_seek_bar"
+            android:id="@+id/seek_bar"
             android:layout_width="180dp"
             android:layout_height="match_parent"
             android:layout_gravity="center_vertical"
@@ -85,7 +85,7 @@
             android:progressDrawable="@drawable/progress"
             android:thumb="@drawable/thumb"/>
         <TextView
-            android:id="@+id/pager_audio_file_length"
+            android:id="@+id/audioPanel_file_length"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -114,7 +114,7 @@
             android:background="@drawable/button"/>
 
         <ImageView
-            android:id="@+id/pager_btn_audio_play"
+            android:id="@+id/audioPanel_play"
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_weight="1"

@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.cw.audio7.R;
+import com.cw.audio7.audio.Audio7Player;
 import com.cw.audio7.config.About;
 import com.cw.audio7.config.Config;
 import com.cw.audio7.db.DB_folder;
@@ -33,7 +34,6 @@ import com.cw.audio7.folder.FolderUi;
 import com.cw.audio7.note_add.Add_note_option;
 import com.cw.audio7.note_add.add_audio.Add_audio_all;
 import com.cw.audio7.audio.Audio_manager;
-import com.cw.audio7.audio.AudioPlayer_page;
 import com.cw.audio7.audio.BackgroundAudioService;
 import com.cw.audio7.audio.AudioUi_page;
 import com.cw.audio7.operation.delete.DeleteFolders;
@@ -816,7 +816,11 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
             drawer.drawerToggle.syncState(); // make sure toggle icon state is correct
 
             // todo Temp design
-            // do nothing about audio when back key pressed
+            // when back key pressed
+            // case 1: do nothing about audio
+
+            // case 2: stop audio
+//             Audio_manager.stopAudioPlayer();
         }
     }
 
@@ -1190,8 +1194,8 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                     Audio_manager.stopAudioPlayer();
 
                     // remove audio panel
-                    if(TabsHost.audioPlayer_page != null)
-                        TabsHost.audioPlayer_page.page_runnable.run();
+                    if(TabsHost.audio7Player != null)
+                        TabsHost.audio7Player.audio_runnable.run();
 
                     // refresh
                     TabsHost.reloadCurrentPage();
@@ -1418,9 +1422,8 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
 
     void playFirstAudio()
     {
-        Audio_manager.setPlayerState(Audio_manager.PLAYER_AT_PLAY);
-
         Audio_manager.setAudioPlayMode(Audio_manager.PAGE_PLAY_MODE);
+        Audio_manager.setPlayerState(Audio_manager.PLAYER_AT_PLAY);
         Audio_manager.mAudioPos = 0;
 
         // cancel playing
@@ -1429,9 +1432,9 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
             if(BackgroundAudioService.mMediaPlayer.isPlaying())
                 BackgroundAudioService.mMediaPlayer.pause();
 
-            if((AudioPlayer_page.mAudioHandler != null) &&
-                    (TabsHost.audioPlayer_page != null)        ){
-                AudioPlayer_page.mAudioHandler.removeCallbacks(TabsHost.audioPlayer_page.page_runnable);
+            if((Audio7Player.mAudioHandler != null) &&
+                    (TabsHost.audio7Player != null)        ){
+                Audio7Player.mAudioHandler.removeCallbacks(TabsHost.audio7Player.audio_runnable);
             }
             BackgroundAudioService.mMediaPlayer.release();
             BackgroundAudioService.mMediaPlayer = null;
@@ -1444,22 +1447,17 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                 .getNoteAudioUri(0,true);
 
         if(TabsHost.audioUi_page == null)
-            TabsHost.audioUi_page = new AudioUi_page(this,uriString);
+            TabsHost.audioUi_page = new AudioUi_page(this,TabsHost.rootView,uriString);
 
-        TabsHost.audioUi_page.initAudioBlock(this);
+        if(TabsHost.audio7Player == null)
+            TabsHost.audio7Player = new Audio7Player(this,TabsHost.audioUi_page.audioPanel,uriString);
 
-        if(TabsHost.audioPlayer_page == null)
-            TabsHost.audioPlayer_page = new AudioPlayer_page(this,TabsHost.audioUi_page);
-
-        TabsHost.audioPlayer_page.prepareAudioInfo();
-        TabsHost.audioPlayer_page.runAudioState();
+        TabsHost.audio7Player.prepareAudioInfo();
+        TabsHost.audio7Player.runAudioState();
 
         // update audio play position
         TabsHost.audioPlayTabPos = TabsHost.getFocus_tabPos();
         TabsHost.mTabsPagerAdapter.notifyDataSetChanged();
-
-        TabsHost.audioUi_page.updateAudioPanel_page(TabsHost.audioUi_page.audio_play_btn,
-                TabsHost.audioUi_page.audio_title);
 
         // update playing page position
         mPlaying_pagePos = TabsHost.getFocus_tabPos();

@@ -17,7 +17,7 @@
         android:orientation="vertical" >
 
         <TextView
-            android:id="@+id/pager_audio_title"
+            android:id="@+id/audio_title"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="3"
@@ -32,7 +32,7 @@
             android:layout_marginRight="2dp" />
 
         <TextView
-            android:id="@+id/pager_audio_artist"
+            android:id="@+id/audio_artist"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="2"
@@ -68,7 +68,7 @@
 
             <!-- current playing time-->
             <TextView
-                android:id="@+id/pager_audio_current_pos"
+                android:id="@+id/audioPanel_current_pos"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="start"
@@ -81,7 +81,7 @@
 
             <!-- pager audio seek bar -->
             <SeekBar
-                android:id="@+id/pager_img_audio_seek_bar"
+                android:id="@+id/seek_bar"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -93,7 +93,7 @@
 
             <!-- total file length-->
             <TextView
-                android:id="@+id/pager_audio_file_length"
+                android:id="@+id/audioPanel_file_length"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="end"
@@ -120,7 +120,7 @@
                 android:background="@drawable/button"
                 />
             <ImageView
-                android:id="@+id/pager_btn_audio_play"
+                android:id="@+id/audioPanel_play"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="match_parent"

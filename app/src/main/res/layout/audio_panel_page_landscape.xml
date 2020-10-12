@@ -10,7 +10,7 @@
     android:orientation="vertical">
 
     <!-- audio title -->
-    <TextView android:id="@+id/audio_panel_title"
+    <TextView android:id="@+id/audio_title"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
@@ -49,7 +49,7 @@
                 android:singleLine="true"
                 />
             <SeekBar
-                android:id="@+id/audioPanel_seek_bar"
+                android:id="@+id/seek_bar"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="match_parent"

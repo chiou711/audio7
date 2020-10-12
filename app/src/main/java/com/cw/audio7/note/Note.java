@@ -236,7 +236,7 @@ public class Note extends Fragment
         // renew pager
         showSelectedView();
 
-		TextView audioTitle = (TextView) rootView.findViewById(R.id.pager_audio_title);
+		TextView audioTitle = (TextView) rootView.findViewById(R.id.audio_title);
         // audio title
         if(!Util.isEmptyString(audioTitle.getText().toString()) )
             audioTitle.setVisibility(View.VISIBLE);

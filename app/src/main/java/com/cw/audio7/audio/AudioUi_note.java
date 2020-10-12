@@ -79,11 +79,10 @@ public class AudioUi_note
     // set audio block listener
     public void setAudioBlockListener(final AppCompatActivity act)
     {
-
-        audio_curr_pos = (TextView) audioPanel.findViewById(R.id.pager_audio_current_pos);
-        audio_seek_bar = (SeekBar) audioPanel.findViewById(R.id.pager_img_audio_seek_bar);
+        audio_curr_pos = (TextView) audioPanel.findViewById(R.id.audioPanel_current_pos);
+        audio_seek_bar = (SeekBar) audioPanel.findViewById(R.id.seek_bar);
         audio_previous_btn = (ImageView) audioPanel.findViewById(R.id.audioPanel_previous);
-        audio_play_btn = (ImageView) audioPanel.findViewById(R.id.pager_btn_audio_play);
+        audio_play_btn = (ImageView) audioPanel.findViewById(R.id.audioPanel_play);
         audio_next_btn = (ImageView) audioPanel.findViewById(R.id.audioPanel_next);
 
         // audio length
@@ -112,8 +111,9 @@ public class AudioUi_note
                     (BackgroundAudioService.mMediaPlayer == null) ) {
                     // use this flag to determine new play or not in note
                     BackgroundAudioService.mIsPrepared = false;
-                    if(AudioPlayer_page.mAudioHandler != null)
-                        AudioPlayer_page.mAudioHandler.removeCallbacks(AudioPlayer_page.page_runnable);
+                    if( (Audio7Player.mAudioHandler != null) &&
+                        (TabsHost.audio7Player != null) )
+                        Audio7Player.mAudioHandler.removeCallbacks(TabsHost.audio7Player.audio_runnable);
                 }
                 playAudioInPager(act,audioUriStr);
             }
@@ -184,11 +184,13 @@ public class AudioUi_note
         });
     }
 
-    AudioPlayer audioPlayer;
+    public Audio7Player audio7Player;
     //  play audio in pager
     private void playAudioInPager(AppCompatActivity act, String audioUriStr)
     {
         System.out.println("AudioUi_note / _playAudioInPager");
+
+        Audio_manager.setAudioPlayMode(Audio_manager.NOTE_PLAY_MODE);
 
         String[] audioName = Util.getDisplayNameByUriString(audioUriStr, act);
         if(UtilAudio.hasAudioExtension(audioUriStr) ||
@@ -198,13 +200,9 @@ public class AudioUi_note
             MainAct.mPlaying_pageTableId = TabsHost.getCurrentPageTableId();
 
             // new instance
-            if(audioPlayer == null)
-                audioPlayer = new AudioPlayer(act, audioPanel, audioUriStr);
-
-            if( audioPlayer != null){
-                audioPlayer.prepareAudioInfo();
-                audioPlayer.runAudioState();
-            }
+            audio7Player = new Audio7Player(act, audioPanel, audioUriStr);
+             audio7Player.prepareAudioInfo();
+             audio7Player.runAudioState();
         }
     }
 

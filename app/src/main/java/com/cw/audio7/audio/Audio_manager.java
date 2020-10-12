@@ -131,10 +131,8 @@ public class Audio_manager
         }
 
         // stop handler and set flag to remove runnable
-	    if( AudioPlayer.mAudioHandler != null)
+	    if( Audio7Player.mAudioHandler != null)
 		    Audio_manager.isRunnableOn = false;
-	    if( AudioPlayer_page.mAudioHandler != null)
-		    Audio_manager.isRunnableOn_page = false;
 
         Audio_manager.setPlayerState(Audio_manager.PLAYER_AT_STOP);
 

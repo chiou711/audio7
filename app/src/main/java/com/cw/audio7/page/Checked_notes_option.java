@@ -32,11 +32,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cw.audio7.R;
+import com.cw.audio7.audio.Audio7Player;
 import com.cw.audio7.db.DB_folder;
 import com.cw.audio7.db.DB_page;
 import com.cw.audio7.main.MainAct;
 import com.cw.audio7.audio.Audio_manager;
-import com.cw.audio7.audio.AudioPlayer_page;
 import com.cw.audio7.tabs.TabsHost;
 import com.cw.audio7.util.Util;
 import com.cw.audio7.util.audio.UtilAudio;
@@ -273,7 +273,7 @@ public class Checked_notes_option {
 
         // update audio play list
         if(PageUi.isAudioPlayingPage())
-            AudioPlayer_page.prepareAudioInfo();
+            Audio7Player.prepareAudioInfo();
 
         TabsHost.reloadCurrentPage();
 
@@ -307,7 +307,7 @@ public class Checked_notes_option {
 
         // update audio play list
         if(PageUi.isAudioPlayingPage())
-            AudioPlayer_page.prepareAudioInfo();
+            Audio7Player.prepareAudioInfo();
 
         TabsHost.reloadCurrentPage();
         TabsHost.showFooter(MainAct.mAct);

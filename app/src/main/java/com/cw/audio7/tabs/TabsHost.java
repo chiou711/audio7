@@ -40,6 +40,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cw.audio7.R;
+import com.cw.audio7.audio.Audio7Player;
 import com.cw.audio7.db.DB_folder;
 import com.cw.audio7.db.DB_page;
 import com.cw.audio7.define.Define;
@@ -48,7 +49,6 @@ import com.cw.audio7.folder.FolderUi;
 import com.cw.audio7.main.MainAct;
 import com.cw.audio7.audio.AudioUi_page;
 import com.cw.audio7.audio.Audio_manager;
-import com.cw.audio7.audio.AudioPlayer_page;
 import com.cw.audio7.audio.BackgroundAudioService;
 import com.cw.audio7.page.Page_recycler;
 import com.cw.audio7.util.ColorSet;
@@ -80,7 +80,7 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
     public static int firstPos_pageId;
 
     public static AudioUi_page audioUi_page;
-    public static AudioPlayer_page audioPlayer_page;
+    public static Audio7Player audio7Player;
     public static boolean isDoingMarking;
     private AdView adView;
 
@@ -95,12 +95,11 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
 //        System.out.println("TabsHost / _onCreate");
     }
 
+    public static View rootView;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-//        System.out.println("TabsHost / _onCreateView");
-
-        View rootView;
+        System.out.println("TabsHost / _onCreateView");
 
         // set layout by orientation
         if (Util.isLandscapeOrientation(MainAct.mAct)) {
@@ -267,13 +266,13 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
             (page.itemAdapter != null) )
         {
             RecyclerView listView = page.recyclerView;
-            if( (audioPlayer_page != null) &&
+            if( (audio7Player != null) &&
                 !isDoingMarking &&
                 (listView != null) &&
                 (Audio_manager.getPlayerState() != Audio_manager.PLAYER_AT_STOP)  )
             {
-                if(audioPlayer_page != null)
-                    audioPlayer_page.scrollPlayingItemToBeVisible(listView); //todo Could hang up if page had too many notes (more then 1000)
+                if(audio7Player != null)
+                    audio7Player.scrollPlayingItemToBeVisible(listView); //todo Could hang up if page had too many notes (more then 1000)
             }
         }
 
@@ -332,6 +331,9 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
     @Override
     public void onResume() {
         super.onResume();
+
+        System.out.println("TabsHost / _onResume");
+
         // default
         setFocus_tabPos(0);
 
@@ -384,17 +386,17 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
                 tab.setCustomView(null);
         }
 
-        // for incoming phone call case or after Key Protect
-        if( (audioUi_page != null) &&
-            (Audio_manager.getPlayerState() != Audio_manager.PLAYER_AT_STOP) &&
-            (Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE)   )
-        {
-            audioUi_page.initAudioBlock(MainAct.mAct);
-
-            audioPlayer_page.page_runnable.run();
-
-            audioUi_page.updateAudioPanel_page(audioUi_page.audio_play_btn,
-                                       audioUi_page.audio_title);
+        /** The following is used for
+         * - incoming phone call case
+         * - after Key Protect
+         * */
+        if(Audio_manager.getPlayerState() != Audio_manager.PLAYER_AT_STOP) {
+            if(Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE) {
+                audioUi_page.initAudioPanel(rootView);
+                audio7Player.audio_panel = audioUi_page.audioPanel;
+                audio7Player.initAudioBlock(Audio_manager.getAudioStringAt(Audio_manager.mAudioPos));
+                audio7Player.updateAudioPanel(MainAct.mAct);
+            }
         }
 
         // set long click listener
@@ -742,7 +744,6 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
     {
         mFocusTabPos = pos;
     }
-
 
     public static void removePages()
     {
