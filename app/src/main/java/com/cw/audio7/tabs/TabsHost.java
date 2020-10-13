@@ -261,17 +261,19 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
 
         // refresh list view of selected page
         Page_recycler page = mTabsPagerAdapter.fragmentList.get(getFocus_tabPos());
+
         if( (tab.getPosition() == audioPlayTabPos) &&
             (page != null) &&
             (page.itemAdapter != null) )
         {
             RecyclerView listView = page.recyclerView;
+
             if( (audio7Player != null) &&
                 !isDoingMarking &&
                 (listView != null) &&
                 (Audio_manager.getPlayerState() != Audio_manager.PLAYER_AT_STOP)  )
             {
-                if(audio7Player != null)
+                if ( (audio7Player != null) && Audio7Player.isOnAudioPlayingPage())
                     audio7Player.scrollPlayingItemToBeVisible(listView); //todo Could hang up if page had too many notes (more then 1000)
             }
         }
@@ -392,10 +394,15 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
          * */
         if(Audio_manager.getPlayerState() != Audio_manager.PLAYER_AT_STOP) {
             if(Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE) {
-                audioUi_page.initAudioPanel(rootView);
-                audio7Player.audio_panel = audioUi_page.audioPanel;
-                audio7Player.initAudioBlock(Audio_manager.getAudioStringAt(Audio_manager.mAudioPos));
-                audio7Player.updateAudioPanel(MainAct.mAct);
+                if(audioUi_page != null) {
+                    audioUi_page.initAudioPanel(rootView);
+
+                    if(audio7Player != null) {
+                        audio7Player.audio_panel = audioUi_page.audioPanel;
+                        audio7Player.initAudioBlock(Audio_manager.getAudioStringAt(Audio_manager.mAudioPos));
+                        audio7Player.updateAudioPanel(MainAct.mAct);
+                    }
+                }
             }
         }
 

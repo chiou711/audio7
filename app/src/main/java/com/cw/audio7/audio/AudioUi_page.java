@@ -60,13 +60,14 @@ public class AudioUi_page {
 
     public AudioUi_page(AppCompatActivity act,View root_view,String audio_uri_str)
     {
+        mAct = act;
         audioPanel = root_view.findViewById(R.id.audio_panel);
         audioUriStr = audio_uri_str;
 
         System.out.println("AudioUi_page / constructor / audioUriStr = " + audioUriStr);
 
         // set audio block listeners
-        setAudioBlockListener(act);
+        setAudioBlockListener(mAct);
     }
 
     /**
@@ -238,14 +239,14 @@ public class AudioUi_page {
             BackgroundAudioService.mMediaPlayer = null;
         }
 
-        // new audio player instance
-        TabsHost.audio7Player.runAudioState();
-
         // gif case: add this will cause program hang up
         if(Audio_manager.getPlayerState() != Audio_manager.PLAYER_AT_STOP)
             TabsHost.audio7Player.scrollPlayingItemToBeVisible(TabsHost.getCurrentPage().recyclerView);
 
         TabsHost.getCurrentPage().itemAdapter.notifyDataSetChanged();
+
+        // new audio player instance
+        TabsHost.audio7Player.runAudioState();
     }
 
 }

@@ -107,7 +107,7 @@ public class AudioUi_note
             {
                 isPausedAtSeekerAnchor = false;
 
-                if( (Audio_manager.isRunnableOn)||
+                if( (Audio_manager.isRunnableOn) ||
                     (BackgroundAudioService.mMediaPlayer == null) ) {
                     // use this flag to determine new play or not in note
                     BackgroundAudioService.mIsPrepared = false;
@@ -200,8 +200,12 @@ public class AudioUi_note
             MainAct.mPlaying_pageTableId = TabsHost.getCurrentPageTableId();
 
             // new instance
-            audio7Player = new Audio7Player(act, audioPanel, audioUriStr);
-             audio7Player.prepareAudioInfo();
+            if(audio7Player == null)
+                audio7Player = new Audio7Player(act, audioPanel, audioUriStr);
+            else
+                audio7Player.updateAudioPanel(act);
+
+             Audio7Player.prepareAudioInfo();
              audio7Player.runAudioState();
         }
     }

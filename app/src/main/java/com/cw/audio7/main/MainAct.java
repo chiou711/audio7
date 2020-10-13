@@ -39,6 +39,7 @@ import com.cw.audio7.audio.AudioUi_page;
 import com.cw.audio7.operation.delete.DeleteFolders;
 import com.cw.audio7.operation.delete.DeletePages;
 import com.cw.audio7.page.Checked_notes_option;
+import com.cw.audio7.page.PageAdapter_recycler;
 import com.cw.audio7.page.PageUi;
 import com.cw.audio7.tabs.TabsHost;
 import com.cw.audio7.operation.import_export.Export_toSDCardFragment;
@@ -304,7 +305,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
         // init audio parameters
         MainAct.mPlaying_folderPos = -1;
         Audio_manager.setPlayerState(Audio_manager.PLAYER_AT_STOP);
-        TabsHost.audioPlayTabPos = -1;
+        TabsHost.audioPlayTabPos = -1; //init
     }
 
 
@@ -818,9 +819,15 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
             // todo Temp design
             // when back key pressed
             // case 1: do nothing about audio
+//            {}
 
             // case 2: stop audio
 //             Audio_manager.stopAudioPlayer();
+
+            // case 3: show panel
+//            PageAdapter_recycler.openAudioPanel_page(Audio_manager.mAudioPos);
+//            Audio_manager.setPlayerState(Audio_manager.PLAYER_AT_PAUSE);
+            PageAdapter_recycler.openAudioPanel_page_after_exit_note(Audio_manager.mAudioPos);
         }
     }
 
@@ -1452,7 +1459,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
         if(TabsHost.audio7Player == null)
             TabsHost.audio7Player = new Audio7Player(this,TabsHost.audioUi_page.audioPanel,uriString);
 
-        TabsHost.audio7Player.prepareAudioInfo();
+        Audio7Player.prepareAudioInfo();
         TabsHost.audio7Player.runAudioState();
 
         // update audio play position
