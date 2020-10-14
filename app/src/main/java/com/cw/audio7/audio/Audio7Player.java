@@ -677,7 +677,8 @@ public class Audio7Player
 		String curr_time_str = String.format(Locale.ENGLISH,"%2d", curHour)+":" +
 				String.format(Locale.ENGLISH,"%02d", curMin)+":" +
 				String.format(Locale.ENGLISH,"%02d", curSec);
-//		System.out.println("Audio7Player / _updateAudioProgress / curr_time_str = " + curr_time_str);
+
+		System.out.println("Audio7Player / _updateAudioProgress / curr_time_str = " + curr_time_str);
 
 		// set current play time and the play length of audio file
 		if(audio_curr_pos != null) {

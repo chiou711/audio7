@@ -16,6 +16,7 @@
 
 package com.cw.audio7.note;
 
+import com.cw.audio7.audio.Audio7Player;
 import com.cw.audio7.audio.AudioUi_note;
 import com.cw.audio7.note_edit.Note_edit;
 import com.cw.audio7.R;
@@ -291,8 +292,13 @@ public class Note extends Fragment
 
 		// disable full screen
 		Util.setNormalScreen(act);
+
+		// remove unused runnable
+		if( (Audio7Player.mAudioHandler != null) &&
+				(audioUi_note.audio7Player != null) )
+			Audio7Player.mAudioHandler.removeCallbacks(audioUi_note.audio7Player.audio_runnable);
 	}
-	
+
 	@Override
 	public void onDestroy() {
 		super.onDestroy();

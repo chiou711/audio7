@@ -392,18 +392,23 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
          * - incoming phone call case
          * - after Key Protect
          * */
-        if(Audio_manager.getPlayerState() != Audio_manager.PLAYER_AT_STOP) {
-            if(Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE) {
-                if(audioUi_page != null) {
-                    audioUi_page.initAudioPanel(rootView);
-
-                    if(audio7Player != null) {
-                        audio7Player.audio_panel = audioUi_page.audioPanel;
-                        audio7Player.initAudioBlock(Audio_manager.getAudioStringAt(Audio_manager.mAudioPos));
-                        audio7Player.updateAudioPanel(MainAct.mAct);
-                    }
+        if( (Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE) &&
+            (Audio_manager.getPlayerState() != Audio_manager.PLAYER_AT_STOP)               ) {
+                if(audioUi_page == null) {
+                    audioUi_page = new AudioUi_page(MainAct.mAct, rootView,
+                            Audio_manager.getAudioStringAt(Audio_manager.mAudioPos));
                 }
-            }
+
+                audioUi_page.initAudioPanel(rootView);
+
+                if(audio7Player == null) {
+                    audio7Player = new Audio7Player(MainAct.mAct, audioUi_page.audioPanel,
+                            Audio_manager.getAudioStringAt(Audio_manager.mAudioPos));
+                }
+
+                audio7Player.audio_panel = audioUi_page.audioPanel;
+                audio7Player.initAudioBlock(Audio_manager.getAudioStringAt(Audio_manager.mAudioPos));
+                audio7Player.updateAudioPanel(MainAct.mAct);
         }
 
         // set long click listener

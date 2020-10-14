@@ -599,11 +599,6 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
                     if(BackgroundAudioService.mMediaPlayer.isPlaying())
                         BackgroundAudioService.mMediaPlayer.pause();
 
-                    if((Audio7Player.mAudioHandler != null) &&
-                            (TabsHost.audio7Player != null)        ){
-                        Audio7Player.mAudioHandler.removeCallbacks(TabsHost.audio7Player.audio_runnable);
-                    }
-
                     BackgroundAudioService.mMediaPlayer.release();
                     BackgroundAudioService.mMediaPlayer = null; //todo Why this is critical?
                 }
