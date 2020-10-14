@@ -420,8 +420,8 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
         viewHolder.audioBlock.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openAudioPanel_note(position);
-//                openAudioPanel_page(position);
+//                openAudioPanel_note(position);
+                openAudioPanel_page(position);
             }
         });
 
@@ -547,8 +547,6 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
 
                 if(TabsHost.audio7Player == null) //todo Needed?
                     TabsHost.audio7Player = new Audio7Player(mAct,TabsHost.audioUi_page.audioPanel,uriString);
-                else
-                    TabsHost.audio7Player.updateAudioPanel(mAct);
 
                 Audio7Player.prepareAudioInfo();
                 TabsHost.audio7Player.runAudioState();
@@ -621,7 +619,6 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
                 TabsHost.audio7Player = new Audio7Player(mAct,TabsHost.audioUi_page.audioPanel,uriString);
                 TabsHost.audio7Player.audio_panel = TabsHost.audioUi_page.audioPanel;
                 TabsHost.audio7Player.initAudioBlock(uriString);
-                TabsHost.audio7Player.updateAudioPanel(mAct);
 
                 Audio7Player.prepareAudioInfo();
                 TabsHost.audio7Player.runAudioState();

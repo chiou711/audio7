@@ -161,6 +161,8 @@ public class Audio7Player
                     BackgroundAudioService.mMediaPlayer.start();
 			}
 		}
+
+		updateAudioPanel(act);
 	}
 
     /**
@@ -340,9 +342,10 @@ public class Audio7Player
 						// toggle play / pause
 						if(Audio_manager.isTogglePlayerState()) {
 
-							/** update audio panel  */
-							updateAudioPanel(act);
+							/** update audio panel when media controller */
+							updateAudioPanel(MainAct.mAct);
 
+							// for page audio gif
 							if(  (Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE) &&
 								 (TabsHost.getCurrentPage().itemAdapter != null)  ) {
 								TabsHost.getCurrentPage().itemAdapter.notifyDataSetChanged();
@@ -795,7 +798,9 @@ public class Audio7Player
 			audio_artist.setSelected(false);
 	}
 
-	// update note audio panel
+	/**
+	 *  update audio panel
+	 * */
 	public void updateAudioPanel(AppCompatActivity act)
 	{
 		System.out.println("Audio7Player / _updateAudioPanel");

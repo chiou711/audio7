@@ -202,11 +202,9 @@ public class AudioUi_note
             // new instance
             if(audio7Player == null)
                 audio7Player = new Audio7Player(act, audioPanel, audioUriStr);
-            else
-                audio7Player.updateAudioPanel(act);
 
-             Audio7Player.prepareAudioInfo();
-             audio7Player.runAudioState();
+            Audio7Player.prepareAudioInfo();
+            audio7Player.runAudioState();
         }
     }
 
