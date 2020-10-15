@@ -293,6 +293,10 @@ public class Note extends Fragment
 		// disable full screen
 		Util.setNormalScreen(act);
 
+		// keep paused position for onPrepared state
+		Audio_manager.mPausedPosition = BackgroundAudioService.mMediaPlayer
+				.getCurrentPosition();
+
 		// remove unused runnable
 		if( (Audio7Player.mAudioHandler != null) &&
 				(audioUi_note.audio7Player != null) )

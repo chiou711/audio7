@@ -79,7 +79,8 @@ public class Audio7Player
      */
     public static void prepareAudioInfo()
     {
-        mAudioManager = new Audio_manager();
+    	if(mAudioManager == null)
+            mAudioManager = new Audio_manager();
         mAudioManager.updateAudioInfo();
     }
 
@@ -445,6 +446,8 @@ public class Audio7Player
 		     (Build.VERSION.SDK_INT < 19)            )
             return;
 
+        boolean showDebugMsg = false;
+
 		LinearLayoutManager layoutMgr = ((LinearLayoutManager) recyclerView.getLayoutManager());
 		if(layoutMgr == null)
 			return;
@@ -455,7 +458,9 @@ public class Audio7Player
 		int dividerHeight;
 
 		first_note_pos = layoutMgr.findFirstCompletelyVisibleItemPosition();
-		System.out.println("---------------- first_note_pos = " + first_note_pos);
+
+		if(showDebugMsg)
+			System.out.println("---------------- first_note_pos = " + first_note_pos);
 
 		// no complete visible position, do offset
 		if(first_note_pos == RecyclerView.NO_POSITION)
@@ -465,7 +470,8 @@ public class Audio7Player
             if( recyclerView.getChildAt(0) != null)
             	top_offset = recyclerView.getChildAt(0).getTop();
 
-            System.out.println("---------------- top_offset 1 = " + top_offset);
+			if(showDebugMsg)
+	            System.out.println("---------------- top_offset 1 = " + top_offset);
 
             if(top_offset < 0)
                 recyclerView.scrollBy(0,top_offset);
@@ -480,17 +486,23 @@ public class Audio7Player
             ViewUtil.measure(childView);
             itemHeight = childView.getMeasuredHeight();
         }
-		System.out.println("---------------- itemHeight = " + itemHeight);
+
+		if(showDebugMsg)
+			System.out.println("---------------- itemHeight = " + itemHeight);
 
         // divider height
 		float scale = act.getResources().getDisplayMetrics().density;
 		dividerHeight =  (int)(divider_size * scale + 0.0f);
-		System.out.println("---------------- dividerHeight = " + dividerHeight);
+
+		if(showDebugMsg)
+			System.out.println("---------------- dividerHeight = " + dividerHeight);
 
 		int offset = itemHeight + dividerHeight;
 
 		// base on Audio_manager.mAudioPos to scroll
-		System.out.println("----- Audio_manager.mAudioPos = " + Audio_manager.mAudioPos);
+		if(showDebugMsg)
+			System.out.println("----- Audio_manager.mAudioPos = " + Audio_manager.mAudioPos);
+
 		while ((first_note_pos != Audio_manager.mAudioPos) )
 		{
 			int startPos = first_note_pos;
@@ -498,7 +510,8 @@ public class Audio7Player
 			if (first_note_pos > Audio_manager.mAudioPos )
 			{
                 recyclerView.scrollBy(0,-offset);
-				System.out.println("----- highlight item No. (-1), offset = " + (-offset));
+				if(showDebugMsg)
+					System.out.println("----- highlight item No. (-1), offset = " + (-offset));
 			}
 			// scroll backwards
 			else
@@ -506,7 +519,8 @@ public class Audio7Player
 				// when real item height could be larger than visible item height, so
 				// scroll twice here in odder to do scroll successfully, otherwise scroll could fail
 				recyclerView.scrollBy(0,offset);
-				System.out.println("----- highlight item No. (+1), offset =  " + offset);
+				if(showDebugMsg)
+					System.out.println("----- highlight item No. (+1), offset =  " + offset);
 			}
 
 			first_note_pos = layoutMgr.findFirstCompletelyVisibleItemPosition();
@@ -518,7 +532,9 @@ public class Audio7Player
 			// no complete visible position, do offset
 			if(first_note_pos == RecyclerView.NO_POSITION) {
 				int top_offset = recyclerView.getChildAt(0).getTop();
-				System.out.println("---------------- top_offset 2 = " + top_offset);
+
+				if(showDebugMsg)
+					System.out.println("---------------- top_offset 2 = " + top_offset);
 
 				if(top_offset < 0)
 					// restore index and top position
@@ -749,10 +765,10 @@ public class Audio7Player
 				mp.release();
 			}
 		}
-		catch(Exception e)
-		{
+		catch(Exception e) {
 			System.out.println("Audio7Player / _initAudioBlock / exception");
 		}
+
 		// set audio file length
 		int fileHour = Math.round((float)(mediaFileLength / 1000 / 60 / 60));
 		int fileMin = Math.round((float)((mediaFileLength - fileHour * 60 * 60 * 1000) / 1000 / 60));

@@ -504,6 +504,7 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
 
     // open Page audio panel
     public static void openAudioPanel_page(int position) {
+        System.out.println("PageAdapter_recycler / _openAudioPanel_page");
         Audio_manager.setAudioPlayMode(Audio_manager.PAGE_PLAY_MODE);
 
         DB_page db_page = new DB_page(mAct, TabsHost.getCurrentPageTableId());
@@ -574,10 +575,10 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
 
 
     public static void openAudioPanel_page_after_exit_note(int position) {
-        System.out.println("PageAdapter_recycler / _openAudioPanel_page_after_exit_note ");
+        System.out.println("PageAdapter_recycler / _openAudioPanel_page_after_exit_note / 開啟panel");
         Audio_manager.setAudioPlayMode(Audio_manager.PAGE_PLAY_MODE);
 
-        DB_page db_page = new DB_page(mAct, TabsHost.getCurrentPageTableId());
+        DB_page db_page = new DB_page(mAct, TabsHost .getCurrentPageTableId());
         int notesCount = db_page.getNotesCount(true);
         if(position >= notesCount) //end of list
             return ;

@@ -49,6 +49,10 @@ public class Audio_manager
 
 	public static boolean togglePlayerState;
 
+	// used for continuing audio playing
+	// when AudioUi_note is changed to AudioUi_page
+	public static int mPausedPosition;
+
 	// get play previous
 	public static boolean isPlayPrevious() {
 		return playPrevious;

@@ -56,8 +56,8 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
     // for differentiate Pause source: manual or focus change
     private boolean isPausedByButton;
 
-//    boolean enDbgMsg = true;
-    boolean enDbgMsg = false;
+    boolean enDbgMsg = true;
+//    boolean enDbgMsg = false;
 
     BroadcastReceiver audioNoisyReceiver = new BroadcastReceiver() {
         @Override
@@ -205,7 +205,13 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
                         System.out.println("BackgroundAudioService / _setAudioPlayerListeners / onPrepared");
                     if (Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE)
                     {
-                        mMediaPlayer.seekTo(0);
+                        //  when AudioUi_note is changed to AudioUi_page
+                        if(Audio_manager.mPausedPosition > 0) {
+                            mMediaPlayer.seekTo(Audio_manager.mPausedPosition);
+                            Audio_manager.mPausedPosition = 0;
+                        }
+                        else
+                            mMediaPlayer.seekTo(0);
                     }
                     mIsPrepared = true;
                 }
