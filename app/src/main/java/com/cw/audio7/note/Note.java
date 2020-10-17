@@ -155,7 +155,8 @@ public class Note extends Fragment
 
 		if(UtilAudio.hasAudioExtension(mAudioUriInDB) ||
 				UtilAudio.hasAudioExtension(Util.getDisplayNameByUriString(mAudioUriInDB, act)[0])) {
-			audioUi_note = new AudioUi_note(act, rootView, mAudioUriInDB);
+			if(audioUi_note == null)
+				audioUi_note = new AudioUi_note(act, rootView, mAudioUriInDB);
 		}
 
 		// Instantiate a ViewPager and a PagerAdapter.
@@ -193,7 +194,8 @@ public class Note extends Fragment
 			System.out.println("Note / _onPageSelected / mAudioUriInDB = " + mAudioUriInDB);
 
 			if(UtilAudio.hasAudioExtension(mAudioUriInDB)) {
-                audioUi_note = new AudioUi_note(act, rootView,mAudioUriInDB);
+				if(audioUi_note == null)
+                    audioUi_note = new AudioUi_note(act, rootView,mAudioUriInDB);
             }
 
 			setOutline(act);
