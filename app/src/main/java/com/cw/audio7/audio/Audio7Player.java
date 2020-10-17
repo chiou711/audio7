@@ -79,7 +79,8 @@ public class Audio7Player
      */
     public static void prepareAudioInfo()
     {
-    	if(mAudioManager == null)
+	    // check for continuing audio play when Note audio UI is change Page audio UI
+    	if(Audio_manager.mPausedPosition == 0)
             mAudioManager = new Audio_manager();
         mAudioManager.updateAudioInfo();
     }
@@ -314,13 +315,15 @@ public class Audio7Player
 
 					if (BackgroundAudioService.mIsCompleted) {
 //						System.out.println("Audio7Player / _audio_runnable /  BackgroundAudioService.mIsCompleted");
-						audio_next_btn.performClick(); //todo Check why not working?
+						Audio_manager.setPlayNext(true);
 						BackgroundAudioService.mIsCompleted = false;
 					}
 				}
 
 				if (mAudio_tryTimes < Audio_manager.getAudioFilesCount()) {
-					if(Audio_manager.isPlayPrevious() || Audio_manager.isPlayNext()) {
+					if( Audio_manager.isPlayPrevious() ||
+						Audio_manager.isPlayNext()               )
+					{
 						if(mAudioHandler != null)
 							mAudioHandler.removeCallbacks(audio_runnable);
 						mAudioHandler = null;
@@ -332,7 +335,7 @@ public class Audio7Player
 						}
 
 						// play next
-						if (Audio_manager.isPlayNext()) {
+						if (Audio_manager.isPlayNext() ) {
 							audio_next_btn.performClick();
 							Audio_manager.setPlayNext(false);
 						}
@@ -586,11 +589,14 @@ public class Audio7Player
 
 		    // prepare audio
 		    if (Async_audioUrlVerify.mIsOkUrl) {
-			    showAudioPanel(act, true);
+
+			    if (Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE)
+			        showAudioPanel(act, true);
+
+			    initAudioBlock(mAudioManager.getAudioStringAt(Audio_manager.mAudioPos));
 
 			    // launch handler
-			    if ( (Audio_manager.getPlayerState() != Audio_manager.PLAYER_AT_STOP) /*&&
-					 (Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE)*/) {
+			    if ( Audio_manager.getPlayerState() != Audio_manager.PLAYER_AT_STOP ) {
 				    mAudioHandler.postDelayed(audio_runnable, Util.oneSecond / 4);
 				    System.out.println("Audio7Player / _startNewAudio / 1st post page_runnable");
 			    }
@@ -678,6 +684,14 @@ public class Audio7Player
 	private static int mProgress;
 	private static int mediaFileLength; // this value contains the song duration in milliseconds. Look at getDuration() method in MediaPlayer class
 
+	public static int getMediaFileLength() {
+		return mediaFileLength;
+	}
+
+	public static void setMediaFileLength(int mediaFileLength) {
+		Audio7Player.mediaFileLength = mediaFileLength;
+	}
+
 	// update audio progress
 	public void updateAudioProgress()
 	{
@@ -701,7 +715,8 @@ public class Audio7Player
 			audio_curr_pos.setText(curr_time_str);
 		}
 
-		mProgress = (int)(((float)currentPos/ mediaFileLength)*100);
+//		System.out.println("Audio7Player / _updateAudioProgress / mediaFileLength = " + mediaFileLength);
+		mProgress = (int)(((float)currentPos/ getMediaFileLength())*100);
 
 		if(audio_seek_bar != null)
 			audio_seek_bar.setProgress(mProgress); // This math construction give a percentage of "was playing"/"song length"
@@ -761,7 +776,7 @@ public class Audio7Player
 		{
 			if(Util.isUriExisted(audio_uriStr, act)) {
 				MediaPlayer mp = MediaPlayer.create(act, Uri.parse(audio_uriStr));
-				mediaFileLength = mp.getDuration();
+				setMediaFileLength(mp.getDuration());
 				mp.release();
 			}
 		}
@@ -770,9 +785,9 @@ public class Audio7Player
 		}
 
 		// set audio file length
-		int fileHour = Math.round((float)(mediaFileLength / 1000 / 60 / 60));
-		int fileMin = Math.round((float)((mediaFileLength - fileHour * 60 * 60 * 1000) / 1000 / 60));
-		int fileSec = Math.round((float)((mediaFileLength - fileHour * 60 * 60 * 1000 - fileMin * 1000 * 60 )/ 1000));
+		int fileHour = Math.round((float)(getMediaFileLength() / 1000 / 60 / 60));
+		int fileMin = Math.round((float)((getMediaFileLength() - fileHour * 60 * 60 * 1000) / 1000 / 60));
+		int fileSec = Math.round((float)((getMediaFileLength() - fileHour * 60 * 60 * 1000 - fileMin * 1000 * 60 )/ 1000));
 
 		String strHour = String.format(Locale.ENGLISH,"%2d", fileHour);
 		String strMinute = String.format(Locale.ENGLISH,"%02d", fileMin);
