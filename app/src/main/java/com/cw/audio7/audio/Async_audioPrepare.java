@@ -43,7 +43,7 @@ public class Async_audioPrepare extends AsyncTask<String,Integer,String>
 	 protected void onPreExecute() 
 	 {
 	 	super.onPreExecute();
-	 	System.out.println("Async_audioPrepare / onPreExecute" );
+//	 	System.out.println("Async_audioPrepare / onPreExecute" );
 
 		mPrepareDialog = new ProgressDialog(act);
 
@@ -65,7 +65,7 @@ public class Async_audioPrepare extends AsyncTask<String,Integer,String>
 	 @Override
 	 protected String doInBackground(String... params) 
 	 {
-         System.out.println("Async_audioPrepare / doInBackground / params[0] = " + params[0] );
+//         System.out.println("Async_audioPrepare / doInBackground / params[0] = " + params[0] );
 
 		 boolean isTimeOut = false;
 		 int progress = 0;

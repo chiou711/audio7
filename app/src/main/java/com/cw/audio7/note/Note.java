@@ -93,6 +93,9 @@ public class Note extends Fragment
 		mEntryPosition = arguments.getInt("POSITION");
 		NoteUi.setFocus_notePos(mEntryPosition);
 
+		DB_page db_page = new DB_page(MainAct.mAct,TabsHost.getCurrentPageTableId());
+		NoteUi.setNotesCnt(db_page.getNotesCount(true));
+
 		act = MainAct.mAct;
 		setHasOptionsMenu(true);
 	}
@@ -296,12 +299,14 @@ public class Note extends Fragment
 		Util.setNormalScreen(act);
 
 		// keep paused position for onPrepared state
-		Audio_manager.mPausedPosition = BackgroundAudioService.mMediaPlayer
-				.getCurrentPosition();
+		if(BackgroundAudioService.mMediaPlayer != null) {
+			Audio_manager.mPausedPosition = BackgroundAudioService.mMediaPlayer
+					.getCurrentPosition();
+		}
 
 		// remove unused runnable
-		if( (Audio7Player.mAudioHandler != null) &&
-				(audioUi_note.audio7Player != null) )
+		if ((Audio7Player.mAudioHandler != null) &&
+				(audioUi_note.audio7Player != null))
 			Audio7Player.mAudioHandler.removeCallbacks(audioUi_note.audio7Player.audio_runnable);
 	}
 

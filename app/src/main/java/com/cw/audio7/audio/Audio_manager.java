@@ -212,7 +212,6 @@ public class Audio_manager
 			    setCheckedAudio(i,1);
 		    else
 			    setCheckedAudio(i,0);
-
 	 	}
 	 	db_page.close();
 	}

@@ -80,7 +80,7 @@ public class Note_adapter extends FragmentStatePagerAdapter
 	@Override
 	public Object instantiateItem(ViewGroup container, final int position) 
     {
-    	System.out.println("Note_adapter / instantiateItem / position = " + position);
+//    	System.out.println("Note_adapter / instantiateItem / position = " + position);
     	// Inflate the layout containing 
     	// 1. picture group:  thumb nail
     	// 2. text group: title, body, time 
@@ -226,8 +226,8 @@ public class Note_adapter extends FragmentStatePagerAdapter
 		// set primary item only
 	    if(mLastPosition != position)
 		{
-			System.out.println("Note_adapter / _setPrimaryItem / mLastPosition = " + mLastPosition);
-            System.out.println("Note_adapter / _setPrimaryItem / position = " + position);
+//			System.out.println("Note_adapter / _setPrimaryItem / mLastPosition = " + mLastPosition);
+//          System.out.println("Note_adapter / _setPrimaryItem / position = " + position);
 
 			String audioUri = db_page.getNoteAudioUri(position,true);
 

@@ -48,19 +48,4 @@ public class NoteUi
     public static void setFocus_notePos(int Pos) {
         mFocus_notePos = Pos;
     }
-
-
-    // constructor
-    public NoteUi(AppCompatActivity activity, ViewPager viewPager, int position)
-    {
-
-        System.out.println("NoteUi / constructor");
-        act = activity;
-
-	    DB_page db_page = new DB_page(act,TabsHost.getCurrentPageTableId());
-        setNotesCnt(db_page.getNotesCount(true));
-    } //Note_view_UI constructor
-
-    static PopupMenu popup;
-
 }

@@ -53,7 +53,7 @@ class Async_audioUrlVerify extends AsyncTask<String,Integer,String>
 	 	 // disable rotation
 //	 	mActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
 	 	
-		System.out.println("AudioUrlVerifyTask / onPreExecute" );
+//		System.out.println("AudioUrlVerifyTask / onPreExecute" );
 
         mUrlVerifyDialog = new ProgressDialog(act);
 
@@ -77,7 +77,7 @@ class Async_audioUrlVerify extends AsyncTask<String,Integer,String>
 	protected String doInBackground(String... params)
 	{
 	    int mProgress;
-	    System.out.println("AudioUrlVerifyTask / doInBackground / params[0] = " + params[0] );
+//	    System.out.println("AudioUrlVerifyTask / doInBackground / params[0] = " + params[0] );
 	    mProgress =0;
  	    // check if audio file exists or not
  		mIsOkUrl = false;
@@ -153,7 +153,7 @@ class Async_audioUrlVerify extends AsyncTask<String,Integer,String>
 		    mIsOkUrl = !Util.isEmptyString(strName[0]) || !Util.isEmptyString(strName[1]);
  		}
  		
- 		System.out.println("Url mIsOkUrl = " + mIsOkUrl);
+ 		System.out.println("Async_audioUrlVerify / _doInBackground / Url mIsOkUrl = " + mIsOkUrl);
 
  		if(mIsOkUrl)
  		    return "ok";

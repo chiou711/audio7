@@ -23,6 +23,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.cw.audio7.R;
 import com.cw.audio7.main.MainAct;
@@ -30,6 +31,7 @@ import com.cw.audio7.note.NoteUi;
 import com.cw.audio7.tabs.TabsHost;
 import com.cw.audio7.util.Util;
 import com.cw.audio7.util.audio.UtilAudio;
+import com.cw.audio7.util.preferences.Pref;
 
 import java.util.Locale;
 
@@ -169,17 +171,56 @@ public class AudioUi_note
             @Override
             public void onClick(View v) {
                 ViewPager viewPager = rootView.findViewById(R.id.tabs_pager);
-                NoteUi.setFocus_notePos(NoteUi.getFocus_notePos()-1);
-                viewPager.setCurrentItem(viewPager.getCurrentItem() - 1);
+
+//                System.out.println("AudioUi_note /  audio_next_btn / _onClick / NoteUi.getNotesCnt() = " + NoteUi.getNotesCnt());
+//                System.out.println("AudioUi_note /  audio_next_btn / _onClick / NoteUi.getFocus_notePos() = " + NoteUi.getFocus_notePos());
+
+                int new_pos = NoteUi.getFocus_notePos()-1;
+                if( new_pos < 0 )
+                {
+                    if(Pref.getPref_cyclic_play_enable(act)) {
+                        NoteUi.setFocus_notePos(NoteUi.getNotesCnt()-1);
+                        viewPager.setCurrentItem(NoteUi.getNotesCnt()-1);
+                    } else {
+                        Toast.makeText(act,R.string.toast_cyclic_play_disabled,Toast.LENGTH_SHORT).show();
+                        Audio_manager.stopAudioPlayer();
+                        return;
+                    }
+                }
+                else {
+                    NoteUi.setFocus_notePos(new_pos);
+                    viewPager.setCurrentItem(viewPager.getCurrentItem() - 1);
+                }
+
             }
         });
 
         audio_next_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 ViewPager viewPager = rootView.findViewById(R.id.tabs_pager);
-                NoteUi.setFocus_notePos(NoteUi.getFocus_notePos()+1);
-                viewPager.setCurrentItem(viewPager.getCurrentItem() + 1);
+
+//                System.out.println("AudioUi_note /  audio_next_btn / _onClick / NoteUi.getNotesCnt() = " + NoteUi.getNotesCnt());
+//                System.out.println("AudioUi_note /  audio_next_btn / _onClick / NoteUi.getFocus_notePos() = " + NoteUi.getFocus_notePos());
+
+                int new_pos = NoteUi.getFocus_notePos()+1;
+                if( new_pos >= NoteUi.getNotesCnt())
+                {
+                    if(Pref.getPref_cyclic_play_enable(act)) {
+                        NoteUi.setFocus_notePos(0);
+                        viewPager.setCurrentItem(0);
+                    } else {
+                        Toast.makeText(act,R.string.toast_cyclic_play_disabled,Toast.LENGTH_SHORT).show();
+                        Audio_manager.stopAudioPlayer();
+                        return;
+                    }
+                }
+                else {
+                    NoteUi.setFocus_notePos(new_pos);
+                    viewPager.setCurrentItem(viewPager.getCurrentItem() + 1);
+                }
+
             }
         });
     }
