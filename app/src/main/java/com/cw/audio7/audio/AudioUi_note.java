@@ -117,7 +117,8 @@ public class AudioUi_note
                         (TabsHost.audio7Player != null) )
                         Audio7Player.mAudioHandler.removeCallbacks(TabsHost.audio7Player.audio_runnable);
                 }
-                playAudioInPager(act,audioUriStr);
+
+                playAudioInNotePager(act,audioUriStr);
             }
         });
 
@@ -137,7 +138,7 @@ public class AudioUi_note
                     // note audio: slide seek bar anchor from stop to pause
                     isPausedAtSeekerAnchor = true;
                     mAnchorPosition = (int) (((float)(mediaFileLength / 100)) * seekBar.getProgress());
-                    playAudioInPager(act, Audio_manager.getAudioStringAt(Audio_manager.mAudioPos));
+                    playAudioInNotePager(act, Audio_manager.getAudioStringAt(Audio_manager.mAudioPos));
                 }
             }
 
@@ -227,9 +228,9 @@ public class AudioUi_note
 
     public Audio7Player audio7Player;
     //  play audio in pager
-    private void playAudioInPager(AppCompatActivity act, String audioUriStr)
+    private void playAudioInNotePager(AppCompatActivity act, String audioUriStr)
     {
-        System.out.println("AudioUi_note / _playAudioInPager");
+        System.out.println("AudioUi_note / _playAudioInNotePager");
 
         Audio_manager.setAudioPlayMode(Audio_manager.NOTE_PLAY_MODE);
 

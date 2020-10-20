@@ -12,4 +12,5 @@
     <string name="delete_checked_note_title">刪除已勾選</string>
     <string name="delete_checked_message">已勾選的連結將被刪除.</string>
     <string name="delete_checked_no_checked_items">無勾選項目</string>
+    <string name="is_an_unchecked_item">這是未選中的項目</string>
 </resources>

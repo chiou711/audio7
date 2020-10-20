@@ -12,4 +12,5 @@
     <string name="delete_checked_note_title">删除选中的</string>
     <string name="delete_checked_message">选中的连结会被删除。</string>
     <string name="delete_checked_no_checked_items">没有选中的项目。</string>
+    <string name="is_an_unchecked_item">这是未选中的项目</string>
 </resources>

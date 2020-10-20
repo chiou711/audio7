@@ -192,9 +192,9 @@ public class Note extends Fragment
 
 			// show audio name
 			mNoteId = mDb_page.getNoteId(nextPosition,true);
-			System.out.println("Note / _onPageSelected / mNoteId = " + mNoteId);
 			mAudioUriInDB = mDb_page.getNoteAudioUri_byId(mNoteId);
-			System.out.println("Note / _onPageSelected / mAudioUriInDB = " + mAudioUriInDB);
+			System.out.println("Note / _onPageSelected /  mNoteId =" + mNoteId
+					+ "mAudioUriInDB = " + mAudioUriInDB);
 
 			if(UtilAudio.hasAudioExtension(mAudioUriInDB)) {
 				if(audioUi_note == null)
@@ -330,8 +330,12 @@ public class Note extends Fragment
 		        // update marking
 		        if(markingNow == 1)
 			        mMenu.findItem(R.id.VIEW_NOTE_CHECK).setIcon(R.drawable.btn_check_on_holo_dark);
-		        else
+		        else {
 			        mMenu.findItem(R.id.VIEW_NOTE_CHECK).setIcon(R.drawable.btn_check_off_holo_dark);
+			        stopNoteAudio();
+			        audioUi_note.audio7Player.initAudioBlock(mAudioUriInDB);
+			        audioUi_note.audio7Player.updateAudioPanel(act);
+		        }
 		        return true;
 
 	        case R.id.VIEW_NOTE_EDIT:

@@ -12,4 +12,5 @@
     <string name="delete_checked_note_title">Delete selected</string>
     <string name="delete_checked_message">The selected links will be deleted.</string>
     <string name="delete_checked_no_checked_items">No selected item.</string>
+    <string name="is_an_unchecked_item">This ia an unchecked item</string>
 </resources>

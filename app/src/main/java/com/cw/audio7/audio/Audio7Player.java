@@ -280,6 +280,7 @@ public class Audio7Player
 					showAudioPanel(act, false);
 				}
 
+				System.out.println("Audio7Player / _audio_runnable / return");
 				return;
 			}
 
@@ -368,10 +369,17 @@ public class Audio7Player
 			else if( (Audio_manager.getCheckedAudio(Audio_manager.mAudioPos) == 0 ) )// for non-audio item
 			{
 //	   			System.out.println("Audio7Player / audio_runnable / for non-audio item");
-//				audio_next_btn.performClick();
 
 				if(Audio_manager.getAudioPlayMode() == Audio_manager.NOTE_PLAY_MODE) {
-					Audio_manager.stopAudioPlayer(); //todo Temp design
+					Audio_manager.stopAudioPlayer();
+
+					// case 1: play next
+//					audio_next_btn.performClick();
+
+					// case 2: show unchecked
+					Toast.makeText(act,R.string.is_an_unchecked_item,Toast.LENGTH_SHORT).show();
+					updateAudioPanel(act);
+					updateAudioProgress();
 				}
 
 				if (Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE) {
@@ -695,7 +703,6 @@ public class Audio7Player
 	// update audio progress
 	public void updateAudioProgress()
 	{
-//		System.out.println("Audio7Player / _updateAudioProgress");
 		int currentPos=0;
 
 		if(BackgroundAudioService.mMediaPlayer != null)
