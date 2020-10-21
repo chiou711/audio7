@@ -68,10 +68,6 @@ public class Audio7Player
 
 		// start a new handler
         mAudioHandler = new Handler();
-
-        int playingPageTableId = TabsHost.mTabsPagerAdapter.getItem(TabsHost.getFocus_tabPos()).page_tableId;
-        DB_page db_page = new DB_page(MainAct.mAct, playingPageTableId);
-        notesCount =  db_page.getNotesCount(true);
 	}
 
     /**
@@ -210,7 +206,8 @@ public class Audio7Player
         BackgroundAudioService.mMediaPlayer.setOnBufferingUpdateListener(new MediaPlayer.OnBufferingUpdateListener() {
             @Override
             public void onBufferingUpdate(MediaPlayer mp, int percent) {
-                System.out.println("Audio7Player / _setAudioListeners / _onBufferingUpdate");
+                System.out.println("-- Audio7Player / _setAudioListeners / _onBufferingUpdate / percent = " + percent);
+                //todo For which condition?
                 if (TabsHost.getCurrentPage().seekBarProgress != null)
                     TabsHost.getCurrentPage().seekBarProgress.setSecondaryProgress(percent);
             }
@@ -652,9 +649,6 @@ public class Audio7Player
 
         // new audio index
         Audio_manager.mAudioPos++;
-
-        if(Audio_manager.mAudioPos >= notesCount)
-            Audio_manager.mAudioPos = 0; //back to first index
 
         // check try times,had tried or not tried yet, anyway the audio file is found
 	    System.out.println("Audio7Player / check mTryTimes = " + mAudio_tryTimes);

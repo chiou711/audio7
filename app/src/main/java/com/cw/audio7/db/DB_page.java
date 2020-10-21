@@ -129,6 +129,7 @@ public class DB_page
     //set page table id
     public static void setFocusPage_tableId(int id)
     {
+//    	System.out.println("DB_page /  _setFocusPage_tableId / id = " + id);
     	mTableId_page = id;
     }
     

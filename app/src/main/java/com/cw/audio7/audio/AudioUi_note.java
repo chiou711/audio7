@@ -128,6 +128,9 @@ public class AudioUi_note
             @Override
             public void onStopTrackingTouch(SeekBar seekBar)
             {
+                mediaFileLength = Audio7Player.getMediaFileLength();
+                System.out.println("AudioUi_note / audio_seek_bar / _setOnSeekBarChangeListener / mediaFileLength = "+
+                        mediaFileLength);
                 if( BackgroundAudioService.mMediaPlayer != null  )
                 {
                     int mPlayAudioPosition = (int) (((float)(mediaFileLength / 100)) * seekBar.getProgress());
