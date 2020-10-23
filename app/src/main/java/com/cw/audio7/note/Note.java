@@ -98,6 +98,9 @@ public class Note extends Fragment
 
 		act = MainAct.mAct;
 		setHasOptionsMenu(true);
+
+		// force stop audio whenever user touch page mode thumb nail
+		Audio_manager.stopAudioPlayer();
 	}
 
 	public View rootView;
@@ -158,19 +161,22 @@ public class Note extends Fragment
 
 		if(UtilAudio.hasAudioExtension(mAudioUriInDB) ||
 				UtilAudio.hasAudioExtension(Util.getDisplayNameByUriString(mAudioUriInDB, act)[0])) {
-			if(audioUi_note == null)
+				// create new instance after rotation
 				audioUi_note = new AudioUi_note(act, rootView, mAudioUriInDB);
 		}
 
 		// Instantiate a ViewPager and a PagerAdapter.
-		viewPager = (ViewPager) rootView.findViewById(R.id.tabs_pager);
-		mPagerAdapter = new Note_adapter(viewPager,audioUi_note,act);
-		viewPager.setAdapter(mPagerAdapter);
-		viewPager.setCurrentItem(NoteUi.getFocus_notePos());
 
-		// Note: if viewPager.getCurrentItem() is not equal to mEntryPosition, _onPageSelected will
-		//       be called again after rotation
-		viewPager.setOnPageChangeListener(onPageChangeListener);//todo deprecated
+		if(viewPager == null) {
+			viewPager = (ViewPager) rootView.findViewById(R.id.tabs_pager);
+			mPagerAdapter = new Note_adapter(viewPager, audioUi_note, act);
+			viewPager.setAdapter(mPagerAdapter);
+			viewPager.setCurrentItem(NoteUi.getFocus_notePos());
+
+			// Note: if viewPager.getCurrentItem() is not equal to mEntryPosition, _onPageSelected will
+			//       be called again after rotation
+			viewPager.addOnPageChangeListener(onPageChangeListener);
+		}
 
 	}
 
@@ -258,12 +264,16 @@ public class Note extends Fragment
 	    super.onConfigurationChanged(newConfig);
 	    System.out.println("Note / _onConfigurationChanged");
 
-	    // restart current fragment to apply orientation change
-		getFragmentManager()
-				.beginTransaction()
-				.detach(Note.this)
-				.attach(Note.this)
-				.commit();
+	    // case 1: restart current fragment to apply orientation change
+//		getFragmentManager()
+//				.beginTransaction()
+//				.detach(Note.this)
+//				.attach(Note.this)
+//				.commit();
+
+		// case 2: just layout view change
+		setLayoutView();
+
 	}
 
 	@Override
@@ -295,19 +305,25 @@ public class Note extends Fragment
 
 		isPagerActive = false;
 
-		// disable full screen
-		Util.setNormalScreen(act);
-
-		// keep paused position for onPrepared state
-		if(BackgroundAudioService.mMediaPlayer != null) {
-			Audio_manager.mPausedPosition = BackgroundAudioService.mMediaPlayer
-					.getCurrentPosition();
+		if(!Audio7Player.isAudioPanelOn(act)) {
+			Audio_manager.stopAudioPlayer(); //todo Need continued playing?
 		}
+		else {
 
-		// remove unused runnable
-		if ((Audio7Player.mAudioHandler != null) &&
-				(audioUi_note.audio7Player != null))
-			Audio7Player.mAudioHandler.removeCallbacks(audioUi_note.audio7Player.audio_runnable);
+			// disable full screen
+			Util.setNormalScreen(act);
+
+			// keep paused position for onPrepared state
+			if (BackgroundAudioService.mMediaPlayer != null) {
+				Audio_manager.mPausedPosition = BackgroundAudioService.mMediaPlayer
+						.getCurrentPosition();
+			}
+
+			// remove unused runnable
+			if ((Audio7Player.mAudioHandler != null) &&
+					(Audio_manager.audio7Player != null))
+				Audio7Player.mAudioHandler.removeCallbacks(Audio_manager.audio7Player.audio_runnable);
+		}
 	}
 
 	@Override
@@ -333,8 +349,9 @@ public class Note extends Fragment
 		        else {
 			        mMenu.findItem(R.id.VIEW_NOTE_CHECK).setIcon(R.drawable.btn_check_off_holo_dark);
 			        stopNoteAudio();
-			        audioUi_note.audio7Player.initAudioBlock(mAudioUriInDB);
-			        audioUi_note.audio7Player.updateAudioPanel(act);
+			        Audio_manager.audio7Player.audio_panel = audioUi_note.audioPanel;
+			        Audio_manager.audio7Player.initAudioBlock(mAudioUriInDB);
+			        Audio_manager.audio7Player.updateAudioPanel(act);
 		        }
 		        return true;
 
@@ -406,6 +423,7 @@ public class Note extends Fragment
 					newPos = NoteUi.getFocus_notePos()-1;
 
 				NoteUi.setFocus_notePos(newPos);
+				Audio_manager.stopAudioPlayer();
 				viewPager.setCurrentItem(newPos);
 
 				BackgroundAudioService.mIsPrepared = false;
@@ -420,6 +438,7 @@ public class Note extends Fragment
 					newPos = NoteUi.getFocus_notePos() + 1;
 
 				NoteUi.setFocus_notePos(newPos);
+				Audio_manager.stopAudioPlayer();
 				viewPager.setCurrentItem(newPos);
 
 				BackgroundAudioService.mIsPrepared = false;

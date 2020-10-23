@@ -28,6 +28,7 @@ import androidx.core.app.NotificationManagerCompat;
 
 public class Audio_manager
 {
+	public static Audio7Player audio7Player;
 	private static List<String> audioList;
 	private static List<Integer> audioList_checked;
 

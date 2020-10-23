@@ -215,7 +215,7 @@ public class Audio7Player
     }
 
 	// set list view footer audio control
-	private void showAudioPanel(AppCompatActivity act,boolean enable)
+	public void showAudioPanel(AppCompatActivity act,boolean enable)
 	{
 		System.out.println("Audio7Player / _showAudioPanel / enable = " + enable);
         if(audio_panel != null) {
@@ -598,7 +598,19 @@ public class Audio7Player
 			    if (Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE)
 			        showAudioPanel(act, true);
 
-			    initAudioBlock(mAudioManager.getAudioStringAt(Audio_manager.mAudioPos));
+			    String audio_uriStr = mAudioManager.getAudioStringAt(Audio_manager.mAudioPos);
+			    // audio length
+			    try
+			    {
+				    if(Util.isUriExisted(audio_uriStr, act)) {
+					    MediaPlayer mp = MediaPlayer.create(act, Uri.parse(audio_uriStr));
+					    setMediaFileLength(mp.getDuration());
+					    mp.release();
+				    }
+			    }
+			    catch(Exception e) {
+				    System.out.println("Audio7Player / _startNewAudio / exception");
+			    }
 
 			    // launch handler
 			    if ( Audio_manager.getPlayerState() != Audio_manager.PLAYER_AT_STOP ) {
@@ -709,14 +721,14 @@ public class Audio7Player
 				String.format(Locale.ENGLISH,"%02d", curMin)+":" +
 				String.format(Locale.ENGLISH,"%02d", curSec);
 
-//		System.out.println("Audio7Player / _updateAudioProgress / curr_time_str = " + curr_time_str);
+		System.out.println("Audio7Player / _updateAudioProgress / curr_time_str = " + curr_time_str);
 
 		// set current play time and the play length of audio file
 		if(audio_curr_pos != null) {
 			audio_curr_pos.setText(curr_time_str);
 		}
 
-//		System.out.println("Audio7Player / _updateAudioProgress / mediaFileLength = " + mediaFileLength);
+//		System.out.println("Audio7Player / _updateAudioProgress / mediaFileLength = " + Util.getTimeFormatString(mediaFileLength));
 		mProgress = (int)(((float)currentPos/ getMediaFileLength())*100);
 
 		if(audio_seek_bar != null)
@@ -809,10 +821,10 @@ public class Audio7Player
 		audio_next_btn.setImageResource(R.drawable.ic_media_next);
 	}
 
-	// show audio name //todo Duplicate with AudioUi_note
+	// show audio name
 	void showAudioName(AppCompatActivity act,String audio_uriStr)
 	{
-		System.out.println("Audio7Player / _showAudioName / audio_uriStr = " + audio_uriStr);
+//		System.out.println("Audio7Player / _showAudioName / audio_uriStr = " + audio_uriStr);
 		// title: set marquee
 		if(Util.isUriExisted(audio_uriStr, act)) {
 			String[] audio_name = Util.getDisplayNameByUriString(audio_uriStr, act);

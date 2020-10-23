@@ -521,17 +521,15 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
 
         if(position < notesCount) // avoid footer error
         {
-            if(isAudioUri)
-            {
+            if(isAudioUri) {
                 // cancel playing
-                if(BackgroundAudioService.mMediaPlayer != null)
-                {
-                    if(BackgroundAudioService.mMediaPlayer.isPlaying())
+                if (BackgroundAudioService.mMediaPlayer != null) {
+                    if (BackgroundAudioService.mMediaPlayer.isPlaying())
                         BackgroundAudioService.mMediaPlayer.pause();
 
-                    if((Audio7Player.mAudioHandler != null) &&
-                            (TabsHost.audio7Player != null)        ){
-                        Audio7Player.mAudioHandler.removeCallbacks(TabsHost.audio7Player.audio_runnable);
+                    if ( (Audio7Player.mAudioHandler != null) &&
+                         (Audio_manager.audio7Player != null)) {
+                        Audio7Player.mAudioHandler.removeCallbacks(Audio_manager.audio7Player.audio_runnable);
                     }
 
                     BackgroundAudioService.mMediaPlayer.release();
@@ -543,81 +541,20 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
                 // create new Intent to play audio
                 Audio_manager.mAudioPos = position;
 
-                if(TabsHost.audioUi_page == null) //todo Needed?
+                if(TabsHost.audioUi_page == null)
                     TabsHost.audioUi_page = new AudioUi_page(mAct,TabsHost.rootView,uriString);
+                else
+                    TabsHost.audioUi_page.initAudioPanel(TabsHost.rootView);
 
-                if(TabsHost.audio7Player == null) //todo Needed?
-                    TabsHost.audio7Player = new Audio7Player(mAct,TabsHost.audioUi_page.audioPanel,uriString);
-
-                Audio7Player.prepareAudioInfo();
-                TabsHost.audio7Player.runAudioState();
-
-                // update audio play position
-                TabsHost.audioPlayTabPos = TabsHost.getFocus_tabPos();
-
-                // update playing page position
-                MainAct.mPlaying_pagePos = TabsHost.getFocus_tabPos();
-
-                // update playing page table Id
-                MainAct.mPlaying_pageTableId = TabsHost.getCurrentPageTableId();
-
-                // update playing folder position
-                MainAct.mPlaying_folderPos = FolderUi.getFocus_folderPos();
-
-                // update playing folder table Id
-                DB_drawer dB_drawer = new DB_drawer(mAct);
-                MainAct.mPlaying_folderTableId = dB_drawer.getFolderTableId(MainAct.mPlaying_folderPos,true);
-
-                TabsHost.mTabsPagerAdapter.notifyDataSetChanged();
-            }
-        }
-    }
-
-
-    public static void openAudioPanel_page_after_exit_note(int position) {
-        System.out.println("PageAdapter_recycler / _openAudioPanel_page_after_exit_note / 開啟panel");
-        Audio_manager.setAudioPlayMode(Audio_manager.PAGE_PLAY_MODE);
-
-        DB_page db_page = new DB_page(mAct, TabsHost .getCurrentPageTableId());
-        int notesCount = db_page.getNotesCount(true);
-        if(position >= notesCount) //end of list
-            return ;
-
-        int marking = db_page.getNoteMarking(position,true);
-        String uriString = db_page.getNoteAudioUri(position,true);
-
-        boolean isAudioUri = false;
-        if( !Util.isEmptyString(uriString) && (marking == 1))
-            isAudioUri = true;
-
-        if(position < notesCount) // avoid footer error
-        {
-            if(isAudioUri)
-            {
-                // cancel playing
-                if(BackgroundAudioService.mMediaPlayer != null)
-                {
-                    if(BackgroundAudioService.mMediaPlayer.isPlaying())
-                        BackgroundAudioService.mMediaPlayer.pause();
-
-                    BackgroundAudioService.mMediaPlayer.release();
-                    BackgroundAudioService.mMediaPlayer = null; //todo Why this is critical?
+                if(Audio_manager.audio7Player == null)
+                    Audio_manager.audio7Player = new Audio7Player(mAct, TabsHost.audioUi_page.audioPanel, uriString);
+                else {
+                    Audio_manager.audio7Player.audio_panel = TabsHost.audioUi_page.audioPanel; //todo Merged?
+                    Audio_manager.audio7Player.initAudioBlock(uriString);
                 }
 
-                Audio_manager.setPlayerState(Audio_manager.PLAYER_AT_PAUSE);
-
-                // create new Intent to play audio
-                Audio_manager.mAudioPos = position;
-
-                TabsHost.audioUi_page = new AudioUi_page(mAct,TabsHost.rootView,uriString);
-                TabsHost.audioUi_page.setAudioBlockListener(mAct);
-
-                TabsHost.audio7Player = new Audio7Player(mAct,TabsHost.audioUi_page.audioPanel,uriString);
-                TabsHost.audio7Player.audio_panel = TabsHost.audioUi_page.audioPanel;
-                TabsHost.audio7Player.initAudioBlock(uriString);
-
                 Audio7Player.prepareAudioInfo();
-                TabsHost.audio7Player.runAudioState();
+                Audio_manager.audio7Player.runAudioState();
 
                 // update audio play position
                 TabsHost.audioPlayTabPos = TabsHost.getFocus_tabPos();
@@ -639,7 +576,6 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
             }
         }
     }
-
 
     // toggle mark of note
     public static int toggleNoteMarking(AppCompatActivity mAct, int position)

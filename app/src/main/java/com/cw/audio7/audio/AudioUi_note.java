@@ -45,7 +45,7 @@ import androidx.viewpager.widget.ViewPager;
 
 public class AudioUi_note
 {
-    private ViewGroup audioPanel;
+    public ViewGroup audioPanel;
 
     public TextView audio_title;
     public TextView audio_artist;
@@ -114,8 +114,8 @@ public class AudioUi_note
                     // use this flag to determine new play or not in note
                     BackgroundAudioService.mIsPrepared = false;
                     if( (Audio7Player.mAudioHandler != null) &&
-                        (TabsHost.audio7Player != null) )
-                        Audio7Player.mAudioHandler.removeCallbacks(TabsHost.audio7Player.audio_runnable);
+                        (Audio_manager.audio7Player != null) )
+                        Audio7Player.mAudioHandler.removeCallbacks(Audio_manager.audio7Player.audio_runnable);
                 }
 
                 playAudioInNotePager(act,audioUriStr);
@@ -179,6 +179,8 @@ public class AudioUi_note
 //                System.out.println("AudioUi_note /  audio_next_btn / _onClick / NoteUi.getNotesCnt() = " + NoteUi.getNotesCnt());
 //                System.out.println("AudioUi_note /  audio_next_btn / _onClick / NoteUi.getFocus_notePos() = " + NoteUi.getFocus_notePos());
 
+                Audio_manager.stopAudioPlayer();
+
                 int new_pos = NoteUi.getFocus_notePos()-1;
                 if( new_pos < 0 )
                 {
@@ -208,6 +210,8 @@ public class AudioUi_note
 //                System.out.println("AudioUi_note /  audio_next_btn / _onClick / NoteUi.getNotesCnt() = " + NoteUi.getNotesCnt());
 //                System.out.println("AudioUi_note /  audio_next_btn / _onClick / NoteUi.getFocus_notePos() = " + NoteUi.getFocus_notePos());
 
+                Audio_manager.stopAudioPlayer();
+
                 int new_pos = NoteUi.getFocus_notePos()+1;
                 if( new_pos >= NoteUi.getNotesCnt())
                 {
@@ -229,7 +233,6 @@ public class AudioUi_note
         });
     }
 
-    public Audio7Player audio7Player;
     //  play audio in pager
     private void playAudioInNotePager(AppCompatActivity act, String audioUriStr)
     {
@@ -245,11 +248,15 @@ public class AudioUi_note
             MainAct.mPlaying_pageTableId = TabsHost.getCurrentPageTableId();
 
             // new instance
-            if(audio7Player == null)
-                audio7Player = new Audio7Player(act, audioPanel, audioUriStr);
+            if(Audio_manager.audio7Player == null) {
+                Audio_manager.audio7Player = new Audio7Player(act, audioPanel, audioUriStr);
+            } else {
+                Audio_manager.audio7Player.audio_panel = audioPanel; //todo Merged?
+                Audio_manager.audio7Player.initAudioBlock(audioUriStr);
+            }
 
             Audio7Player.prepareAudioInfo();
-            audio7Player.runAudioState();
+            Audio_manager.audio7Player.runAudioState();
         }
     }
 

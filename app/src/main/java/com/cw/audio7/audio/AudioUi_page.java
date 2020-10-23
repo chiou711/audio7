@@ -26,9 +26,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cw.audio7.R;
-import com.cw.audio7.main.MainAct;
 import com.cw.audio7.tabs.TabsHost;
-import com.cw.audio7.util.ColorSet;
 import com.cw.audio7.util.Util;
 import com.cw.audio7.util.preferences.Pref;
 
@@ -75,7 +73,7 @@ public class AudioUi_page {
      */
     public void initAudioPanel(View root_view)
     {
-        System.out.println("AudioUi_page / _initAudioBlock");
+        System.out.println("AudioUi_page / _initAudioPanel");
         audioPanel = root_view.findViewById(R.id.audio_panel);
         setAudioBlockListener(mAct);
     }
@@ -146,11 +144,11 @@ public class AudioUi_page {
             public void onClick(View v)
             {
 //                System.out.println("AudioUi_page / _initAudioBlock / audioPanel_play_button / _onClick");
-                TabsHost.audio7Player.runAudioState();
+                Audio_manager.audio7Player.runAudioState();
 
                 if(Audio7Player.isOnAudioPlayingPage())
                 {
-                    TabsHost.audio7Player.scrollPlayingItemToBeVisible(TabsHost.getCurrentPage().recyclerView); //todo ??? hang up
+                    Audio_manager.audio7Player.scrollPlayingItemToBeVisible(TabsHost.getCurrentPage().recyclerView); //todo ??? hang up
                     TabsHost.getCurrentPage().itemAdapter.notifyDataSetChanged();
                 }
             }
@@ -242,12 +240,14 @@ public class AudioUi_page {
 
         // gif case: add this will cause program hang up
         if(Audio_manager.getPlayerState() != Audio_manager.PLAYER_AT_STOP)
-            TabsHost.audio7Player.scrollPlayingItemToBeVisible(TabsHost.getCurrentPage().recyclerView);
+            Audio_manager.audio7Player.scrollPlayingItemToBeVisible(TabsHost.getCurrentPage().recyclerView);
 
         TabsHost.getCurrentPage().itemAdapter.notifyDataSetChanged();
 
-        // new audio player instance
-        TabsHost.audio7Player.runAudioState();
+        // show new audio length immediately
+        Audio_manager.audio7Player.initAudioBlock(Audio_manager.getAudioStringAt(Audio_manager.mAudioPos));
+
+        Audio_manager.audio7Player.runAudioState();
     }
 
 }

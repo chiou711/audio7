@@ -104,7 +104,7 @@ public class Note_adapter extends FragmentStatePagerAdapter
         String strTitle = db_page.getNoteTitle(position,true);
         String strBody = db_page.getNoteBody(position,true);
 
-		System.out.println("Note_adapter / _instantiateItem / isViewAllMode ");
+//		System.out.println("Note_adapter / _instantiateItem / isViewAllMode ");
 
 		// picture
         showPictureView(position,imageView,spinner);
@@ -132,7 +132,7 @@ public class Note_adapter extends FragmentStatePagerAdapter
     	
 		return pagerView;			
     } //instantiateItem
-	
+
     // show text web view
     private void showTextWebView(int position,CustomWebView textWebView)
     {
@@ -162,7 +162,7 @@ public class Note_adapter extends FragmentStatePagerAdapter
   		// show audio thumb nail view
   		if(!Util.isEmptyString(audioUri)    )
   		{
-			System.out.println("Note_adapter / _showPictureView / show audio thumb nail view");
+//			System.out.println("Note_adapter / _showPictureView / show audio thumb nail view");
   			imageView.setVisibility(View.VISIBLE);
 
   			// workaround to fix no image in View note
@@ -252,8 +252,10 @@ public class Note_adapter extends FragmentStatePagerAdapter
 			System.out.println("Note_adapter / _setPrimaryItem / auto play ");
 
 			// first audio play
-			Audio_manager.stopAudioPlayer();
-			audioUi_note.audio_play_btn.performClick();
+			if(Audio_manager.getPlayerState() != Audio_manager.PLAYER_AT_PLAY) {
+				Audio_manager.stopAudioPlayer();
+				audioUi_note.audio_play_btn.performClick();
+			}
 		}
 	    mLastPosition = position;
 	    

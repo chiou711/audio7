@@ -80,7 +80,6 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
     public static int firstPos_pageId;
 
     public static AudioUi_page audioUi_page;
-    public static Audio7Player audio7Player;
     public static boolean isDoingMarking;
     private AdView adView;
 
@@ -268,13 +267,13 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
         {
             RecyclerView listView = page.recyclerView;
 
-            if( (audio7Player != null) &&
+            if( (Audio_manager.audio7Player != null) &&
                 !isDoingMarking &&
                 (listView != null) &&
                 (Audio_manager.getPlayerState() != Audio_manager.PLAYER_AT_STOP)  )
             {
-                if ( (audio7Player != null) && Audio7Player.isOnAudioPlayingPage())
-                    audio7Player.scrollPlayingItemToBeVisible(listView); //todo Could hang up if page had too many notes (more then 1000)
+                if ( (Audio_manager.audio7Player != null) && Audio7Player.isOnAudioPlayingPage())
+                    Audio_manager.audio7Player.scrollPlayingItemToBeVisible(listView); //todo Could hang up if page had too many notes (more then 1000)
             }
         }
 
@@ -390,25 +389,25 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
 
         /** The following is used for
          * - incoming phone call case
-         * - after Key Protect
+         * - after Key Protect (screen off/on)
          * */
         if( (Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE) &&
             (Audio_manager.getPlayerState() != Audio_manager.PLAYER_AT_STOP)               ) {
-                if(audioUi_page == null) {
-                    audioUi_page = new AudioUi_page(MainAct.mAct, rootView,
-                            Audio_manager.getAudioStringAt(Audio_manager.mAudioPos));
-                }
 
+            String uriString =  Audio_manager.getAudioStringAt(Audio_manager.mAudioPos);
+            if(audioUi_page == null)
+                audioUi_page = new AudioUi_page(MainAct.mAct, rootView, uriString);
+            else
                 audioUi_page.initAudioPanel(rootView);
 
-                if(audio7Player == null) {
-                    audio7Player = new Audio7Player(MainAct.mAct, audioUi_page.audioPanel,
-                            Audio_manager.getAudioStringAt(Audio_manager.mAudioPos));
-                }
+            if(Audio_manager.audio7Player == null)
+                Audio_manager.audio7Player = new Audio7Player(MainAct.mAct, audioUi_page.audioPanel,uriString);
+            else {
+                Audio_manager.audio7Player.audio_panel = audioUi_page.audioPanel; //todo Merged?
+                Audio_manager.audio7Player.initAudioBlock(uriString);
+            }
 
-                audio7Player.audio_panel = audioUi_page.audioPanel;
-                audio7Player.initAudioBlock(Audio_manager.getAudioStringAt(Audio_manager.mAudioPos));
-                audio7Player.updateAudioPanel(MainAct.mAct);
+            Audio_manager.audio7Player.updateAudioPanel(MainAct.mAct);
         }
 
         // set long click listener

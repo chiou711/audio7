@@ -825,9 +825,12 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
 //             Audio_manager.stopAudioPlayer();
 
             // case 3: show panel
-//            PageAdapter_recycler.openAudioPanel_page(Audio_manager.mAudioPos);
-//            Audio_manager.setPlayerState(Audio_manager.PLAYER_AT_PAUSE);
-            PageAdapter_recycler.openAudioPanel_page_after_exit_note(Audio_manager.mAudioPos);
+            if ((Audio7Player.mAudioHandler != null) &&
+                    (Audio_manager.audio7Player != null)) {
+                Audio7Player.mAudioHandler.removeCallbacks(Audio_manager.audio7Player.audio_runnable);
+            }
+
+            PageAdapter_recycler.openAudioPanel_page(Audio_manager.mAudioPos);
         }
     }
 
@@ -1201,11 +1204,15 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                     Audio_manager.stopAudioPlayer();
 
                     // remove audio panel
-                    if(TabsHost.audio7Player != null)
-                        TabsHost.audio7Player.audio_runnable.run();
+                    if(Audio_manager.audio7Player != null)
+                        Audio_manager.audio7Player.audio_runnable.run();
+
+                    Audio_manager.audio7Player.showAudioPanel(this, false);
 
                     // refresh
                     TabsHost.reloadCurrentPage();
+
+                    Audio_manager.audio7Player.audio_panel.setVisibility(View.GONE);
 
                     return true; // just stop playing, wait for user action
                 }
@@ -1439,9 +1446,9 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
             if(BackgroundAudioService.mMediaPlayer.isPlaying())
                 BackgroundAudioService.mMediaPlayer.pause();
 
-            if((Audio7Player.mAudioHandler != null) &&
-                    (TabsHost.audio7Player != null)        ){
-                Audio7Player.mAudioHandler.removeCallbacks(TabsHost.audio7Player.audio_runnable);
+            if( (Audio7Player.mAudioHandler != null) &&
+                (Audio_manager.audio7Player != null)        ){
+                Audio7Player.mAudioHandler.removeCallbacks(Audio_manager.audio7Player.audio_runnable);
             }
             BackgroundAudioService.mMediaPlayer.release();
             BackgroundAudioService.mMediaPlayer = null;
@@ -1456,11 +1463,16 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
         if(TabsHost.audioUi_page == null)
             TabsHost.audioUi_page = new AudioUi_page(this,TabsHost.rootView,uriString);
 
-        if(TabsHost.audio7Player == null)
-            TabsHost.audio7Player = new Audio7Player(this,TabsHost.audioUi_page.audioPanel,uriString);
+        if(Audio_manager.audio7Player == null)
+            Audio_manager.audio7Player = new Audio7Player(this,TabsHost.audioUi_page.audioPanel,uriString);
 
         Audio7Player.prepareAudioInfo();
-        TabsHost.audio7Player.runAudioState();
+        Audio_manager.audio7Player.runAudioState();
+
+        if(Audio_manager.audio7Player.isOnAudioPlayingPage()) {
+            Audio_manager.audio7Player.scrollPlayingItemToBeVisible(TabsHost.getCurrentPage().recyclerView);
+            TabsHost.getCurrentPage().itemAdapter.notifyDataSetChanged();
+        }
 
         // update audio play position
         TabsHost.audioPlayTabPos = TabsHost.getFocus_tabPos();
