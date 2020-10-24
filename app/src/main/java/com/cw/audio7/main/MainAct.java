@@ -816,21 +816,16 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
 
             drawer.drawerToggle.syncState(); // make sure toggle icon state is correct
 
-            // todo Temp design
-            // when back key pressed
-            // case 1: do nothing about audio
-//            {}
+            // show Page audio panel for continuing audio play
+            if(Audio_manager.mPausedPosition > 0)
+            {
+                if ((Audio7Player.mAudioHandler != null) &&
+                        (Audio_manager.audio7Player != null)) {
+                    Audio7Player.mAudioHandler.removeCallbacks(Audio_manager.audio7Player.audio_runnable);
+                }
 
-            // case 2: stop audio
-//             Audio_manager.stopAudioPlayer();
-
-            // case 3: show panel
-            if ((Audio7Player.mAudioHandler != null) &&
-                    (Audio_manager.audio7Player != null)) {
-                Audio7Player.mAudioHandler.removeCallbacks(Audio_manager.audio7Player.audio_runnable);
+                PageAdapter_recycler.openAudioPanel_page(Audio_manager.mAudioPos);
             }
-
-            PageAdapter_recycler.openAudioPanel_page(Audio_manager.mAudioPos);
         }
     }
 

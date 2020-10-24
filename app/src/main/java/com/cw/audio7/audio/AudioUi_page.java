@@ -211,8 +211,10 @@ public class AudioUi_page {
                 }
                 while (Audio_manager.getCheckedAudio(Audio_manager.mAudioPos) == 0);
 
-                if(Audio_manager.mAudioPos == Audio_manager.getPlayingPage_notesCount())
+                if(Audio_manager.mAudioPos == Audio_manager.getPlayingPage_notesCount()) {
+                    //todo Add boundary check?
                     Audio_manager.stopAudioPlayer();
+                }
                 else
                     nextAudio_panel();
             }
@@ -242,7 +244,10 @@ public class AudioUi_page {
         if(Audio_manager.getPlayerState() != Audio_manager.PLAYER_AT_STOP)
             Audio_manager.audio7Player.scrollPlayingItemToBeVisible(TabsHost.getCurrentPage().recyclerView);
 
-        TabsHost.getCurrentPage().itemAdapter.notifyDataSetChanged();
+        if(TabsHost.getCurrentPage().itemAdapter == null)
+            TabsHost.reloadCurrentPage();
+        else
+            TabsHost.getCurrentPage().itemAdapter.notifyDataSetChanged();
 
         // show new audio length immediately
         Audio_manager.audio7Player.initAudioBlock(Audio_manager.getAudioStringAt(Audio_manager.mAudioPos));

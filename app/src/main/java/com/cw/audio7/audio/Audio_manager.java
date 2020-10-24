@@ -219,7 +219,7 @@ public class Audio_manager
 
 	public static int getPlayingPage_notesCount()
     {
-        int playingPageTableId = TabsHost.mTabsPagerAdapter.getItem(TabsHost.audioPlayTabPos).page_tableId;
+	    int playingPageTableId = TabsHost.getCurrentPageTableId();
         DB_page db_page = new DB_page(MainAct.mAct, playingPageTableId);
         return db_page.getNotesCount(true);
     }

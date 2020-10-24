@@ -297,33 +297,29 @@ public class Note extends Fragment
 		}
 
 	}
-	
+
 	@Override
 	public void onPause() {
 		super.onPause();
 		System.out.println("Note / _onPause");
 
+		// keep paused position for continuing audio play when
+		// - pressed Back button
+		// - screen off
+		if (BackgroundAudioService.mMediaPlayer != null) {
+			Audio_manager.mPausedPosition = BackgroundAudioService.mMediaPlayer
+					.getCurrentPosition();
+		}
+
+		// remove unused runnable
+		if ( (Audio7Player.mAudioHandler != null) &&
+			 (Audio_manager.audio7Player != null))
+			Audio7Player.mAudioHandler.removeCallbacks(Audio_manager.audio7Player.audio_runnable);
+
 		isPagerActive = false;
 
-		if(!Audio7Player.isAudioPanelOn(act)) {
-			Audio_manager.stopAudioPlayer(); //todo Need continued playing?
-		}
-		else {
-
-			// disable full screen
-			Util.setNormalScreen(act);
-
-			// keep paused position for onPrepared state
-			if (BackgroundAudioService.mMediaPlayer != null) {
-				Audio_manager.mPausedPosition = BackgroundAudioService.mMediaPlayer
-						.getCurrentPosition();
-			}
-
-			// remove unused runnable
-			if ((Audio7Player.mAudioHandler != null) &&
-					(Audio_manager.audio7Player != null))
-				Audio7Player.mAudioHandler.removeCallbacks(Audio_manager.audio7Player.audio_runnable);
-		}
+		// disable full screen
+		Util.setNormalScreen(act);
 	}
 
 	@Override
