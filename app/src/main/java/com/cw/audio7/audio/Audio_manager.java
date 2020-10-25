@@ -135,14 +135,18 @@ public class Audio_manager
             BackgroundAudioService.mMediaPlayer = null;
         }
 
-        // stop handler and set flag to remove runnable
-	    if( Audio7Player.mAudioHandler != null)
-		    Audio_manager.isRunnableOn = false;
-
         Audio_manager.setPlayerState(Audio_manager.PLAYER_AT_STOP);
 
         //hide notification
         NotificationManagerCompat.from(MainAct.mAct).cancel(BackgroundAudioService.id);
+    }
+
+    // remove runnable for update audio playing
+    public static void removeRunnable() {
+	    if ( (Audio7Player.mAudioHandler != null) &&
+			    (Audio_manager.audio7Player != null))     {
+		    Audio7Player.mAudioHandler.removeCallbacks(Audio_manager.audio7Player.audio_runnable);
+	    }
     }
 
 

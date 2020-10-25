@@ -69,6 +69,14 @@ public class Audio7Player
         mAudioHandler = new Handler();
 	}
 
+	public void setAudioPanel(ViewGroup audio_panel) {
+		this.audio_panel = audio_panel;
+	}
+
+	public ViewGroup getAudioPanel() {
+		return audio_panel;
+	}
+
     /**
      * prepare audio info
      */
@@ -214,21 +222,6 @@ public class Audio7Player
 		@Override
 		public void run() {
 //			System.out.println("Audio7Player / _audio_runnable");
-			if( !Audio_manager.isRunnableOn)
-			{
-				stopHandler();
-				stopAsyncTask();
-
-				if( (Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE) &&
-					(!Pref.getPref_cyclic_play_enable(act))   ) {
-					Audio_manager.stopAudioPlayer();
-					showAudioPanel(act, false);
-				}
-
-				System.out.println("Audio7Player / _audio_runnable / return");
-				return;
-			}
-
 			if (Audio_manager.getCheckedAudio(Audio_manager.mAudioPos) == 1) {
 
 				// for incoming call case and after Key protection
@@ -516,7 +509,6 @@ public class Audio7Player
         mAudioHandler = null;
         mAudioHandler = new Handler();
 
-        Audio_manager.isRunnableOn = true;
         BackgroundAudioService.mMediaPlayer = null;
 
         // verify audio URL
@@ -795,8 +787,6 @@ public class Audio7Player
 	 * */
 	public void updateAudioPanel(AppCompatActivity act)
 	{
-//		System.out.println("Audio7Player / _updateAudioPanel");
-
 		// update playing state
 		if(Audio_manager.getPlayerState() == Audio_manager.PLAYER_AT_PLAY)
 		{

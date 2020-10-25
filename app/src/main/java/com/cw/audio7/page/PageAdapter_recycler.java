@@ -549,7 +549,7 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
                 if(Audio_manager.audio7Player == null)
                     Audio_manager.audio7Player = new Audio7Player(mAct, TabsHost.audioUi_page.audioPanel, uriString);
                 else {
-                    Audio_manager.audio7Player.audio_panel = TabsHost.audioUi_page.audioPanel; //todo Merged?
+                    Audio_manager.audio7Player.setAudioPanel(TabsHost.audioUi_page.audioPanel);
                     Audio_manager.audio7Player.initAudioBlock(uriString);
                 }
 

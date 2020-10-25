@@ -109,8 +109,7 @@ public class AudioUi_note
             {
                 isPausedAtSeekerAnchor = false;
 
-                if( (Audio_manager.isRunnableOn) ||
-                    (BackgroundAudioService.mMediaPlayer == null) ) {
+                if( (BackgroundAudioService.mMediaPlayer == null) ) {
                     // use this flag to determine new play or not in note
                     BackgroundAudioService.mIsPrepared = false;
                     if( (Audio7Player.mAudioHandler != null) &&
@@ -251,8 +250,7 @@ public class AudioUi_note
             if(Audio_manager.audio7Player == null) {
                 Audio_manager.audio7Player = new Audio7Player(act, audioPanel, audioUriStr);
             } else {
-                Audio_manager.audio7Player.audio_panel = audioPanel; //todo Merged?
-                Audio_manager.audio7Player.initAudioBlock(audioUriStr);
+                Audio_manager.audio7Player.setAudioPanel(audioPanel);
             }
 
             Audio7Player.prepareAudioInfo();

@@ -816,14 +816,11 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
 
             drawer.drawerToggle.syncState(); // make sure toggle icon state is correct
 
+            Audio_manager.removeRunnable();
+
             // show Page audio panel for continuing audio play
             if(Audio_manager.mPausedPosition > 0)
             {
-                if ((Audio7Player.mAudioHandler != null) &&
-                        (Audio_manager.audio7Player != null)) {
-                    Audio7Player.mAudioHandler.removeCallbacks(Audio_manager.audio7Player.audio_runnable);
-                }
-
                 PageAdapter_recycler.openAudioPanel_page(Audio_manager.mAudioPos);
             }
         }
@@ -1207,8 +1204,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                     // refresh
                     TabsHost.reloadCurrentPage();
 
-                    Audio_manager.audio7Player.audio_panel.setVisibility(View.GONE);
-
+                    Audio_manager.audio7Player.getAudioPanel().setVisibility(View.GONE);
                     return true; // just stop playing, wait for user action
                 }
                 else // play first audio

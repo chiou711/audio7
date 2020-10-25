@@ -403,7 +403,7 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
             if(Audio_manager.audio7Player == null)
                 Audio_manager.audio7Player = new Audio7Player(MainAct.mAct, audioUi_page.audioPanel,uriString);
             else {
-                Audio_manager.audio7Player.audio_panel = audioUi_page.audioPanel; //todo Merged?
+                Audio_manager.audio7Player.setAudioPanel(audioUi_page.audioPanel);
                 Audio_manager.audio7Player.initAudioBlock(uriString);
             }
 
