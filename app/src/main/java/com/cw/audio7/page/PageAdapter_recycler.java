@@ -420,8 +420,18 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
         viewHolder.audioBlock.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                openAudioPanel_note(position);
-                openAudioPanel_page(position);
+
+                // case 1: open Note audio
+                openAudioPanel_note(position);
+
+                // case 2: open Page audio
+//                Audio_manager.removeRunnable();
+//                Audio_manager.stopAudioPlayer();
+//                Audio_manager.audio7Player = null;
+//                openAudioPanel_page(position);
+//                Audio7Player.prepareAudioInfo();
+//                Audio_manager.audio7Player.runAudioState();
+
             }
         });
 
@@ -480,7 +490,7 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
         int count = db_page.getNotesCount(true);
         if(position < count)
         {
-            // apply Note class
+            /** Open Note Intent */
 //                    Intent intent;
 //                    intent = new Intent(mAct, Note.class);
 //                    intent.putExtra("POSITION", position);
@@ -522,21 +532,6 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
         if(position < notesCount) // avoid footer error
         {
             if(isAudioUri) {
-                // cancel playing
-                if (BackgroundAudioService.mMediaPlayer != null) {
-                    if (BackgroundAudioService.mMediaPlayer.isPlaying())
-                        BackgroundAudioService.mMediaPlayer.pause();
-
-                    if ( (Audio7Player.mAudioHandler != null) &&
-                         (Audio_manager.audio7Player != null)) {
-                        Audio7Player.mAudioHandler.removeCallbacks(Audio_manager.audio7Player.audio_runnable);
-                    }
-
-                    BackgroundAudioService.mMediaPlayer.release();
-                    BackgroundAudioService.mMediaPlayer = null;
-                }
-
-                Audio_manager.setPlayerState(Audio_manager.PLAYER_AT_PLAY);
 
                 // create new Intent to play audio
                 Audio_manager.mAudioPos = position;
@@ -552,9 +547,6 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
                     Audio_manager.audio7Player.setAudioPanel(TabsHost.audioUi_page.audioPanel);
                     Audio_manager.audio7Player.initAudioBlock(uriString);
                 }
-
-                Audio7Player.prepareAudioInfo();
-                Audio_manager.audio7Player.runAudioState();
 
                 // update audio play position
                 TabsHost.audioPlayTabPos = TabsHost.getFocus_tabPos();

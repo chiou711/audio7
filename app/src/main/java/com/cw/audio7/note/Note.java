@@ -306,18 +306,12 @@ public class Note extends Fragment
 		super.onPause();
 		System.out.println("Note / _onPause");
 
-		// keep paused position for continuing audio play when
-		// - pressed Back button
-		// - screen off
-		if (BackgroundAudioService.mMediaPlayer != null) {
-			Audio_manager.mPausedPosition = BackgroundAudioService.mMediaPlayer
-					.getCurrentPosition();
-		}
+		// case 1: stop audio when screen off
+//		Audio_manager.stopAudioPlayer();
+//		Audio_manager.removeRunnable();
 
-		// remove unused runnable
-		if ( (Audio7Player.mAudioHandler != null) &&
-			 (Audio_manager.audio7Player != null))
-			Audio7Player.mAudioHandler.removeCallbacks(Audio_manager.audio7Player.audio_runnable);
+		// case 2: continue playing
+		// do nothing
 
 		isPagerActive = false;
 

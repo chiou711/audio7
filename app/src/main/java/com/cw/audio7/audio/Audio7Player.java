@@ -82,9 +82,7 @@ public class Audio7Player
      */
     public static void prepareAudioInfo()
     {
-	    // check for continuing audio play when Note audio UI is change Page audio UI
-    	if(Audio_manager.mPausedPosition == 0)
-            mAudioManager = new Audio_manager();
+	    mAudioManager = new Audio_manager();
         mAudioManager.updateAudioInfo();
     }
 
@@ -565,7 +563,7 @@ public class Audio7Player
 			    if (Build.VERSION.SDK_INT >= 21) {
 				    MainAct.mMediaControllerCompat
 						    .getTransportControls()
-						    .playFromUri(Uri.parse(audioUrl), null);//todo How to avoid null exception if not using recreate
+						    .playFromUri(Uri.parse(audioUrl), null);
 
 				    MainAct.mMediaControllerCompat.getTransportControls().play();
 			    } else {
@@ -660,7 +658,7 @@ public class Audio7Player
 				String.format(Locale.ENGLISH,"%02d", curMin)+":" +
 				String.format(Locale.ENGLISH,"%02d", curSec);
 
-		System.out.println("Audio7Player / _updateAudioProgress / curr_time_str = " + curr_time_str);
+//		System.out.println("Audio7Player / _updateAudioProgress / curr_time_str = " + curr_time_str);
 
 		// set current play time and the play length of audio file
 		if(audio_curr_pos != null) {

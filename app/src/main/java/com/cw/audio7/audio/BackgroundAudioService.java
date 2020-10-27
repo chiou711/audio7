@@ -203,16 +203,8 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
 
                     if(enDbgMsg)
                         System.out.println("BackgroundAudioService / _setAudioPlayerListeners / onPrepared");
-                    if (Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE)
-                    {
-                        //  when AudioUi_note is changed to AudioUi_page
-                        if(Audio_manager.mPausedPosition > 0) {
-                            mMediaPlayer.seekTo(Audio_manager.mPausedPosition);
-                            Audio_manager.mPausedPosition = 0;
-                        }
-                        else
-                            mMediaPlayer.seekTo(0);
-                    }
+
+                    mMediaPlayer.seekTo(0);
                     mIsPrepared = true;
                 }
             });

@@ -148,7 +148,7 @@ public class AudioUi_page {
 
                 if(Audio7Player.isOnAudioPlayingPage())
                 {
-                    Audio_manager.audio7Player.scrollPlayingItemToBeVisible(TabsHost.getCurrentPage().recyclerView); //todo ??? hang up
+                    Audio_manager.audio7Player.scrollPlayingItemToBeVisible(TabsHost.getCurrentPage().recyclerView);
                     TabsHost.getCurrentPage().itemAdapter.notifyDataSetChanged();
                 }
             }
@@ -164,7 +164,6 @@ public class AudioUi_page {
                     if(Audio_manager.mAudioPos > 0) {
                         Audio_manager.mAudioPos--;
                     }
-                    //todo add option for circle
                     else if( Audio_manager.mAudioPos == 0)
                     {
                         if(Pref.getPref_cyclic_play_enable(mAct)) {
@@ -172,16 +171,19 @@ public class AudioUi_page {
                         }
                         else {
                             Audio_manager.mAudioPos = -1;
-                            Toast.makeText(mAct,R.string.toast_cyclic_play_disabled, Toast.LENGTH_SHORT).show();
-                            TabsHost.getCurrentPage().itemAdapter.notifyDataSetChanged();
                             break;
                         }
                     }
                 }
                 while (Audio_manager.getCheckedAudio(Audio_manager.mAudioPos) == 0);
 
-                if(Audio_manager.mAudioPos == -1)
+                if(Audio_manager.mAudioPos == -1) {
                     Audio_manager.stopAudioPlayer();
+                    Audio_manager.removeRunnable();
+                    Audio_manager.audio7Player.showAudioPanel(act,false);
+                    TabsHost.reloadCurrentPage();
+                    Toast.makeText(mAct,R.string.toast_cyclic_play_disabled,Toast.LENGTH_LONG).show();
+                }
                 else
                     nextAudio_panel();
             }
@@ -196,24 +198,24 @@ public class AudioUi_page {
                 do
                 {
                     Audio_manager.mAudioPos++;
-                    //todo add option for circle
                     if( Audio_manager.mAudioPos >= Audio_manager.getPlayingPage_notesCount()) {
                         if(Pref.getPref_cyclic_play_enable(mAct)) {
                             Audio_manager.mAudioPos = 0; //back to first index
                         }
                         else {
                             Audio_manager.mAudioPos = Audio_manager.getPlayingPage_notesCount();
-                            Toast.makeText(mAct,R.string.toast_cyclic_play_disabled,Toast.LENGTH_SHORT).show();
-                            TabsHost.getCurrentPage().itemAdapter.notifyDataSetChanged();
                             break;
                         }
                     }
                 }
                 while (Audio_manager.getCheckedAudio(Audio_manager.mAudioPos) == 0);
 
-                if(Audio_manager.mAudioPos == Audio_manager.getPlayingPage_notesCount()) {
-                    //todo Add boundary check?
+                if(Audio_manager.mAudioPos >= Audio_manager.getPlayingPage_notesCount()) {
                     Audio_manager.stopAudioPlayer();
+                    Audio_manager.removeRunnable();
+                    Audio_manager.audio7Player.showAudioPanel(act,false);
+                    TabsHost.reloadCurrentPage();
+                    Toast.makeText(mAct,R.string.toast_cyclic_play_disabled,Toast.LENGTH_LONG).show();
                 }
                 else
                     nextAudio_panel();

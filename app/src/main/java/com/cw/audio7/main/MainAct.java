@@ -97,7 +97,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
     public About mAboutFragment;
     public static Menu mMenu;
     public static List<String> mFolderTitles;
-    public static AppCompatActivity mAct;//TODO static issue
+    public static AppCompatActivity mAct;
     public FragmentManager mFragmentManager;
     public static FragmentManager.OnBackStackChangedListener mOnBackStackChangedListener;
     public static int mLastOkTabId = 1;
@@ -658,13 +658,6 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
             if (bEULA_accepted) {
                 if(mFragmentManager != null)
                     mFragmentManager.popBackStack();
-
-                if (!mAct.isDestroyed()) {
-//                    System.out.println("MainAct / _onResumeFragments / mAct is not Destroyed()");
-//                    openFolder();//todo Need this?
-                }
-//                else
-//                    System.out.println("MainAct / _onResumeFragments / mAct is Destroyed()");
             }
         }
     }
@@ -816,13 +809,9 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
 
             drawer.drawerToggle.syncState(); // make sure toggle icon state is correct
 
-            Audio_manager.removeRunnable();
-
-            // show Page audio panel for continuing audio play
-            if(Audio_manager.mPausedPosition > 0)
-            {
+            // change audio panel when Note audio is changed to Page audio
+            if (BackgroundAudioService.mMediaPlayer != null)
                 PageAdapter_recycler.openAudioPanel_page(Audio_manager.mAudioPos);
-            }
         }
     }
 
@@ -1194,17 +1183,10 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                     (Audio_manager.getPlayerState() != Audio_manager.PLAYER_AT_STOP))
                 {
                     Audio_manager.stopAudioPlayer();
-
-                    // remove audio panel
-                    if(Audio_manager.audio7Player != null)
-                        Audio_manager.audio7Player.audio_runnable.run();
-
+                    Audio_manager.removeRunnable();
                     Audio_manager.audio7Player.showAudioPanel(this, false);
-
                     // refresh
                     TabsHost.reloadCurrentPage();
-
-                    Audio_manager.audio7Player.getAudioPanel().setVisibility(View.GONE);
                     return true; // just stop playing, wait for user action
                 }
                 else // play first audio
