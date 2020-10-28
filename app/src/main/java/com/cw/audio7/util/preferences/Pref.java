@@ -233,4 +233,21 @@ public class Pref
         return pref.getBoolean(key, false);
     }
 
+    // set background play enable
+    public static void setPref_background_play_enable(Activity act, boolean enable )
+    {
+        SharedPreferences pref = act.getSharedPreferences("show_note_attribute", 0);
+        String key = "KEY_ENABLE_BACKGROUND_PLAY";
+        pref.edit().putBoolean(key, enable).apply();
+    }
+
+    // get background play enable
+    public static boolean getPref_background_play_enable(Activity act)
+    {
+        SharedPreferences pref = act.getSharedPreferences("show_note_attribute", 0);
+        String key = "KEY_ENABLE_BACKGROUND_PLAY";
+        return pref.getBoolean(key, false);
+    }
+
+
 }

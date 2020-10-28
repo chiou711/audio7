@@ -536,17 +536,7 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
                 // create new Intent to play audio
                 Audio_manager.mAudioPos = position;
 
-                if(TabsHost.audioUi_page == null)
-                    TabsHost.audioUi_page = new AudioUi_page(mAct,TabsHost.rootView,uriString);
-                else
-                    TabsHost.audioUi_page.initAudioPanel(TabsHost.rootView);
-
-                if(Audio_manager.audio7Player == null)
-                    Audio_manager.audio7Player = new Audio7Player(mAct, TabsHost.audioUi_page.audioPanel, uriString);
-                else {
-                    Audio_manager.audio7Player.setAudioPanel(TabsHost.audioUi_page.audioPanel);
-                    Audio_manager.audio7Player.initAudioBlock(uriString);
-                }
+                MainAct.showAudioView(uriString);
 
                 // update audio play position
                 TabsHost.audioPlayTabPos = TabsHost.getFocus_tabPos();

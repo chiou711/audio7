@@ -546,8 +546,17 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
     @Override
     protected void onPause() {
         super.onPause();
-//        bluetooth_device_receiver.abortBroadcast();//todo better place?
         System.out.println("MainAct / _onPause");
+
+        // background play
+        if(!Pref.getPref_background_play_enable(this)) {
+            // stop audio when screen off
+            Audio_manager.stopAudioPlayer();
+            Audio_manager.removeRunnable();
+        }
+        else {
+            // continue playing, do nothing
+        }
     }
 
     @Override
@@ -975,7 +984,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
         playOrStopMusicButton = menu.findItem(R.id.PLAY_OR_STOP_MUSIC);
         mPref_show_note_attribute = getSharedPreferences("show_note_attribute", 0);
 
-        // enable cyclic play
+        // show cyclic play setting
         if(Pref.getPref_cyclic_play_enable(mAct))
             menu.findItem(R.id.PLAY_CYCLIC)
                     .setIcon(R.drawable.btn_check_on_holo_light)
@@ -984,6 +993,16 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
             menu.findItem(R.id.PLAY_CYCLIC)
                     .setIcon(R.drawable.btn_check_off_holo_light)
                     .setTitle(R.string.menu_button_cyclic_play);
+
+        // show background play setting
+        if(Pref.getPref_background_play_enable(mAct))
+            menu.findItem(R.id.PLAY_BACKGROUND)
+                    .setIcon(R.drawable.btn_check_on_holo_light)
+                    .setTitle(R.string.menu_button_background_play);
+        else
+            menu.findItem(R.id.PLAY_BACKGROUND)
+                    .setIcon(R.drawable.btn_check_off_holo_light)
+                    .setTitle(R.string.menu_button_background_play);
 
         // enable larger view
         if(Pref.getPref_card_view_enable_large_view(mAct))
@@ -1213,6 +1232,24 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                 invalidateOptionsMenu();
                 return true;
 
+            case MenuId.PLAY_BACKGROUND:
+                if(Pref.getPref_background_play_enable(mAct)) {
+                    Pref.setPref_background_play_enable(mAct,false);
+                    Toast.makeText(this,getResources().getString(R.string.menu_button_background_play)+
+                                    ": " +
+                                    getResources().getString(R.string.set_disable),
+                            Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    Pref.setPref_background_play_enable(mAct,true);
+                    Toast.makeText(this,getResources().getString(R.string.menu_button_background_play) +
+                                    ": " +
+                                    getResources().getString(R.string.set_enable),
+                            Toast.LENGTH_SHORT).show();
+                }
+                invalidateOptionsMenu();
+                return true;
+
             case MenuId.CHECKED_OPERATION:
                 Checked_notes_option op = new Checked_notes_option(this);
                 op.open_option_grid(this);
@@ -1416,15 +1453,8 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
         // cancel playing
         if(BackgroundAudioService.mMediaPlayer != null)
         {
-            if(BackgroundAudioService.mMediaPlayer.isPlaying())
-                BackgroundAudioService.mMediaPlayer.pause();
-
-            if( (Audio7Player.mAudioHandler != null) &&
-                (Audio_manager.audio7Player != null)        ){
-                Audio7Player.mAudioHandler.removeCallbacks(Audio_manager.audio7Player.audio_runnable);
-            }
-            BackgroundAudioService.mMediaPlayer.release();
-            BackgroundAudioService.mMediaPlayer = null;
+            Audio_manager.stopAudioPlayer();
+            Audio_manager.removeRunnable();
         }
 
         // initial
@@ -1433,11 +1463,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
         String uriString = new DB_page(mAct,TabsHost.getCurrentPageTableId())
                 .getNoteAudioUri(0,true);
 
-        if(TabsHost.audioUi_page == null)
-            TabsHost.audioUi_page = new AudioUi_page(this,TabsHost.rootView,uriString);
-
-        if(Audio_manager.audio7Player == null)
-            Audio_manager.audio7Player = new Audio7Player(this,TabsHost.audioUi_page.audioPanel,uriString);
+        showAudioView(uriString);
 
         Audio7Player.prepareAudioInfo();
         Audio_manager.audio7Player.runAudioState();
@@ -1483,6 +1509,20 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
         openFolder();
     }
 
+    // show audio view of page
+    public static void showAudioView(String audioUriStr) {
+        if(TabsHost.audioUi_page == null)
+            TabsHost.audioUi_page = new AudioUi_page(mAct,TabsHost.rootView,audioUriStr);
+        else
+            TabsHost.audioUi_page.initAudioPanel(TabsHost.rootView);
+
+        if(Audio_manager.audio7Player == null)
+            Audio_manager.audio7Player = new Audio7Player(mAct, TabsHost.audioUi_page.audioPanel, audioUriStr);
+        else {
+            Audio_manager.audio7Player.setAudioPanel(TabsHost.audioUi_page.audioPanel);
+            Audio_manager.audio7Player.initAudioBlock(audioUriStr);
+        }
+    }
 
     // callback: media browser connection
     public static MediaBrowserCompat.ConnectionCallback mMediaBrowserCompatConnectionCallback = new MediaBrowserCompat.ConnectionCallback() {

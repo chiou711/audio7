@@ -306,13 +306,6 @@ public class Note extends Fragment
 		super.onPause();
 		System.out.println("Note / _onPause");
 
-		// case 1: stop audio when screen off
-//		Audio_manager.stopAudioPlayer();
-//		Audio_manager.removeRunnable();
-
-		// case 2: continue playing
-		// do nothing
-
 		isPagerActive = false;
 
 		// disable full screen

@@ -4,6 +4,7 @@
     <string name="menu_button_play_audio">Play audio</string>
     <string name="menu_button_stop_audio">Stop audio</string>
     <string name="menu_button_cyclic_play">Cyclic play</string>
+    <string name="menu_button_background_play">Background play</string>
     <string name="change_page_color">List Color</string>
     <string name="rearrange_page">List order</string>
     <string name="delete_pages">Delete lists</string>

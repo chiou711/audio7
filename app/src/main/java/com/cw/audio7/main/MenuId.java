@@ -32,8 +32,12 @@ public class MenuId {
         // play
         static final int OPEN_PLAY_SUBMENU = R.id.PLAY;
         static final int PLAY_OR_STOP_AUDIO = R.id.PLAY_OR_STOP_MUSIC;
+
         // cyclic play
         static final int PLAY_CYCLIC = R.id.PLAY_CYCLIC;
+
+        // background play
+        static final int PLAY_BACKGROUND = R.id.PLAY_BACKGROUND;
 
         // checked operation
         static final int CHECKED_OPERATION = R.id.HANDLE_CHECKED_NOTES;

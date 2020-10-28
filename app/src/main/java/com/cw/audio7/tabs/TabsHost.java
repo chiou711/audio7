@@ -395,17 +395,7 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
             (Audio_manager.getPlayerState() != Audio_manager.PLAYER_AT_STOP)               ) {
 
             String uriString =  Audio_manager.getAudioStringAt(Audio_manager.mAudioPos);
-            if(audioUi_page == null)
-                audioUi_page = new AudioUi_page(MainAct.mAct, rootView, uriString);
-            else
-                audioUi_page.initAudioPanel(rootView);
-
-            if(Audio_manager.audio7Player == null)
-                Audio_manager.audio7Player = new Audio7Player(MainAct.mAct, audioUi_page.audioPanel,uriString);
-            else {
-                Audio_manager.audio7Player.setAudioPanel(audioUi_page.audioPanel);
-                Audio_manager.audio7Player.initAudioBlock(uriString);
-            }
+            MainAct.showAudioView(uriString);
 
             Audio_manager.audio7Player.updateAudioPanel(MainAct.mAct);
         }
