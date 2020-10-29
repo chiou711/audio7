@@ -3,22 +3,22 @@
     
     <!-- When selected -->
     <item android:state_selected="true">
-		<shape xmlns:android="http://schemas.android.com/apk/res/android"
+		<shape
        			android:shape="rectangle">
 		    <gradient android:angle="90"
-	                  android:endColor="@color/audioBg"
-	                  android:centerColor="@color/audioBg"
-	                  android:startColor="@color/audioBg" />
+	                  android:endColor="@color/bg_color"
+	                  android:centerColor="@color/bg_color"
+	                  android:startColor="@color/bg_color" />
  		</shape>
 	</item>
     <!-- When not selected -->
     <item>
-		<shape xmlns:android="http://schemas.android.com/apk/res/android"
+		<shape
        			android:shape="rectangle">
 	        <gradient android:angle="90" 
-	                  android:endColor="@color/audioBg"
-	                  android:centerColor="@color/audioBg"
-	                  android:startColor="@color/audioBg" />
+	                  android:endColor="@color/bg_color"
+	                  android:centerColor="@color/bg_color"
+	                  android:startColor="@color/bg_color" />
  		</shape>
 	</item>
 

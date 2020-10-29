@@ -48,10 +48,6 @@ public class ColorSet
             Color.rgb(255,255,255),
             Color.rgb(0,0,0)};
 
-    public static int color_white = Color.rgb(255,255,255);
-    public static int color_black = Color.rgb(0,0,0);
-    public static int color_gray = Color.rgb(120,120,120);
-
     public static int getBarColor(Activity act)
     {
         return act.getResources().getColor(R.color.bar_color);
@@ -60,6 +56,11 @@ public class ColorSet
     public static int getButtonColor(Activity act)
     {
         return act.getResources().getColor(R.color.button_color);
+    }
+
+    public static int getBackgroundColor(Activity act)
+    {
+        return act.getResources().getColor(R.color.bg_color);
     }
 
     public static int getHighlightColor(Activity act)

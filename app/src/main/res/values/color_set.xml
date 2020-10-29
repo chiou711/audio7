@@ -2,8 +2,10 @@
 <resources>
     <!-- set 1 -->
     <color name="bar_color">#ff185060</color>
-    <color name="button_color">#ff204020</color>
+    <color name="button_color">#ff185060</color>
     <color name="highlight_color">#ffff8000</color>
+    <color name="bg_color">#ff176f77</color>
+    <color name="bg_gray_color">#ff26394e</color>
 
     <!-- set 2 -->
     <!--<color name="bar_color">#ff985060</color>-->
@@ -35,7 +37,5 @@
     <color name="appGrid">#b32d00</color>
     <color name="settingGrid">#191970</color>
     <color name="otherGrid">#202020</color>
-
-    <color name="audioBg">#661400</color>
 
 </resources>

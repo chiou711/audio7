@@ -17,6 +17,7 @@
         android:layout_margin="3dp"
         android:gravity="top"
         android:textAppearance="?android:attr/textAppearanceLarge"
+        android:background="@color/bg_gray_color"
         android:textSize="18sp"
         android:maxLines="10"
         android:scrollbars="vertical"

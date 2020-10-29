@@ -134,14 +134,12 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
 
         @Override
         public void onItemSelected() {
-//            itemView.setBackgroundColor(Color.LTGRAY);
-            ((CardView)itemView).setCardBackgroundColor(MainAct.mAct.getResources().getColor(R.color.button_color));
+            ((CardView)itemView).setCardBackgroundColor(ColorSet.getButtonColor(mAct));
         }
 
         @Override
         public void onItemClear() {
-//            ((CardView)itemView).setCardBackgroundColor(ColorSet.mBG_ColorArray[style]);
-            ((CardView)itemView).setCardBackgroundColor(ColorSet.color_black);
+            ((CardView)itemView).setCardBackgroundColor(mAct.getResources().getColor(R.color.colorBlack));
         }
     }
 
@@ -173,7 +171,7 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
         int style = dbFolder.getPageStyle(page_pos, true);
 
 //        ((CardView)holder.itemView).setCardBackgroundColor(ColorSet.mBG_ColorArray[style]);
-        ((CardView)holder.itemView).setCardBackgroundColor(ColorSet.color_black);
+        ((CardView)holder.itemView).setCardBackgroundColor(mAct.getResources().getColor(R.color.colorBlack));
 
         // get DB data
         String audioUri = null;
@@ -193,7 +191,7 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
          */
         // show row Id
         holder.rowId.setText(String.valueOf(position+1));
-        holder.rowId.setTextColor(ColorSet.color_white);
+        holder.rowId.setTextColor(mAct.getResources().getColor(R.color.colorWhite));
 
         if( Pref.getPref_card_view_enable_select(mAct) ||
             Pref.getPref_card_view_enable_draggable(mAct) )
@@ -317,8 +315,8 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
                 holder.audioTitle.setTextColor(ColorSet.mText_ColorArray[style]);
                 holder.audioArtist.setTextColor(ColorSet.mText_ColorArray[style]);
             } else {
-                holder.audioTitle.setTextColor(ColorSet.color_gray);
-                holder.audioArtist.setTextColor(ColorSet.color_gray);
+                holder.audioTitle.setTextColor(mAct.getResources().getColor(R.color.colorGray));
+                holder.audioArtist.setTextColor(mAct.getResources().getColor(R.color.colorGray));
             }
         }
 
@@ -498,7 +496,10 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
 
             // hide the tab layout
             TabsHost.mTabLayout.setVisibility(View.GONE);
-            mAct.getSupportFragmentManager().findFragmentById(R.id.content_frame).getView().setBackgroundColor(ColorSet.color_black);
+            mAct.getSupportFragmentManager()
+                    .findFragmentById(R.id.content_frame)
+                    .getView()
+                    .setBackgroundColor(mAct.getResources().getColor(R.color.colorBlack));
 
             /** Open Note fragment */
             Note noteFragment = new Note();

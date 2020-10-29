@@ -156,9 +156,7 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
 //        mTabLayout.setTabMode(TabLayout.MODE_FIXED);
         mTabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
 
-//        mTabLayout.setBackgroundColor(ColorSet.getBarColor(MainAct.mAct));
-        mTabLayout.setBackgroundColor(ColorSet.getButtonColor(MainAct.mAct));
-//        mTabLayout.setBackgroundColor(Color.parseColor("#FF303030"));
+        mTabLayout.setBackgroundColor(ColorSet.getBarColor(MainAct.mAct));
 
         // tab indicator
         mTabLayout.setSelectedTabIndicatorHeight(15);
@@ -709,9 +707,9 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
 //		System.out.println("TabsHost / _showFooter ");
         if(mFooterMessage != null)
         {
-            mFooterMessage.setTextColor(ColorSet.color_white);
+            mFooterMessage.setTextColor(mAct.getResources().getColor(R.color.colorWhite));
             mFooterMessage.setText(getFooterMessage(mAct));
-            mFooterMessage.setBackgroundColor(ColorSet.getBarColor(mAct));
+            mFooterMessage.setBackgroundColor(ColorSet.getBackgroundColor(mAct));
         }
     }
 

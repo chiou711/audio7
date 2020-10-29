@@ -17,7 +17,6 @@
 package com.cw.audio7.audio;
 
 import android.media.MediaPlayer;
-import android.media.MediaPlayer.OnPreparedListener;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -31,14 +30,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cw.audio7.R;
-import com.cw.audio7.db.DB_page;
 import com.cw.audio7.folder.FolderUi;
 import com.cw.audio7.main.MainAct;
 import com.cw.audio7.tabs.TabsHost;
 import com.cw.audio7.util.ColorSet;
 import com.cw.audio7.util.Util;
 import com.cw.audio7.util.audio.UtilAudio;
-import com.cw.audio7.util.preferences.Pref;
 
 import java.util.Locale;
 
@@ -677,12 +674,11 @@ public class Audio7Player
 	public void initAudioBlock(String audio_uriStr)
 	{
 		System.out.println("Audio7Player / _initAudioBlock " );
-		audio_panel.setBackgroundColor(ColorSet.color_black);
 
 		audio_title = (TextView) audio_panel.findViewById(R.id.audio_title); // first setting
 		audio_artist = (TextView) audio_panel.findViewById(R.id.audio_artist);
 
-		audio_title.setTextColor(ColorSet.color_white);
+		audio_title.setTextColor(act.getResources().getColor(R.color.colorWhite));
 		if (Util.isLandscapeOrientation(act))
 		{
 			audio_title.setMovementMethod(new ScrollingMovementMethod());
@@ -711,7 +707,7 @@ public class Audio7Player
 				String.format(Locale.ENGLISH,"%02d", curSec);
 
 		audio_curr_pos.setText(curr_pos_str);
-		audio_curr_pos.setTextColor(ColorSet.color_white);
+		audio_curr_pos.setTextColor(act.getResources().getColor(R.color.colorWhite));
 
 		// audio seek bar
 		audio_seek_bar = (SeekBar) audio_panel.findViewById(R.id.seek_bar);
@@ -745,7 +741,7 @@ public class Audio7Player
 		String strLength = strHour + ":" + strMinute+ ":" + strSecond;
 
 		audio_length.setText(strLength);
-		audio_length.setTextColor(ColorSet.color_white);
+		audio_length.setTextColor(act.getResources().getColor(R.color.colorWhite));
 
 		// audio buttons
 		audio_previous_btn = (ImageView) audio_panel.findViewById(R.id.audioPanel_previous);
