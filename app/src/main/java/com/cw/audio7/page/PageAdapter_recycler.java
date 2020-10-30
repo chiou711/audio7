@@ -72,16 +72,14 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
 	Cursor cursor;
     private DB_folder dbFolder;
 	private DB_page mDb_page;
-	private static int page_pos;
     private final OnStartDragListener mDragStartListener;
 	private int page_table_id;
 
-    PageAdapter_recycler(int pagePos,  int pageTableId, OnStartDragListener dragStartListener) {
+    PageAdapter_recycler( int pageTableId, OnStartDragListener dragStartListener) {
 	    mAct = MainAct.mAct;
 	    mDragStartListener = dragStartListener;
 
         dbFolder = new DB_folder(mAct,Pref.getPref_focusView_folder_tableId(mAct));
-	    page_pos = pagePos;
 	    page_table_id = pageTableId;
     }
 
@@ -168,9 +166,8 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
 //        System.out.println("PageAdapter_recycler / _onBindViewHolder / position = " + position);
 
         // style
-        int style = dbFolder.getPageStyle(page_pos, true);
+        int style = dbFolder.getPageStyle(TabsHost.getFocus_tabPos(), true);
 
-//        ((CardView)holder.itemView).setCardBackgroundColor(ColorSet.mBG_ColorArray[style]);
         ((CardView)holder.itemView).setCardBackgroundColor(mAct.getResources().getColor(R.color.colorBlack));
 
         // get DB data

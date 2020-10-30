@@ -49,7 +49,6 @@ public class Page_recycler extends Fragment implements OnStartDragListener {
 
     public RecyclerView recyclerView;
     RecyclerView.LayoutManager layoutMgr;
-    private int page_pos;
     public static int mCurrPlayPosition;
     public static int mHighlightPosition;
     public SeekBar seekBarProgress;
@@ -70,7 +69,6 @@ public class Page_recycler extends Fragment implements OnStartDragListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
         Bundle args = getArguments();
-        page_pos = args.getInt("page_pos");
         page_tableId = args.getInt("page_table_id");
         //System.out.println("Page_recycler / _onCreateView / page_tableId = " + page_tableId);
 
@@ -138,7 +136,7 @@ public class Page_recycler extends Fragment implements OnStartDragListener {
     {
         //System.out.println("Page_recycler / _fillData / page_tableId = " + page_tableId);
         if(itemAdapter == null)
-            itemAdapter = new PageAdapter_recycler(page_pos, page_tableId, this);
+            itemAdapter = new PageAdapter_recycler(page_tableId, this);
         // Set PageAdapter_recycler as the adapter for RecyclerView.
         recyclerView.setAdapter(itemAdapter);
     }

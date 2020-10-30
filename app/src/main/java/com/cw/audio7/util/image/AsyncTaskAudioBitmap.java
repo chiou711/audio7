@@ -22,6 +22,7 @@ import java.io.InputStream;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -34,6 +35,8 @@ import android.widget.TextView;
 
 import com.cw.audio7.R;
 import com.cw.audio7.util.audio.UtilAudio;
+
+import androidx.core.graphics.drawable.DrawableCompat;
 
 //Audio bitmap Async Task for applying MediaMetadataRetriever
 //Note: setDataSource could hang up system for a long time when accessing remote content
@@ -68,7 +71,11 @@ public class AsyncTaskAudioBitmap extends AsyncTask<String,Integer,String>
          // Set this will cause image view blank at Portrait pager, so set it null as a workaround
          if(null != mProgressBar) {
              mProgressBar.setProgress(0);
-             mProgressBar.setVisibility(View.VISIBLE);
+
+             // set progress bar color
+	         DrawableCompat.setTint(mProgressBar.getIndeterminateDrawable(),Color.parseColor("#ff176f77"));
+
+	         mProgressBar.setVisibility(View.VISIBLE);
          }
 	 } 
 	 
