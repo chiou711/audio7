@@ -34,6 +34,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.cw.audio7.R;
+import com.cw.audio7.util.ColorSet;
 import com.cw.audio7.util.audio.UtilAudio;
 
 import androidx.core.graphics.drawable.DrawableCompat;
@@ -73,7 +74,8 @@ public class AsyncTaskAudioBitmap extends AsyncTask<String,Integer,String>
              mProgressBar.setProgress(0);
 
              // set progress bar color
-	         DrawableCompat.setTint(mProgressBar.getIndeterminateDrawable(),Color.parseColor("#ff176f77"));
+//	         DrawableCompat.setTint(mProgressBar.getIndeterminateDrawable(),Color.parseColor("#ff176f77"));
+	         DrawableCompat.setTint(mProgressBar.getIndeterminateDrawable(), ColorSet.getHighlightColor(mAct));
 
 	         mProgressBar.setVisibility(View.VISIBLE);
          }

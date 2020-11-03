@@ -20,6 +20,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import androidx.annotation.NonNull;
@@ -127,7 +128,6 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
 
         // mTabsPagerAdapter
         mTabsPagerAdapter = new TabsPagerAdapter(MainAct.mAct,MainAct.mAct.getSupportFragmentManager());
-//        mTabsPagerAdapter = new TabsPagerAdapter(MainAct.mAct,getChildFragmentManager());
 
         // add pages to mTabsPagerAdapter
         int pageCount = 0;
@@ -158,15 +158,29 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
 
         mTabLayout.setBackgroundColor(ColorSet.getBarColor(MainAct.mAct));
 
-        // tab indicator
-        mTabLayout.setSelectedTabIndicatorHeight(15);
-        mTabLayout.setSelectedTabIndicatorColor(Color.parseColor("#FFFF7F00"));
-//        mTabLayout.setSelectedTabIndicatorHeight((int) (5 * getResources().getDisplayMetrics().density));
-
+        // set text color
         mTabLayout.setTabTextColors(
                 ContextCompat.getColor(MainAct.mAct,R.color.colorGray), //normal
                 ContextCompat.getColor(MainAct.mAct,R.color.colorWhite) //selected
         );
+
+        // tab indicator height
+//        mTabLayout.setSelectedTabIndicatorHeight(25); //todo ??? Replaced with?
+        mTabLayout.setSelectedTabIndicatorHeight((int) (6 * getResources().getDisplayMetrics().density));
+
+        // indicator color
+        mTabLayout.setSelectedTabIndicatorColor(ColorSet.getTabIndicatorColor(getActivity()));
+
+        // indicator corner
+        GradientDrawable gradientDrawable = new GradientDrawable();
+        gradientDrawable.setCornerRadius(10);
+        mTabLayout.setSelectedTabIndicator(gradientDrawable);
+
+        // indicator ripple
+        mTabLayout.setUnboundedRipple(true);
+
+        // indicator width
+        mTabLayout.setTabIndicatorFullWidth(false);
 
         mFooterMessage = (TextView) rootView.findViewById(R.id.footerText);
         mFooterMessage.setBackgroundColor(Color.BLUE);
@@ -285,30 +299,10 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
 //            System.out.println("TabsHost / _onTabSelected / not notifyDataSetChanged ");
 
         // set tab audio icon when audio playing
-        if ( (MainAct.mPlaying_folderPos == FolderUi.getFocus_folderPos()) &&
-             (Audio_manager.getPlayerState() != Audio_manager.PLAYER_AT_STOP) &&
-             (tab.getPosition() == audioPlayTabPos)                              )
-        {
-            if(tab.getCustomView() == null) {
-                LinearLayout tabLinearLayout = (LinearLayout) MainAct.mAct.getLayoutInflater().inflate(R.layout.tab_custom, null);
-                TextView title = (TextView) tabLinearLayout.findViewById(R.id.tabTitle);
-                title.setText(mTabsPagerAdapter.dbFolder.getPageTitle(tab.getPosition(), true));
-                title.setTextColor(MainAct.mAct.getResources().getColor(R.color.colorWhite));
-                title.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_audio, 0, 0, 0);
-                tab.setCustomView(title);
-            }
-        }
-        else
-            tab.setCustomView(null);
+        showPlayingTab();
 
         // call onCreateOptionsMenu
         MainAct.mAct.invalidateOptionsMenu();
-
-        // set text color
-        mTabLayout.setTabTextColors(
-                ContextCompat.getColor(MainAct.mAct,R.color.colorGray), //normal
-                ContextCompat.getColor(MainAct.mAct,R.color.colorWhite) //selected
-        );
 
         // set long click listener
         setLongClickListener();
@@ -364,27 +358,6 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
                     }
                 }, 100);
 
-        // set audio icon after Key Protect
-        TabLayout.Tab tab =  mTabLayout.getTabAt(audioPlayTabPos);
-        if(tab != null) {
-            if( (MainAct.mPlaying_folderPos == FolderUi.getFocus_folderPos()) &&
-                (Audio_manager.getPlayerState() != Audio_manager.PLAYER_AT_STOP)  &&
-                (tab.getPosition() == audioPlayTabPos)                               )
-            {
-                if(tab.getCustomView() == null)
-                {
-                    LinearLayout tabLinearLayout = (LinearLayout) MainAct.mAct.getLayoutInflater().inflate(R.layout.tab_custom, null);
-                    TextView title = (TextView) tabLinearLayout.findViewById(R.id.tabTitle);
-                    title.setText(mTabsPagerAdapter.dbFolder.getPageTitle(tab.getPosition(), true));
-                    title.setTextColor(MainAct.mAct.getResources().getColor(R.color.colorWhite));
-                    title.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_audio, 0, 0, 0);
-                    tab.setCustomView(title);
-                }
-            }
-            else
-                tab.setCustomView(null);
-        }
-
         /** The following is used for
          * - incoming phone call case
          * - after Key Protect (screen off/on)
@@ -397,9 +370,6 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
 
             Audio_manager.audio7Player.updateAudioPanel(MainAct.mAct);
         }
-
-        // set long click listener
-        setLongClickListener();
 
         if (adView != null) {
             adView.resume();
@@ -425,6 +395,30 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
         super.onDestroy();
         if (adView != null) {
             adView.destroy();
+        }
+    }
+
+    // show audio playing tab
+    void showPlayingTab() {
+        // set audio icon after Key Protect
+        TabLayout.Tab tab =  mTabLayout.getTabAt(audioPlayTabPos);
+        if(tab != null) {
+            if( (MainAct.mPlaying_folderPos == FolderUi.getFocus_folderPos()) &&
+                    (Audio_manager.getPlayerState() != Audio_manager.PLAYER_AT_STOP)  &&
+                    (tab.getPosition() == audioPlayTabPos)                               )
+            {
+                if(tab.getCustomView() == null)
+                {
+                    LinearLayout tabLinearLayout = (LinearLayout) MainAct.mAct.getLayoutInflater().inflate(R.layout.tab_custom, null);
+                    TextView title = (TextView) tabLinearLayout.findViewById(R.id.tabTitle);
+                    title.setText(mTabsPagerAdapter.dbFolder.getPageTitle(tab.getPosition(), true));
+                    title.setTextColor(getActivity().getResources().getColor(R.color.colorWhite));
+                    title.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_audio, 0, 0, 0);
+                    tab.setCustomView(title);
+                }
+            }
+            else
+                tab.setCustomView(null);
         }
     }
 

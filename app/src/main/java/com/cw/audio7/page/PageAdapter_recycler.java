@@ -417,16 +417,16 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
             public void onClick(View v) {
 
                 // case 1: open Note audio
-                openAudioPanel_note(position);
+//                openAudioPanel_note(position);
 
                 // case 2: open Page audio
-//                Audio_manager.removeRunnable();
-//                Audio_manager.stopAudioPlayer();
-//                Audio_manager.audio7Player = null;
-//                openAudioPanel_page(position);
-//                Audio7Player.prepareAudioInfo();
-//                Audio_manager.audio7Player.runAudioState();
-
+                Audio_manager.removeRunnable();
+                Audio_manager.stopAudioPlayer();
+                Audio_manager.audio7Player = null;
+                openAudioPanel_page(position);
+                Audio7Player.prepareAudioInfo();
+                Audio_manager.audio7Player.runAudioState();
+                TabsHost.reloadCurrentPage();
             }
         });
 

@@ -58,6 +58,11 @@ public class ColorSet
         return act.getResources().getColor(R.color.button_color);
     }
 
+    public static int getTabIndicatorColor(Activity act)
+    {
+        return act.getResources().getColor(R.color.accent_500);
+    }
+
     public static int getBackgroundColor(Activity act)
     {
         return act.getResources().getColor(R.color.bg_color);
