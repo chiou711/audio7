@@ -45,6 +45,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentStatePagerAdapter;
@@ -53,9 +54,9 @@ import androidx.viewpager.widget.ViewPager;
 public class Note_adapter extends FragmentStatePagerAdapter
 {
 	static int mLastPosition;
-	private LayoutInflater inflater;
-	private AppCompatActivity act;
-	private ViewPager pager;
+	private final LayoutInflater inflater;
+	private final AppCompatActivity act;
+	private final ViewPager pager;
 	DB_page db_page;
 	AudioUi_note audioUi_note;
 
@@ -76,6 +77,7 @@ public class Note_adapter extends FragmentStatePagerAdapter
 		container.removeView((View) object);
 	}
 
+    @NonNull
     @SuppressLint("SetJavaScriptEnabled")
 	@Override
 	public Object instantiateItem(ViewGroup container, final int position) 

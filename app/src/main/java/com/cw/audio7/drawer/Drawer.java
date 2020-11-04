@@ -28,6 +28,7 @@ import com.cw.audio7.operation.delete.DeleteFolders;
 import com.cw.audio7.util.Util;
 import com.google.android.material.navigation.NavigationView;
 import com.mobeta.android.dslv.DragSortListView;
+import  com.cw.audio7.main.MenuId;
 
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -43,7 +44,7 @@ public class Drawer {
 
 
     public static DrawerLayout drawerLayout;
-    private AppCompatActivity act;
+    private final AppCompatActivity act;
     public ActionBarDrawerToggle drawerToggle;
     public static NavigationView mNavigationView;
     DragSortListView listView;
@@ -70,12 +71,12 @@ public class Drawer {
 
                 menuItem.setChecked(true);
                 switch (menuItem.getItemId()) {
-                    case R.id.ADD_NEW_FOLDER:
+                    case MenuId.ADD_NEW_FOLDER:
                         FolderUi.renewFirstAndLast_folderId();
                         FolderUi.addNewFolder(MainAct.mAct, FolderUi.mLastExist_folderTableId +1, MainAct.mFolder.getAdapter());
                         return true;
 
-                    case R.id.ENABLE_FOLDER_DRAG_AND_DROP:
+                    case MenuId.ENABLE_FOLDER_DRAG_AND_DROP:
                         if(MainAct.mPref_show_note_attribute.getString("KEY_ENABLE_FOLDER_DRAGGABLE", "no")
                                 .equalsIgnoreCase("yes"))
                         {
@@ -105,7 +106,7 @@ public class Drawer {
                         act.invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
                         return true;
 
-                    case R.id.DELETE_FOLDERS:
+                    case MenuId.DELETE_FOLDERS:
 
                         DB_drawer dB_drawer = new DB_drawer(act);
                         if(dB_drawer.getFoldersCount(true)>0)

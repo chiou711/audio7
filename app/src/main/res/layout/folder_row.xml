@@ -23,28 +23,28 @@
         android:id="@+id/folder_audio"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_marginRight="0dp"
+        android:layout_marginEnd="0dp"
         android:src="@drawable/ic_audio"
         android:visibility="gone"
         android:contentDescription="audio playing icon"/>
-<TextView 
-    android:id="@+id/folderText"
-    android:layout_width="0dp"
-    android:layout_height="wrap_content"
-    android:layout_weight="1"
-    android:textAppearance="?android:attr/textAppearanceListItemSmall"
-    android:gravity="center_vertical"
-    android:paddingLeft="16dp"
-    android:paddingRight="16dp"
-    android:textColor="#fff"
-    android:backgroundTint="@color/highlight_color"
-    android:background="?android:attr/activatedBackgroundIndicator"
-    android:minHeight="?android:attr/listPreferredItemHeightSmall"/>
-<ImageView
+    <TextView
+        android:id="@+id/folderText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:textAppearance="?android:attr/textAppearanceListItemSmall"
+        android:gravity="center_vertical"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:textColor="#fff"
+        android:backgroundTint="@color/accent_500"
+        android:background="?android:attr/activatedBackgroundIndicator"
+        android:minHeight="?android:attr/listPreferredItemHeightSmall"/>
+    <ImageView
         android:id="@+id/folder_drag"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_marginRight="0dp"
+        android:layout_marginEnd="0dp"
         android:src="@drawable/ic_drag_on"
         android:contentDescription="@string/drag_handler"/>
 </LinearLayout>

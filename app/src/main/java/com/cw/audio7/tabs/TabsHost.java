@@ -703,7 +703,7 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
         {
             mFooterMessage.setTextColor(mAct.getResources().getColor(R.color.colorWhite));
             mFooterMessage.setText(getFooterMessage(mAct));
-            mFooterMessage.setBackgroundColor(ColorSet.getBackgroundColor(mAct));
+            mFooterMessage.setBackgroundColor(ColorSet.getBarColor(mAct));
         }
     }
 

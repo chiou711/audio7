@@ -16,8 +16,8 @@
 
 package com.cw.audio7.note;
 
-import com.cw.audio7.audio.Audio7Player;
 import com.cw.audio7.audio.AudioUi_note;
+import com.cw.audio7.main.MenuId;
 import com.cw.audio7.note_edit.Note_edit;
 import com.cw.audio7.R;
 import com.cw.audio7.db.DB_folder;
@@ -326,7 +326,7 @@ public class Note extends Fragment
 				stopNoteAudio();
                 return true;
 
-	        case R.id.VIEW_NOTE_CHECK:
+	        case MenuId.VIEW_NOTE_CHECK:
 		        int markingNow = PageAdapter_recycler.toggleNoteMarking(act,NoteUi.getFocus_notePos());
 
 		        // update marking
@@ -341,7 +341,7 @@ public class Note extends Fragment
 		        }
 		        return true;
 
-	        case R.id.VIEW_NOTE_EDIT:
+	        case MenuId.VIEW_NOTE_EDIT:
 		        Intent intent = new Intent(act, Note_edit.class);
 		        intent.putExtra(DB_page.KEY_NOTE_ID, mNoteId);
 		        intent.putExtra(DB_page.KEY_NOTE_TITLE, mDb_page.getNoteTitle_byId(mNoteId));

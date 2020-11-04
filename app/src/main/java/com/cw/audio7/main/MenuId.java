@@ -27,44 +27,51 @@ public class MenuId {
          * Menu identifiers
          */
         // add new
-        static final int ADD_NEW_NOTE = R.id.ADD_NEW_NOTE;
+        public static final int ADD_NEW_NOTE = R.id.ADD_NEW_NOTE;
 
         // play
-        static final int OPEN_PLAY_SUBMENU = R.id.PLAY;
-        static final int PLAY_OR_STOP_AUDIO = R.id.PLAY_OR_STOP_MUSIC;
+        public static final int OPEN_PLAY_SUBMENU = R.id.PLAY;
+        public static final int PLAY_OR_STOP_AUDIO = R.id.PLAY_OR_STOP_MUSIC;
 
         // cyclic play
-        static final int PLAY_CYCLIC = R.id.PLAY_CYCLIC;
+        public static final int PLAY_CYCLIC = R.id.PLAY_CYCLIC;
 
         // background play
-        static final int PLAY_BACKGROUND = R.id.PLAY_BACKGROUND;
+        public static final int PLAY_BACKGROUND = R.id.PLAY_BACKGROUND;
 
         // checked operation
-        static final int CHECKED_OPERATION = R.id.HANDLE_CHECKED_NOTES;
+        public static final int CHECKED_OPERATION = R.id.HANDLE_CHECKED_NOTES;
 
         // note operation
-        static final int ENABLE_NOTE_LARGE_VIEW = R.id.ENABLE_NOTE_LARGE_VIEW;
-        static final int ENABLE_NOTE_SELECT = R.id.ENABLE_NOTE_SELECT;
-        static final int ENABLE_NOTE_DRAG_AND_DROP = R.id.ENABLE_NOTE_DRAG_AND_DROP;
+        public static final int ENABLE_NOTE_LARGE_VIEW = R.id.ENABLE_NOTE_LARGE_VIEW;
+        public static final int ENABLE_NOTE_SELECT = R.id.ENABLE_NOTE_SELECT;
+        public static final int ENABLE_NOTE_DRAG_AND_DROP = R.id.ENABLE_NOTE_DRAG_AND_DROP;
 
         // page operation
-        static final int ADD_NEW_PAGE = R.id.ADD_NEW_PAGE;
-        static final int CHANGE_PAGE_COLOR = R.id.CHANGE_PAGE_COLOR;
-        static final int SHIFT_PAGE = R.id.SHIFT_PAGE;
-        static final int DELETE_PAGES = R.id.DELETE_PAGES;
+        public static final int ADD_NEW_PAGE = R.id.ADD_NEW_PAGE;
+        public static final int CHANGE_PAGE_COLOR = R.id.CHANGE_PAGE_COLOR;
+        public static final int SHIFT_PAGE = R.id.SHIFT_PAGE;
+        public static final int DELETE_PAGES = R.id.DELETE_PAGES;
 
         // operation
-        static final int EXPORT_TO_SD_CARD = R.id.EXPORT_TO_SD_CARD;
-        static final int IMPORT_FROM_SD_CARD = R.id.IMPORT_FROM_SD_CARD;
+        public static final int EXPORT_TO_SD_CARD = R.id.EXPORT_TO_SD_CARD;
+        public static final int IMPORT_FROM_SD_CARD = R.id.IMPORT_FROM_SD_CARD;
 
         // config
-        static final int CONFIG = R.id.CONFIG;
+        public static final int CONFIG = R.id.CONFIG;
 
         // about
-        static final int ABOUT = R.id.ABOUT;
+        public static final int ABOUT = R.id.ABOUT;
 
         // folder operation
-        static final int ADD_NEW_FOLDER = R.id.ADD_NEW_FOLDER;
-        static final int ENABLE_FOLDER_DRAG_AND_DROP = R.id.ENABLE_FOLDER_DRAG_AND_DROP;
-        static final int DELETE_FOLDERS = R.id.DELETE_FOLDERS;
+        public static  final int ADD_NEW_FOLDER = R.id.ADD_NEW_FOLDER;
+        public static final int ENABLE_FOLDER_DRAG_AND_DROP = R.id.ENABLE_FOLDER_DRAG_AND_DROP;
+        public static final int DELETE_FOLDERS = R.id.DELETE_FOLDERS;
+
+        // pager menu
+        public static  final int VIEW_NOTE_CHECK = R.id.VIEW_NOTE_CHECK;
+        public static  final int VIEW_NOTE_EDIT = R.id.VIEW_NOTE_EDIT;
+
+        // recording menu
+        public static  final int ACTION_SETTINGS = R.id.ACTION_SETTINGS;
 }

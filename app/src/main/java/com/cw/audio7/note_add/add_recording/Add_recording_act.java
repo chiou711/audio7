@@ -7,6 +7,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.cw.audio7.R;
+import com.cw.audio7.main.MenuId;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -69,9 +70,9 @@ public class Add_recording_act extends AppCompatActivity implements FragmentMana
         getMenuInflater().inflate(R.menu.recording_menu, menu);
 
         if(fm.getBackStackEntryCount() == 1 )
-            menu.findItem(R.id.action_settings).setVisible(false);
+            menu.findItem(R.id.ACTION_SETTINGS).setVisible(false);
         else
-            menu.findItem(R.id.action_settings).setVisible(true);
+            menu.findItem(R.id.ACTION_SETTINGS).setVisible(true);
 
         return true;
     }
@@ -102,7 +103,7 @@ public class Add_recording_act extends AppCompatActivity implements FragmentMana
         // as you specify a parent activity in AndroidManifest.xml.
         // Handle presses on the action bar items
         switch (item.getItemId()) {
-            case R.id.action_settings:
+            case MenuId.ACTION_SETTINGS:
 
 	            setContentView(R.layout.add_recording_act);
 

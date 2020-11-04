@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".note_add.add_recording.Add_recording_act">
     <item
-        android:id="@+id/action_settings"
+        android:id="@+id/ACTION_SETTINGS"
         android:orderInCategory="101"
         android:title="@string/action_settings" />
 </menu>

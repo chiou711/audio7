@@ -523,7 +523,7 @@ public class FolderUi
         if(drawerLayout != null) {
 	        // update selected item and title, then close the drawer
 	        DragSortListView listView = (DragSortListView) act.findViewById(R.id.drawer_listview);
-	        listView.setItemChecked(position, true);
+	        listView.setItemChecked(position, true); // selected item is colored by different color
 	        drawerLayout.closeDrawer(Drawer.mNavigationView);
 	        act.invalidateOptionsMenu();
 
