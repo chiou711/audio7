@@ -73,7 +73,8 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
     private DB_folder dbFolder;
 	private DB_page mDb_page;
     private final OnStartDragListener mDragStartListener;
-	private int page_table_id;
+	private final int page_table_id;
+    private int style;
 
     PageAdapter_recycler( int pageTableId, OnStartDragListener dragStartListener) {
 	    mAct = MainAct.mAct;
@@ -81,6 +82,16 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
 
         dbFolder = new DB_folder(mAct,Pref.getPref_focusView_folder_tableId(mAct));
 	    page_table_id = pageTableId;
+
+        // style
+        style = 0;
+        int pagesCount = dbFolder.getPagesCount(true);
+        for(int i=0;i<pagesCount;i++) {
+            if (dbFolder.getPageTableId(i,true) == page_table_id) {
+                style = dbFolder.getPageStyle(i ,true);
+                break;
+            }
+        }
     }
 
     /**
@@ -164,9 +175,6 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
     public void onBindViewHolder(ViewHolder holder, final int position) {
 
 //        System.out.println("PageAdapter_recycler / _onBindViewHolder / position = " + position);
-
-        // style
-        int style = dbFolder.getPageStyle(TabsHost.getFocus_tabPos(), true);
 
         ((CardView)holder.itemView).setCardBackgroundColor(mAct.getResources().getColor(R.color.colorBlack));
 
@@ -426,7 +434,8 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
                 openAudioPanel_page(position);
                 Audio7Player.prepareAudioInfo();
                 Audio_manager.audio7Player.runAudioState();
-                TabsHost.reloadCurrentPage();
+
+                TabsHost.showPlayingTab();
             }
         });
 

@@ -784,7 +784,7 @@ public class Audio7Player
 		// update playing state
 		if(Audio_manager.getPlayerState() == Audio_manager.PLAYER_AT_PLAY)
 		{
-			System.out.println("Audio7Player / _updateAudioPanel / at play");
+//			System.out.println("Audio7Player / _updateAudioPanel / at play");
 			audio_play_btn.setImageResource(R.drawable.ic_media_pause);
 			showAudioName(act, Audio_manager.getAudioStringAt(Audio_manager.mAudioPos));
 			audio_title.setTextColor(ColorSet.getHighlightColor(act) );
@@ -797,7 +797,7 @@ public class Audio7Player
 		}
 		else if(Audio_manager.getPlayerState() != Audio_manager.PLAYER_AT_PLAY)
 		{
-			System.out.println("Audio7Player / _updateAudioPanel / not at play");
+//			System.out.println("Audio7Player / _updateAudioPanel / not at play");
 			audio_play_btn.setImageResource(R.drawable.ic_media_play);
 			showAudioName(act, Audio_manager.getAudioStringAt(Audio_manager.mAudioPos));
 			audio_title.setTextColor(ColorSet.getPauseColor(act));

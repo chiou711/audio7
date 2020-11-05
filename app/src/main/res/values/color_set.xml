@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- set 1 -->
-    <color name="bar_color">#ff185060</color>
-    <color name="button_color">#ff185060</color>
+    <color name="bar_color">#ff176f77</color>
+    <color name="button_color">#ff176f77</color>
     <color name="highlight_color">#ffff9030</color>
-    <color name="bg_color">#ff176f77</color>
+    <color name="bg_color">#ff185060</color>
     <color name="bg_gray_color">#ff26394e</color>
 
     <!-- set 2 -->
-<!--    <color name="bar_color">#ff204050</color>-->
-<!--    <color name="button_color">#ff204050</color>-->
+<!--    <color name="bar_color">#ff176f77</color>-->
+<!--    <color name="button_color">#ff176f77</color>-->
 <!--    <color name="highlight_color">#ff1090ff</color>-->
-<!--    <color name="bg_color">#ff176f77</color>-->
+<!--    <color name="bg_color">#ff204050</color>-->
 <!--    <color name="bg_gray_color">#ff15283d</color>-->
 
     <color name="pause_color">#ffA0A0A0</color>

@@ -399,7 +399,7 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
     }
 
     // show audio playing tab
-    void showPlayingTab() {
+   public static void showPlayingTab() {
         // set audio icon after Key Protect
         TabLayout.Tab tab =  mTabLayout.getTabAt(audioPlayTabPos);
         if(tab != null) {
@@ -412,7 +412,7 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
                     LinearLayout tabLinearLayout = (LinearLayout) MainAct.mAct.getLayoutInflater().inflate(R.layout.tab_custom, null);
                     TextView title = (TextView) tabLinearLayout.findViewById(R.id.tabTitle);
                     title.setText(mTabsPagerAdapter.dbFolder.getPageTitle(tab.getPosition(), true));
-                    title.setTextColor(getActivity().getResources().getColor(R.color.colorWhite));
+                    title.setTextColor(MainAct.mAct.getResources().getColor(R.color.colorWhite));
                     title.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_audio, 0, 0, 0);
                     tab.setCustomView(title);
                 }
@@ -431,8 +431,8 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
         View v = recyclerView.getChildAt(0);
         int firstVisibleIndexTop = (v == null) ? 0 : v.getTop();
 
-        System.out.println("TabsHost / _store_listView_vScroll / firstVisibleIndex = " + firstVisibleIndex +
-                " , firstVisibleIndexTop = " + firstVisibleIndexTop);
+//        System.out.println("TabsHost / _store_listView_vScroll / firstVisibleIndex = " + firstVisibleIndex +
+//                " , firstVisibleIndexTop = " + firstVisibleIndexTop);
 
         // keep index and top position
         Pref.setPref_focusView_list_view_first_visible_index(MainAct.mAct, firstVisibleIndex);
@@ -446,8 +446,8 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
         int firstVisibleIndex = Pref.getPref_focusView_list_view_first_visible_index(MainAct.mAct);
         int firstVisibleIndexTop = Pref.getPref_focusView_list_view_first_visible_index_top(MainAct.mAct);
 
-        System.out.println("TabsHost / _resume_listView_vScroll / firstVisibleIndex = " + firstVisibleIndex +
-                " , firstVisibleIndexTop = " + firstVisibleIndexTop);
+//        System.out.println("TabsHost / _resume_listView_vScroll / firstVisibleIndex = " + firstVisibleIndex +
+//                " , firstVisibleIndexTop = " + firstVisibleIndexTop);
 
         // restore index and top position
         ((LinearLayoutManager)recyclerView.getLayoutManager()).scrollToPositionWithOffset(firstVisibleIndex, firstVisibleIndexTop);
