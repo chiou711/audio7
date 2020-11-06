@@ -39,7 +39,7 @@ import com.cw.audio7.audio.AudioUi_page;
 import com.cw.audio7.operation.delete.DeleteFolders;
 import com.cw.audio7.operation.delete.DeletePages;
 import com.cw.audio7.page.Checked_notes_option;
-import com.cw.audio7.page.PageAdapter_recycler;
+import com.cw.audio7.page.PageAdapter;
 import com.cw.audio7.page.PageUi;
 import com.cw.audio7.tabs.TabsHost;
 import com.cw.audio7.operation.import_export.Export_toSDCardFragment;
@@ -105,7 +105,6 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
     OnBackPressedListener onBackPressedListener;
     public Drawer drawer;
     public static Folder mFolder;
-    public static MainUi mMainUi;
     public Toolbar mToolbar;
 
     public static MediaBrowserCompat mMediaBrowserCompat;
@@ -139,7 +138,6 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
 
         mAct = this;
         mAppTitle = getTitle();
-        mMainUi = new MainUi();
 
         // File provider implementation is needed after Android version 24
         // if not, will encounter android.os.FileUriExposedException
@@ -820,7 +818,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
 
             // change audio panel when Note audio is changed to Page audio
             if (BackgroundAudioService.mMediaPlayer != null)
-                PageAdapter_recycler.openAudioPanel_page(Audio_manager.mAudioPos);
+                PageAdapter.openAudioPanel_page(Audio_manager.mAudioPos);
         }
     }
 

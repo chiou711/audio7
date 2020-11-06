@@ -51,7 +51,7 @@ import com.cw.audio7.main.MainAct;
 import com.cw.audio7.audio.AudioUi_page;
 import com.cw.audio7.audio.Audio_manager;
 import com.cw.audio7.audio.BackgroundAudioService;
-import com.cw.audio7.page.Page_recycler;
+import com.cw.audio7.page.Page;
 import com.cw.audio7.util.ColorSet;
 import com.cw.audio7.util.Util;
 import com.cw.audio7.util.preferences.Pref;
@@ -138,6 +138,7 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
         // show blank folder if no page exists
         if(pageCount == 0) {
             rootView.findViewById(R.id.blankFolder).setVisibility(View.VISIBLE);
+            ((TextView)rootView.findViewById(R.id.blankFolder)).setTextColor(Color.WHITE);//todo Error?
             mViewPager.setVisibility(View.GONE);
         }
         else {
@@ -226,7 +227,7 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
                 if (pageTableId > lastPageTableId)
                     lastPageTableId = pageTableId;
 
-                Page_recycler page = new Page_recycler();
+                Page page = new Page();
                 Bundle args = new Bundle();
                 args.putInt("page_pos",i);
                 args.putInt("page_table_id",pageTableId);
@@ -271,7 +272,7 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
         setCurrentPageTableId(pageTableId);
 
         // refresh list view of selected page
-        Page_recycler page = mTabsPagerAdapter.fragmentList.get(getFocus_tabPos());
+        Page page = mTabsPagerAdapter.fragmentList.get(getFocus_tabPos());
 
         if( (tab.getPosition() == audioPlayTabPos) &&
             (page != null) &&
@@ -478,7 +479,7 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
         mViewPager.setCurrentItem(pagePos);
     }
 
-    public static Page_recycler getCurrentPage()
+    public static Page getCurrentPage()
     {
         return mTabsPagerAdapter.fragmentList.get(getFocus_tabPos());
     }
@@ -744,7 +745,7 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
     	if(TabsHost.mTabsPagerAdapter == null)
     		return;
 
-        ArrayList<Page_recycler> fragmentList = TabsHost.mTabsPagerAdapter.fragmentList;
+        ArrayList<Page> fragmentList = TabsHost.mTabsPagerAdapter.fragmentList;
         if( (fragmentList != null) &&
             (fragmentList.size() >0)  )
         {

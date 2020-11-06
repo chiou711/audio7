@@ -446,7 +446,7 @@ public class Checked_notes_option {
                                 mDb_page.close();
 
                                 // Stop Play/Pause if current tab's item is played and is not at Stop state
-                                if(Audio_manager.mAudioPos == Page_recycler.mHighlightPosition)
+                                if(Audio_manager.mAudioPos == Page.mHighlightPosition)
                                     UtilAudio.stopAudioIfNeeded();
 
                                 TabsHost.reloadCurrentPage();

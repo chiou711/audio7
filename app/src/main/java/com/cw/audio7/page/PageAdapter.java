@@ -40,7 +40,6 @@ import com.cw.audio7.note.Note;
 import com.cw.audio7.note_edit.Note_edit;
 import com.cw.audio7.audio.Audio_manager;
 import com.cw.audio7.audio.BackgroundAudioService;
-import com.cw.audio7.audio.AudioUi_page;
 import com.cw.audio7.page.item_touch_helper.ItemTouchHelperAdapter;
 import com.cw.audio7.page.item_touch_helper.ItemTouchHelperViewHolder;
 import com.cw.audio7.page.item_touch_helper.OnStartDragListener;
@@ -62,10 +61,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import static com.cw.audio7.db.DB_page.KEY_NOTE_AUDIO_URI;
 import static com.cw.audio7.db.DB_page.KEY_NOTE_MARKING;
-import static com.cw.audio7.page.Page_recycler.swapRows;
+import static com.cw.audio7.page.Page.swapRows;
 
 // Pager adapter
-public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recycler.ViewHolder>
+public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
         implements ItemTouchHelperAdapter
 {
 	private static AppCompatActivity mAct;
@@ -76,7 +75,7 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
 	private final int page_table_id;
     private int style;
 
-    PageAdapter_recycler( int pageTableId, OnStartDragListener dragStartListener) {
+    PageAdapter(int pageTableId, OnStartDragListener dragStartListener) {
 	    mAct = MainAct.mAct;
 	    mDragStartListener = dragStartListener;
 
@@ -159,9 +158,9 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
 
         int resource_id;
         if(Pref.getPref_card_view_enable_large_view(mAct))
-            resource_id = R.layout.page_view_card_high;
+            resource_id = R.layout.page_card_view_high;
         else
-            resource_id = R.layout.page_view_card;
+            resource_id = R.layout.page_card_view;
 
         // Create a new view.
         View v = LayoutInflater.from(viewGroup.getContext())
@@ -634,34 +633,34 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
         if( PageUi.isAudioPlayingPage() &&
                 (BackgroundAudioService.mMediaPlayer != null)				   )
         {
-            if( (Page_recycler.mHighlightPosition == oriEndPos)  && (oriStartPos > oriEndPos))
+            if( (Page.mHighlightPosition == oriEndPos)  && (oriStartPos > oriEndPos))
             {
-                Page_recycler.mHighlightPosition = oriEndPos+1;
+                Page.mHighlightPosition = oriEndPos+1;
             }
-            else if( (Page_recycler.mHighlightPosition == oriEndPos) && (oriStartPos < oriEndPos))
+            else if( (Page.mHighlightPosition == oriEndPos) && (oriStartPos < oriEndPos))
             {
-                Page_recycler.mHighlightPosition = oriEndPos-1;
+                Page.mHighlightPosition = oriEndPos-1;
             }
-            else if( (Page_recycler.mHighlightPosition == oriStartPos)  && (oriStartPos > oriEndPos))
+            else if( (Page.mHighlightPosition == oriStartPos)  && (oriStartPos > oriEndPos))
             {
-                Page_recycler.mHighlightPosition = oriEndPos;
+                Page.mHighlightPosition = oriEndPos;
             }
-            else if( (Page_recycler.mHighlightPosition == oriStartPos) && (oriStartPos < oriEndPos))
+            else if( (Page.mHighlightPosition == oriStartPos) && (oriStartPos < oriEndPos))
             {
-                Page_recycler.mHighlightPosition = oriEndPos;
+                Page.mHighlightPosition = oriEndPos;
             }
-            else if(  (Page_recycler.mHighlightPosition < oriEndPos) &&
-                    (Page_recycler.mHighlightPosition > oriStartPos)   )
+            else if(  (Page.mHighlightPosition < oriEndPos) &&
+                    (Page.mHighlightPosition > oriStartPos)   )
             {
-                Page_recycler.mHighlightPosition--;
+                Page.mHighlightPosition--;
             }
-            else if( (Page_recycler.mHighlightPosition > oriEndPos) &&
-                    (Page_recycler.mHighlightPosition < oriStartPos)  )
+            else if( (Page.mHighlightPosition > oriEndPos) &&
+                    (Page.mHighlightPosition < oriStartPos)  )
             {
-                Page_recycler.mHighlightPosition++;
+                Page.mHighlightPosition++;
             }
 
-            Audio_manager.mAudioPos = Page_recycler.mHighlightPosition;
+            Audio_manager.mAudioPos = Page.mHighlightPosition;
             Audio7Player.prepareAudioInfo();
         }
 

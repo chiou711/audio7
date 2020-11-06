@@ -25,7 +25,7 @@ import com.cw.audio7.db.DB_page;
 import com.cw.audio7.main.MainAct;
 import com.cw.audio7.audio.Audio_manager;
 import com.cw.audio7.audio.BackgroundAudioService;
-import com.cw.audio7.page.PageAdapter_recycler;
+import com.cw.audio7.page.PageAdapter;
 import com.cw.audio7.tabs.TabsHost;
 import com.cw.audio7.util.audio.UtilAudio;
 import com.cw.audio7.util.preferences.Pref;
@@ -327,7 +327,7 @@ public class Note extends Fragment
                 return true;
 
 	        case MenuId.VIEW_NOTE_CHECK:
-		        int markingNow = PageAdapter_recycler.toggleNoteMarking(act,NoteUi.getFocus_notePos());
+		        int markingNow = PageAdapter.toggleNoteMarking(act,NoteUi.getFocus_notePos());
 
 		        // update marking
 		        if(markingNow == 1)

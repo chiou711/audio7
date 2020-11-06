@@ -19,7 +19,7 @@ package com.cw.audio7.tabs;
 import android.view.ViewGroup;
 
 import com.cw.audio7.db.DB_folder;
-import com.cw.audio7.page.Page_recycler;
+import com.cw.audio7.page.Page;
 import com.cw.audio7.util.preferences.Pref;
 
 import java.util.ArrayList;
@@ -35,7 +35,7 @@ import androidx.fragment.app.FragmentPagerAdapter;
  *
  */
 public class TabsPagerAdapter extends FragmentPagerAdapter {
-    public ArrayList<Page_recycler> fragmentList = new ArrayList<>();
+    public ArrayList<Page> fragmentList = new ArrayList<>();
     DB_folder dbFolder;
 
     TabsPagerAdapter(AppCompatActivity act, FragmentManager fm)
@@ -46,13 +46,13 @@ public class TabsPagerAdapter extends FragmentPagerAdapter {
     }
 
     @Override
-    public Page_recycler getItem(int position)
+    public Page getItem(int position)
     {
         return fragmentList.get(position);
     }
 
     // add fragment
-    public void addFragment(Page_recycler fragment) {
+    public void addFragment(Page fragment) {
         fragmentList.add(fragment);
     }
 

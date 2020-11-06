@@ -43,7 +43,7 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class Page_recycler extends Fragment implements OnStartDragListener {
+public class Page extends Fragment implements OnStartDragListener {
 
     public int page_tableId;
 
@@ -54,10 +54,10 @@ public class Page_recycler extends Fragment implements OnStartDragListener {
     public SeekBar seekBarProgress;
     public AppCompatActivity act;
 
-    public PageAdapter_recycler itemAdapter;
+    public PageAdapter itemAdapter;
     private ItemTouchHelper itemTouchHelper;
 
-    public Page_recycler(){
+    public Page(){
     }
 
     @Override
@@ -72,7 +72,7 @@ public class Page_recycler extends Fragment implements OnStartDragListener {
         page_tableId = args.getInt("page_table_id");
         //System.out.println("Page_recycler / _onCreateView / page_tableId = " + page_tableId);
 
-        View rootView = inflater.inflate(R.layout.recycler_view_frag, container, false);
+        View rootView = inflater.inflate(R.layout.page_view, container, false);
         act = MainAct.mAct;
 
         recyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerView);
@@ -136,7 +136,7 @@ public class Page_recycler extends Fragment implements OnStartDragListener {
     {
         //System.out.println("Page_recycler / _fillData / page_tableId = " + page_tableId);
         if(itemAdapter == null)
-            itemAdapter = new PageAdapter_recycler(page_tableId, this);
+            itemAdapter = new PageAdapter(page_tableId, this);
         // Set PageAdapter_recycler as the adapter for RecyclerView.
         recyclerView.setAdapter(itemAdapter);
     }

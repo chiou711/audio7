@@ -23,7 +23,7 @@ import com.cw.audio7.audio.Audio_manager;
 import com.cw.audio7.R;
 import com.cw.audio7.db.DB_page;
 import com.cw.audio7.page.PageUi;
-import com.cw.audio7.page.Page_recycler;
+import com.cw.audio7.page.Page;
 import com.cw.audio7.tabs.TabsHost;
 import com.cw.audio7.util.Util;
 
@@ -179,7 +179,7 @@ public class Note_addAudio extends AppCompatActivity {
 					if( (dB.getNotesCount(true) > 0) &&
 		        		option.equalsIgnoreCase("single_to_top"))
 		        	{
-		        		Page_recycler.swapTopBottom();
+		        		Page.swapTopBottom();
 		        		//update playing focus
 						Audio_manager.mAudioPos++;
 		        	}
@@ -248,7 +248,7 @@ public class Note_addAudio extends AppCompatActivity {
                             if( (dB.getNotesCount(true) > 0) &&
                                     option.equalsIgnoreCase("directory_to_top") )
                             {
-                                Page_recycler.swapTopBottom();
+                                Page.swapTopBottom();
                                 //update playing focus
                                 Audio_manager.mAudioPos++;
                             }
