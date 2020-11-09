@@ -179,12 +179,6 @@ public class Audio7Player
                 if(audio_panel_title_textView != null)
                     audio_panel_title_textView.setVisibility(View.VISIBLE);
 
-                // set footer message with audio name
-                String audioStr = Audio_manager.getAudioStringAt(Audio_manager.mAudioPos);
-                String[] audioName = Util.getDisplayNameByUriString(audioStr, act);
-                if(audio_panel_title_textView != null)
-                    audio_panel_title_textView.setText(audioName[0] .concat(" / ").concat(audioName[1]));
-
                 // show audio playing item number
                 TextView audioPanel_audio_number = (TextView) audio_panel.findViewById(R.id.audioPanel_audio_number);
                 String message = act.getResources().getString(R.string.menu_button_play) +
@@ -761,10 +755,17 @@ public class Audio7Player
 		// title: set marquee
 		if(Util.isUriExisted(audio_uriStr, act)) {
 			String[] audio_name = Util.getDisplayNameByUriString(audio_uriStr, act);
-			audio_title.setText(audio_name[0] );
 
-			if(audio_artist != null)
+			// Note view
+			if(audio_artist != null) {
+				audio_title.setText(audio_name[0] );
 				audio_artist.setText(audio_name[1]);
+			} else { // Page view
+				if(Util.isEmptyString(audio_name[1]))
+					audio_title.setText(audio_name[0]);
+				else
+					audio_title.setText(audio_name[0] + " / " + audio_name[1] );
+			}
 		}
 		else {
 			audio_title.setText("N/A");

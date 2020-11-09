@@ -89,10 +89,12 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
 //        System.out.println("TabsHost / construct");
     }
 
+    int pagesCount;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        System.out.println("TabsHost / _onCreate");
+        pagesCount = FolderUi.getFolder_pagesCount(MainAct.mAct,FolderUi.getFocus_folderPos());
+        System.out.println("TabsHost / _onCreate / pagesCount = " + pagesCount);
     }
 
     public static View rootView;
@@ -138,7 +140,7 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
         // show blank folder if no page exists
         if(pageCount == 0) {
             rootView.findViewById(R.id.blankFolder).setVisibility(View.VISIBLE);
-            ((TextView)rootView.findViewById(R.id.blankFolder)).setTextColor(Color.WHITE);//todo Error?
+            ((TextView)rootView.findViewById(R.id.blankFolder)).setTextColor(Color.WHITE);
             mViewPager.setVisibility(View.GONE);
         }
         else {
@@ -348,14 +350,18 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
             }
         }
 
-//        System.out.println("TabsHost / _onResume / _getFocus_tabPos = " + getFocus_tabPos());
+        System.out.println("TabsHost / _onResume / _getFocus_tabPos = " + getFocus_tabPos());
 
         // auto scroll to show focus tab
         new Handler().postDelayed(
                 new Runnable() {
                     @Override public void run() {
-                        if(mTabLayout.getTabAt(getFocus_tabPos()) != null)
-                            mTabLayout.getTabAt(getFocus_tabPos()).select();
+                        if(mTabLayout.getTabAt(getFocus_tabPos()) != null) {
+                            if( (pagesCount == 1) && (getFocus_tabPos() ==0) )
+                                reloadCurrentPage();
+                            else
+                                mTabLayout.getTabAt(getFocus_tabPos()).select();  //workaround above for one page condition failed
+                        }
                     }
                 }, 100);
 

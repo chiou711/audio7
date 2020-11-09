@@ -69,7 +69,7 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
 {
 	private static AppCompatActivity mAct;
 	Cursor cursor;
-    private DB_folder dbFolder;
+    final DB_folder dbFolder;
 	private DB_page mDb_page;
     private final OnStartDragListener mDragStartListener;
 	private final int page_table_id;
@@ -339,7 +339,7 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
 			if(Pref.getPref_card_view_enable_large_view(mAct))
                 in_sample_size = 1;
 			else
-                in_sample_size = 8;
+                in_sample_size = 1;//8; // 1/8 the width/height of the original
 
             try {
                 AsyncTaskAudioBitmap audioAsyncTask;
@@ -535,33 +535,30 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
         if( !Util.isEmptyString(uriString) && (marking == 1))
             isAudioUri = true;
 
-        if(position < notesCount) // avoid footer error
-        {
-            if(isAudioUri) {
+        if(isAudioUri) {
 
-                // create new Intent to play audio
-                Audio_manager.mAudioPos = position;
+            // create new Intent to play audio
+            Audio_manager.mAudioPos = position;
 
-                MainAct.showAudioView(uriString);
+            MainAct.showAudioView(uriString);
 
-                // update audio play position
-                TabsHost.audioPlayTabPos = TabsHost.getFocus_tabPos();
+            // update audio play position
+            TabsHost.audioPlayTabPos = TabsHost.getFocus_tabPos();
 
-                // update playing page position
-                MainAct.mPlaying_pagePos = TabsHost.getFocus_tabPos();
+            // update playing page position
+            MainAct.mPlaying_pagePos = TabsHost.getFocus_tabPos();
 
-                // update playing page table Id
-                MainAct.mPlaying_pageTableId = TabsHost.getCurrentPageTableId();
+            // update playing page table Id
+            MainAct.mPlaying_pageTableId = TabsHost.getCurrentPageTableId();
 
-                // update playing folder position
-                MainAct.mPlaying_folderPos = FolderUi.getFocus_folderPos();
+            // update playing folder position
+            MainAct.mPlaying_folderPos = FolderUi.getFocus_folderPos();
 
-                // update playing folder table Id
-                DB_drawer dB_drawer = new DB_drawer(mAct);
-                MainAct.mPlaying_folderTableId = dB_drawer.getFolderTableId(MainAct.mPlaying_folderPos,true);
+            // update playing folder table Id
+            DB_drawer dB_drawer = new DB_drawer(mAct);
+            MainAct.mPlaying_folderTableId = dB_drawer.getFolderTableId(MainAct.mPlaying_folderPos,true);
 
-                TabsHost.mTabsPagerAdapter.notifyDataSetChanged();
-            }
+            TabsHost.mTabsPagerAdapter.notifyDataSetChanged();
         }
     }
 
