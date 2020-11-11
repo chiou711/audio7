@@ -149,7 +149,7 @@ public class Drawer {
 
                     if(act.getSupportActionBar() != null) {
                         act.getSupportActionBar().setTitle(R.string.app_name);
-                        toolbar.setLogo(R.mipmap.ic_launcher);
+                        toolbar.setLogo(R.mipmap.ic_launcher); //todo Smaller icon?
                     }
 
                     act.invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
