@@ -260,8 +260,20 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
 
     @Override
     public void onTabSelected(TabLayout.Tab tab) {
-        System.out.println("TabsHost / _onTabSelected / tab position: " + tab.getPosition());
+        doOnTabReselected(tab);
+    }
 
+    @Override
+    public void onTabUnselected(TabLayout.Tab tab) {
+    }
+
+    @Override
+    public void onTabReselected(TabLayout.Tab tab) {
+        doOnTabReselected(tab);
+    }
+
+    public void doOnTabReselected(TabLayout.Tab tab) {
+        System.out.println("TabsHost / _doOnTabReselected / tab position: " + tab.getPosition());
         // TODO
         //  note: tab position is kept after importing new XML, how to change it?
         setFocus_tabPos(tab.getPosition());
@@ -278,14 +290,14 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
 
         if( (tab.getPosition() == audioPlayTabPos) &&
             (page != null) &&
-            (page.itemAdapter != null) )
+            (page.itemAdapter != null)                                 )
         {
             RecyclerView listView = page.recyclerView;
 
             if( (Audio_manager.audio7Player != null) &&
-                !isDoingMarking &&
-                (listView != null) &&
-                (Audio_manager.getPlayerState() != Audio_manager.PLAYER_AT_STOP)  )
+                    !isDoingMarking &&
+                    (listView != null) &&
+                    (Audio_manager.getPlayerState() != Audio_manager.PLAYER_AT_STOP)  )
             {
                 if ( (Audio_manager.audio7Player != null) && Audio7Player.isOnAudioPlayingPage())
                     Audio_manager.audio7Player.scrollPlayingItemToBeVisible(listView); //todo Could hang up if page had too many notes (more then 1000)
@@ -294,12 +306,7 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
 
         // add for update page item view
         if((page != null) && (page.itemAdapter != null))
-        {
             page.itemAdapter.notifyDataSetChanged();
-//            System.out.println("TabsHost / _onTabSelected / notifyDataSetChanged ");
-        }
-//        else
-//            System.out.println("TabsHost / _onTabSelected / not notifyDataSetChanged ");
 
         // set tab audio icon when audio playing
         showPlayingTab();
@@ -315,14 +322,6 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
         isDoingMarking = false;
     }
 
-    @Override
-    public void onTabUnselected(TabLayout.Tab tab) {
-    }
-
-    int pos;
-    @Override
-    public void onTabReselected(TabLayout.Tab tab) {
-    }
 
     @Override
     public void onResume() {
@@ -357,10 +356,7 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
                 new Runnable() {
                     @Override public void run() {
                         if(mTabLayout.getTabAt(getFocus_tabPos()) != null) {
-                            if( (pagesCount == 1) && (getFocus_tabPos() ==0) )
-                                reloadCurrentPage();
-                            else
-                                mTabLayout.getTabAt(getFocus_tabPos()).select();  //workaround above for one page condition failed
+                                mTabLayout.getTabAt(getFocus_tabPos()).select();
                         }
                     }
                 }, 100);
@@ -407,6 +403,7 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
 
     // show audio playing tab
    public static void showPlayingTab() {
+//       System.out.println("TabsHost / _showPlayingTab" );
         // set audio icon after Key Protect
         TabLayout.Tab tab =  mTabLayout.getTabAt(audioPlayTabPos);
         if(tab != null) {

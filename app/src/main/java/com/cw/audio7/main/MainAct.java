@@ -945,9 +945,14 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                  *  Note group
                  */
 
-                // play
-                mMenu.findItem(R.id.PLAY).setVisible( (pgsCnt >0) && (notesCnt>0) );
-                mMenu.findItem(R.id.PLAY_CYCLIC).setVisible( (pgsCnt >0) && (notesCnt>0) );
+                // play icon
+                boolean playIconIsVisible= false;
+                if( ((pgsCnt >0) && (notesCnt>0)) ||
+                     (Audio_manager.getPlayerState() != Audio_manager.PLAYER_AT_STOP) ) {
+                    playIconIsVisible = true;
+                }
+                mMenu.findItem(R.id.PLAY).setVisible( playIconIsVisible );
+                mMenu.findItem(R.id.PLAY_CYCLIC).setVisible( playIconIsVisible );
 
                 // HANDLE CHECKED NOTES
 	            if(Pref.getPref_card_view_enable_select(mAct))
