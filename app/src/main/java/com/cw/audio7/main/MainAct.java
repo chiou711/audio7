@@ -701,7 +701,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
     @Override
     protected void onDestroy()
     {
-        System.out.println("MainAct / onDestroy");
+        System.out.println("MainAct / _onDestroy");
         if(bluetooth_device_receiver != null)
         {
             try {

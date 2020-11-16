@@ -661,6 +661,8 @@ public class Audio7Player
 
 		if(audio_seek_bar != null)
 			audio_seek_bar.setProgress(mProgress); // This math construction give a percentage of "was playing"/"song length"
+
+		BackgroundAudioService.setSeekerBarProgress();
 	}
 
 

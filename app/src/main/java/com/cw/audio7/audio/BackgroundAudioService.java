@@ -27,7 +27,6 @@ import android.util.Log;
 
 import com.cw.audio7.R;
 import com.cw.audio7.main.MainAct;
-import com.cw.audio7.tabs.TabsHost;
 import com.cw.audio7.util.Util;
 
 import java.io.ByteArrayInputStream;
@@ -56,8 +55,9 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
     // for differentiate Pause source: manual or focus change
     private boolean isPausedByButton;
 
-//    boolean enDbgMsg = true;
-    boolean enDbgMsg = false;
+    boolean enDbgMsg = true;
+//    boolean enDbgMsg = false;
+    public static PlaybackStateCompat.Builder playbackStateBuilder;
 
     BroadcastReceiver audioNoisyReceiver = new BroadcastReceiver() {
         @Override
@@ -67,7 +67,7 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
             // when phone jack is unplugged
             if (android.media.AudioManager.ACTION_AUDIO_BECOMING_NOISY.equals(intent.getAction()))
             {
-                if((BackgroundAudioService.mMediaPlayer != null) && BackgroundAudioService.mMediaPlayer.isPlaying() )
+                if((mMediaPlayer != null) && mMediaPlayer.isPlaying() )
                 {
                     if(enDbgMsg)
                         System.out.println("BackgroundAudioService / audioNoisyReceiver / _onReceive / play -> pause");
@@ -241,16 +241,10 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
                 }
             });
 
-            // on buffering update
-            BackgroundAudioService.mMediaPlayer.setOnBufferingUpdateListener(new MediaPlayer.OnBufferingUpdateListener() {
+            mMediaPlayer.setOnSeekCompleteListener(new MediaPlayer.OnSeekCompleteListener() {
                 @Override
-                public void onBufferingUpdate(MediaPlayer mp, int percent) {
-                    if(enDbgMsg)
-                       System.out.println("BackgroundAudioService / _setAudioPlayerListeners / _onBufferingUpdate");
-                    if (Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE) {
-                        if (TabsHost.getCurrentPage().seekBarProgress != null)
-                            TabsHost.getCurrentPage().seekBarProgress.setSecondaryProgress(percent);
-                    }
+                public void onSeekComplete(MediaPlayer mp) {
+                    setSeekerBarProgress();
                 }
             });
         }
@@ -266,9 +260,20 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
         @Override
         public void onSeekTo(long pos) {
             super.onSeekTo(pos);
+            setSeekerBarProgress();
         }
-
     };
+
+    // set seeker bar progress
+    public static void setSeekerBarProgress() {
+        if(Audio_manager.getPlayerState() == Audio_manager.PLAYER_AT_PLAY) {
+            playbackStateBuilder.setState(PlaybackStateCompat.STATE_PLAYING, mMediaPlayer.getCurrentPosition(), 0);
+            mMediaSessionCompat.setPlaybackState(playbackStateBuilder.build());
+        } else if(Audio_manager.getPlayerState() == Audio_manager.PLAYER_AT_PAUSE)    {
+            playbackStateBuilder.setState(PlaybackStateCompat.STATE_PAUSED, mMediaPlayer.getCurrentPosition(), 0);
+            mMediaSessionCompat.setPlaybackState(playbackStateBuilder.build());
+        }
+    }
 
     @Override
     public void onCreate() {
@@ -398,27 +403,30 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
         mMediaSessionCompat.setMediaButtonReceiver(pendingIntent);
 
         setSessionToken(mMediaSessionCompat.getSessionToken());
+
+        playbackStateBuilder = new PlaybackStateCompat.Builder();
     }
 
     private void setMediaPlaybackState(int state) {
         if(enDbgMsg)
             System.out.println("BackgroundAudioService / _setMediaPlaybackState / state = " + state);
-        PlaybackStateCompat.Builder playbackstateBuilder = new PlaybackStateCompat.Builder();
         if( state == PlaybackStateCompat.STATE_PLAYING ) {
-            playbackstateBuilder.setActions(PlaybackStateCompat.ACTION_PLAY_PAUSE |
+            playbackStateBuilder.setActions(PlaybackStateCompat.ACTION_PLAY_PAUSE |
                                             PlaybackStateCompat.ACTION_PAUSE |
                                             PlaybackStateCompat.ACTION_SKIP_TO_NEXT |
-                                            PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS);
+                                            PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS |
+                                            PlaybackStateCompat.ACTION_SEEK_TO);
         }
-        else {
-            playbackstateBuilder.setActions(PlaybackStateCompat.ACTION_PLAY_PAUSE |
+        else if ( state == PlaybackStateCompat.STATE_PAUSED ) {
+            playbackStateBuilder.setActions(PlaybackStateCompat.ACTION_PLAY_PAUSE |
                                             PlaybackStateCompat.ACTION_PLAY|
                                             PlaybackStateCompat.ACTION_SKIP_TO_NEXT |
-                                            PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS);
+                                            PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS |
+                                            PlaybackStateCompat.ACTION_SEEK_TO);
         }
 
-        playbackstateBuilder.setState(state, PlaybackStateCompat.PLAYBACK_POSITION_UNKNOWN, 0);
-        mMediaSessionCompat.setPlaybackState(playbackstateBuilder.build());
+        playbackStateBuilder.setState(state, PlaybackStateCompat.PLAYBACK_POSITION_UNKNOWN, 0);
+        mMediaSessionCompat.setPlaybackState(playbackStateBuilder.build());
     }
 
     private void initMediaSessionMetadata() {
@@ -464,6 +472,9 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
 
         // for wearable device title
         metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_TITLE,  displayItems[0]);
+
+        // for seeker bar progress
+        metadataBuilder.putLong(MediaMetadataCompat.METADATA_KEY_DURATION, mMediaPlayer.getDuration());
 
         mMediaSessionCompat.setMetadata(metadataBuilder.build());
     }

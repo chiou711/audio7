@@ -603,8 +603,9 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
                 .setCompoundDrawablesWithIntrinsicBounds(android.R.drawable.ic_menu_save, 0, 0, 0);
 
         // android.R.id.button2 for negative: color
-        ((Button)d1.findViewById(android.R.id.button2))
-                .setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_menu_close_clear_cancel, 0, 0, 0);
+        // note: marked for space issue
+//        ((Button)d1.findViewById(android.R.id.button2))
+//                .setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_menu_close_clear_cancel, 0, 0, 0);
 
         // android.R.id.button3 for neutral: delete
         ((Button)d1.findViewById(android.R.id.button3))
