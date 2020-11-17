@@ -771,7 +771,8 @@ public class Audio7Player
 		}
 		else {
 			audio_title.setText("N/A");
-			audio_artist.setText("");
+			if(audio_artist != null)
+				audio_artist.setText("");
 		}
 
 		audio_title.setSelected(false);
