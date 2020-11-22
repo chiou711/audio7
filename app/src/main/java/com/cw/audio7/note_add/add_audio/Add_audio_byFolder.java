@@ -198,9 +198,13 @@ public class Add_audio_byFolder extends ListFragment
         }
         else
         {
-            System.out.println("--- onListItemClick / is dir");
+//            System.out.println("Add_audio_byFolder / _onListItemClick / is dir");
             currFilePath = filePathArray.get(selectedRow);
             System.out.println("Add_audio_byFolder / _onListItemClick / currFilePath = " + currFilePath);
+
+            //TODO 20201122 temp for open /storage/emulated/0
+            if(currFilePath.equals("/storage/emulated"))
+                currFilePath = currFilePath.concat("/0");
 
             final File file = new File(currFilePath);
             if(file.isDirectory())
@@ -277,24 +281,23 @@ public class Add_audio_byFolder extends ListFragment
 
     int showFilesList(File[] files)
     {
-        System.out.println("-- _getFilesList");
         int dirCount = 0;
         if(files == null)
         {
-            System.out.println("-- _getFilesList / files = null");
+//            System.out.println("Add_audio_byFolder / _showFilesList / files = null");
         	Toast.makeText(getActivity(),"Please select audio file",Toast.LENGTH_SHORT).show();
         }
         else
         {
-        	System.out.println("-- _getFilesList / files length = " + files.length);
+//        	System.out.println("Add_audio_byFolder / _showFilesList / files length = " + files.length);
             filePathArray = new ArrayList<>();
             fileNames = new ArrayList<>();
             filePathArray.add("");
 
-            if(currFilePath.equalsIgnoreCase(new File(appDir).getParent()))
+            if(currFilePath.equalsIgnoreCase("/storage"))
                 fileNames.add("ROOT");
-            else if(currFilePath.equalsIgnoreCase(appDir))
-                fileNames.add("..");
+//            else if(currFilePath.equalsIgnoreCase(appDir))
+//                fileNames.add("..");
             else
                 fileNames.add("..");
 
@@ -313,15 +316,21 @@ public class Add_audio_byFolder extends ListFragment
                 }
                 else if(file.isDirectory())
                 {
-                    dirCount++;
-                    filePathArray.add(file.getPath());
+//                    System.out.println("Add_audio_byFolder / _showFilesList / dir file.getPath() = " + file.getPath());
 
-                    // directory
-                    String dirName =  file.getName();
+                    //TODO 20201122 temp for Skip /storage/self
+                    if(!file.getPath().equals("/storage/self")) {
+                        dirCount++;
+                        filePathArray.add(file.getPath());
 
-                    // get volume name under root
-                    dirName = StorageUtils.getVolumeName(dirName);
-                    fileNames.add("[ " +  dirName +" ]");
+                        // directory
+                        String dirName = file.getName();
+//                        System.out.println("Add_audio_byFolder / _showFilesList / dirName 1 = " + dirName);
+                        // get volume name under root
+                        dirName = StorageUtils.getVolumeName(dirName);
+//                        System.out.println("Add_audio_byFolder / _showFilesList / dirName 2 = " + dirName);
+                        fileNames.add("[ " + dirName + " ]");
+                    }
                 }
 	        }
 
