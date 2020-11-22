@@ -5,4 +5,5 @@
     <string name="toast_input_filename">Please input a file name</string>
     <string name="toast_not_working">Not working during database processing</string>
     <string name="toast_cyclic_play_disabled">Cyclic play is not enabled</string>
+    <string name="toast_storage_directory_top">At top of storage directory already</string>
 </resources>

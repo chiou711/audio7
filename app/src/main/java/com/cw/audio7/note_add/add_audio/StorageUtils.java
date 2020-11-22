@@ -1,7 +1,17 @@
 package com.cw.audio7.note_add.add_audio;
 
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import android.hardware.usb.UsbDevice;
+import android.hardware.usb.UsbManager;
 import android.os.Environment;
+import android.os.storage.StorageManager;
+import android.os.storage.StorageVolume;
 import android.util.Log;
+
+
+import com.cw.audio7.main.MainAct;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -9,9 +19,14 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
+
+import static android.content.Context.STORAGE_SERVICE;
+
 
 // refer to: https://stackoverflow.com/questions/5694933/find-location-of-a-removable-sd-card
 public class StorageUtils {
@@ -99,6 +114,7 @@ public class StorageUtils {
 								&& !line.contains("/mnt/obb")
 								&& !line.contains("/dev/mapper")
 								&& !line.contains("tmpfs")) {
+							//USB disk is added here
 							paths.add(mount_point);
 							list.add(new StorageInfo(mount_point, false, readonly, cur_display_number++));
 						}
@@ -107,6 +123,7 @@ public class StorageUtils {
 			}
 
 			if (!paths.contains(def_path) && def_path_available) {
+				// add /storage/emulated/0 here
 				paths.add(def_path);
 				list.add(0, new StorageInfo(def_path, def_path_internal, def_path_readonly, -1));
 			}
@@ -130,4 +147,63 @@ public class StorageUtils {
 
 		return list;
 	}
+
+	public static String getVolumeName(String dirName) {
+		String volumeName = dirName;
+
+		String[] splits = dirName.split("/");
+		for (String split : splits) {
+//          System.out.println("-- split = " + split);
+
+			StorageManager storage = (StorageManager) MainAct.mAct.getSystemService(STORAGE_SERVICE);
+			if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+				List<StorageVolume> volumes = storage.getStorageVolumes();
+				for (StorageVolume volume : volumes) {
+//                    System.out.println("-- volume.getDescription:" + volume.getDescription(MainAct.mAct));
+//                    System.out.println("-- volume.getUuid:" + volume.getUuid());
+
+					if(split.contains("emulated")) {
+						if (volume.getUuid() == null) {
+							volumeName = volume.getDescription(MainAct.mAct);
+//							System.out.println("-- volumeName 1:" + volumeName);
+						}
+					}
+					else if (split.equals(volume.getUuid())) {
+						volumeName = volume.getDescription(MainAct.mAct);
+//						System.out.println("-- volumeName 2:" + volumeName);
+					}
+				}
+			}
+		}
+		return volumeName;
+	}
+
+
+	public void getUsbDeviceDetail() {
+
+		UsbManager manager = (UsbManager) MainAct.mAct.getSystemService(Context.USB_SERVICE);
+
+		Context context = MainAct.mAct;
+
+		HashMap<String, UsbDevice> deviceList = manager.getDeviceList();
+		Iterator<UsbDevice> deviceIterator = deviceList.values().iterator();
+
+		while (deviceIterator.hasNext()) {
+			UsbDevice device = deviceIterator.next();
+
+			String actionString = context.getPackageName()+ ".USB_PERMISSION";
+
+			PendingIntent mPermissionIntent = PendingIntent.getBroadcast(context, 0,
+					new Intent(actionString), 0);
+
+			manager.requestPermission(device, mPermissionIntent);
+
+//			System.out.println("-- device.getDeviceName() = " + device.getDeviceName());
+//			System.out.println("-- device.getManufacturerName() = " + device.getManufacturerName() );
+//			System.out.println("-- device.getProductName() = " + device.getProductName()  );
+//			System.out.println("-- device.getProductId() = " + device.getProductId()   );
+//			System.out.println("-- device.getDeviceClass() = " + device.getDeviceClass()   );
+//			System.out.println("-- device.getDeviceSubclass() = " + device.getDeviceSubclass()   );
+		}}
+
 }

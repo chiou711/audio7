@@ -168,7 +168,7 @@ public class Audio7Player
 	// set list view footer audio control
 	public void showAudioPanel(AppCompatActivity act,boolean enable)
 	{
-		System.out.println("Audio7Player / _showAudioPanel / enable = " + enable);
+//		System.out.println("Audio7Player / _showAudioPanel / enable = " + enable);
         if(audio_panel != null) {
             TextView audio_panel_title_textView = (TextView) audio_panel.findViewById(R.id.audio_title);
             SeekBar seekBarProgress = (SeekBar) audio_panel.findViewById(R.id.seek_bar);

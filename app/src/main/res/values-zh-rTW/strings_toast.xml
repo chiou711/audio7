@@ -5,4 +5,5 @@
     <string name="toast_input_filename">請輸入一個檔案名稱</string>
     <string name="toast_not_working">在數據庫處理期間不起作用</string>
     <string name="toast_cyclic_play_disabled">循環播放未啟用</string>
+    <string name="toast_storage_directory_top">已經在存儲目錄的頂部</string>
 </resources>

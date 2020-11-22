@@ -125,7 +125,7 @@ public class Add_audio_byFolder extends ListFragment
 
                 // refresh list view
                 File dir = new File(targetDirPath);
-                getFilesList(dir.listFiles());
+                showFilesList(dir.listFiles());
             }
         });
 
@@ -155,7 +155,7 @@ public class Add_audio_byFolder extends ListFragment
         if(!dir.exists())
             dir.mkdir();
 
-        getFilesList(new File(appDir).listFiles());
+        showFilesList(new File(appDir).listFiles());
     }
 
     int selectedRow;
@@ -165,17 +165,40 @@ public class Add_audio_byFolder extends ListFragment
     public void onListItemClick(long rowId)
     {
         AppCompatActivity act = (AppCompatActivity) getActivity();
+
+        System.out.println("--- onListItemClick / currFilePath = " + currFilePath);
+
         selectedRow = (int)rowId;
+        System.out.println("--- onListItemClick / selectedRow = " + selectedRow);
         if(selectedRow == 0)
         {
-            String parentDir = new File(currFilePath).getParent();
-            File dir = new File(parentDir);
+            System.out.println("--- onListItemClick / selectedRow = 0 / currFilePath = " + currFilePath);
 
-            currFilePath = parentDir;
-            getFilesList(dir.listFiles());
+            if(currFilePath.equals("/storage")) {
+                Toast.makeText(act,R.string.toast_storage_directory_top,Toast.LENGTH_SHORT).show();
+                showFilesList(new File(currFilePath).listFiles());
+                return;
+            }
+
+            File parentDir = null;
+            String parentPath;
+            do {
+                File currDir = new File(currFilePath);
+                parentPath = currDir.getParent();
+                System.out.println("--- onListItemClick / selectedRow = 0 / parentPath = " + parentPath);
+
+                if (parentPath != null) {
+                    parentDir = new File(parentPath);
+                    currFilePath = parentPath;
+                    System.out.println("--- onListItemClick / selectedRow = 0 / new currFilePath = " + currFilePath);
+                }
+            } while (parentDir.listFiles() == null);
+
+            showFilesList(parentDir.listFiles());
         }
         else
         {
+            System.out.println("--- onListItemClick / is dir");
             currFilePath = filePathArray.get(selectedRow);
             System.out.println("Add_audio_byFolder / _onListItemClick / currFilePath = " + currFilePath);
 
@@ -186,7 +209,7 @@ public class Add_audio_byFolder extends ListFragment
                 int filesCount = 0;
 
                 if(file.listFiles() != null) {
-                    dirCount = getFilesList(file.listFiles());
+                    dirCount = showFilesList(file.listFiles());
                     filesCount = file.listFiles().length;
                 }
 
@@ -230,6 +253,7 @@ public class Add_audio_byFolder extends ListFragment
             }
             else
             {
+                System.out.println("--- onListItemClick / not directory");
             	// view the selected file's content
             	if( file.isFile() &&
                    (file.getName().contains("MP3") ||
@@ -245,22 +269,24 @@ public class Add_audio_byFolder extends ListFragment
             		Toast.makeText(getActivity(),R.string.file_not_found,Toast.LENGTH_SHORT).show();
                     String dirString = new File(currFilePath).getParent();
                     File dir = new File(dirString);
-                    getFilesList(dir.listFiles());
+                    showFilesList(dir.listFiles());
             	}
             }
         }
     }
 
-    int  getFilesList(File[] files)
+    int showFilesList(File[] files)
     {
+        System.out.println("-- _getFilesList");
         int dirCount = 0;
         if(files == null)
         {
+            System.out.println("-- _getFilesList / files = null");
         	Toast.makeText(getActivity(),"Please select audio file",Toast.LENGTH_SHORT).show();
         }
         else
         {
-//        	System.out.println("files length = " + files.length);
+        	System.out.println("-- _getFilesList / files length = " + files.length);
             filePathArray = new ArrayList<>();
             fileNames = new ArrayList<>();
             filePathArray.add("");
@@ -289,8 +315,13 @@ public class Add_audio_byFolder extends ListFragment
                 {
                     dirCount++;
                     filePathArray.add(file.getPath());
+
                     // directory
-                    fileNames.add("[ " + file.getName() +" ]");
+                    String dirName =  file.getName();
+
+                    // get volume name under root
+                    dirName = StorageUtils.getVolumeName(dirName);
+                    fileNames.add("[ " +  dirName +" ]");
                 }
 	        }
 
@@ -345,7 +376,7 @@ public class Add_audio_byFolder extends ListFragment
             convertView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    System.out.println("=> position  = " + position);
+//                    System.out.println("Add_audio_byFolder / position  = " + position);
                     v.setBackgroundColor(ColorSet.getHighlightColor(getActivity()));
                     onListItemClick(position);
                 }
