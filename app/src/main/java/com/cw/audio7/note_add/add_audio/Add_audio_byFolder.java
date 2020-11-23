@@ -386,21 +386,24 @@ public class Add_audio_byFolder extends ListFragment
                 @Override
                 public void onClick(View v) {
 //                    System.out.println("Add_audio_byFolder / position  = " + position);
-                    v.setBackgroundColor(ColorSet.getHighlightColor(getActivity()));
                     onListItemClick(position);
                 }
             });
 
             TextView tv = (TextView)convertView.findViewById(R.id.text1);
             String appName = getString(R.string.app_name);
-            tv.setText(fileNames.get(position));
-            if(fileNames.get(position).equalsIgnoreCase("sdcard")   ||
-               fileNames.get(position).equalsIgnoreCase(appName)    ||
-               fileNames.get(position).equalsIgnoreCase("[ audio7 ]") || //todo need to change for different app name
-               fileNames.get(position).equalsIgnoreCase("[ Download ]")   )
+
+            String fileName = fileNames.get(position);
+            tv.setText(fileName);
+            if(fileName.equalsIgnoreCase("sdcard")   ||
+                    fileName.equalsIgnoreCase(appName)    ||
+                    fileName.equalsIgnoreCase("[ audio7 ]") || //todo need to change for different app name
+                    fileName.equalsIgnoreCase("[ Download ]")   ) {
                 tv.setTypeface(null, Typeface.BOLD);
-            else
+            }
+            else {
                 tv.setTypeface(null, Typeface.NORMAL);
+            }
 
             return convertView;
         }

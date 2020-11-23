@@ -48,6 +48,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.ListFragment;
 
 public class Add_audio_1by1 extends ListFragment
@@ -122,7 +123,7 @@ public class Add_audio_1by1 extends ListFragment
 
                 // refresh list view
                 File dir = new File(targetDirPath);
-                getFilesList(dir.listFiles());
+                showFilesList(dir.listFiles());
             }
         });
 
@@ -152,7 +153,7 @@ public class Add_audio_1by1 extends ListFragment
         if(!dir.exists())
             dir.mkdir();
 
-        getFilesList(new File(appDir).listFiles());
+        showFilesList(new File(appDir).listFiles());
     }
 
     int selectedRow;
@@ -161,25 +162,53 @@ public class Add_audio_1by1 extends ListFragment
     // on list item click
     public void onListItemClick(long rowId)
     {
+        AppCompatActivity act = (AppCompatActivity) getActivity();
+
+        System.out.println("--- onListItemClick / currFilePath = " + currFilePath);
+
         selectedRow = (int)rowId;
+        System.out.println("--- onListItemClick / selectedRow = " + selectedRow);
         if(selectedRow == 0)
         {
-            String parentDir = new File(currFilePath).getParent();
-            File dir = new File(parentDir);
+            System.out.println("--- onListItemClick / selectedRow = 0 / currFilePath = " + currFilePath);
 
-            currFilePath = parentDir;
-            getFilesList(dir.listFiles());
+            if(currFilePath.equals("/storage")) {
+                Toast.makeText(act,R.string.toast_storage_directory_top,Toast.LENGTH_SHORT).show();
+                showFilesList(new File(currFilePath).listFiles());
+                return;
+            }
+
+            File parentDir = null;
+            String parentPath;
+            do {
+                File currDir = new File(currFilePath);
+                parentPath = currDir.getParent();
+                System.out.println("--- onListItemClick / selectedRow = 0 / parentPath = " + parentPath);
+
+                if (parentPath != null) {
+                    parentDir = new File(parentPath);
+                    currFilePath = parentPath;
+                    System.out.println("--- onListItemClick / selectedRow = 0 / new currFilePath = " + currFilePath);
+                }
+            } while (parentDir.listFiles() == null);
+
+            showFilesList(parentDir.listFiles());
         }
         else
         {
             currFilePath = filePathArray.get(selectedRow);
             System.out.println("Add_audio / _onListItemClick / currFilePath = " + currFilePath);
 
+            //TODO 20201122 temp for open /storage/emulated/0
+            if(currFilePath.equals("/storage/emulated"))
+                currFilePath = currFilePath.concat("/0");
+
             final File file = new File(currFilePath);
             if(file.isDirectory())
             {
             	//directory
-                getFilesList(file.listFiles());
+                if(file.listFiles() != null)
+                    showFilesList(file.listFiles());
             }
             else
             {
@@ -200,13 +229,13 @@ public class Add_audio_1by1 extends ListFragment
             		Toast.makeText(getActivity(),R.string.file_not_found,Toast.LENGTH_SHORT).show();
                     String dirString = new File(currFilePath).getParent();
                     File dir = new File(dirString);
-                    getFilesList(dir.listFiles());
+                    showFilesList(dir.listFiles());
             	}
             }
         }
     }
 
-    void getFilesList(File[] files)
+    void showFilesList(File[] files)
     {
         if(files == null)
         {
@@ -221,8 +250,8 @@ public class Add_audio_1by1 extends ListFragment
 
             if(currFilePath.equalsIgnoreCase(new File(appDir).getParent()))
                 fileNames.add("ROOT");
-            else if(currFilePath.equalsIgnoreCase(appDir))
-                fileNames.add("..");
+//            else if(currFilePath.equalsIgnoreCase(appDir))
+//                fileNames.add("..");
             else
                 fileNames.add("..");
 
@@ -243,7 +272,12 @@ public class Add_audio_1by1 extends ListFragment
                 {
                     filePathArray.add(file.getPath());
                     // directory
-                    fileNames.add("[ " + file.getName() +" ]");
+                    String dirName = file.getName();
+//                        System.out.println("Add_audio_1by1 / _showFilesList / dirName 1 = " + dirName);
+                    // get volume name under root
+                    dirName = StorageUtils.getVolumeName(dirName);
+//                        System.out.println("Add_audio_1by1 / _showFilesList / dirName 2 = " + dirName);
+                    fileNames.add("[ " + dirName +" ]");
                 }
 	        }
 
@@ -293,25 +327,29 @@ public class Add_audio_1by1 extends ListFragment
             convertView.setFocusable(true);
             convertView.setClickable(true);
 
-            TextView tv = (TextView)convertView.findViewById(R.id.text1);
-            String appName = getString(R.string.app_name);
-            tv.setText(fileNames.get(position));
-            if(fileNames.get(position).equalsIgnoreCase("sdcard")   ||
-               fileNames.get(position).equalsIgnoreCase(appName)    ||
-               fileNames.get(position).equalsIgnoreCase("audio7") || //todo need to change for different app name
-               fileNames.get(position).equalsIgnoreCase("Download")   )
-                tv.setTypeface(null, Typeface.BOLD);
-            else
-                tv.setTypeface(null, Typeface.NORMAL);
-
-            final int item = position;
             convertView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     v.setBackgroundColor(ColorSet.getHighlightColor(getActivity()));
-                    onListItemClick(item);
+                    onListItemClick(position);
                 }
             });
+
+            TextView tv = (TextView)convertView.findViewById(R.id.text1);
+            String appName = getString(R.string.app_name);
+
+            String fileName = fileNames.get(position);
+            tv.setText(fileName);
+            if(fileName.equalsIgnoreCase("sdcard")   ||
+                    fileName.equalsIgnoreCase(appName)    ||
+                    fileName.equalsIgnoreCase("[ audio7 ]") || //todo need to change for different app name
+                    fileName.equalsIgnoreCase("[ Download ]")   ) {
+                tv.setTypeface(null, Typeface.BOLD);
+            }
+            else {
+                tv.setTypeface(null, Typeface.NORMAL);
+            }
+
             return convertView;
         }
     }
@@ -323,168 +361,27 @@ public class Add_audio_1by1 extends ListFragment
         Uri selectedUri = Uri.parse(path);
         System.out.println("Add_audio / _addAudio / selectedUri = " + selectedUri);
 
-//        int takeFlags= -1;
-        // SAF support, take persistent Uri permission
-//        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
-//        {
-//            takeFlags = imageReturnedIntent.getFlags()
-//                    & (Intent.FLAG_GRANT_READ_URI_PERMISSION
-//                    | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-//
-//            // add for solving inspection error
-//            takeFlags |= Intent.FLAG_GRANT_READ_URI_PERMISSION;
-//
-//            String authority = selectedUri.getAuthority();
-//            if(authority.equalsIgnoreCase("com.google.android.apps.docs.storage"))
-//            {
-//                getContentResolver().takePersistableUriPermission(selectedUri, takeFlags);
-//            }
-//        }
-
         String scheme = selectedUri.getScheme();
-        // check option of Add new audio
-//        String option = getIntent().getExtras().getString("EXTRA_ADD_EXIST", "single_to_bottom");
+        String uriStr = selectedUri.toString();
 
-        // add single file
-//        if((option.equalsIgnoreCase("single_to_top") ||
-//                option.equalsIgnoreCase("single_to_bottom") ) &&
-//                (scheme.equalsIgnoreCase("file") ||
-//                        scheme.equalsIgnoreCase("content"))              )
-        {
-            String uriStr = selectedUri.toString();
+        // check if content scheme points to local file
+        if((scheme!= null) && scheme.equalsIgnoreCase("content")) {
+            String realPath = Util.getLocalRealPathByUri(getActivity(), selectedUri);
 
-            // check if content scheme points to local file
-            if((scheme!= null) && scheme.equalsIgnoreCase("content"))
-            {
-                String realPath = Util.getLocalRealPathByUri(getActivity(), selectedUri);
-
-                if(realPath != null)
-                    uriStr = "file://".concat(realPath);
-            }
-
-//            noteId = null; // set null for Insert
-//		        	noteId = note_common.insertAudioToDB(uriStr);
-
-            DB_page dB = new DB_page(getActivity(), TabsHost.getCurrentPageTableId());
-            if( !Util.isEmptyString(uriStr))
-            {
-                // insert
-                // set marking to 1 for default
-                dB.insertNote("",  uriStr, "",  1);// add new note, get return row Id
-            }
-
-//            selectedAudioUri = uriStr;
-
-//            if( (dB.getNotesCount(true) > 0) &&
-//                    option.equalsIgnoreCase("single_to_top"))
-            {
-//                Page_recycler.swapTopBottom();
-                //update playing focus
-//                Audio_manager.mAudioPos++;
-            }
-
-            if(!Util.isEmptyString(uriStr))
-            {
-                String[] audioName = Util.getDisplayNameByUriString(uriStr, getActivity());
-                Util.showSavedFileToast(audioName[0]+" / " +audioName[1],getActivity());
-            }
+            if(realPath != null)
+                uriStr = "file://".concat(realPath);
         }
 
-        // add multiple audio files in the selected file's directory
-//        else if((option.equalsIgnoreCase("directory_to_top") ||
-//                option.equalsIgnoreCase("directory_to_bottom")) &&
-//                (scheme.equalsIgnoreCase("file") ||
-//                        scheme.equalsIgnoreCase("content") )              )
-//        {
-//            // get file path and add prefix (file://)
-//            String realPath = Util.getLocalRealPathByUri(this, selectedUri);
-//
-//            // when scheme is content, it could be local or remote
-//            if(realPath != null)
-//            {
-//                // get file name
-//                File file = new File("file://".concat(realPath));
-//                String fileName = file.getName();
-//
-//                // get directory
-//                String dirStr = realPath.replace(fileName, "");
-//                File dir = new File(dirStr);
-//
-//                // get Urls array
-//                String[] urlsArray = Util.getUrlsByFiles(dir.listFiles(), Util.AUDIO);
-//                if(urlsArray == null)
-//                {
-//                    Toast.makeText(this,"No file is found",Toast.LENGTH_SHORT).show();
-//                    finish();
-//                }
-//                else
-//                {
-//                    // show Start
-//                    Toast.makeText(this, R.string.add_new_start, Toast.LENGTH_SHORT).show();
-//                }
-//
-//                int i= 1;
-//                int total=0;
-//
-//                for(int cnt = 0; cnt < urlsArray.length; cnt++)
-//                {
-//                    if(!Util.isEmptyString(urlsArray[cnt]))
-//                        total++;
-//                }
-//
-//                // note: the order add insert items depends on file manager
-//                for(String urlStr:urlsArray)
-//                {
-////                            System.out.println("urlStr = " + urlStr);
-//                    noteId = null; // set null for Insert
-//                    if(!Util.isEmptyString(urlStr))
-//                    {
-//                        // insert
-//                        // set marking to 1 for default
-//                        dB.insertNote("", "", urlStr, "", "", "", 1, (long) 0);// add new note, get return row Id
-//                    }
-//                    selectedAudioUri = urlStr;
-//
-//                    if( (dB.getNotesCount(true) > 0) &&
-//                            option.equalsIgnoreCase("directory_to_top") )
-//                    {
-//                        Page_recycler.swapTopBottom();
-//                        //update playing focus
-//                        Audio_manager.mAudioPos++;
-//                    }
-//
-//                    // avoid showing empty toast
-//                    if(!Util.isEmptyString(urlStr))
-//                    {
-//                        String audioName = Util.getDisplayNameByUriString(urlStr, Note_addAudio.this);
-//                        audioName = i + "/" + total + ": " + audioName;
-////                                Util.showSavedFileToast(audioName, Note_addAudio.this);
-//                        progress.append("\r\n"+audioName);
-//                    }
-//                    i++;
-//                }
+        DB_page dB = new DB_page(getActivity(), TabsHost.getCurrentPageTableId());
+        if( !Util.isEmptyString(uriStr)) {
+            // insert new link, set marking to 1 for default
+            dB.insertNote("",  uriStr, "",  1);
+        }
 
-                // show Stop
-//                Toast.makeText(Note_addAudio.this,R.string.add_new_stop,Toast.LENGTH_SHORT).show();
-//            }
-//            else
-//            {
-//                Toast.makeText(this,
-//                        R.string.add_new_file_error,
-//                        Toast.LENGTH_LONG)
-//                        .show();
-//            }
-//        }
+        if(!Util.isEmptyString(uriStr)) {
+            String[] audioName = Util.getDisplayNameByUriString(uriStr, getActivity());
+            Util.showSavedFileToast(audioName[0]+" / " +audioName[1],getActivity());
+        }
 
-        // open chooser again
-//	        	chooseAudioMedia();
-
-        // to avoid exception due to playing tab is different with focus tab
-//        if(PageUi.isAudioPlayingPage())
-//        {
-//            AudioPlayer_page.prepareAudioInfo();
-//        }
-//
-//        finish();
     }
 }
