@@ -17,6 +17,7 @@
 package com.cw.audio7.note_add.add_audio;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
@@ -37,6 +38,7 @@ import com.cw.audio7.tabs.TabsHost;
 import com.cw.audio7.util.BaseBackPressedListener;
 import com.cw.audio7.util.ColorSet;
 import com.cw.audio7.util.Util;
+import com.cw.audio7.util.audio.UtilAudio;
 
 import org.apache.commons.io.FileUtils;
 
@@ -140,6 +142,8 @@ public class Add_audio_1by1 extends ListFragment
 
     String appDir;
 
+    List<Boolean> checkedArr;
+
     @Override
     public void onResume() {
         super.onResume();
@@ -222,8 +226,12 @@ public class Add_audio_1by1 extends ListFragment
                     View view2 = getActivity().findViewById(R.id.file_list_title);
                     view2.setVisibility(View.GONE);
 
+                    // add path to DB
                     addAudio(currFilePath);
-            	}
+
+                    checkedArr.set(selectedRow,true);
+                    fileListAdapter.notifyDataSetChanged();
+                }
             	else
             	{
             		Toast.makeText(getActivity(),R.string.file_not_found,Toast.LENGTH_SHORT).show();
@@ -235,15 +243,18 @@ public class Add_audio_1by1 extends ListFragment
         }
     }
 
+    FileNameAdapter fileListAdapter;
     void showFilesList(File[] files)
     {
+        checkedArr = new ArrayList<>();
+
         if(files == null)
         {
         	Toast.makeText(getActivity(),"Please select audio file",Toast.LENGTH_SHORT).show();
         }
         else
         {
-//        	System.out.println("files length = " + files.length);
+        	System.out.println("files length = " + files.length);
             filePathArray = new ArrayList<>();
             fileNames = new ArrayList<>();
             filePathArray.add("");
@@ -255,33 +266,46 @@ public class Add_audio_1by1 extends ListFragment
             else
                 fileNames.add("..");
 
+            // init for top row
+            checkedArr.add(false);
+
             // sort by alphabetic
             Arrays.sort(files, new FileNameComparator());
 
 	        for(File file : files)
 	        {
+	            // init for each unchecked
+                checkedArr.add(false);
+
                 // add for filtering non-audio file
-                if(!file.isDirectory() &&
-                   (file.getName().contains("MP3") || file.getName().contains("mp3")))
+                if(file.isDirectory())
                 {
                     filePathArray.add(file.getPath());
-                    // file
-                    fileNames.add(file.getName());
-                }
-                else if(file.isDirectory())
-                {
-                    filePathArray.add(file.getPath());
+
                     // directory
                     String dirName = file.getName();
-//                        System.out.println("Add_audio_1by1 / _showFilesList / dirName 1 = " + dirName);
+                    System.out.println("Add_audio_1by1 / _showFilesList / dirName  = " + dirName);
+
                     // get volume name under root
                     dirName = StorageUtils.getVolumeName(dirName);
-//                        System.out.println("Add_audio_1by1 / _showFilesList / dirName 2 = " + dirName);
+//                        System.out.println("Add_audio_1by1 / _showFilesList / dirName (with volume name) = " + dirName);
+
                     fileNames.add("[ " + dirName +" ]");
+                }
+                else if(!file.isDirectory() &&
+                        (file.getName().contains("MP3") || file.getName().contains("mp3")))
+                {
+                    System.out.println("Add_audio_1by1 / _showFilesList / file.getName() 1 = " + file.getName());
+                    filePathArray.add(file.getPath());
+                    // file
+                    String uriStr = getAudioUriString(file.getPath());
+                    fileNames.add(uriStr);
                 }
 	        }
 
-            FileNameAdapter fileListAdapter = new FileNameAdapter(getActivity(),
+//            System.out.println("checkedArr size = " + checkedArr.size());
+
+            fileListAdapter = new FileNameAdapter(getActivity(),
                                                                   R.layout.import_sd_files_list_row,
                                                                   fileNames);
 	        setListAdapter(fileListAdapter);
@@ -309,6 +333,10 @@ public class Add_audio_1by1 extends ListFragment
         }
     }
 
+    private class ViewHolder {
+        TextView audioTitle;
+        TextView audioArtist;
+    }
 
     // File name array for setting focus and file name, note: without generic will cause unchecked or unsafe operations warning
     class FileNameAdapter extends ArrayAdapter<String>
@@ -319,35 +347,66 @@ public class Add_audio_1by1 extends ListFragment
 
         @Override
         public View getView(int position, View convertView,ViewGroup parent) {
+            System.out.println("-- _getView / position = " + position);
+
+            ViewHolder viewHolder;
             if(convertView == null)
             {
-                convertView = getActivity().getLayoutInflater().inflate(R.layout.import_sd_files_list_row, parent, false);
+                convertView = getActivity().getLayoutInflater().inflate(R.layout.add_link_1by1_list_row , parent, false);
+                viewHolder = new ViewHolder();
+                viewHolder.audioTitle = (TextView)convertView.findViewById(R.id.title_1by1);
+                viewHolder.audioArtist = (TextView)convertView.findViewById(R.id.artist_1by1);
+                convertView.setTag(viewHolder);
             }
+            else
+                viewHolder = (ViewHolder) convertView.getTag();
 
-            convertView.setFocusable(true);
-            convertView.setClickable(true);
+            View row = convertView.findViewById(R.id.add_audio_1by1);
+            row.setFocusable(true);
+            row.setClickable(true);
 
-            convertView.setOnClickListener(new View.OnClickListener() {
+            row.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    v.setBackgroundColor(ColorSet.getHighlightColor(getActivity()));
                     onListItemClick(position);
                 }
             });
 
-            TextView tv = (TextView)convertView.findViewById(R.id.text1);
+            if( (checkedArr.size()>0) && checkedArr.get(position)) {
+                viewHolder.audioTitle.setBackgroundColor(ColorSet.getHighlightColor(getActivity()));
+                viewHolder.audioArtist.setBackgroundColor(ColorSet.getHighlightColor(getActivity()));
+            }
+            else {
+                viewHolder.audioTitle.setBackgroundColor(Color.WHITE);
+                viewHolder.audioArtist.setBackgroundColor(Color.WHITE);
+            }
+
             String appName = getString(R.string.app_name);
 
             String fileName = fileNames.get(position);
-            tv.setText(fileName);
-            if(fileName.equalsIgnoreCase("sdcard")   ||
-                    fileName.equalsIgnoreCase(appName)    ||
-                    fileName.equalsIgnoreCase("[ audio7 ]") || //todo need to change for different app name
-                    fileName.equalsIgnoreCase("[ Download ]")   ) {
-                tv.setTypeface(null, Typeface.BOLD);
-            }
-            else {
-                tv.setTypeface(null, Typeface.NORMAL);
+
+            // audio title / artist
+            if(UtilAudio.hasAudioExtension(fileName)) {
+                String[] audioName = Util.getDisplayNameByUriString(fileName, getActivity());
+                viewHolder.audioTitle.setText(audioName[0]);
+                viewHolder.audioTitle.setTypeface(null, Typeface.BOLD);
+                viewHolder.audioArtist.setText(audioName[1]);
+                viewHolder.audioArtist.setTypeface(null, Typeface.ITALIC);
+            } else { // dir
+                viewHolder.audioTitle.setText(fileName);
+
+                // bold for special directory
+                if(fileName.equalsIgnoreCase("sdcard")   ||
+                        fileName.equalsIgnoreCase(appName)    ||
+                        fileName.equalsIgnoreCase("[ audio7 ]") || //todo need to change for different app name
+                        fileName.equalsIgnoreCase("[ Download ]")   ) {
+                    viewHolder.audioTitle.setTypeface(null, Typeface.BOLD);
+                }
+                else {
+                    viewHolder.audioTitle.setTypeface(null, Typeface.NORMAL);
+                }
+
+                viewHolder.audioArtist.setText("");
             }
 
             return convertView;
@@ -357,21 +416,7 @@ public class Add_audio_1by1 extends ListFragment
     // add audio
     void addAudio(String path)
     {
-        path = "file://".concat(path);
-        Uri selectedUri = Uri.parse(path);
-        System.out.println("Add_audio / _addAudio / selectedUri = " + selectedUri);
-
-        String scheme = selectedUri.getScheme();
-        String uriStr = selectedUri.toString();
-
-        // check if content scheme points to local file
-        if((scheme!= null) && scheme.equalsIgnoreCase("content")) {
-            String realPath = Util.getLocalRealPathByUri(getActivity(), selectedUri);
-
-            if(realPath != null)
-                uriStr = "file://".concat(realPath);
-        }
-
+        String uriStr = getAudioUriString(path);
         DB_page dB = new DB_page(getActivity(), TabsHost.getCurrentPageTableId());
         if( !Util.isEmptyString(uriStr)) {
             // insert new link, set marking to 1 for default
@@ -380,8 +425,27 @@ public class Add_audio_1by1 extends ListFragment
 
         if(!Util.isEmptyString(uriStr)) {
             String[] audioName = Util.getDisplayNameByUriString(uriStr, getActivity());
-            Util.showSavedFileToast(audioName[0]+" / " +audioName[1],getActivity());
+            Util.showSavedFileToast(getActivity(),audioName[0]+" / " +audioName[1],1000);
         }
 
+    }
+    
+    // Get audio Uri string by path
+    String getAudioUriString(String path) {
+        path = "file://".concat(path);
+        Uri selectedUri = Uri.parse(path);
+        System.out.println("Add_audio / _getAudioUriString / selectedUri = " + selectedUri);
+
+        String scheme = selectedUri.getScheme();
+        String audioUri = selectedUri.toString();
+
+        // check if content scheme points to local file
+        if((scheme!= null) && scheme.equalsIgnoreCase("content")) {
+            String realPath = Util.getLocalRealPathByUri(getActivity(), selectedUri);
+
+            if(realPath != null)
+                audioUri = "file://".concat(realPath);
+        }
+        return audioUri;
     }
 }

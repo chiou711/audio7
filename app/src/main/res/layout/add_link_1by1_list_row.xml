@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/add_audio_1by1"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    >
+    <TextView android:id="@+id/title_1by1"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:paddingLeft="3dp"
+        android:paddingRight="3dp"
+        android:lineSpacingMultiplier="0.9"
+        android:maxLines="2"
+        android:background="#ffffff"
+        android:textColor="#000000"
+        android:textSize="14sp" />
+    <TextView android:id="@+id/artist_1by1"
+        android:layout_width="match_parent"
+        android:layout_height="22dp"
+        android:paddingStart="20dp"
+        android:paddingEnd="3dp"
+        android:lineSpacingMultiplier="0.9"
+        android:background="#ffffff"
+        android:textColor="#000000"
+        android:textSize="12sp" />
+</LinearLayout>

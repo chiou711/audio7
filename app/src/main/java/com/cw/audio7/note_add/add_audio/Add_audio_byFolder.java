@@ -449,7 +449,7 @@ public class Add_audio_byFolder extends ListFragment
                 }
             }
 
-            Util.showSavedFileToast(pageName +" Added",getActivity());
+            Util.showSavedFileToast(getActivity(),pageName +" Added",500);
         }
     }
 }

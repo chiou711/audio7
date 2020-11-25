@@ -994,7 +994,7 @@ public class Util
     }		    
     
 	// show saved file name
-	public static void showSavedFileToast(String string,Activity act)
+	public static void showSavedFileToast(Activity act,String string,int delay)
 	{
 		final Toast toast = Toast.makeText(act,
 						string,
@@ -1008,7 +1008,7 @@ public class Util
             public void run() {
                 toast.cancel();
             }
-        }, 500);
+        }, delay);
 	}
 
 	static public boolean isLandscapeOrientation(Activity act)
