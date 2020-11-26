@@ -50,6 +50,9 @@ import com.cw.audio7.util.audio.UtilAudio;
 import com.cw.audio7.util.image.AsyncTaskAudioBitmap;
 import com.cw.audio7.util.preferences.Pref;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
@@ -68,12 +71,12 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
         implements ItemTouchHelperAdapter
 {
 	private static AppCompatActivity mAct;
-	Cursor cursor;
     final DB_folder dbFolder;
 	private DB_page mDb_page;
     private final OnStartDragListener mDragStartListener;
 	private final int page_table_id;
     private int style;
+    List<Db_cache> listCache;
 
     PageAdapter(int pageTableId, OnStartDragListener dragStartListener) {
 	    mAct = MainAct.mAct;
@@ -91,6 +94,27 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
                 break;
             }
         }
+
+        updateDbCache();
+    }
+
+    // update list cache from DB
+    void updateDbCache() {
+        listCache = new ArrayList();
+
+        int notesCount = getItemCount();
+        mDb_page = new DB_page(mAct, page_table_id);
+        mDb_page.open();
+        for(int i=0;i<notesCount;i++) {
+            Cursor cursor = mDb_page.mCursor_note;
+            if (cursor.moveToPosition(i)) {
+                Db_cache cache = new Db_cache();
+                cache.audioUri = cursor.getString(cursor.getColumnIndexOrThrow(KEY_NOTE_AUDIO_URI));
+                cache.marking = cursor.getInt(cursor.getColumnIndexOrThrow(KEY_NOTE_MARKING));
+                listCache.add(cache);
+            }
+        }
+        mDb_page.close();
     }
 
     /**
@@ -181,14 +205,8 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
         String audioUri = null;
         int marking = 0;
 
-	    mDb_page = new DB_page(mAct, page_table_id);
-	    mDb_page.open();
-	    cursor = mDb_page.mCursor_note;
-        if(cursor.moveToPosition(position)) {
-            audioUri = cursor.getString(cursor.getColumnIndexOrThrow(KEY_NOTE_AUDIO_URI));
-            marking = cursor.getInt(cursor.getColumnIndexOrThrow(KEY_NOTE_MARKING));
-        }
-	    mDb_page.close();
+        audioUri = listCache.get(position).audioUri;
+        marking = listCache.get(position).marking;;
 
         /**
          *  control block
@@ -328,18 +346,18 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
         if(Util.isEmptyString(audioUri))
             holder.audioBlock.setVisibility(View.GONE);
 
-		// case : show audio thumb nail if audio Uri exists
-		if(UtilAudio.hasAudioExtension(audioUri) )
-		{
-			holder.thumbBlock.setVisibility(View.VISIBLE);
-			holder.thumbAudio.setVisibility(View.VISIBLE);
-			holder.thumbLength.setVisibility(View.VISIBLE);
 
-			int in_sample_size;
-			if(Pref.getPref_card_view_enable_large_view(mAct))
-                in_sample_size = 1;
-			else
-                in_sample_size = 1;//8; // 1/8 the width/height of the original
+            // case : show audio thumb nail if audio Uri exists
+            if (UtilAudio.hasAudioExtension(audioUri)) {
+                holder.thumbBlock.setVisibility(View.VISIBLE);
+                holder.thumbAudio.setVisibility(View.VISIBLE);
+                holder.thumbLength.setVisibility(View.VISIBLE);
+
+                int in_sample_size;
+                if (Pref.getPref_card_view_enable_large_view(mAct))
+                    in_sample_size = 1;
+                else
+                    in_sample_size = 1;//8; // 1/8 the width/height of the original
 
             try {
                 AsyncTaskAudioBitmap audioAsyncTask;
@@ -388,6 +406,8 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
                 System.out.println("PageAdapter / _getView / btnMarking / _onClick");
                 // toggle marking
                 toggleNoteMarking(mAct,position);
+
+                updateDbCache();
 
                 // Stop if unmarked item is at playing state
                 if(Audio_manager.mAudioPos == position) {
@@ -674,6 +694,8 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
 
         setBindViewHolder_listeners((ViewHolder)sourceViewHolder,toPos);
         setBindViewHolder_listeners((ViewHolder)targetViewHolder,fromPos);
+
+        updateDbCache();
     }
 
 }
