@@ -305,8 +305,10 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
         }
 
         // add for update page item view
-        if((page != null) && (page.itemAdapter != null))
+        if((page != null) && (page.itemAdapter != null)) {
+            page.itemAdapter.updateDbCache();
             page.itemAdapter.notifyDataSetChanged();
+        }
 
         // set tab audio icon when audio playing
         showPlayingTab();

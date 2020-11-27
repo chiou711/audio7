@@ -99,7 +99,7 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
     }
 
     // update list cache from DB
-    void updateDbCache() {
+    public void updateDbCache() {
         listCache = new ArrayList();
 
         int notesCount = getItemCount();
