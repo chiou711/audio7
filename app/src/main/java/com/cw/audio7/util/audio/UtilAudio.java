@@ -55,12 +55,15 @@ public class UtilAudio {
 		{
             if(BackgroundAudioService.mMediaPlayer != null){
                 Audio_manager.stopAudioPlayer();
+	            Audio_manager.removeRunnable();
                 Audio_manager.mAudioPos = 0;
+	            Audio_manager.audio7Player.showAudioPanel(MainAct.mAct, false);
+	            // remove playing focus
+	            TabsHost.reloadCurrentPage();
             }
 
 			if(MainAct.mSubMenuItemAudio != null)
 				MainAct.mSubMenuItemAudio.setIcon(R.drawable.ic_menu_slideshow);
-
 		}
     }
     

@@ -28,6 +28,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.cw.audio7.R;
 import com.cw.audio7.audio.Audio7Player;
@@ -205,8 +206,14 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
         String audioUri = null;
         int marking = 0;
 
-        audioUri = listCache.get(position).audioUri;
-        marking = listCache.get(position).marking;;
+        // add check to avoid exception during Copy/Move checked
+        if( (listCache != null) && (listCache.size() > 0) ){
+            audioUri = listCache.get(position).audioUri;
+            marking = listCache.get(position).marking;
+        } else  {
+            audioUri = "";
+            marking = 0;
+        }
 
         /**
          *  control block
@@ -471,6 +478,14 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
         viewHolder.audioBlock.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                // check if selected
+                DB_page db_page = new DB_page(mAct,TabsHost.getCurrentPageTableId());
+                int marking = db_page.getNoteMarking(position,true);
+                if(marking == 0) {
+                    Toast.makeText(mAct,R.string.is_an_unchecked_item,Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
                 // case 1: open Note audio
 //                openAudioPanel_note(position);
