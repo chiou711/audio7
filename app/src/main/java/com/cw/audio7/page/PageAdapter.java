@@ -404,8 +404,9 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
             public void onClick(View v) {
 
                 System.out.println("PageAdapter / _getView / btnMarking / _onClick");
-                // toggle marking
-                toggleNoteMarking(mAct,position);
+
+                // toggle marking and get new setting
+                int marking = toggleNoteMarking(mAct,position);
 
                 updateDbCache();
 
@@ -419,7 +420,35 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
                 TabsHost.store_listView_vScroll(listView);
                 TabsHost.isDoingMarking = true;
 
-                TabsHost.reloadCurrentPage();
+                // set marking icon
+                if(marking == 1)
+                {
+                    v.setBackgroundResource(style % 2 == 1 ?
+                            R.drawable.btn_check_on_holo_light :
+                            R.drawable.btn_check_on_holo_dark);
+                }
+                else
+                {
+                    v.setBackgroundResource(style % 2 == 1 ?
+                            R.drawable.btn_check_off_holo_light :
+                            R.drawable.btn_check_off_holo_dark);
+                }
+
+                // set audio title / artist color
+                DB_page db_page = new DB_page(mAct,TabsHost.getCurrentPageTableId());
+                String audioUri = db_page.getNoteAudioUri(position,true);
+
+                if(!Util.isEmptyString(audioUri)) {
+                    if( marking == 1) {
+                        viewHolder.audioTitle.setTextColor(ColorSet.mText_ColorArray[style]);
+                        viewHolder.audioArtist.setTextColor(ColorSet.mText_ColorArray[style]);
+                    } else {
+                        viewHolder.audioTitle.setTextColor(mAct.getResources().getColor(R.color.colorGray));
+                        viewHolder.audioArtist.setTextColor(mAct.getResources().getColor(R.color.colorGray));
+                    }
+                }
+
+//                TabsHost.reloadCurrentPage();
                 TabsHost.showFooter(MainAct.mAct);
 
                 // update audio info
