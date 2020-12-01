@@ -25,7 +25,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="2dp"
-        android:background="@color/bg_color"
+        android:background="@color/list_view_bg_color"
         android:scrollbars="vertical"
         android:scrollbarThumbVertical="@android:color/holo_blue_dark"
         android:scrollbarSize="5dp"/>

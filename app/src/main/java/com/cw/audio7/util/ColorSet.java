@@ -60,7 +60,7 @@ public class ColorSet
 
     public static int getTabIndicatorColor(Activity act)
     {
-        return act.getResources().getColor(R.color.accent_500);
+        return act.getResources().getColor(R.color.indicator_color);
     }
 
     public static int getBackgroundColor(Activity act)

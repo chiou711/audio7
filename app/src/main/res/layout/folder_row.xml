@@ -37,7 +37,7 @@
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
         android:textColor="#fff"
-        android:backgroundTint="@color/accent_500"
+        android:backgroundTint="@color/indicator_color"
         android:background="?android:attr/activatedBackgroundIndicator"
         android:minHeight="?android:attr/listPreferredItemHeightSmall"/>
     <ImageView

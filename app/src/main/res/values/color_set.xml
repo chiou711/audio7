@@ -1,18 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- set 1 -->
-    <color name="bar_color">#ff176f77</color>
-    <color name="button_color">#ff176f77</color>
-    <color name="highlight_color">#ffff9030</color>
-    <color name="bg_color">#ff185060</color>
-    <color name="bg_gray_color">#ff26393e</color>
+    <color name="indicator_color">#E91E63</color>
+    <color name="button_color">#404040</color>
+    <color name="bar_color">#303030</color>
+    <color name="highlight_color">#FF8040</color>
+    <color name="bg_color">#202020</color>
+    <color name="list_view_bg_color">#202020</color>
+    <color name="text_bg_color">#101010</color>
 
     <!-- set 2 -->
-<!--    <color name="bar_color">#ff176f77</color>-->
-<!--    <color name="button_color">#ff176f77</color>-->
-<!--    <color name="highlight_color">#ff1090ff</color>-->
-<!--    <color name="bg_color">#ff204050</color>-->
-<!--    <color name="bg_gray_color">#ff15283d</color>-->
+<!--    <color name="indicator_color">#E91E63</color>-->
+<!--    <color name="button_color">#176f77</color>-->
+<!--    <color name="bar_color">#176f77</color>-->
+<!--    <color name="highlight_color">#ff9030</color>-->
+<!--    <color name="bg_color">#185060</color>-->
+<!--    <color name="list_view_bg_color">#185060</color>-->
+<!--    <color name="text_bg_color">#101010</color>-->
+
+    <!-- set 3 -->
+<!--    <color name="indicator_color">#E91E63</color>-->
+<!--    <color name="button_color">#176f77</color>-->
+<!--    <color name="bar_color">#176f77</color>-->
+<!--    <color name="highlight_color">#1090ff</color>-->
+<!--    <color name="bg_color">#204050</color>-->
+<!--    <color name="list_view_bg_color">#204050</color>-->
+<!--    <color name="text_bg_color">#101010</color>-->
 
     <color name="pause_color">#ffA0A0A0</color>
 

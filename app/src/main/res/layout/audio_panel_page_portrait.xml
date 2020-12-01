@@ -14,7 +14,7 @@
               android:layout_gravity="center"
               android:layout_margin="5dp"
               android:padding="2dp"
-              android:background="@color/bg_gray_color"
+              android:background="@color/text_bg_color"
               android:textAppearance="?android:attr/textAppearanceLarge"
               android:textSize="12sp"
               android:singleLine="true"
