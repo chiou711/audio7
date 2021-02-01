@@ -83,10 +83,10 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
         mMediaSessionCompat.setActive(true);
         setMediaPlaybackState(PlaybackStateCompat.STATE_PLAYING);
 
-        initMediaSessionMetadata();
-        showPlayingNotification();
-
         if(mMediaPlayer != null) {
+            initMediaSessionMetadata();
+            showPlayingNotification();
+
             mMediaPlayer.start();
             mMediaPlayer.setVolume(1.0f, 1.0f);
         }
@@ -266,11 +266,18 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
 
     // set seeker bar progress
     public static void setSeekerBarProgress() {
+
+        int currPos;
+        if(mMediaPlayer==null)
+           return;
+        else
+            currPos =  mMediaPlayer.getCurrentPosition();
+
         if(Audio_manager.getPlayerState() == Audio_manager.PLAYER_AT_PLAY) {
-            playbackStateBuilder.setState(PlaybackStateCompat.STATE_PLAYING, mMediaPlayer.getCurrentPosition(), 0);
+            playbackStateBuilder.setState(PlaybackStateCompat.STATE_PLAYING, currPos, 0);
             mMediaSessionCompat.setPlaybackState(playbackStateBuilder.build());
         } else if(Audio_manager.getPlayerState() == Audio_manager.PLAYER_AT_PAUSE)    {
-            playbackStateBuilder.setState(PlaybackStateCompat.STATE_PAUSED, mMediaPlayer.getCurrentPosition(), 0);
+            playbackStateBuilder.setState(PlaybackStateCompat.STATE_PAUSED, currPos, 0);
             mMediaSessionCompat.setPlaybackState(playbackStateBuilder.build());
         }
     }

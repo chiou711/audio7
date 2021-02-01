@@ -195,6 +195,7 @@ public class AudioUi_page {
             @Override
             public void onClick(View v)
             {
+                System.out.println("AudioUi_page / audio_next_btn / onClick");
                 do
                 {
                     Audio_manager.mAudioPos++;

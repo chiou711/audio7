@@ -618,7 +618,6 @@ public class Audio7Player
 	public TextView audio_curr_pos;
 	public SeekBar audio_seek_bar;
 	public TextView audio_length;
-	public TextView audio_number; //todo
 	public ImageView audio_previous_btn;
 	public ImageView audio_play_btn;
 	public ImageView audio_next_btn;
