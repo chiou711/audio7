@@ -353,7 +353,6 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
         if(Util.isEmptyString(audioUri))
             holder.audioBlock.setVisibility(View.GONE);
 
-
             // case : show audio thumb nail if audio Uri exists
             if (UtilAudio.hasAudioExtension(audioUri)) {
                 holder.thumbBlock.setVisibility(View.VISIBLE);
@@ -459,7 +458,7 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
                 TabsHost.showFooter(MainAct.mAct);
 
                 // update audio info
-                if(PageUi.isAudioPlayingPage()) {
+                if(Audio7Player.isOnAudioPlayingPage()) {
                     System.out.println("PageAdapter / _getView / btnMarking / is AudioPlayingPage");
                     Audio7Player.prepareAudioInfo();
                 }
@@ -691,7 +690,7 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
                 toPos--;
         }
 
-        if( PageUi.isAudioPlayingPage() &&
+        if( Audio7Player.isOnAudioPlayingPage() &&
                 (BackgroundAudioService.mMediaPlayer != null)				   )
         {
             if( (Page.mHighlightPosition == oriEndPos)  && (oriStartPos > oriEndPos))

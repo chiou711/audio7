@@ -229,10 +229,8 @@ public class Audio7Player
 				} else {
 					if (BackgroundAudioService.mIsPrepared) {
 
-						// set footer message: media name
+						// set media file length
 						if (!Util.isEmptyString(audioUrl)) {
-
-							// set seek bar progress
 							TextView audioPanel_file_length = (TextView) act.findViewById(R.id.audioPanel_file_length);
 							if (audioPanel_file_length != null)
 								audioPanel_file_length.setText(UtilAudio.getAudioLengthString(act, audioUrl));
@@ -321,44 +319,13 @@ public class Audio7Player
 		}
 	};
 
-	private void stopHandler()
-    {
-        if(mAudioHandler != null) {
-            mAudioHandler.removeCallbacks(audio_runnable);
-            mAudioHandler = null;
-        }
-    }
-
-    static private void stopAsyncTask()
-    {
-        // stop async task
-        // make sure progress dialog will disappear
-        if( (mAudioUrlVerifyTask!= null) &&
-            (!mAudioUrlVerifyTask.isCancelled()) )
-        {
-            mAudioUrlVerifyTask.cancel(true);
-
-            if( (mAudioUrlVerifyTask.mUrlVerifyDialog != null) &&
-                    mAudioUrlVerifyTask.mUrlVerifyDialog.isShowing()	)
-            {
-                mAudioUrlVerifyTask.mUrlVerifyDialog.dismiss();
-            }
-
-            if( (mAudioUrlVerifyTask.mAsyncTaskAudioPrepare != null) &&
-                    (mAudioUrlVerifyTask.mAsyncTaskAudioPrepare.mPrepareDialog != null) &&
-                    mAudioUrlVerifyTask.mAsyncTaskAudioPrepare.mPrepareDialog.isShowing()	)
-            {
-                mAudioUrlVerifyTask.mAsyncTaskAudioPrepare.mPrepareDialog.dismiss();
-            }
-        }
-    }
-
     // check if is on audio playing page
     public static boolean isOnAudioPlayingPage()
     {
         return ( (Audio_manager.getPlayerState() != Audio_manager.PLAYER_AT_STOP) &&
                      (MainAct.mPlaying_folderPos == FolderUi.getFocus_folderPos()) &&
 		             (TabsHost.getFocus_tabPos() == MainAct.mPlaying_pagePos)     &&
+			         (MainAct.mPlaying_pageTableId == TabsHost.getCurrentPageTableId()) &&
                      (TabsHost.getCurrentPage().recyclerView != null)                     );
     }
 

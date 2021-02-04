@@ -196,22 +196,23 @@ public class AudioUi_page {
             public void onClick(View v)
             {
                 System.out.println("AudioUi_page / audio_next_btn / onClick");
+                int playingPage_notesCnt = Audio_manager.getPlayingPage_notesCount();
                 do
                 {
                     Audio_manager.mAudioPos++;
-                    if( Audio_manager.mAudioPos >= Audio_manager.getPlayingPage_notesCount()) {
+                    if( Audio_manager.mAudioPos >= playingPage_notesCnt) {
                         if(Pref.getPref_cyclic_play_enable(mAct)) {
                             Audio_manager.mAudioPos = 0; //back to first index
                         }
                         else {
-                            Audio_manager.mAudioPos = Audio_manager.getPlayingPage_notesCount();
+                            Audio_manager.mAudioPos = playingPage_notesCnt;
                             break;
                         }
                     }
                 }
-                while (Audio_manager.getCheckedAudio(Audio_manager.mAudioPos) == 0);
+                while (Audio_manager.getCheckedAudio(Audio_manager.mAudioPos) == 0); //todo  Invalid index 3, size is 3
 
-                if(Audio_manager.mAudioPos >= Audio_manager.getPlayingPage_notesCount()) {
+                if(Audio_manager.mAudioPos >= playingPage_notesCnt) {
                     Audio_manager.stopAudioPlayer();
                     Audio_manager.removeRunnable();
                     Audio_manager.audio7Player.showAudioPanel(act,false);
@@ -244,7 +245,7 @@ public class AudioUi_page {
         }
 
         // gif case: add this will cause program hang up
-        if(Audio_manager.getPlayerState() != Audio_manager.PLAYER_AT_STOP)
+        if(Audio7Player.isOnAudioPlayingPage())
             Audio_manager.audio7Player.scrollPlayingItemToBeVisible(TabsHost.getCurrentPage().recyclerView);
 
         if(TabsHost.getCurrentPage().itemAdapter == null)

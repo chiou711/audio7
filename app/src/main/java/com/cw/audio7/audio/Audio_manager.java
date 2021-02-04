@@ -40,8 +40,6 @@ public class Audio_manager
     public static int PLAYER_AT_STOP = 0;
     public static int PLAYER_AT_PLAY = 1;
     public static int PLAYER_AT_PAUSE = 2;
-	public static boolean isRunnableOn;
-    public static boolean isRunnableOn_page;
     public static int mAudioPos; // index of current media to play
 
 	// control buttons
@@ -49,10 +47,6 @@ public class Audio_manager
 	public static boolean playNext;
 
 	public static boolean togglePlayerState;
-
-	// used for continuing audio playing
-	// when AudioUi_note is changed to AudioUi_page
-	public static int mPausedPosition;
 
 	// get play previous
 	public static boolean isPlayPrevious() {
@@ -200,10 +194,13 @@ public class Audio_manager
 	void updateAudioInfo()
 	{
 		DB_page db_page = new DB_page(MainAct.mAct, TabsHost.getCurrentPageTableId());
-		
+
+		int notesCount =  db_page.getNotesCount(true);
+		setPlayingPage_notesCount(notesCount);
+
 		db_page.open();
-	 	// update media info 
-	 	for(int i = 0; i< db_page.getNotesCount(false); i++)
+	 	// update media info
+	 	for(int i = 0; i< notesCount; i++)
 	 	{
 	 		String audioUri = db_page.getNoteAudioUri(i,false);
 
@@ -221,11 +218,13 @@ public class Audio_manager
 	 	db_page.close();
 	}
 
-	public static int getPlayingPage_notesCount()
-    {
-	    int playingPageTableId = TabsHost.getCurrentPageTableId();
-        DB_page db_page = new DB_page(MainAct.mAct, playingPageTableId);
-        return db_page.getNotesCount(true);
+	static int playingPage_notesCount;
+	public void setPlayingPage_notesCount(int count) {
+		playingPage_notesCount = count;
+	}
+
+	public static int getPlayingPage_notesCount() {
+	    return playingPage_notesCount;
     }
 	
 }

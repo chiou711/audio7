@@ -586,11 +586,4 @@ public class PageUi
 		dbFolder.close();
 	}
 
-    public static boolean isAudioPlayingPage()
-    {
-	    return ( (MainAct.mPlaying_pageTableId == TabsHost.getCurrentPageTableId())&&//mNow_pageTableId) &&
-			     (MainAct.mPlaying_pagePos == TabsHost.getFocus_tabPos()) &&
-	     	     (MainAct.mPlaying_folderPos == FolderUi.getFocus_folderPos())  );
-    }
-
 }

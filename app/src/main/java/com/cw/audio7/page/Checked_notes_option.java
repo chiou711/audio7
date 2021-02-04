@@ -272,7 +272,7 @@ public class Checked_notes_option {
             UtilAudio.stopAudioIfNeeded();
 
         // update audio play list
-        if(PageUi.isAudioPlayingPage())
+        if(Audio7Player.isOnAudioPlayingPage())
             Audio7Player.prepareAudioInfo();
 
         TabsHost.reloadCurrentPage();
@@ -306,7 +306,7 @@ public class Checked_notes_option {
             UtilAudio.stopAudioIfNeeded();
 
         // update audio play list
-        if(PageUi.isAudioPlayingPage())
+        if(Audio7Player.isOnAudioPlayingPage())
             Audio7Player.prepareAudioInfo();
 
         TabsHost.reloadCurrentPage();

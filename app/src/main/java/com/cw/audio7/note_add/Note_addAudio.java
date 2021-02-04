@@ -279,7 +279,7 @@ public class Note_addAudio extends AppCompatActivity {
 //	        	chooseAudioMedia();
 
 	        	// to avoid exception due to playing tab is different with focus tab
-	        	if(PageUi.isAudioPlayingPage())
+				if(Audio7Player.isOnAudioPlayingPage())
 		        	Audio7Player.prepareAudioInfo();
 
 	        	finish();
