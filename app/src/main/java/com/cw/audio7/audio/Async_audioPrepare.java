@@ -33,10 +33,12 @@ public class Async_audioPrepare extends AsyncTask<String,Integer,String>
 {
 	 private Activity act;
 	 public ProgressDialog mPrepareDialog;
+	 Runnable audio_runnable;
 
-	 Async_audioPrepare(Activity act)
+	 Async_audioPrepare(Activity act,Runnable runnable)
 	 {
 		 this.act = act;
+		 audio_runnable = runnable;
 	 }	 
 	 
 	 @Override
@@ -133,6 +135,9 @@ public class Async_audioPrepare extends AsyncTask<String,Integer,String>
 		Util.unlockOrientation(act);
 		// enable rotation
 //	 	act.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
+
+		 // start audio runnable
+		 Audio7Player.startAudioRunnable(audio_runnable);
 	 }
 	 
 }

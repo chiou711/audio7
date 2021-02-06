@@ -230,7 +230,7 @@ public class Pref
     {
         SharedPreferences pref = act.getSharedPreferences("show_note_attribute", 0);
         String key = "KEY_ENABLE_CYCLIC_PLAY";
-        return pref.getBoolean(key, false);
+        return pref.getBoolean(key, true);
     }
 
     // set background play enable
@@ -246,7 +246,7 @@ public class Pref
     {
         SharedPreferences pref = act.getSharedPreferences("show_note_attribute", 0);
         String key = "KEY_ENABLE_BACKGROUND_PLAY";
-        return pref.getBoolean(key, false);
+        return pref.getBoolean(key, true);
     }
 
 
