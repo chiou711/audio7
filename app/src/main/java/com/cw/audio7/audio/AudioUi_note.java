@@ -57,7 +57,6 @@ public class AudioUi_note
     public ImageView audio_play_btn;
     public ImageView audio_next_btn;
 
-    private static int mProgress;
     private static int mediaFileLength; // this value contains the song duration in milliseconds. Look at getDuration() method in MediaPlayer class
     public static boolean isPausedAtSeekerAnchor;
     public static int mAnchorPosition;
@@ -127,7 +126,7 @@ public class AudioUi_note
             @Override
             public void onStopTrackingTouch(SeekBar seekBar)
             {
-                mediaFileLength = Audio7Player.getMediaFileLength();
+                mediaFileLength = Audio_manager.audio7Player.getMediaFileLength();
                 System.out.println("AudioUi_note / audio_seek_bar / _setOnSeekBarChangeListener / mediaFileLength = "+
                         mediaFileLength);
                 if( BackgroundAudioService.mMediaPlayer != null  )

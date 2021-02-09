@@ -182,7 +182,7 @@ public class Pref
     {
         SharedPreferences pref = act.getSharedPreferences("show_note_attribute", 0);
         String key = "KEY_ENABLE_LARGE_VIEW";
-        return pref.getBoolean(key, true);
+        return pref.getBoolean(key, false);
     }
 
     // set card view enable select

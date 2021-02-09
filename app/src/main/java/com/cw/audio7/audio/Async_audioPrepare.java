@@ -31,15 +31,14 @@ import android.widget.Toast;
  */
 public class Async_audioPrepare extends AsyncTask<String,Integer,String>
 {
-	 private Activity act;
+	 final private Activity act;
 	 public ProgressDialog mPrepareDialog;
-	 Runnable audio_runnable;
+	 Audio7Player audio7Player;
 
-	 Async_audioPrepare(Activity act,Runnable runnable)
-	 {
+	 Async_audioPrepare(Activity act, Audio7Player _audio7Player) {
 		 this.act = act;
-		 audio_runnable = runnable;
-	 }	 
+		 audio7Player = _audio7Player;
+	 }
 	 
 	 @Override
 	 protected void onPreExecute() 
@@ -131,13 +130,11 @@ public class Async_audioPrepare extends AsyncTask<String,Integer,String>
 			toast.show();
 		}
 
+		 // start audio runnable
+		 Audio7Player.startAudioRunnable(audio7Player.audio_runnable);
+
 		// unlock orientation
 		Util.unlockOrientation(act);
-		// enable rotation
-//	 	act.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
-
-		 // start audio runnable
-		 Audio7Player.startAudioRunnable(audio_runnable);
 	 }
 	 
 }

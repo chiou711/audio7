@@ -20,6 +20,8 @@ import com.cw.audio7.R;
 import com.cw.audio7.util.Util;
 
 import android.app.ProgressDialog;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.AsyncTask;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -33,27 +35,21 @@ class Async_audioUrlVerify extends AsyncTask<String,Integer,String>
 {
 	ProgressDialog mUrlVerifyDialog;
 	private AppCompatActivity act;
-	Async_audioPrepare mAsyncTaskAudioPrepare;
     static boolean mIsOkUrl;
-	private String audioStr;
+	final private String audioStr;
+	Audio7Player audio7Player;
 
-	Async_audioUrlVerify(AppCompatActivity act, String audioStr)
-	{
+	Async_audioUrlVerify(AppCompatActivity act, Audio7Player audio7Player,String audioStr) 	{
 	    this.act = act;
 		this.audioStr = audioStr;
+		this.audio7Player = audio7Player;
 	}
 	 
 	@Override
-	protected void onPreExecute()
-	{
+	protected void onPreExecute() {
 	    super.onPreExecute();
 	 	 // lock orientation
 	 	 Util.lockOrientation(act);
-
-	 	 // disable rotation
-//	 	mActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
-	 	
-//		System.out.println("AudioUrlVerifyTask / onPreExecute" );
 
         mUrlVerifyDialog = new ProgressDialog(act);
 
@@ -64,8 +60,7 @@ class Async_audioUrlVerify extends AsyncTask<String,Integer,String>
 		// only for Page play mode
 		// show dialog will affect full screen at Note play mode
 		if( Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE ) {
-		    if( (mUrlVerifyDialog != null) && (!mUrlVerifyDialog.isShowing()) )
-		    {
+		    if( (mUrlVerifyDialog != null) && (!mUrlVerifyDialog.isShowing()) )  {
 			    if( !act.isFinishing() && !act.isDestroyed() )
 			    	mUrlVerifyDialog.show();
 		    }
@@ -74,10 +69,9 @@ class Async_audioUrlVerify extends AsyncTask<String,Integer,String>
 	}
 	 
 	@Override
-	protected String doInBackground(String... params)
-	{
+	protected String doInBackground(String... params) {
 	    int mProgress;
-//	    System.out.println("AudioUrlVerifyTask / doInBackground / params[0] = " + params[0] );
+//	    System.out.println("Async_audioUrlVerify / doInBackground / params[0] = " + params[0] );
 	    mProgress =0;
  	    // check if audio file exists or not
  		mIsOkUrl = false;
@@ -90,20 +84,16 @@ class Async_audioUrlVerify extends AsyncTask<String,Integer,String>
  		if(scheme == null)
  		    return  "ng";
  		 
- 		if(scheme.equalsIgnoreCase("http")|| scheme.equalsIgnoreCase("https") )
- 		{
-		    if(Util.isNetworkConnected(act))
-			{
+ 		if( scheme.equalsIgnoreCase("http")||
+			scheme.equalsIgnoreCase("https") ) {
+		    if(Util.isNetworkConnected(act)) {
 		 	    isUriExisted = Util.isUriExisted(audioStr, act);
-		 		System.out.println("AudioUrlVerifyTask / isUriExisted  = " + isUriExisted);
-		 		if(isUriExisted)
-		 		{
-		 		    try
-		 			{
+		 		System.out.println("Async_audioUrlVerify / isUriExisted  = " + isUriExisted);
+		 		if(isUriExisted) {
+		 		    try {
 		 			    boolean isEnd = false;
 		 				int i = 0;
-		 				while(!isEnd)
-		 				{
+		 				while(!isEnd) {
 		 				    // check if network connection is OK
 		 					publishProgress(Integer.valueOf(mProgress));
 		 					mProgress =+ 20;
@@ -124,25 +114,22 @@ class Async_audioUrlVerify extends AsyncTask<String,Integer,String>
 		 					                   " / count = " + i);
 		 					if(mIsOkUrl)
 		 					    isEnd = true;
-		 					else
-		 					{
+		 					else {
 		 					    i++;
 		 						if(i==5)
 		 						    isEnd = true; // no more try
 		 					}
 		 				}
 		 			}
-		 			catch (Exception e1)
-		 			{
+		 			catch (Exception e1) {
 		 			    e1.printStackTrace();
 		 			}
 		 		}
 			}
  		}
  		// if scheme is content or file
- 		else if(scheme.equalsIgnoreCase("content") ||
- 		    scheme.equalsIgnoreCase("file")    )
- 		{
+ 		else if( scheme.equalsIgnoreCase("content") ||
+ 		            scheme.equalsIgnoreCase("file")          )  {
  			isUriExisted = Util.isUriExisted(audioStr, act);
 
 		    String[] strName = null;
@@ -162,9 +149,8 @@ class Async_audioUrlVerify extends AsyncTask<String,Integer,String>
 	}
 	
 	@Override
-	protected void onProgressUpdate(Integer... progress)
-	{
-	    System.out.println("AudioUrlVerifyTask / OnProgressUpdate / progress[0] " + progress[0] );
+	protected void onProgressUpdate(Integer... progress) {
+	    System.out.println("Async_audioUrlVerify / OnProgressUpdate / progress[0] " + progress[0] );
 	    super.onProgressUpdate(progress);
 	    if(mUrlVerifyDialog != null)
 	        mUrlVerifyDialog.setProgress(progress[0]);
@@ -172,14 +158,46 @@ class Async_audioUrlVerify extends AsyncTask<String,Integer,String>
 	 
 	// This is executed in the context of the main GUI thread
     @Override
-	protected void onPostExecute(String result)
-	{
-//	    System.out.println("AudioUrlVerifyTask / onPostExecute / result = " + result);
+	protected void onPostExecute(String result) {
+//	    System.out.println("Async_audioUrlVerify / onPostExecute / result = " + result);
 		
 	 	// dialog off
 		if((mUrlVerifyDialog != null) && mUrlVerifyDialog.isShowing() )
 			mUrlVerifyDialog.dismiss();
 
  		mUrlVerifyDialog = null;
+
+ 		// wait for Verify URL OK
+		while (!Async_audioUrlVerify.mIsOkUrl) {
+			//wait for Url verification
+			try {
+				Thread.sleep(Util.oneSecond / 20); //todo: proper time length?
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+
+		// prepare audio
+		if (Async_audioUrlVerify.mIsOkUrl) {
+
+			if (Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE)
+				audio7Player.showAudioPanel(act, true);
+
+			// set audio length
+			String audio_uriStr = Audio_manager.getAudioStringAt(Audio_manager.mAudioPos);
+			try {
+				if (Util.isUriExisted(audio_uriStr, act)) {
+					MediaPlayer mp = MediaPlayer.create(act, Uri.parse(audio_uriStr));
+					audio7Player.setMediaFileLength(mp.getDuration());
+					mp.release();
+				}
+			} catch (Exception e) {
+				System.out.println("Async_audioUrlVerify / _onPostExecute / exception");
+			}
+
+			// audio Prepare
+			Async_audioPrepare mAsyncTaskAudioPrepare = new Async_audioPrepare(act, audio7Player);
+			mAsyncTaskAudioPrepare.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "Preparing to play ...");
+		}
 	 }
 }

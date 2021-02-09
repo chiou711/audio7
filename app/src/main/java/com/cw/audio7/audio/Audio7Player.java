@@ -50,7 +50,6 @@ public class Audio7Player
     private static Audio_manager mAudioManager; // slide show being played
 	private static int mAudio_tryTimes; // use to avoid useless looping in Continue mode
     static private AppCompatActivity act;
-    static private Async_audioUrlVerify mAudioUrlVerifyTask;
 	public ViewGroup audio_panel;
     public static Handler mAudioHandler;
 
@@ -467,49 +466,12 @@ public class Audio7Player
         // verify audio URL
         Async_audioUrlVerify.mIsOkUrl = false;
 
-	    if( /*(Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE) &&*/
-			(Audio_manager.getCheckedAudio(Audio_manager.mAudioPos) == 0)          )
-	    {
+	    if(Audio_manager.getCheckedAudio(Audio_manager.mAudioPos) == 0) {
 		    mAudioHandler.postDelayed(audio_runnable,Util.oneSecond/4);
 	    }
 	    else {
-		    mAudioUrlVerifyTask = new Async_audioUrlVerify(act, mAudioManager.getAudioStringAt(Audio_manager.mAudioPos));
-		    mAudioUrlVerifyTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,"Searching media ...");
-
-		    while (!Async_audioUrlVerify.mIsOkUrl) {
-			    //wait for Url verification
-			    try {
-				    Thread.sleep(Util.oneSecond / 20);
-			    } catch (InterruptedException e) {
-				    e.printStackTrace();
-			    }
-		    }
-
-		    // prepare audio
-		    if (Async_audioUrlVerify.mIsOkUrl) {
-
-			    if (Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE)
-			        showAudioPanel(act, true);
-
-			    String audio_uriStr = mAudioManager.getAudioStringAt(Audio_manager.mAudioPos);
-			    // audio length
-			    try
-			    {
-				    if(Util.isUriExisted(audio_uriStr, act)) {
-					    MediaPlayer mp = MediaPlayer.create(act, Uri.parse(audio_uriStr));
-					    setMediaFileLength(mp.getDuration());
-					    mp.release();
-				    }
-			    }
-			    catch(Exception e) {
-				    System.out.println("Audio7Player / _startNewAudio / exception");
-			    }
-
-			    // audio Prepare
-			    Async_audioPrepare mAsyncTaskAudioPrepare = new Async_audioPrepare(act,audio_runnable);
-			    mAsyncTaskAudioPrepare.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "Preparing to play ...");
-
-		    }//if(Async_audioUrlVerify.mIsOkUrl)
+			Async_audioUrlVerify mAudioUrlVerifyTask = new Async_audioUrlVerify(act, this, mAudioManager.getAudioStringAt(Audio_manager.mAudioPos));
+			mAudioUrlVerifyTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "Searching media ...");
 	    }
     }
 
@@ -591,15 +553,15 @@ public class Audio7Player
 	public ImageView audio_play_btn;
 	public ImageView audio_next_btn;
 
-	private static int mProgress;
-	private static int mediaFileLength; // this value contains the song duration in milliseconds. Look at getDuration() method in MediaPlayer class
+	private int mProgress;
+	private int mediaFileLength; // this value contains the song duration in milliseconds. Look at getDuration() method in MediaPlayer class
 
-	public static int getMediaFileLength() {
+	public int getMediaFileLength() {
 		return mediaFileLength;
 	}
 
-	public static void setMediaFileLength(int mediaFileLength) {
-		Audio7Player.mediaFileLength = mediaFileLength;
+	public void setMediaFileLength(int mediaFileLength) {
+		this.mediaFileLength = mediaFileLength;
 	}
 
 	// update audio progress
