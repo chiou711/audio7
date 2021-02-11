@@ -1468,7 +1468,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
 
         showAudioView(uriString);
 
-        Audio7Player.prepareAudioInfo();
+        Audio_manager.setupAudioList();
         Audio_manager.audio7Player.runAudioState();
 
         if(Audio_manager.audio7Player.isOnAudioPlayingPage()) {

@@ -22,7 +22,6 @@ import com.cw.audio7.audio.Audio7Player;
 import com.cw.audio7.audio.Audio_manager;
 import com.cw.audio7.R;
 import com.cw.audio7.db.DB_page;
-import com.cw.audio7.page.PageUi;
 import com.cw.audio7.page.Page;
 import com.cw.audio7.tabs.TabsHost;
 import com.cw.audio7.util.Util;
@@ -280,7 +279,7 @@ public class Note_addAudio extends AppCompatActivity {
 
 	        	// to avoid exception due to playing tab is different with focus tab
 				if(Audio7Player.isOnAudioPlayingPage())
-		        	Audio7Player.prepareAudioInfo();
+					Audio_manager.setupAudioList();
 
 	        	finish();
 			}

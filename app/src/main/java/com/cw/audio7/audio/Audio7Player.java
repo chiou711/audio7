@@ -47,7 +47,6 @@ public class Audio7Player
 {
 	private static final String TAG = "AUDIO_PLAYER"; // error logging tag
 	private static final int DURATION_1S = 1000; // 1 seconds per slide
-    private static Audio_manager mAudioManager; // slide show being played
 	private static int mAudio_tryTimes; // use to avoid useless looping in Continue mode
     static private AppCompatActivity act;
 	public ViewGroup audio_panel;
@@ -73,15 +72,6 @@ public class Audio7Player
 		return audio_panel;
 	}
 
-    /**
-     * prepare audio info
-     */
-    public static void prepareAudioInfo()
-    {
-	    mAudioManager = new Audio_manager();
-        mAudioManager.updateAudioInfo();
-    }
-
 	/**
      *  Run audio state
      */
@@ -98,9 +88,7 @@ public class Audio7Player
 		if( BackgroundAudioService.mMediaPlayer == null )	//for first
 		{
 		 	// show toast if Audio file is not found or No selection of audio file
-			if( (Audio_manager.getAudioFilesCount() == 0) /*&&
-				(Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE)*/        )
-			{
+			if( Audio_manager.getAudioFilesCount() == 0) {
                 Audio_manager.setPlayerState(Audio_manager.PLAYER_AT_STOP);
 				Toast.makeText(act,R.string.audio_file_not_found,Toast.LENGTH_SHORT).show();
 			}
@@ -117,11 +105,11 @@ public class Audio7Player
                     Audio_manager.mAudioPos++;
                     audioUrl = Audio_manager.getAudioStringAt(Audio_manager.mAudioPos);
 
-                    if(Audio_manager.mAudioPos >= TabsHost.getCurrentPage().getNotesCountInPage(MainAct.mAct))
+                    if(Audio_manager.mAudioPos >= TabsHost.getCurrentPage().getNotesCountInPage(act))
                         break;
 				}
 
-				if( (UtilAudio.hasAudioExtension(audioUrl) && Util.isUriExisted(audioUrl,MainAct.mAct)) ||
+				if( (UtilAudio.hasAudioExtension(audioUrl) && Util.isUriExisted(audioUrl,act)) ||
 						audioUrl.contains("google")) {
                     startNewAudio();
                 }
@@ -470,7 +458,7 @@ public class Audio7Player
 		    mAudioHandler.postDelayed(audio_runnable,Util.oneSecond/4);
 	    }
 	    else {
-			Async_audioUrlVerify mAudioUrlVerifyTask = new Async_audioUrlVerify(act, this, mAudioManager.getAudioStringAt(Audio_manager.mAudioPos));
+			Async_audioUrlVerify mAudioUrlVerifyTask = new Async_audioUrlVerify(act, this, Audio_manager.getAudioStringAt(Audio_manager.mAudioPos));
 			mAudioUrlVerifyTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "Searching media ...");
 	    }
     }

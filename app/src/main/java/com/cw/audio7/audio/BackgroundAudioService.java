@@ -44,13 +44,11 @@ import androidx.media.session.MediaButtonReceiver;
 // AudioManager.OnAudioFocusChangeListener: added in API level 8
 public class BackgroundAudioService extends MediaBrowserServiceCompat implements AudioManager.OnAudioFocusChangeListener  {
 
-    public static final String COMMAND_EXAMPLE = "command_example";
-
     public static MediaPlayer mMediaPlayer;
     public static MediaSessionCompat mMediaSessionCompat;
     public static boolean mIsPrepared;
     public static boolean mIsCompleted;
-    final public static int id = 77;
+    final public static int id = 78;
 
     // for differentiate Pause source: manual or focus change
     private boolean isPausedByButton;
@@ -252,9 +250,6 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
         @Override
         public void onCommand(String command, Bundle extras, ResultReceiver cb) {
             super.onCommand(command, extras, cb);
-            if( COMMAND_EXAMPLE.equalsIgnoreCase(command) ) {
-                //Custom command here
-            }
         }
 
         @Override

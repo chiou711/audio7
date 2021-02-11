@@ -460,7 +460,7 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
                 // update audio info
                 if(Audio7Player.isOnAudioPlayingPage()) {
                     System.out.println("PageAdapter / _getView / btnMarking / is AudioPlayingPage");
-                    Audio7Player.prepareAudioInfo();
+                    Audio_manager.setupAudioList();
                 }
             }
         });
@@ -494,7 +494,7 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
                 Audio_manager.stopAudioPlayer();
                 Audio_manager.audio7Player = null;
                 openAudioPanel_page(position);
-                Audio7Player.prepareAudioInfo();
+                Audio_manager.setupAudioList();
                 Audio_manager.audio7Player.runAudioState();
 
                 TabsHost.showPlayingTab();
@@ -721,7 +721,7 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
             }
 
             Audio_manager.mAudioPos = Page.mHighlightPosition;
-            Audio7Player.prepareAudioInfo();
+            Audio_manager.setupAudioList();
         }
 
         // update footer

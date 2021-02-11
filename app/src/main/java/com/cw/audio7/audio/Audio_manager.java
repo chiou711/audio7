@@ -78,18 +78,6 @@ public class Audio_manager
 		Audio_manager.togglePlayerState = togglePlayerState;
 	}
 
-	// constructor
-    Audio_manager()
-    {
-        audioList = new ArrayList<>();
-	    audioList_checked = new ArrayList<>();
-
-	    // init
-	    setPlayPrevious(false);
-	    setTogglePlayerState(false);
-	    setPlayNext(false);
-    }
-
     /**
      * Setters and Getters
      *
@@ -190,9 +178,17 @@ public class Audio_manager
          return null;
    }
    
-	// Update audio info
-	void updateAudioInfo()
+	// Set up audio list
+	public static void setupAudioList()
 	{
+		audioList = new ArrayList<>();
+		audioList_checked = new ArrayList<>();
+
+		// init
+		setPlayPrevious(false);
+		setTogglePlayerState(false);
+		setPlayNext(false);
+
 		DB_page db_page = new DB_page(MainAct.mAct, TabsHost.getCurrentPageTableId());
 
 		int notesCount =  db_page.getNotesCount(true);
@@ -219,7 +215,7 @@ public class Audio_manager
 	}
 
 	static int playingPage_notesCount;
-	public void setPlayingPage_notesCount(int count) {
+	public static void setPlayingPage_notesCount(int count) {
 		playingPage_notesCount = count;
 	}
 

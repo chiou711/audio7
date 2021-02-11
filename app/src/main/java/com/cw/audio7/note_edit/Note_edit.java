@@ -21,7 +21,6 @@ import com.cw.audio7.audio.Audio_manager;
 import com.cw.audio7.page.Page;
 import com.cw.audio7.R;
 import com.cw.audio7.db.DB_page;
-import com.cw.audio7.page.PageUi;
 import com.cw.audio7.tabs.TabsHost;
 import com.cw.audio7.util.audio.UtilAudio;
 import com.cw.audio7.util.ColorSet;
@@ -149,7 +148,7 @@ public class Note_edit extends Activity
 
 
 								if(Audio7Player.isOnAudioPlayingPage())
-									Audio7Player.prepareAudioInfo();
+									Audio_manager.setupAudioList();
 
 								// Stop Play/Pause if current edit item is played and is not at Stop state
 								if(Page.mHighlightPosition == position)
