@@ -80,6 +80,7 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
     List<Db_cache> listCache;
 
     PageAdapter(int pageTableId, OnStartDragListener dragStartListener) {
+//        System.out.println("PageAdapter / constructor / pageTableId = " + pageTableId );
 	    mAct = MainAct.mAct;
 	    mDragStartListener = dragStartListener;
 
@@ -101,6 +102,7 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
 
     // update list cache from DB
     public void updateDbCache() {
+//        System.out.println("PageAdapter / _updateDbCache " );
         listCache = new ArrayList();
 
         int notesCount = getItemCount();
@@ -198,7 +200,7 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
 
-//        System.out.println("PageAdapter_recycler / _onBindViewHolder / position = " + position);
+//        System.out.println("PageAdapter / _onBindViewHolder / position = " + position);
 
         ((CardView)holder.itemView).setCardBackgroundColor(mAct.getResources().getColor(R.color.colorBlack));
 
@@ -207,7 +209,11 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
         int marking = 0;
 
         // add check to avoid exception during Copy/Move checked
-        if( (listCache != null) && (listCache.size() > 0) ){
+//        System.out.println("PageAdapter / _onBindViewHolder / listCache.size() = " + listCache.size());
+        if( (listCache != null)
+            && (listCache.size() > 0)
+            && (position!=listCache.size()) )
+        {
             audioUri = listCache.get(position).audioUri;
             marking = listCache.get(position).marking;
         } else  {
@@ -399,7 +405,7 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
     void setBindViewHolder_listeners(ViewHolder viewHolder, final int position)
     {
 
-//        System.out.println("PageAdapter_recycler / setBindViewHolder_listeners / position = " + position);
+//        System.out.println("PageAdapter / setBindViewHolder_listeners / position = " + position);
 
         /**
          *  control block
@@ -529,7 +535,7 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
                 {
                     case MotionEvent.ACTION_DOWN:
                         mDragStartListener.onStartDrag(viewHolder);
-                        System.out.println("PageAdapter_recycler / onTouch / ACTION_DOWN");
+                        System.out.println("PageAdapter / onTouch / ACTION_DOWN");
                         return true;
                     case MotionEvent.ACTION_UP:
                         v.performClick();
@@ -583,7 +589,7 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
 
     // open Page audio panel
     public static void openAudioPanel_page(int position) {
-        System.out.println("PageAdapter_recycler / _openAudioPanel_page");
+        System.out.println("PageAdapter / _openAudioPanel_page");
         Audio_manager.setAudioPlayMode(Audio_manager.PAGE_PLAY_MODE);
 
         DB_page db_page = new DB_page(mAct, TabsHost.getCurrentPageTableId());
@@ -656,7 +662,7 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
         }
         db_page.close();
 
-        System.out.println("PageAdapter_recycler / _toggleNoteMarking / position = " + position + ", marking = " + db_page.getNoteMarking(position,true));
+        System.out.println("PageAdapter / _toggleNoteMarking / position = " + position + ", marking = " + db_page.getNoteMarking(position,true));
         return  marking;
     }
 
@@ -667,7 +673,7 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
 
     @Override
     public boolean onItemMove(int fromPos, int toPos) {
-//        System.out.println("PageAdapter_recycler / _onItemMove / fromPos = " +
+//        System.out.println("PageAdapter / _onItemMove / fromPos = " +
 //                        fromPos + ", toPos = " + toPos);
 
         notifyItemMoved(fromPos, toPos);
@@ -731,7 +737,7 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
 
     @Override
     public void onItemMoved(RecyclerView.ViewHolder sourceViewHolder, int fromPos, RecyclerView.ViewHolder targetViewHolder, int toPos) {
-        System.out.println("PageAdapter_recycler / _onItemMoved");
+        System.out.println("PageAdapter / _onItemMoved");
         ((TextView)sourceViewHolder.itemView.findViewById(R.id.row_id)).setText(String.valueOf(toPos+1));
         ((TextView)targetViewHolder.itemView.findViewById(R.id.row_id)).setText(String.valueOf(fromPos+1));
 

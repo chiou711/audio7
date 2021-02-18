@@ -376,14 +376,15 @@ public class Checked_notes_option {
                     }
                     mDb_page.close();
 
-                    TabsHost.reloadCurrentPage();
-                    TabsHost.showFooter(MainAct.mAct);
+                    // reload folder
+                    MainAct.openFolder();
                 }
                 else if(action == COPY_TO)
                 {
                     DB_page.setFocusPage_tableId(srcPageTableId);
-                    TabsHost.reloadCurrentPage();
-                    TabsHost.showFooter(MainAct.mAct);
+
+                    // reload folder
+                    MainAct.openFolder();
                 }
                 dialog.dismiss();
             }
