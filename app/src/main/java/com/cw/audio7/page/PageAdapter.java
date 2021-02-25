@@ -103,7 +103,7 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
     // update list cache from DB
     public void updateDbCache() {
 //        System.out.println("PageAdapter / _updateDbCache " );
-        listCache = new ArrayList();
+        listCache = new ArrayList<>();
 
         int notesCount = getItemCount();
         mDb_page = new DB_page(mAct, page_table_id);

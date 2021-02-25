@@ -78,6 +78,7 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
 
     // do audio play
     void playAudio(){
+        System.out.println("BackgroundAudioService / _playAudio");
         mMediaSessionCompat.setActive(true);
         setMediaPlaybackState(PlaybackStateCompat.STATE_PLAYING);
 
@@ -165,6 +166,10 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
             if(enDbgMsg)
                 System.out.println("BackgroundAudioService / mMediaSessionCallback / _onPlayFromUri / uri = " + uri);
 
+            if( !successfullyRetrievedAudioFocus() ) {
+                return;
+            }
+
             mIsPrepared = false;
 
             initMediaPlayer();
@@ -202,8 +207,19 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
                     if(enDbgMsg)
                         System.out.println("BackgroundAudioService / _setAudioPlayerListeners / onPrepared");
 
+                    // workaround for Can not play issue:
+                    // add delay before media player start
+                    try {
+                        Thread.sleep(Audio7Player.delayBeforeMediaStart );
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
                     mMediaPlayer.seekTo(0);
                     mIsPrepared = true;
+
+                    // prepared, start Play audio
+                    playAudio();
                 }
             });
 
@@ -221,6 +237,13 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
                         if( MainAct.mMediaControllerCompat.getPlaybackState().getState() == PlaybackStateCompat.STATE_PLAYING ) {
                             MainAct.mMediaControllerCompat.getTransportControls().stop();// .pause();
                         }
+                    }
+
+                    // delay interval between each media change
+                    try {
+                        Thread.sleep(Util.oneSecond * 2);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
 
                     mMediaPlayer = null;
@@ -308,6 +331,7 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
     NotificationCompat.Builder builder;
     NotificationManagerCompat manager;
     String CHANNEL_ID = "77";
+
     private void initMediaPlayer() {
         if(enDbgMsg)
             System.out.println("BackgroundAudioService / _initMediaPlayer");
@@ -449,7 +473,7 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
         Bitmap bitmap = null;
         try
         {
-            mmr.setDataSource(MainAct.mAct,Uri.parse(audioStr));
+            mmr.setDataSource(this,Uri.parse(audioStr));
 
             byte[] artBytes =  mmr.getEmbeddedPicture();
             if(artBytes != null)

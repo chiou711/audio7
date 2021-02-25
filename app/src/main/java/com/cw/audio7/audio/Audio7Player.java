@@ -45,12 +45,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class Audio7Player
 {
-	private static final String TAG = "AUDIO_PLAYER"; // error logging tag
 	private static final int DURATION_1S = 1000; // 1 seconds per slide
-	private static int mAudio_tryTimes; // use to avoid useless looping in Continue mode
-    static private AppCompatActivity act;
+	private int mAudio_tryTimes; // use to avoid useless looping in Continue mode
+    private AppCompatActivity act;
 	public ViewGroup audio_panel;
-    public static Handler mAudioHandler;
+    public Handler mAudioHandler;
+    static int delayBeforeMediaStart = DURATION_1S;
 
 	public Audio7Player(AppCompatActivity _act, ViewGroup audio_panel, String audio_uri_str){
 		System.out.println("Audio7Player / constructor ");
@@ -214,10 +214,11 @@ public class Audio7Player
 
 				if (!Async_audioUrlVerify.mIsOkUrl) {
 					mAudio_tryTimes++;
-					play_nextAudio();
+					tryPlay_nextAudio();
 					return;
 				} else {
 					if (BackgroundAudioService.mIsPrepared) {
+//						System.out.println("Audio7Player / _audio_runnable /  BackgroundAudioService.mIsPrepared");
 
 						// set media file length
 						if (!Util.isEmptyString(audioUrl)) {
@@ -294,7 +295,7 @@ public class Audio7Player
 				}
 
 				if (Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE) {
-					play_nextAudio();
+					tryPlay_nextAudio();
 
 					if(isOnAudioPlayingPage()) {
 						scrollPlayingItemToBeVisible(TabsHost.getCurrentPage().recyclerView);
@@ -327,7 +328,7 @@ public class Audio7Player
 	* In order to view audio highlight item, playing(highlighted) audio item can be auto scrolled to top,
 	* unless it is at the end page of list view, there is no need to scroll.
 	*/
-	static public void scrollPlayingItemToBeVisible(RecyclerView recyclerView)
+	public void scrollPlayingItemToBeVisible(RecyclerView recyclerView)
 	{
 		System.out.println("Audio7Player / _scrollPlayingItemToBeVisible");
         if ( (recyclerView == null) ||
@@ -458,45 +459,48 @@ public class Audio7Player
 		    mAudioHandler.postDelayed(audio_runnable,Util.oneSecond/4);
 	    }
 	    else {
-			Async_audioUrlVerify mAudioUrlVerifyTask = new Async_audioUrlVerify(act, this, Audio_manager.getAudioStringAt(Audio_manager.mAudioPos));
-			mAudioUrlVerifyTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "Searching media ...");
+			Async_audioUrlVerify asyncAudioUrlVerify = new Async_audioUrlVerify(act, this, Audio_manager.getAudioStringAt(Audio_manager.mAudioPos));
+			asyncAudioUrlVerify.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "Searching media ...");
 	    }
     }
 
+	// prepare Audio
+	public void prepareAudio() {
+		if (Build.VERSION.SDK_INT >= 21) {
+			MainAct.mMediaControllerCompat
+					.getTransportControls()
+					.playFromUri(Uri.parse(audioUrl), null);
+		} else {
+			BackgroundAudioService.mMediaPlayer = new MediaPlayer();
+			BackgroundAudioService.mMediaPlayer.reset();
+			try {
+				BackgroundAudioService.mMediaPlayer.setDataSource(act, Uri.parse(audioUrl));
+
+				// prepare the MediaPlayer to play, this will delay system response
+				BackgroundAudioService.mMediaPlayer.prepare();
+			} catch (Exception e) {
+				Toast.makeText(act, R.string.audio_message_could_not_open_file, Toast.LENGTH_SHORT).show();
+				Audio_manager.stopAudioPlayer();
+			}
+		}
+
+		// Async for waiting Audio Prepare flag
+		Async_audioPrepare asyncAudioPrepare = new Async_audioPrepare(act, this);
+		asyncAudioPrepare.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "Preparing to play ...");
+	}
+
     // start audio runnable
-    public static void startAudioRunnable(Runnable audio_runnable) {
-	    if (Build.VERSION.SDK_INT >= 21) {
-		    MainAct.mMediaControllerCompat
-				    .getTransportControls()
-				    .playFromUri(Uri.parse(Audio7Player.audioUrl), null);
-
-		    MainAct.mMediaControllerCompat.getTransportControls().play();
-	    } else {
-		    BackgroundAudioService.mMediaPlayer = new MediaPlayer();
-		    BackgroundAudioService.mMediaPlayer.reset();
-		    try {
-			    BackgroundAudioService.mMediaPlayer.setDataSource(act, Uri.parse(Audio7Player.audioUrl));
-
-			    // prepare the MediaPlayer to play, this will delay system response
-			    BackgroundAudioService.mMediaPlayer.prepare();
-		    } catch (Exception e) {
-			    Toast.makeText(act, R.string.audio_message_could_not_open_file, Toast.LENGTH_SHORT).show();
-			    Audio_manager.stopAudioPlayer();
-		    }
-	    }
-
-	    // launch runnable
+    public void startAudioRunnable() {
 	    if ( Audio_manager.getPlayerState() != Audio_manager.PLAYER_AT_STOP ) {
-		    Audio7Player.mAudioHandler.postDelayed(audio_runnable, Util.oneSecond);
+		    mAudioHandler.postDelayed(audio_runnable, delayBeforeMediaStart); // delay before media start
 		    System.out.println("Audio7Player / _startAudioRunnable / 1st post page_runnable");
 	    }
-
     }
 
     /**
      * Play next audio at AudioPlayer
      */
-    private void play_nextAudio()
+    private void tryPlay_nextAudio()
     {
 //		Toast.makeText(act,"Can not open file, try next one.",Toast.LENGTH_SHORT).show();
         System.out.println("Audio7Player / _playNextAudio");
@@ -511,15 +515,12 @@ public class Audio7Player
 
         // check try times,had tried or not tried yet, anyway the audio file is found
 	    System.out.println("Audio7Player / check mTryTimes = " + mAudio_tryTimes);
-	    if(mAudio_tryTimes < Audio_manager.getAudioFilesCount() )
-	    {
+	    if(mAudio_tryTimes < Audio_manager.getAudioFilesCount() ) {
 		    audioUrl = Audio_manager.getAudioStringAt(Audio_manager.mAudioPos);
 
 		    if(UtilAudio.hasAudioExtension(audioUrl) && Util.isUriExisted(audioUrl,MainAct.mAct))
 			    startNewAudio();
-	    }
-	    else // try enough times: still no audio file is found
-	    {
+	    } else { // try enough times: still no audio file is found
 		    Toast.makeText(act,R.string.audio_message_no_media_file_is_found,Toast.LENGTH_SHORT).show();
 
 		    // do not show highlight

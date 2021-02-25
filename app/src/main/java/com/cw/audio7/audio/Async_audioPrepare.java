@@ -128,10 +128,10 @@ public class Async_audioPrepare extends AsyncTask<String,Integer,String>
 		{
 			Toast toast = Toast.makeText(act.getApplicationContext(), R.string.audio_message_preparing_time_out, Toast.LENGTH_SHORT);
 			toast.show();
+		} else {
+			// Prepare is ready, start Audio Runnable
+			audio7Player.startAudioRunnable();
 		}
-
-		 // start audio runnable
-		 Audio7Player.startAudioRunnable(audio7Player.audio_runnable);
 
 		// unlock orientation
 		Util.unlockOrientation(act);

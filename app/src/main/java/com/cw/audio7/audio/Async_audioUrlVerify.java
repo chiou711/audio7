@@ -20,8 +20,6 @@ import com.cw.audio7.R;
 import com.cw.audio7.util.Util;
 
 import android.app.ProgressDialog;
-import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.AsyncTask;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -168,7 +166,7 @@ class Async_audioUrlVerify extends AsyncTask<String,Integer,String>
  		mUrlVerifyDialog = null;
 
  		// wait for Verify URL OK
-		while (!Async_audioUrlVerify.mIsOkUrl) {
+		while (!mIsOkUrl) {
 			//wait for Url verification
 			try {
 				Thread.sleep(Util.oneSecond / 20); //todo: proper time length?
@@ -178,26 +176,10 @@ class Async_audioUrlVerify extends AsyncTask<String,Integer,String>
 		}
 
 		// prepare audio
-		if (Async_audioUrlVerify.mIsOkUrl) {
+		if (Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE)
+			audio7Player.showAudioPanel(act, true);
 
-			if (Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE)
-				audio7Player.showAudioPanel(act, true);
-
-			// set audio length
-			String audio_uriStr = Audio_manager.getAudioStringAt(Audio_manager.mAudioPos);
-			try {
-				if (Util.isUriExisted(audio_uriStr, act)) {
-					MediaPlayer mp = MediaPlayer.create(act, Uri.parse(audio_uriStr));
-					audio7Player.setMediaFileLength(mp.getDuration());
-					mp.release();
-				}
-			} catch (Exception e) {
-				System.out.println("Async_audioUrlVerify / _onPostExecute / exception");
-			}
-
-			// audio Prepare
-			Async_audioPrepare mAsyncTaskAudioPrepare = new Async_audioPrepare(act, audio7Player);
-			mAsyncTaskAudioPrepare.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "Preparing to play ...");
-		}
+		// URL is ready, start Audio Prepare
+		audio7Player.prepareAudio();
 	 }
 }

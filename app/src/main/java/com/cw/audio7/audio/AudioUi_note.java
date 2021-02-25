@@ -111,9 +111,10 @@ public class AudioUi_note
                 if( (BackgroundAudioService.mMediaPlayer == null) ) {
                     // use this flag to determine new play or not in note
                     BackgroundAudioService.mIsPrepared = false;
-                    if( (Audio7Player.mAudioHandler != null) &&
-                        (Audio_manager.audio7Player != null) )
-                        Audio7Player.mAudioHandler.removeCallbacks(Audio_manager.audio7Player.audio_runnable);
+
+                    if( (Audio_manager.audio7Player != null) &&
+                        (Audio_manager.audio7Player.mAudioHandler != null) )
+                        Audio_manager.audio7Player.mAudioHandler.removeCallbacks(Audio_manager.audio7Player.audio_runnable);
                 }
 
                 playAudioInNotePager(act,audioUriStr);
