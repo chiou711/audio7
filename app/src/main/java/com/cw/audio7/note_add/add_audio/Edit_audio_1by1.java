@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 CW Chiu
+ * Copyright (C) 2021 CW Chiu
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,12 +51,13 @@ import java.util.Locale;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.ListFragment;
 
-public class Add_audio_1by1 extends ListFragment
+public class Edit_audio_1by1 extends ListFragment
 {
     private List<String> filePathArray = null;
     List<String> fileNames = null;
     public View rootView;
     ListView listView;
+    public static String new_audioUri;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -77,6 +78,7 @@ public class Add_audio_1by1 extends ListFragment
         // do cancel
         backButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
+                System.out.println("Add_audio_1by1 / backButton onClick");
                 getActivity().getSupportFragmentManager().popBackStack();
             }
         });
@@ -127,6 +129,8 @@ public class Add_audio_1by1 extends ListFragment
                 showFilesList(dir.listFiles());
             }
         });
+
+        new_audioUri = null;
 
         return rootView;
     }
@@ -223,8 +227,15 @@ public class Add_audio_1by1 extends ListFragment
                     View view2 = getActivity().findViewById(R.id.file_list_title);
                     view2.setVisibility(View.GONE);
 
-                    // add path to DB
-                    addAudio(currFilePath);
+                    // get audio URI
+                    new_audioUri = getAudioUriString(currFilePath);
+
+                    if(!Util.isEmptyString(new_audioUri)) {
+                        String[] audioName = Util.getDisplayNameByUriString(new_audioUri, getActivity());
+//                        Util.showSavedFileToast(getActivity(),audioName[0]+" / " +audioName[1],1000);
+                        getActivity().getSupportFragmentManager().popBackStack();
+//                        getActivity().recreate();
+                    }
 
                     checkedArr.set(selectedRow,true);
                     fileListAdapter.notifyDataSetChanged();

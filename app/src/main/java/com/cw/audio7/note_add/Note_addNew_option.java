@@ -100,16 +100,16 @@ public class Note_addNew_option
 		//  add all directory: listener
         check_add_folder_if_exists.setOnClickListener(new View.OnClickListener()
         {	@Override
-        public void onClick(View view)
-        {
-            boolean currentCheck = ((CheckedTextView)view).isChecked();
-            ((CheckedTextView)view).setChecked(!currentCheck);
+	        public void onClick(View view)
+	        {
+	            boolean currentCheck = ((CheckedTextView)view).isChecked();
+	            ((CheckedTextView)view).setChecked(!currentCheck);
 
-            if(((CheckedTextView)view).isChecked())
-                bAddFolder = true;
-            else
-                bAddFolder = false;
-        }
+	            if(((CheckedTextView)view).isChecked())
+	                bAddFolder = true;
+	            else
+	                bAddFolder = false;
+	        }
         });
 
 
