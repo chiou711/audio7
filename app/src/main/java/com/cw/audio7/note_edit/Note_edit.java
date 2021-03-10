@@ -117,11 +117,10 @@ public class Note_edit extends AppCompatActivity
 
             public void onClick(View view) {
                 setResult(RESULT_OK);
+//	            System.out.println("Note_edit / onClick (okButton) / noteId = " + noteId);
 				if(note_edit_ui.bRemoveAudioUri)
-				{
 					audioUri = "";
-				}
-				System.out.println("Note_edit / onClick (okButton) / noteId = " + noteId);
+
                 enSaveDb = true;
                 finish();
             }
@@ -314,7 +313,7 @@ public class Note_edit extends AppCompatActivity
         }
     }
 
-	static final int CHANGE_AUDIO = R.id.ADD_AUDIO;
+	static final int CHANGE_AUDIO = R.id.EDIT_AUDIO;
 
 	// apply new audio URI
 	void applyNewAudioURI() {
