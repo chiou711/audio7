@@ -18,9 +18,9 @@ package com.cw.audio7.main;
 
 import java.io.OutputStream;
 import java.io.PrintStream;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import com.cw.audio7.R;
 import com.cw.audio7.audio.Audio7Player;
@@ -74,9 +74,9 @@ import android.support.v4.media.session.PlaybackStateCompat;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
@@ -109,9 +109,6 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
 
     public static MediaBrowserCompat mMediaBrowserCompat;
     public static MediaControllerCompat mMediaControllerCompat;
-    public static int mCurrentState;
-    public final static int STATE_PAUSED = 0;
-    public final static int STATE_PLAYING = 1;
     public boolean bEULA_accepted;
 
 	// Main Act onCreate
@@ -147,12 +144,12 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
         if (Build.VERSION.SDK_INT >= 24) {
             try {
                 // method 1
-                Method m = StrictMode.class.getMethod("disableDeathOnFileUriExposure");
-                m.invoke(null);
+//                Method m = StrictMode.class.getMethod("disableDeathOnFileUriExposure");
+//                m.invoke(null);
 
                 // method 2
-//                StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
-//                StrictMode.setVmPolicy(builder.build());
+                StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+                StrictMode.setVmPolicy(builder.build());
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -197,7 +194,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                 if((Define.DEFAULT_CONTENT == Define.BY_INITIAL_TABLES) && (Define.INITIAL_FOLDERS_COUNT > 0))
                 {
                     if(Build.VERSION.SDK_INT >= 23)
-                        checkPermission(savedInstanceState, Util.PERMISSIONS_REQUEST_STORAGE);
+                        checkPermission();
                     else
                     {
                         Pref.setPref_will_create_default_content(this, true);
@@ -209,9 +206,8 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
             };
 
             // Read agreement button listener
-            dialog_EULA.clickListener_ReadAgreement = (DialogInterface dialog, int i) -> {
+            dialog_EULA.clickListener_ReadAgreement = (DialogInterface dialog, int i) ->
                 dialog_EULA.show_read_agreement();
-            };
 
             // No button listener
             dialog_EULA.clickListener_No = (DialogInterface dialog, int which) -> {
@@ -236,7 +232,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
     }
 
     // check permission dialog
-    void checkPermission(Bundle savedInstanceState,int permissions_request)
+    void checkPermission()
     {
         // check permission first time, request all necessary permissions
         if(Build.VERSION.SDK_INT >= M)//API23
@@ -247,7 +243,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                 ActivityCompat.requestPermissions(mAct,
                                                   new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
                                                                Manifest.permission.READ_EXTERNAL_STORAGE },
-                                                  permissions_request);
+                                                                Util.PERMISSIONS_REQUEST_STORAGE);
             }
             else {
                 Pref.setPref_will_create_default_content(this, false);
@@ -295,8 +291,6 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
 
                 if (!mMediaBrowserCompat.isConnected())
                     mMediaBrowserCompat.connect();//cf: https://stackoverflow.com/questions/43169875/mediabrowser-subscribe-doesnt-work-after-i-get-back-to-activity-1-from-activity
-
-                mCurrentState = STATE_PAUSED;
             }
         }
 
@@ -306,49 +300,6 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
         TabsHost.audioPlayTabPos = -1; //init
     }
 
-
-    /**
-     * Create initial tables
-     */
-    void createDefaultContent_byInitialTables()
-    {
-        DB_drawer dB_drawer = new DB_drawer(this);
-
-        for(int i = 1; i<= Define.INITIAL_FOLDERS_COUNT; i++)
-        {
-            // Create initial folder tables
-            System.out.println("MainAct / _createInitialTables / folder id = " + i);
-            String folderTitle = getResources().getString(R.string.default_folder_name).concat(String.valueOf(i));
-            dB_drawer.insertFolder(i, folderTitle, true); // Note: must set false for DB creation stage
-            dB_drawer.insertFolderTable( i, true);
-
-            // Create initial page tables
-            if(Define.INITIAL_PAGES_COUNT > 0)
-            {
-                // page tables
-                for(int j = 1; j<= Define.INITIAL_PAGES_COUNT; j++)
-                {
-                    System.out.println("MainAct / _createInitialTables / page id = " + j);
-                    DB_folder db_folder = new DB_folder(this,i);
-                    db_folder.insertPageTable(db_folder, i, j, true);
-
-                    String DB_FOLDER_TABLE_PREFIX = "Folder";
-                    String folder_table = DB_FOLDER_TABLE_PREFIX.concat(String.valueOf(i));
-                    db_folder.open();
-                    db_folder.insertPage(db_folder.mSqlDb ,
-                                                        folder_table,
-                                                        Define.getTabTitle(this,j),
-                                                        1,
-                                                        Define.STYLE_DEFAULT);
-                    db_folder.close();
-                    //db_folder.insertPage(sqlDb,folder_table,"N2",2,1);
-                }
-            }
-        }
-
-        Pref.setPref_will_create_default_content(this,false);
-        recreate();
-    }
 
     Intent intentReceive;
     //The BroadcastReceiver that listens for bluetooth broadcasts
@@ -365,7 +316,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
             }
 
             intentReceive = intent;
-            KeyEvent keyEvent = (KeyEvent) intentReceive.getParcelableExtra(Intent.EXTRA_KEY_EVENT);
+            KeyEvent keyEvent = intentReceive.getParcelableExtra(Intent.EXTRA_KEY_EVENT);
             if(keyEvent != null)
                 onKeyDown( keyEvent.getKeyCode(),keyEvent);
         }
@@ -404,11 +355,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                 return true;
 
             case KeyEvent.KEYCODE_MEDIA_FAST_FORWARD:
-                return true;
-
             case KeyEvent.KEYCODE_MEDIA_REWIND:
-                return true;
-
             case KeyEvent.KEYCODE_MEDIA_STOP:
                 return true;
         }
@@ -420,7 +367,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
 
     // callback of granted permission
     @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults)
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, int[] grantResults)
     {
         System.out.println("MainAct / _onRequestPermissionsResult / grantResults.length =" + grantResults.length);
 
@@ -483,17 +430,11 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
 
     void initActionBar()
     {
-        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        mToolbar = findViewById(R.id.toolbar);
         if (mToolbar != null) {
             setSupportActionBar(mToolbar);
             mToolbar.setNavigationIcon(R.drawable.ic_drawer);
-            mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                    Drawer.drawerLayout.openDrawer(GravityCompat.START);
-                }
-            });
+            mToolbar.setNavigationOnClickListener(v -> Drawer.drawerLayout.openDrawer(GravityCompat.START));
         }
     }
 
@@ -509,27 +450,24 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
 
         mToolbar.setNavigationIcon(R.drawable.ic_menu_back);
         mToolbar.getChildAt(1).setContentDescription(getResources().getString(R.string.btn_back));
-        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                System.out.println("MainAct / _initActionBar_home / click to popBackStack");
+        mToolbar.setNavigationOnClickListener(v -> {
+            System.out.println("MainAct / _initActionBar_home / click to popBackStack");
 
-                // check if DB is empty
-                DB_drawer db_drawer = new DB_drawer(mAct);
-                int focusFolder_tableId = Pref.getPref_focusView_folder_tableId(mAct);
-                DB_folder db_folder = new DB_folder(mAct,focusFolder_tableId);
-                if((db_drawer.getFoldersCount(true) == 0) ||
-                   (db_folder.getPagesCount(true) == 0)      )
-                {
-                    finish();
-                    Intent intent  = new Intent(mAct,MainAct.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
-                }
-                else
-                    getSupportFragmentManager().popBackStack();
+            // check if DB is empty
+            DB_drawer db_drawer = new DB_drawer(mAct);
+            int focusFolder_tableId = Pref.getPref_focusView_folder_tableId(mAct);
+            DB_folder db_folder = new DB_folder(mAct,focusFolder_tableId);
+            if((db_drawer.getFoldersCount(true) == 0) ||
+               (db_folder.getPagesCount(true) == 0)      )
+            {
+                finish();
+                Intent intent  = new Intent(mAct,MainAct.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
             }
+            else
+                getSupportFragmentManager().popBackStack();
         });
 
     }
@@ -552,9 +490,9 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
             Audio_manager.stopAudioPlayer();
             Audio_manager.removeRunnable();
         }
-        else {
+//        else {
             // continue playing, do nothing
-        }
+//        }
     }
 
     @Override
@@ -576,15 +514,15 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
             mFolderTitles = new ArrayList<>();
 
             // check DB
-            final boolean ENABLE_DB_CHECK = false;//true;//false
-            if (ENABLE_DB_CHECK) {
-                // list all folder tables
-                FolderUi.listAllFolderTables(mAct);
-
-                // recover focus
-                DB_folder.setFocusFolder_tableId(Pref.getPref_focusView_folder_tableId(this));
-                DB_page.setFocusPage_tableId(Pref.getPref_focusView_page_tableId(this));
-            }//if(ENABLE_DB_CHECK)
+//            final boolean ENABLE_DB_CHECK = false;//true;//false
+//            if (ENABLE_DB_CHECK) {
+//                // list all folder tables
+//                FolderUi.listAllFolderTables(mAct);
+//
+//                // recover focus
+//                DB_folder.setFocusFolder_tableId(Pref.getPref_focusView_folder_tableId(this));
+//                DB_page.setFocusPage_tableId(Pref.getPref_focusView_page_tableId(this));
+//            }//if(ENABLE_DB_CHECK)
 
             if(bEULA_accepted)
                 configLayoutView(); //createAssetsFile inside
@@ -612,7 +550,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
         // do Add all
         if(Pref.getPref_will_create_default_content(this)) {
 
-            getSupportActionBar().hide();
+            Objects.requireNonNull(getSupportActionBar()).hide();
 
             Add_audio_all add_audio_all = new Add_audio_all();
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -733,7 +671,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
      * onPostCreate() and onConfigurationChanged()...
      */
     @Override
-    public void onConfigurationChanged(Configuration newConfig) {
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         System.out.println("MainAct / _onConfigurationChanged");
 
@@ -836,16 +774,16 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
         System.out.println("MainAct / _onActivityResult ");
     }
 
-    /***********************************************************************************
-     *
-     *                                          Menu
-     *
-     ***********************************************************************************/
+    /*=======================================================
 
-    /****************************************************
+                                               Menu
+
+     ========================================================*/
+
+    /*==================================
      *  On Prepare Option menu :
      *  Called whenever we call invalidateOptionsMenu()
-     ****************************************************/
+     ===================================*/
     @Override
     public boolean onPrepareOptionsMenu(android.view.Menu menu) {
         System.out.println("MainAct / _onPrepareOptionsMenu");
@@ -860,7 +798,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
         DB_drawer db_drawer = new DB_drawer(this);
         int foldersCnt = db_drawer.getFoldersCount(true);
 
-        /**
+        /*
          * Folder group
          */
         // If the navigation drawer is open, hide action items related to the content view
@@ -872,10 +810,10 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                 // set icon for folder draggable: landscape
                 if(MainAct.mPref_show_note_attribute != null)
                 {
-                    if (MainAct.mPref_show_note_attribute.getString("KEY_ENABLE_FOLDER_DRAGGABLE", "no")
-                            .equalsIgnoreCase("yes"))
+                    if (Objects.requireNonNull(MainAct.mPref_show_note_attribute.getString("KEY_ENABLE_FOLDER_DRAGGABLE", "no"))
+                            .equalsIgnoreCase("yes")) {
                         mMenu.findItem(R.id.ENABLE_FOLDER_DRAG_AND_DROP).setIcon(R.drawable.btn_check_on_holo_light);
-                    else
+                    } else
                         mMenu.findItem(R.id.ENABLE_FOLDER_DRAG_AND_DROP).setIcon(R.drawable.btn_check_off_holo_light);
                 }
             }
@@ -895,7 +833,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
             mMenu.findItem(R.id.ADD_NEW_NOTE).setVisible(true);
             mMenu.findItem(R.id.HANDLE_CHECKED_NOTES).setVisible(true);
 
-            /**
+            /*
              * Page group and more
              */
             mMenu.setGroupVisible(R.id.group_pages_and_more, foldersCnt >0);
@@ -905,7 +843,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
 
             if(foldersCnt>0)
             {
-                getSupportActionBar().setTitle(mFolderTitle);
+                Objects.requireNonNull(getSupportActionBar()).setTitle(mFolderTitle);
 
                 // pages count
                 int pgsCnt = FolderUi.getFolder_pagesCount(this,FolderUi.getFocus_folderPos());
@@ -916,13 +854,11 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
 
                 if(pageTableId > 0) {
                     DB_page dB_page = new DB_page(this, pageTableId);
-                    if (dB_page != null) {
-                        try {
-                            notesCnt = dB_page.getNotesCount(true);
-                        } catch (Exception e) {
-                            System.out.println("MainAct / _onPrepareOptionsMenu / dB_page.getNotesCount() error");
-                            notesCnt = 0;
-                        }
+                    try {
+                        notesCnt = dB_page.getNotesCount(true);
+                    } catch (Exception e) {
+                        System.out.println("MainAct / _onPrepareOptionsMenu / dB_page.getNotesCount() error");
+                        notesCnt = 0;
                     }
                 }
 
@@ -941,7 +877,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                 // EXPORT TO SD CARD
                 mMenu.findItem(R.id.EXPORT_TO_SD_CARD).setVisible(pgsCnt >0);
 
-                /**
+                /*
                  *  Note group
                  */
 
@@ -1118,12 +1054,12 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                 return true;
 
             case MenuId.ENABLE_FOLDER_DRAG_AND_DROP:
-                if(MainAct.mPref_show_note_attribute.getString("KEY_ENABLE_FOLDER_DRAGGABLE", "no")
+                if(Objects.requireNonNull(MainAct.mPref_show_note_attribute.getString("KEY_ENABLE_FOLDER_DRAGGABLE", "no"))
                         .equalsIgnoreCase("yes"))
                 {
                     mPref_show_note_attribute.edit().putString("KEY_ENABLE_FOLDER_DRAGGABLE","no")
                             .apply();
-                    DragSortListView listView = (DragSortListView) this.findViewById(R.id.drawer_listview);
+                    DragSortListView listView = this.findViewById(R.id.drawer_listview);
                     listView.setDragEnabled(false);
                     Toast.makeText(this,getResources().getString(R.string.drag_folder)+
                                     ": " +
@@ -1134,7 +1070,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                 {
                     mPref_show_note_attribute.edit().putString("KEY_ENABLE_FOLDER_DRAGGABLE","yes")
                             .apply();
-                    DragSortListView listView = (DragSortListView) this.findViewById(R.id.drawer_listview);
+                    DragSortListView listView = this.findViewById(R.id.drawer_listview);
                     listView.setDragEnabled(true);
                     Toast.makeText(this,getResources().getString(R.string.drag_folder) +
                                     ": " +
@@ -1471,7 +1407,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
         Audio_manager.setupAudioList();
         Audio_manager.audio7Player.runAudioState();
 
-        if(Audio_manager.audio7Player.isOnAudioPlayingPage()) {
+        if(Audio7Player.isOnAudioPlayingPage()) {
             Audio_manager.audio7Player.scrollPlayingItemToBeVisible(TabsHost.getCurrentPage().recyclerView);
             TabsHost.getCurrentPage().itemAdapter.notifyDataSetChanged();
         }
@@ -1547,25 +1483,11 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
     };
 
     // callback: media controller
-    public static MediaControllerCompat.Callback mMediaControllerCompatCallback = new MediaControllerCompat.Callback() {
+    public static final MediaControllerCompat.Callback mMediaControllerCompatCallback = new MediaControllerCompat.Callback() {
         @Override
         public void onPlaybackStateChanged(PlaybackStateCompat state) {
             super.onPlaybackStateChanged(state);
 //            System.out.println("MainAct / _MediaControllerCompat.Callback / _onPlaybackStateChanged / state = " + state);
-            if( state == null ) {
-                return;
-            }
-
-            switch( state.getState() ) {
-                case STATE_PLAYING: {
-                    mCurrentState = STATE_PLAYING;
-                    break;
-                }
-                case STATE_PAUSED: {
-                    mCurrentState = STATE_PAUSED;
-                    break;
-                }
-            }
         }
     };
 
