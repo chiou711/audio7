@@ -1,14 +1,14 @@
 package com.cw.audio7.audio;
 
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.support.v4.media.MediaDescriptionCompat;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v4.media.session.MediaSessionCompat;
-import android.support.v4.media.session.PlaybackStateCompat;
 
 import androidx.core.app.NotificationCompat;
-import androidx.media.session.MediaButtonReceiver;
 
 /**
  * Helper APIs for constructing MediaStyle notifications
@@ -27,16 +27,28 @@ public class MediaStyleHelper {
         MediaMetadataCompat mediaMetadata = controller.getMetadata();
         MediaDescriptionCompat description = mediaMetadata.getDescription();
 
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context); //todo Deprecated?
         builder
                 .setContentTitle(description.getTitle())
                 .setContentText(description.getSubtitle())
                 .setSubText(description.getDescription())
                 .setLargeIcon(description.getIconBitmap())
                 .setContentIntent(controller.getSessionActivity())
-                .setDeleteIntent(
-                        MediaButtonReceiver.buildMediaButtonPendingIntent(context, PlaybackStateCompat.ACTION_STOP))
+//                .setDeleteIntent(
+//                        MediaButtonReceiver.buildMediaButtonPendingIntent(context,
+//                                PlaybackStateCompat.ACTION_STOP))
+                .setDeleteIntent(createOnDismissIntent(context, BackgroundAudioService.notification_id))
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
         return builder;
+    }
+
+    static private PendingIntent createOnDismissIntent(Context context, int notificationId) {
+        Intent intent = new Intent(context, NotificationDismissReceiver.class);
+        intent.putExtra("com.cw.audio7.notificationId", notificationId);
+
+        PendingIntent pendingIntent =
+                PendingIntent.getBroadcast(context.getApplicationContext(),
+                        notificationId, intent, 0);
+        return pendingIntent;
     }
 }

@@ -460,7 +460,6 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
                     }
                 }
 
-//                TabsHost.reloadCurrentPage();
                 TabsHost.showFooter(MainAct.mAct);
 
                 // update audio info

@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.cw.audio7"
-    android:versionCode="12"
-    android:versionName="0.00.12">
+    android:versionCode="13"
+    android:versionName="0.00.13">
 
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
@@ -70,6 +70,11 @@
                 <action android:name="android.intent.action.MEDIA_BUTTON" />
                 <action android:name="android.media.AUDIO_BECOMING_NOISY" />
             </intent-filter>
+        </receiver>
+
+        <receiver
+            android:name="com.cw.audio7.audio.NotificationDismissReceiver"
+            android:exported="false" >
         </receiver>
 
         <!-- will create BackgroundAudioService instance when notification button is pressed -->

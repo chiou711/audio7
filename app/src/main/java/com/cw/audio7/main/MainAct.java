@@ -659,7 +659,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
             mMediaBrowserCompat.disconnect();
 
         //hide notification
-        NotificationManagerCompat.from(MainAct.mAct).cancel(BackgroundAudioService.id);
+        NotificationManagerCompat.from(MainAct.mAct).cancel(BackgroundAudioService.notification_id);
 
         mMediaBrowserCompat = null;
 

@@ -48,7 +48,7 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
     public static MediaSessionCompat mMediaSessionCompat;
     public static boolean mIsPrepared;
     public static boolean mIsCompleted;
-    final public static int id = 78;
+    final public static int notification_id = 78;
 
     // for differentiate Pause source: manual or focus change
     private boolean isPausedByButton;
@@ -325,7 +325,7 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
         audioManager.abandonAudioFocus(this);
         unregisterReceiver(audioNoisyReceiver);
         mMediaSessionCompat.release();
-        NotificationManagerCompat.from(this).cancel(id);
+        NotificationManagerCompat.from(this).cancel(notification_id);
     }
 
     NotificationCompat.Builder builder;
@@ -381,9 +381,9 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
         builder.setShowWhen(false);
 
         if (Build.VERSION.SDK_INT >= 26)
-            manager.notify(id,builder.setChannelId(CHANNEL_ID).build());
+            manager.notify(notification_id,builder.setChannelId(CHANNEL_ID).build());
         else
-            manager.notify(id, builder.build());
+            manager.notify(notification_id, builder.build());
     }
 
     private void showPausedNotification() {
@@ -408,18 +408,18 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
         builder.setShowWhen(false);
 
         if (Build.VERSION.SDK_INT >= 26)
-            manager.notify(id,builder.setChannelId(CHANNEL_ID).build());
+            manager.notify(notification_id,builder.setChannelId(CHANNEL_ID).build());
         else
-            manager.notify(id, builder.build());
+            manager.notify(notification_id, builder.build());
     }
 
 
     private void initMediaSession() {
         if(enDbgMsg)
             System.out.println("BackgroundAudioService / _initMediaSession");
+
         ComponentName mediaButtonReceiver = new ComponentName(getApplicationContext(), MediaButtonReceiver.class);
         mMediaSessionCompat = new MediaSessionCompat(getApplicationContext(), "Tag", mediaButtonReceiver, null);
-
         mMediaSessionCompat.setCallback(mMediaSessionCallback);
         mMediaSessionCompat.setFlags( MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS | MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS );
 

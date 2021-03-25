@@ -120,7 +120,7 @@ public class Audio_manager
         Audio_manager.setPlayerState(Audio_manager.PLAYER_AT_STOP);
 
         //hide notification
-        NotificationManagerCompat.from(MainAct.mAct).cancel(BackgroundAudioService.id);
+        NotificationManagerCompat.from(MainAct.mAct).cancel(BackgroundAudioService.notification_id);
     }
 
     // remove runnable for update audio playing
