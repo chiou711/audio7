@@ -7,6 +7,9 @@
     <string name="btn_Finish">Finish</string>
     <string name="btn_Select">Select</string>
     <string name="btn_None">None</string>
+    <string name="btn_Previous">Previous</string>
+    <string name="btn_Next">Next</string>
+    <string name="bar_audio_progress">audio progress bar</string>
     <string name="app_name">Audio7</string>
     <string name="app_name_dir">audio7</string>
     <string name="drag_handler">drag_handler</string>
@@ -36,4 +39,5 @@
     <string name="no_page_yet">No page yet</string>
     <string name="blank_page">Blank page</string>
     <string name="blank_folder">Blank folder</string>
+    <string name="select_list">Select list</string>
 </resources>

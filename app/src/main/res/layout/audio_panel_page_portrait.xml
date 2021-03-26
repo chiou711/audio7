@@ -59,6 +59,7 @@
                     android:layout_weight="1"
                     android:layout_margin="5dp"
                     android:progressDrawable="@drawable/progress"
+                    android:contentDescription="@string/bar_audio_progress"
                     android:thumb="@drawable/thumb"/>
                 <TextView
                     android:id="@+id/audioPanel_file_length"
@@ -96,6 +97,7 @@
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
+                    android:contentDescription="@string/btn_Previous"
                     android:background="@drawable/button"/>
                 <!-- audio play button -->
                 <ImageView
@@ -105,6 +107,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_margin="5dp"
+                    android:contentDescription="@string/menu_button_play"
                     android:background="@drawable/button" />
                 <ImageView
                     android:id="@+id/audioPanel_next"
@@ -112,6 +115,7 @@
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
+                    android:contentDescription="@string/btn_Next"
                     android:background="@drawable/button" />
             </LinearLayout>
             <!-- audio control buttons: end-->

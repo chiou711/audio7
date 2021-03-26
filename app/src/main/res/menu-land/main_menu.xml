@@ -185,18 +185,21 @@
             android:orderInCategory="0"
             app:showAsAction="never"
             android:title="@string/add_new_folder"
+            android:contentDescription="@string/add_new_folder"
             android:icon="@drawable/ic_menu_add_new_page"/>
         <item
             android:id="@+id/ENABLE_FOLDER_DRAG_AND_DROP"
             android:orderInCategory="1"
             app:showAsAction="never"
             android:title="@string/drag_folder"
+            android:contentDescription="@string/drag_folder"
             android:icon="@drawable/btn_check_off_holo_light"/>
         <item
             android:id="@+id/DELETE_FOLDERS"
             android:orderInCategory="2"
             app:showAsAction="never"
             android:title="@string/delete_folders"
+            android:contentDescription="@string/delete_folders"
             android:icon="@drawable/ic_delete"/>
     </menu>
     </item>

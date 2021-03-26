@@ -14,6 +14,7 @@
         android:id="@+id/tabs"
         android:layout_width="match_parent"
         android:layout_height="50dp"
+        android:contentDescription="@string/select_list"
         app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"/>
 
 </com.google.android.material.appbar.AppBarLayout>

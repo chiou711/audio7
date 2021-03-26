@@ -109,6 +109,7 @@
 	    android:textCursorDrawable="@null"
 		android:layout_gravity="center"
 	    android:inputType=""
+		android:contentDescription="@string/edit_note_dlg_title_input"
 	    android:textSize="18sp"
 	    android:minLines="1"
 	    android:maxLines="20" />

@@ -7,7 +7,9 @@
     <string name="edit_note_button_delete">Delete</string>
     <string name="edit_note_set_audio_dlg_title">Set audio</string>
     <string name="edit_note_dlg_title">Title:</string>
+    <string name="edit_note_dlg_title_input">title input</string>
     <string name="edit_note_dlg_body">Body:</string>
     <string name="view_note_button_back">Back</string>
     <string name="view_note_button_edit">Edit</string>
+    <string name="audio_info">Audio info</string>
 </resources>

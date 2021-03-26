@@ -7,6 +7,9 @@
     <string name="btn_Finish">完成</string>
     <string name="btn_Select">選擇</string>
     <string name="btn_None">無</string>
+    <string name="btn_Previous">上一</string>
+    <string name="btn_Next">下一</string>
+    <string name="bar_audio_progress">音頻進度條</string>
     <string name="app_name">Audio7</string>
     <string name="app_name_dir">audio7</string>
     <string name="drag_handler">drag_handler</string>
@@ -36,4 +39,5 @@
     <string name="no_page_yet">還沒有頁面</string>
     <string name="blank_page">空白頁</string>
     <string name="blank_folder">空白文件夾</string>
+    <string name="select_list">選擇清單</string>
 </resources>

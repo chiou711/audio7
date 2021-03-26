@@ -7,7 +7,9 @@
     <string name="edit_note_button_delete">刪除</string>
     <string name="edit_note_set_audio_dlg_title">設置音訊</string>
     <string name="edit_note_dlg_title">標題:</string>
+    <string name="edit_note_dlg_title_input">標題輸入</string>
     <string name="edit_note_dlg_body">正文:</string>
     <string name="view_note_button_back">返回</string>
     <string name="view_note_button_edit">編輯</string>
+    <string name="audio_info">音訊資訊</string>
 </resources>

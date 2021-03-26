@@ -7,6 +7,7 @@ import android.content.Intent;
 import com.cw.audio7.main.MainAct;
 import com.cw.audio7.tabs.TabsHost;
 
+// cf https://stackoverflow.com/questions/12654820/is-it-possible-to-check-if-a-notification-is-visible-or-canceled
 public class NotificationDismissReceiver extends BroadcastReceiver {
 	@Override
 	public void onReceive(Context context, Intent intent) {
