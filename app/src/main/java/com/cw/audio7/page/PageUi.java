@@ -362,6 +362,9 @@ public class PageUi
 		// set hint
 		((EditText)editPageName).setHint(hintPageName);
 
+		// set default text
+		editPageName.setText(hintPageName);
+
 		// request cursor
 		editPageName.requestFocus();
 
@@ -376,28 +379,28 @@ public class PageUi
         // set hint
 //        editPageName.setHint(pageName);
 
-        editPageName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
-//                    ((EditText) v).setText("");
-//                    ((EditText) v).setSelection(0);
-					((EditText) v).setHint(hintPageName);
-                }
-            }
-        });
+//        editPageName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+//            @Override
+//            public void onFocusChange(View v, boolean hasFocus) {
+//                if (hasFocus) {
+////                    ((EditText) v).setText("");
+////                    ((EditText) v).setSelection(0);
+//					((EditText) v).setHint(hintPageName);
+//                }
+//            }
+//        });
 
 
-        editPageName.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                ((EditText) v).setText(hintPageName);
-                ((EditText) v).setSelection(hintPageName.length());
-                v.performClick();
-                return false;
-            }
-
-        });
+//        editPageName.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//                ((EditText) v).setText(hintPageName);
+//                ((EditText) v).setSelection(hintPageName.length());
+//                v.performClick();
+//                return false;
+//            }
+//
+//        });
 
 
         // radio buttons

@@ -88,7 +88,10 @@ public class FolderUi
         final TouchableEditText editFolderName = (TouchableEditText) rootView.findViewById(R.id.new_folder_name);
 
 	    // set hint
-	    ((EditText)editFolderName).setHint(hintFolderName);
+//	    ((EditText)editFolderName).setHint(hintFolderName);
+
+	    // set default text
+	    editFolderName.setText(hintFolderName);
 
 	    // request cursor
 	    editFolderName.requestFocus();
@@ -102,24 +105,24 @@ public class FolderUi
 //        }
 
         // set hint
-        editFolderName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
-                    ((EditText) v).setHint(hintFolderName);
-                }
-            }
-        });
+//        editFolderName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+//            @Override
+//            public void onFocusChange(View v, boolean hasFocus) {
+//                if (hasFocus) {
+//                    ((EditText) v).setHint(hintFolderName);
+//                }
+//            }
+//        });
 
-        editFolderName.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                ((EditText) v).setText(hintFolderName);
-                ((EditText) v).setSelection(hintFolderName.length());
-                v.performClick();
-                return false;
-            }
-        });
+//        editFolderName.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//                ((EditText) v).setText(hintFolderName);
+//                ((EditText) v).setSelection(hintFolderName.length());
+//                v.performClick();
+//                return false;
+//            }
+//        });
 
         // radio buttons
         final RadioGroup mRadioGroup = (RadioGroup) rootView.findViewById(R.id.radioGroup_new_folder_at);
