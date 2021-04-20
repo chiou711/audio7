@@ -297,7 +297,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
         // init audio parameters
         MainAct.mPlaying_folderPos = -1;
         Audio_manager.setPlayerState(Audio_manager.PLAYER_AT_STOP);
-        TabsHost.audioPlayTabPos = -1; //init
+        MainAct.mPlaying_pagePos = -1; //init
     }
 
 
@@ -1413,7 +1413,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
         }
 
         // update audio play position
-        TabsHost.audioPlayTabPos = TabsHost.getFocus_tabPos();
+        MainAct.mPlaying_pagePos = TabsHost.getFocus_tabPos();
         TabsHost.mTabsPagerAdapter.notifyDataSetChanged();
 
         // update playing page position

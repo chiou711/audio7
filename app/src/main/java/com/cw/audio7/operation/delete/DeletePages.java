@@ -32,6 +32,7 @@ import android.widget.Toast;
 import android.database.Cursor;
 
 import com.cw.audio7.R;
+import com.cw.audio7.audio.Audio7Player;
 import com.cw.audio7.db.DB_folder;
 import com.cw.audio7.folder.FolderUi;
 import com.cw.audio7.main.MainAct;
@@ -178,6 +179,14 @@ public class DeletePages extends Fragment {
 
                 // delete page row
                 mDbFolder.deletePage(DB_folder.getFocusFolder_tableName(),pageId,false);
+
+                if( Audio7Player.isOnAudioPlayingPage() &&
+                    BackgroundAudioService.mMediaPlayer != null ) {
+                    Audio_manager.stopAudioPlayer();
+                    Audio_manager.mAudioPos = 0;
+                    Audio_manager.setPlayerState(Audio_manager.PLAYER_AT_STOP);
+                }
+
             }
         }
         mDbFolder.close();
@@ -208,13 +217,6 @@ public class DeletePages extends Fragment {
         // set scroll X
 //        int scrollX = 0; //over the last scroll X
 //        Pref.setPref_focusView_scrollX_byFolderTableId(act, scrollX );
-
-        if(BackgroundAudioService.mMediaPlayer != null)
-        {
-            Audio_manager.stopAudioPlayer();
-            Audio_manager.mAudioPos = 0;
-            Audio_manager.setPlayerState(Audio_manager.PLAYER_AT_STOP);
-        }
 
         list_selPage = new List_selectPage(act,rootView , mListView);
     }

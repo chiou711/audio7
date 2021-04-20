@@ -76,8 +76,6 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
     public static int mFocusTabPos;
 
     public static int lastPageTableId;
-    public static int audioPlayTabPos;
-
     public static int firstPos_pageId;
 
     public static AudioUi_page audioUi_page;
@@ -288,7 +286,7 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
         // refresh list view of selected page
         Page page = mTabsPagerAdapter.fragmentList.get(getFocus_tabPos());
 
-        if( (tab.getPosition() == audioPlayTabPos) &&
+        if( (tab.getPosition() == MainAct.mPlaying_pagePos) &&
             (page != null) &&
             (page.itemAdapter != null)                                 )
         {
@@ -407,11 +405,12 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
    public static void showPlayingTab() {
 //       System.out.println("TabsHost / _showPlayingTab" );
         // set audio icon after Key Protect
-        TabLayout.Tab tab =  mTabLayout.getTabAt(audioPlayTabPos);
+       TabLayout.Tab tab =  mTabLayout.getTabAt(MainAct.mPlaying_pagePos);
+
         if(tab != null) {
             if( (MainAct.mPlaying_folderPos == FolderUi.getFocus_folderPos()) &&
-                    (Audio_manager.getPlayerState() != Audio_manager.PLAYER_AT_STOP)  &&
-                    (tab.getPosition() == audioPlayTabPos)                               )
+                (Audio_manager.getPlayerState() != Audio_manager.PLAYER_AT_STOP)  &&
+                (tab.getPosition() == MainAct.mPlaying_pagePos)                               )
             {
                 if(tab.getCustomView() == null)
                 {

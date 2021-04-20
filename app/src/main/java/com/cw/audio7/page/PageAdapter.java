@@ -610,9 +610,6 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
 
             MainAct.showAudioView(uriString);
 
-            // update audio play position
-            TabsHost.audioPlayTabPos = TabsHost.getFocus_tabPos();
-
             // update playing page position
             MainAct.mPlaying_pagePos = TabsHost.getFocus_tabPos();
 
