@@ -53,7 +53,6 @@ import com.cw.audio7.util.Util;
 import com.cw.audio7.util.preferences.Pref;
 import com.mobeta.android.dslv.DragSortListView;
 
-import android.Manifest;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -135,6 +134,11 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
 
         mAct = this;
         mAppTitle = getTitle();
+
+        // todo application-specific directories
+        // /storage/emulated/0/Android/data/com.cw.audio7/files/Pictures
+        //File path = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        //System.out.println("-- path = " + path);
 
         // File provider implementation is needed after Android version 24
         // if not, will encounter android.os.FileUriExposedException
@@ -235,22 +239,9 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
     void checkPermission()
     {
         // check permission first time, request all necessary permissions
-        if(Build.VERSION.SDK_INT >= M)//API23
-        {
-            int permissionWriteExtStorage = ActivityCompat.checkSelfPermission(mAct, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-
-            if(permissionWriteExtStorage != PackageManager.PERMISSION_GRANTED ) {
-                ActivityCompat.requestPermissions(mAct,
-                                                  new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                                                               Manifest.permission.READ_EXTERNAL_STORAGE },
-                                                                Util.PERMISSIONS_REQUEST_STORAGE);
-            }
-            else {
-                Pref.setPref_will_create_default_content(this, false);
-                recreate();
-            }
-        }
-        else {
+        if( (Build.VERSION.SDK_INT < M /*API23*/) ||
+            !Util.request_permission_WRITE_EXTERNAL_STORAGE(this,
+                    Util.PERMISSIONS_REQUEST_STORAGE)) {
             Pref.setPref_will_create_default_content(this, false);
             recreate();
         }
@@ -1100,23 +1091,11 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                 return true;
 
             case MenuId.ADD_NEW_NOTE:
-                if(Build.VERSION.SDK_INT >= M)//api23
-                {
-                    // check permission
-                    int permissionWriteExtStorage = ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-                    if(permissionWriteExtStorage != PackageManager.PERMISSION_GRANTED ) {
-                        ActivityCompat.requestPermissions(mAct,
-                                new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                                        Manifest.permission.READ_EXTERNAL_STORAGE },
-                                   Util.PERMISSIONS_REQUEST_STORAGE_ADD_NEW);
-                    }
-                    else {
-                            Add_note_option.createSelection(this,true);
-                    }
-
+                if( (Build.VERSION.SDK_INT < M /*API23*/) ||
+                      !Util.request_permission_WRITE_EXTERNAL_STORAGE(this,
+                                Util.PERMISSIONS_REQUEST_STORAGE_ADD_NEW) ) {
+                    Add_note_option.createSelection(this, true);
                 }
-                else
-                    Add_note_option.createSelection(this,true);
                 return true;
 
             case MenuId.OPEN_PLAY_SUBMENU:
@@ -1299,17 +1278,9 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
 
             // sub menu for backup
             case MenuId.IMPORT_FROM_SD_CARD:
-                if( (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) && //API23
-                        (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) // check permission
-                                != PackageManager.PERMISSION_GRANTED))
-                {
-                    // No explanation needed, we can request the permission.
-                    ActivityCompat.requestPermissions(this,
-                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                                    Manifest.permission.READ_EXTERNAL_STORAGE},
-                            Util.PERMISSIONS_REQUEST_STORAGE_IMPORT);
-                }
-                else {
+                if( ( Build.VERSION.SDK_INT < M /*API23*/ ) ||
+                    !Util.request_permission_WRITE_EXTERNAL_STORAGE(this,
+                                Util.PERMISSIONS_REQUEST_STORAGE_IMPORT)             ) {
                     //hide the menu
                     mMenu.findItem(R.id.ADD_NEW_NOTE).setVisible(false);
                     mMenu.setGroupVisible(R.id.group_notes, false);
@@ -1323,17 +1294,9 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                 return true;
 
             case MenuId.EXPORT_TO_SD_CARD:
-                if( (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) && //API23
-                        (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) // check permission
-                                != PackageManager.PERMISSION_GRANTED))
-                {
-                    // No explanation needed, we can request the permission.
-                    ActivityCompat.requestPermissions(this,
-                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                                    Manifest.permission.READ_EXTERNAL_STORAGE},
-                            Util.PERMISSIONS_REQUEST_STORAGE_EXPORT);
-                }
-                else {
+                if( ( Build.VERSION.SDK_INT <= M /*API23*/) ||
+                    !Util.request_permission_WRITE_EXTERNAL_STORAGE(this,
+                                Util.PERMISSIONS_REQUEST_STORAGE_EXPORT)           ) {
                     //hide the menu
                     mMenu.findItem(R.id.ADD_NEW_NOTE).setVisible(false);
                     mMenu.setGroupVisible(R.id.group_notes, false);

@@ -47,13 +47,12 @@ import com.cw.audio7.page.Checked_notes_option;
 import com.cw.audio7.R;
 import com.cw.audio7.db.DB_folder;
 import com.cw.audio7.db.DB_page;
-import com.cw.audio7.note.Note;
 import com.cw.audio7.tabs.TabsHost;
 import com.cw.audio7.util.audio.UtilAudio;
-import com.cw.audio7.util.image.UtilImage;
 import com.cw.audio7.util.preferences.Pref;
 import com.cw.audio7.define.Define;
 
+import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -92,18 +91,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.webkit.WebChromeClient;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.CheckedTextView;
-import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.RadioButton;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 public class Util 
 {
@@ -1296,6 +1291,24 @@ public class Util
 		else if( path.contains("/mnt/internal_sd"))
 			path = path.replace("/mnt/internal_sd", Environment.getExternalStorageDirectory().getAbsolutePath());
 		return path;
+	}
+
+	// check if WRITE_EXTERNAL_STORAGE permission is granted
+	public static boolean request_permission_WRITE_EXTERNAL_STORAGE(Activity act, int requestCode){
+
+		int permissionWriteExtStorage = ActivityCompat.checkSelfPermission(act,
+				Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+		if(permissionWriteExtStorage != PackageManager.PERMISSION_GRANTED ) {
+			// request permission
+			ActivityCompat.requestPermissions(act,
+					new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
+										Manifest.permission.READ_EXTERNAL_STORAGE},
+					requestCode);
+			return true;
+		}
+		else
+			return false;
 	}
 
 }

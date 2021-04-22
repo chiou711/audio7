@@ -58,10 +58,6 @@ public class Add_recording_act extends AppCompatActivity implements FragmentMana
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED)
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO},
                     0 /*BuildDev.RECORD_AUDIO*/);
-
-        else if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.READ_EXTERNAL_STORAGE },
-                    1 /*BuildDev.RECORD_AUDIO*/);
     }
 
     @Override
@@ -162,26 +158,7 @@ public class Add_recording_act extends AppCompatActivity implements FragmentMana
         {
             case 0:
                 if ( (grantResults.length > 0) &&
-                     (grantResults[0] == PackageManager.PERMISSION_GRANTED) )
-                {
-                        int permissionWriteExtStorage = ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-                        if(permissionWriteExtStorage != PackageManager.PERMISSION_GRANTED ) {
-                            ActivityCompat.requestPermissions(this,
-                                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                                            Manifest.permission.READ_EXTERNAL_STORAGE },
-                                    1);
-                        }
-                }
-                else
-                    finish();
-                break;
-
-            case 1:
-                if ( (grantResults.length > 0) &&
-                        ( (grantResults[0] == PackageManager.PERMISSION_GRANTED) &&
-                          (grantResults[1] == PackageManager.PERMISSION_GRANTED)   ) )
-                {
-
+                     (grantResults[0] == PackageManager.PERMISSION_GRANTED) ) {
                 }
                 else
                     finish();
