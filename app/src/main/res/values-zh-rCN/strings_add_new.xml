@@ -6,8 +6,8 @@
     <string name="add_new_note_bottom">到底部</string>
     <string name="add_new_note_title">新增连结</string>
     <string name="add_new_note_button_add">新增</string>
-    <string name="dialog_add_new_option_title">设定新增连结的操作：</string>
-    <string name="dialog_add_new_multiple">新增本地音讯连结时：包括目录中的所有同类连结</string>
+    <string name="dialog_add_new_setting_title">设定新增连结的操作</string>
+    <string name="dialog_add_new_multiple">以\"选择应用\"新增本地音讯连结时：包括目录中的所有同类连结</string>
     <string name="note_text">文字</string>
     <string name="note_audio">音讯</string>
     <string name="note_ready_audio">选择应用</string>

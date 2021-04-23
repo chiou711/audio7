@@ -28,7 +28,7 @@ import android.widget.RadioGroup;
 
 import com.cw.audio7.R;
 
-public class Note_addNew_option
+public class Note_addNew_setting
 {
 	private RadioGroup mRadioGroup0;
     private CheckedTextView check_add_folder_if_exists;
@@ -36,20 +36,20 @@ public class Note_addNew_option
     private SharedPreferences mPref_add_new_note_location;
     private boolean bAddToTop, bAddFolder;
 
-	public Note_addNew_option(final Activity activity)
+	public Note_addNew_setting(final Activity activity)
 	{
 		mPref_add_new_note_location = activity.getSharedPreferences("add_new_note_option", 0);
   		// inflate select style layout
   		LayoutInflater inflater;
   		inflater= (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-  		View view = inflater.inflate(R.layout.note_add_new_option, null);
+  		View view = inflater.inflate(R.layout.note_add_new_setting, null);
 
 		mRadioGroup0 = (RadioGroup)view.findViewById(R.id.radioGroup_new_at);
 		check_add_folder_if_exists = (CheckedTextView)view.findViewById(R.id.check_add_folder_if_exists);
 
 		AlertDialog.Builder builder = new AlertDialog.Builder(activity);
 	
-		builder.setTitle(R.string.dialog_add_new_option_title)
+		builder.setTitle(R.string.dialog_add_new_setting_title)
 			.setNegativeButton(R.string.btn_Cancel, new DialogInterface.OnClickListener()
 	        {	@Override
 	    		public void onClick(DialogInterface dialog, int which) {

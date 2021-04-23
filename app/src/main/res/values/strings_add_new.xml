@@ -6,8 +6,8 @@
     <string name="add_new_note_bottom">To the bottom</string>
     <string name="add_new_note_title">Add new link</string>
     <string name="add_new_note_button_add">Add</string>
-    <string name="dialog_add_new_option_title">Set the operation for new link:</string>
-    <string name="dialog_add_new_multiple">Adding ready audio link: involve all same kind links in the directory</string>
+    <string name="dialog_add_new_setting_title">Set the operation for new link</string>
+    <string name="dialog_add_new_multiple">Adding ready audio link by \"Choose App\": involve all same kind links in the directory</string>
     <string name="note_text">text</string>
     <string name="note_audio">Audio</string>
     <string name="note_ready_audio">Choose App</string>

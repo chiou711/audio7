@@ -8,10 +8,13 @@
 	android:layout_margin="5dp"
     android:orientation="vertical">
 
+	<View android:layout_width="match_parent" android:layout_height="1dip" android:background="#4f4f4f" />
+
 	<TextView
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:textSize="18sp"
+		android:textColor="@color/colorBlack"
 		android:text="@string/add_new_note_position"/>
 	<RadioGroup
 		android:id="@+id/radioGroup_new_at"
@@ -47,6 +50,7 @@
 		android:drawableLeft="?android:attr/listChoiceIndicatorMultiple"
 		android:clickable="true"
 		android:gravity="center_vertical" />
+	<View android:layout_width="match_parent" android:layout_height="1dip" android:background="#4f4f4f" />
 
 </LinearLayout>
 </ScrollView>

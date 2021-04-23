@@ -6,8 +6,8 @@
     <string name="add_new_note_bottom">到底部</string>
     <string name="add_new_note_title">新增連結</string>
     <string name="add_new_note_button_add">新增</string>
-    <string name="dialog_add_new_option_title">設定新增連結的操作：</string>
-    <string name="dialog_add_new_multiple">新增現成音訊連結時：包括目錄中的所有同類連結</string>
+    <string name="dialog_add_new_setting_title">設定新增連結的操作</string>
+    <string name="dialog_add_new_multiple">以\"選擇應用\"新增現成音訊連結時：包括目錄中的所有同類連結</string>
     <string name="note_text">文字</string>
     <string name="note_audio">音訊</string>
     <string name="note_ready_audio">選擇應用</string>

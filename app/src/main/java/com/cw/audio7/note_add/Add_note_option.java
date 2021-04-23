@@ -268,9 +268,7 @@ public class Add_note_option {
             break;
 
             case ID_NEW_SETTING:
-            {
-                new Note_addNew_option(act);
-            }
+                new Note_addNew_setting(act);
             break;
 
             // default
