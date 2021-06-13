@@ -745,7 +745,7 @@ public class Util
 
 		// MP3 with path but no title and no artist
 		if(Util.isEmptyString(displayName[0]) && Util.isEmptyString(displayName[1]) &&UtilAudio.hasAudioExtension(uriString)) {
-			displayName[0] = uriString;
+			displayName[0] = new File(uriString).getName();
 			displayName[1] = "";
 		}
 

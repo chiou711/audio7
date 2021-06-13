@@ -113,7 +113,7 @@ public class Add_audio_1by1 extends ListFragment
                         File targetFile = new File(targetDirPath + "/" + srcFile.getName());
                         System.out.println("targetFile.getName() = " + targetFile.getName());
                         try {
-                            if (srcFile.getName().contains("MP3") || srcFile.getName().contains("mp3l"))
+                            if (UtilAudio.hasAudioExtension(srcFile) )
                                 FileUtils.copyFile(srcFile, targetFile);
                         } catch (IOException e) {
 
@@ -214,10 +214,7 @@ public class Add_audio_1by1 extends ListFragment
             else
             {
             	// view the selected file's content
-            	if( file.isFile() &&
-                   (file.getName().contains("MP3") ||
-                    file.getName().contains("mp3")     ))
-            	{
+            	if( file.isFile() && UtilAudio.hasAudioExtension(file)) 	{
                     View view1 = getActivity().findViewById(R.id.view_back_btn_bg);
                     view1.setVisibility(View.GONE);
                     View view2 = getActivity().findViewById(R.id.file_list_title);
@@ -290,9 +287,8 @@ public class Add_audio_1by1 extends ListFragment
                     fileNames.add("[ " + dirName +" ]");
                 }
                 else if(!file.isDirectory() &&
-                        (file.getName().contains("MP3") || file.getName().contains("mp3")))
-                {
-                    System.out.println("Add_audio_1by1 / _showFilesList / file.getName() 1 = " + file.getName());
+                    UtilAudio.hasAudioExtension(file) ) {
+                    System.out.println("Add_audio_1by1 / _showFilesList / file.getName()  = " + file.getName());
                     filePathArray.add(file.getPath());
                     // file
                     String uriStr = getAudioUriString(file.getPath());

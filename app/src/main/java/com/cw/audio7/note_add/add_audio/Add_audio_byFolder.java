@@ -38,6 +38,7 @@ import com.cw.audio7.tabs.TabsHost;
 import com.cw.audio7.util.BaseBackPressedListener;
 import com.cw.audio7.util.ColorSet;
 import com.cw.audio7.util.Util;
+import com.cw.audio7.util.audio.UtilAudio;
 import com.cw.audio7.util.preferences.Pref;
 
 import org.apache.commons.io.FileUtils;
@@ -114,7 +115,7 @@ public class Add_audio_byFolder extends ListFragment
                         File targetFile = new File(targetDirPath + "/" + srcFile.getName());
                         System.out.println("targetFile.getName() = " + targetFile.getName());
                         try {
-                            if (srcFile.getName().contains("MP3") || srcFile.getName().contains("mp3l"))
+                            if (UtilAudio.hasAudioExtension(srcFile))
                                 FileUtils.copyFile(srcFile, targetFile);
                         } catch (IOException e) {
 
@@ -259,10 +260,7 @@ public class Add_audio_byFolder extends ListFragment
             {
                 System.out.println("--- onListItemClick / not directory");
             	// view the selected file's content
-            	if( file.isFile() &&
-                   (file.getName().contains("MP3") ||
-                    file.getName().contains("mp3")     ))
-            	{
+            	if( file.isFile() && UtilAudio.hasAudioExtension(file) ) 	{
                     View view1 = getActivity().findViewById(R.id.view_back_btn_bg);
                     view1.setVisibility(View.GONE);
                     View view2 = getActivity().findViewById(R.id.file_list_title);
@@ -307,9 +305,7 @@ public class Add_audio_byFolder extends ListFragment
 	        for(File file : files)
 	        {
                 // add for filtering non-audio file
-                if(!file.isDirectory() &&
-                   (file.getName().contains("MP3") || file.getName().contains("mp3")))
-                {
+                if(!file.isDirectory() && UtilAudio.hasAudioExtension(file) ) {
                     filePathArray.add(file.getPath());
                     // file
                     fileNames.add(file.getName());
@@ -424,9 +420,7 @@ public class Add_audio_byFolder extends ListFragment
 
             for (File file : files) {
                 // add for filtering non-audio file
-                if (!file.isDirectory() &&
-                        (file.getName().contains("MP3") || file.getName().contains("mp3")))
-                {
+                if (!file.isDirectory() && UtilAudio.hasAudioExtension(file) ) {
                     String uriStr = "file://".concat(file.getPath());
 
                     DB_page dB = new DB_page(getActivity(), TabsHost.getCurrentPageTableId());

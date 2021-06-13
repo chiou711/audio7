@@ -66,19 +66,19 @@ public class UtilAudio {
 				MainAct.mSubMenuItemAudio.setIcon(R.drawable.ic_menu_slideshow);
 		}
     }
-    
+
     // check if file has audio extension
     // refer to http://developer.android.com/intl/zh-tw/guide/appendix/media-formats.html
     public static boolean hasAudioExtension(File file)
     {
     	boolean hasAudio = false;
     	String fn = file.getName().toLowerCase(Locale.getDefault());
-    	if(	fn.endsWith("3gp") || fn.endsWith("mp4") ||	fn.endsWith("m4a") || fn.endsWith("aac") ||
-       		fn.endsWith("ts") || fn.endsWith("flac") ||	fn.endsWith("mp3") || fn.endsWith("mid") ||  
+    	if(	fn.endsWith("3gp") || fn.endsWith("mp4") || fn.endsWith("m4a") || fn.endsWith("aac") ||
+       		fn.endsWith("ts") || fn.endsWith("flac") || fn.endsWith("mp3") || fn.endsWith("mid") ||
        		fn.endsWith("xmf") || fn.endsWith("mxmf")|| fn.endsWith("rtttl") || fn.endsWith("rtx") ||  
        		fn.endsWith("ota") || fn.endsWith("imy")|| fn.endsWith("ogg") || fn.endsWith("mkv") ||
-       		fn.endsWith("wav") || fn.endsWith("wma")
-    		) 
+       		fn.endsWith("wav") || fn.endsWith("wma") || fn.endsWith("opus")
+	    )
 	    	hasAudio = true;
 	    
     	return hasAudio;
@@ -87,16 +87,16 @@ public class UtilAudio {
     // check if string has audio extension
     public static boolean hasAudioExtension(String string)
     {
-    	boolean hasAudio = false;
+	    boolean hasAudio = false;
     	if(!Util.isEmptyString(string))
     	{
 	    	String fn = string.toLowerCase(Locale.getDefault());
 	    	if(	fn.endsWith("3gp") || fn.endsWith("mp4") ||	fn.endsWith("m4a") || fn.endsWith("aac") ||
 	           		fn.endsWith("ts") || fn.endsWith("flac") ||	fn.endsWith("mp3") || fn.endsWith("mid") ||  
 	           		fn.endsWith("xmf") || fn.endsWith("mxmf")|| fn.endsWith("rtttl") || fn.endsWith("rtx") ||  
-	           		fn.endsWith("ota") || fn.endsWith("imy")|| fn.endsWith("ogg") || fn.endsWith("mkv") ||
-	           		fn.endsWith("wav") || fn.endsWith("wma")
-	        		) 
+	           		fn.endsWith("ota") || fn.endsWith("imy") || fn.endsWith("ogg") || fn.endsWith("mkv") ||
+	           		fn.endsWith("wav") || fn.endsWith("wma") || fn.endsWith("opus")
+	        )
 	    		hasAudio = true;
     	}
     	return hasAudio;
