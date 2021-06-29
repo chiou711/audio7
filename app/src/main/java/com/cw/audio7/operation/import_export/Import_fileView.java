@@ -39,6 +39,8 @@ import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 
+import static com.cw.audio7.main.MainAct.mFolderUi;
+
 
 public class Import_fileView extends Fragment
 {
@@ -178,7 +180,7 @@ public class Import_fileView extends Fragment
     {
 		System.out.println("Import_fileView / _importDefaultContentByXml / xmlFileName = " + xmlFile.getName());
 
-		TabsHost.setLastPageTableId(0);
+	    mFolderUi.tabsHost.setLastPageTableId(0);
 
         FileInputStream fileInputStream = null;
 

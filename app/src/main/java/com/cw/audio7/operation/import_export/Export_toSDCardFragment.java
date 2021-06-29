@@ -44,6 +44,8 @@ import com.cw.audio7.util.Util;
 
 import androidx.fragment.app.Fragment;
 
+import static com.cw.audio7.main.MainAct.mFolderUi;
+
 public class Export_toSDCardFragment extends Fragment {
 	Context mContext;
 	TextView title;
@@ -81,7 +83,7 @@ public class Export_toSDCardFragment extends Fragment {
 				mList_selPage.selectAllPages(false);
 		}
 		});
-		mStyle = Util.getCurrentPageStyle(TabsHost.getFocus_tabPos());
+		mStyle = Util.getCurrentPageStyle(mFolderUi.tabsHost.getFocus_tabPos());
 
 		// list view: selecting which pages to send
 		mListView = (ListView)rootView.findViewById(R.id.listView1);

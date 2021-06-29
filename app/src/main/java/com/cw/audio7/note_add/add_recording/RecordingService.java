@@ -20,6 +20,8 @@ import java.text.SimpleDateFormat;
 import java.util.Locale;
 import java.util.TimerTask;
 
+import static com.cw.audio7.main.MainAct.mFolderUi;
+
 public class RecordingService extends Service {
 
     private static final String LOG_TAG = "RecordingService";
@@ -124,7 +126,7 @@ public class RecordingService extends Service {
             String audioUriInDB;
             Toast.makeText(this, getString(R.string.toast_recording_finish) + " " + mFilePath, Toast.LENGTH_SHORT).show();
 
-            dB = new DB_page(this, TabsHost.getCurrentPageTableId());
+            dB = new DB_page(this, mFolderUi.tabsHost.getCurrentPageTableId());
 
             noteId = null; // set null for Insert
             audioUriInDB = "file://" + mFilePath;

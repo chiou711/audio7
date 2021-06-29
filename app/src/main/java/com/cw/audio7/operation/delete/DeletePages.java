@@ -34,7 +34,6 @@ import android.database.Cursor;
 import com.cw.audio7.R;
 import com.cw.audio7.audio.Audio7Player;
 import com.cw.audio7.db.DB_folder;
-import com.cw.audio7.folder.FolderUi;
 import com.cw.audio7.main.MainAct;
 import com.cw.audio7.operation.List_selectPage;
 import com.cw.audio7.audio.Audio_manager;
@@ -45,6 +44,8 @@ import com.cw.audio7.util.preferences.Pref;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+
+import static com.cw.audio7.main.MainAct.mFolderUi;
 
 public class DeletePages extends Fragment {
     TextView title;
@@ -136,7 +137,7 @@ public class DeletePages extends Fragment {
         btnSelPageCancel.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-            if(FolderUi.getFolder_pagesCount(act,FolderUi.getFocus_folderPos()) == 0)
+            if(mFolderUi.getFolder_pagesCount(act,mFolderUi.getFocus_folderPos()) == 0)
             {
                 getActivity().finish();
                 Intent intent  = new Intent(act,MainAct.class);

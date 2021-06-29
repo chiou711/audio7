@@ -35,7 +35,6 @@ import android.widget.RadioGroup.OnCheckedChangeListener;
 
 import com.cw.audio7.R;
 import com.cw.audio7.db.DB_page;
-import com.cw.audio7.drawer.Drawer;
 import com.cw.audio7.audio.Audio_manager;
 import com.cw.audio7.audio.BackgroundAudioService;
 import com.cw.audio7.db.DB_drawer;
@@ -55,17 +54,26 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentTransaction;
 
-public class FolderUi
+import static com.cw.audio7.main.MainAct.mDrawer;
+import static com.cw.audio7.main.MainAct.mFolderTitle;
+import static com.cw.audio7.main.MainAct.mFolderUi;
+
+public class FolderUi extends Folder
 {
-//	FolderUi(){}
+	AppCompatActivity act;
+
+	public FolderUi(AppCompatActivity _act){
+		act = _act;
+		FolderSetup(act);
+	};
 
     // setter and getter of focus folder position
-    public static int mFocus_folderPos;
-    public static void setFocus_folderPos(int pos)
+    public int mFocus_folderPos;
+    public void setFocus_folderPos(int pos)
     {
         mFocus_folderPos = pos;
     }
-    public static int getFocus_folderPos()
+    public int getFocus_folderPos()
     {
         return mFocus_folderPos;
     }
@@ -76,7 +84,7 @@ public class FolderUi
      */
     static private int mAddFolderAt;
     static private SharedPreferences mPref_add_new_folder_location;
-    public static void addNewFolder(final AppCompatActivity act, final int newTableId, final SimpleDragSortCursorAdapter folderAdapter)
+    public void addNewFolder(final AppCompatActivity act, final int newTableId, final SimpleDragSortCursorAdapter folderAdapter)
     {
         // get folder name
         final String hintFolderName = act.getResources()
@@ -252,9 +260,9 @@ public class FolderUi
 	 * delete selected folder
 	 * 
 	 */
-	private static int mFirstExist_folderId = 0;
-	public static int mLastExist_folderTableId;
-	private static void deleteFolder( final AppCompatActivity act, int position,SimpleDragSortCursorAdapter folderAdapter) {
+	private int mFirstExist_folderId = 0;
+	public int mLastExist_folderTableId;
+	private void deleteFolder( final AppCompatActivity act, int position,SimpleDragSortCursorAdapter folderAdapter) {
 
         System.out.println("FolderUi / _deleteFolder");
         // Before delete: renew first FolderId and last FolderId
@@ -339,7 +347,7 @@ public class FolderUi
 
                 // update
                 if (foldersCount > 0)
-	                MainAct.openFolder();
+	                openFolder();
 
             }
         }
@@ -352,8 +360,8 @@ public class FolderUi
 
 
 	// Renew first and last folder Id
-	private static Cursor mFolderCursor;
-	public static void renewFirstAndLast_folderId()
+	private Cursor mFolderCursor;
+	public void renewFirstAndLast_folderId()
 	{
         Activity act = MainAct.mAct;
 		DB_drawer db_drawer = new DB_drawer(act);
@@ -379,8 +387,8 @@ public class FolderUi
     	} 
 	}
 
-    private static SharedPreferences mPref_delete_warn;
-	static void editFolder(final AppCompatActivity act, final int position, final SimpleDragSortCursorAdapter folderAdapter)
+    private SharedPreferences mPref_delete_warn;
+	void editFolder(final AppCompatActivity act, final int position, final SimpleDragSortCursorAdapter folderAdapter)
 	{
 		DB_drawer db = new DB_drawer(act);
 
@@ -462,11 +470,11 @@ public class FolderUi
 	// swap rows
 	private static Long mFolderId1 = (long) 1;
 	private static Long mFolderId2 = (long) 1;
-	private static int mFolderTableId1;
-	private static int mFolderTableId2;
-	private static String mFolderTitle1;
-	private static String mFolderTitle2;
-	static void swapFolderRows(int startPosition, int endPosition)
+	private int mFolderTableId1;
+	private int mFolderTableId2;
+	private String mFolderTitle1;
+	private String mFolderTitle2;
+	void swapFolderRows(int startPosition, int endPosition)
 	{
         Activity act = MainAct.mAct;
 		DB_drawer db_drawer = new DB_drawer(act);
@@ -492,7 +500,7 @@ public class FolderUi
 	}
 
     // Update focus position
-    static void updateFocus_folderPosition()
+    void updateFocus_folderPosition()
     {
     	Activity act = MainAct.mAct;
         DB_drawer db_drawer = new DB_drawer(act);
@@ -514,11 +522,11 @@ public class FolderUi
     }	
     
     // select folder
-    public static void selectFolder(AppCompatActivity act,final int position)
+    public void selectFolder(AppCompatActivity act,final int position)
     {
 //    	System.out.println("FolderUi / _selectFolder / position = " + position);
         DB_drawer dB_drawer = new DB_drawer(act);
-    	MainAct.mFolderTitle = dB_drawer.getFolderTitle(position,true);
+    	mFolderTitle = dB_drawer.getFolderTitle(position,true);
 
         // will call Drawer / _onDrawerClosed
         DrawerLayout drawerLayout = (DrawerLayout) act.findViewById(R.id.drawer_layout);
@@ -527,7 +535,7 @@ public class FolderUi
 	        // update selected item and title, then close the drawer
 	        DragSortListView listView = (DragSortListView) act.findViewById(R.id.drawer_listview);
 	        listView.setItemChecked(position, true); // selected item is colored by different color
-	        drawerLayout.closeDrawer(Drawer.mNavigationView);
+	        drawerLayout.closeDrawer(mDrawer.mNavigationView);
 	        act.invalidateOptionsMenu();
 
 	        // use Runnable to make sure only one folder background is seen
@@ -545,26 +553,29 @@ public class FolderUi
 
 
     // start tabs host runnable
-    public static void startTabsHostRun()
+    public void startTabsHostRun()
     {
 	    System.out.println("FolderUi / _startTabsHostRun");
         mHandler = new Handler();
         mHandler.post(mTabsHostRun);
     }
 
-    public static Handler mHandler;
+    public Handler mHandler;
+	public TabsHost tabsHost;
     // runnable to launch folder host, (press alt+enter to get lambda)
-    public static Runnable mTabsHostRun = () -> {
+    public Runnable mTabsHostRun = () -> {
 //	    System.out.println("FolderUi / mTabsHostRun");
 
-        TabsHost tabsHost = new TabsHost();
+	    if(tabsHost == null) {
+		    tabsHost = new TabsHost(act);
 
-	    FragmentTransaction fragmentTransaction = MainAct.mAct.getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.content_frame, tabsHost).commitAllowingStateLoss();
-	    MainAct.mAct.getSupportFragmentManager().executePendingTransactions();
+		    FragmentTransaction fragmentTransaction = act.getSupportFragmentManager().beginTransaction();
+		    fragmentTransaction.replace(R.id.content_frame, tabsHost).commitAllowingStateLoss();
+		    act.getSupportFragmentManager().executePendingTransactions();
+	    }
     };
     
-    public static int getFolder_pagesCount(AppCompatActivity act,int folderPos)
+    public int getFolder_pagesCount(AppCompatActivity act,int folderPos)
     {
         DB_drawer dB_drawer = new DB_drawer(act);
 //        System.out.println("FolderUi / _getFolder_pagesCount / folderPos = " + folderPos);
@@ -586,7 +597,7 @@ public class FolderUi
     }
 
     // List all folder tables
-    public static void listAllFolderTables(AppCompatActivity act)
+    public void listAllFolderTables(AppCompatActivity act)
     {
         DB_drawer dB_drawer = new DB_drawer(act);
         // list all folder tables
@@ -607,7 +618,7 @@ public class FolderUi
 
             for(int tabPos=0; tabPos<pagesCount; tabPos++)
             {
-                TabsHost.setFocus_tabPos(tabPos);
+	            mFolderUi.tabsHost.setFocus_tabPos(tabPos);
                 int pageId = db_folder.getPageId(tabPos, true);
                 int pageTableId = db_folder.getPageTableId(tabPos, true);
                 String pageTitle = db_folder.getPageTitle(tabPos, true);
@@ -626,6 +637,34 @@ public class FolderUi
             }
         }
     }
+
+
+	public void openFolder()
+	{
+		System.out.println("MainAct / _openFolder");
+
+		DB_drawer dB_drawer = new DB_drawer(act);
+		int folders_count = dB_drawer.getFoldersCount(true);
+
+		if (folders_count > 0) {
+			int pref_focus_table_id = Pref.getPref_focusView_folder_tableId(act);
+			for(int folder_pos=0; folder_pos<folders_count; folder_pos++)
+			{
+				if(dB_drawer.getFolderTableId(folder_pos,true) == pref_focus_table_id) {
+					// select folder
+					selectFolder(act, folder_pos);
+
+					// set focus folder position
+					setFocus_folderPos(folder_pos);
+				}
+			}
+			// set focus table Id
+			DB_folder.setFocusFolder_tableId(pref_focus_table_id);
+
+			if (act.getSupportActionBar() != null)
+				act.getSupportActionBar().setTitle(mFolderTitle);
+		}
+	}
 }
 
 

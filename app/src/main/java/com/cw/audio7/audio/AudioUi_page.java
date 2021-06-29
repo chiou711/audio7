@@ -34,6 +34,8 @@ import java.util.Locale;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import static com.cw.audio7.main.MainAct.mFolderUi;
+
 /**
  * Created by cw on 2017/10/21.
  */
@@ -148,8 +150,8 @@ public class AudioUi_page {
 
                 if(Audio7Player.isOnAudioPlayingPage())
                 {
-                    Audio_manager.audio7Player.scrollPlayingItemToBeVisible(TabsHost.getCurrentPage().recyclerView);
-                    TabsHost.getCurrentPage().itemAdapter.notifyDataSetChanged();
+                    Audio_manager.audio7Player.scrollPlayingItemToBeVisible(mFolderUi.tabsHost.getCurrentPage().recyclerView);
+                    mFolderUi.tabsHost.getCurrentPage().itemAdapter.notifyDataSetChanged();
                 }
             }
         });
@@ -181,7 +183,7 @@ public class AudioUi_page {
                     Audio_manager.stopAudioPlayer();
                     Audio_manager.removeRunnable();
                     Audio_manager.audio7Player.showAudioPanel(act,false);
-                    TabsHost.reloadCurrentPage();
+                    mFolderUi.tabsHost.reloadCurrentPage();
                     Toast.makeText(mAct,R.string.toast_cyclic_play_disabled,Toast.LENGTH_LONG).show();
                 }
                 else
@@ -216,7 +218,7 @@ public class AudioUi_page {
                     Audio_manager.stopAudioPlayer();
                     Audio_manager.removeRunnable();
                     Audio_manager.audio7Player.showAudioPanel(act,false);
-                    TabsHost.reloadCurrentPage();
+                    mFolderUi.tabsHost.reloadCurrentPage();
                     Toast.makeText(mAct,R.string.toast_cyclic_play_disabled,Toast.LENGTH_LONG).show();
                 }
                 else
@@ -246,12 +248,12 @@ public class AudioUi_page {
 
         // gif case: add this will cause program hang up
         if(Audio7Player.isOnAudioPlayingPage())
-            Audio_manager.audio7Player.scrollPlayingItemToBeVisible(TabsHost.getCurrentPage().recyclerView);
+            Audio_manager.audio7Player.scrollPlayingItemToBeVisible(mFolderUi.tabsHost.getCurrentPage().recyclerView);
 
-        if(TabsHost.getCurrentPage().itemAdapter == null)
-            TabsHost.reloadCurrentPage();
+        if(mFolderUi.tabsHost.getCurrentPage().itemAdapter == null)
+            mFolderUi.tabsHost.reloadCurrentPage();
         else
-            TabsHost.getCurrentPage().itemAdapter.notifyDataSetChanged();
+            mFolderUi.tabsHost.getCurrentPage().itemAdapter.notifyDataSetChanged();
 
         // show new audio length immediately
         Audio_manager.audio7Player.initAudioBlock(Audio_manager.getAudioStringAt(Audio_manager.mAudioPos));

@@ -37,27 +37,30 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentManager;
 import androidx.appcompat.widget.Toolbar;
 
+import static com.cw.audio7.main.MainAct.mFolderUi;
+
 /**
  * Created by CW on 2016/8/24.
  */
 public class Drawer {
 
 
-    public static DrawerLayout drawerLayout;
+    public DrawerLayout drawerLayout;
     private final AppCompatActivity act;
     public ActionBarDrawerToggle drawerToggle;
-    public static NavigationView mNavigationView;
+    public NavigationView mNavigationView;
     DragSortListView listView;
 
-    public Drawer(AppCompatActivity activity, Toolbar toolbar)
-    {
-        drawerLayout = (DrawerLayout) activity.findViewById(R.id.drawer_layout);
+    public Drawer(AppCompatActivity _act, Toolbar toolbar) {
+        this.act = _act;
 
-        mNavigationView = (NavigationView) activity.findViewById(R.id.nav_view);
+        drawerLayout = (DrawerLayout) act.findViewById(R.id.drawer_layout);
+
+        mNavigationView = (NavigationView) act.findViewById(R.id.nav_view);
         mNavigationView.setItemIconTintList(null);// use original icon color
 
         // set icon for folder draggable: portrait
-        if(Util.isPortraitOrientation(MainAct.mAct) && (MainAct.mPref_show_note_attribute != null)) {
+        if (Util.isPortraitOrientation(act) && (MainAct.mPref_show_note_attribute != null)) {
             if (MainAct.mPref_show_note_attribute.getString("KEY_ENABLE_FOLDER_DRAGGABLE", "no")
                     .equalsIgnoreCase("yes"))
                 mNavigationView.getMenu().findItem(R.id.ENABLE_FOLDER_DRAG_AND_DROP).setIcon(R.drawable.btn_check_on_holo_light);
@@ -72,55 +75,49 @@ public class Drawer {
                 menuItem.setChecked(true);
                 switch (menuItem.getItemId()) {
                     case MenuId.ADD_NEW_FOLDER:
-                        FolderUi.renewFirstAndLast_folderId();
-                        FolderUi.addNewFolder(MainAct.mAct, FolderUi.mLastExist_folderTableId +1, MainAct.mFolder.getAdapter());
+                        mFolderUi.renewFirstAndLast_folderId();
+                        mFolderUi.addNewFolder(act, mFolderUi.mLastExist_folderTableId + 1, mFolderUi.getAdapter());
                         return true;
 
                     case MenuId.ENABLE_FOLDER_DRAG_AND_DROP:
-                        if(MainAct.mPref_show_note_attribute.getString("KEY_ENABLE_FOLDER_DRAGGABLE", "no")
-                                .equalsIgnoreCase("yes"))
-                        {
+                        if (MainAct.mPref_show_note_attribute.getString("KEY_ENABLE_FOLDER_DRAGGABLE", "no")
+                                .equalsIgnoreCase("yes")) {
                             menuItem.setIcon(R.drawable.btn_check_off_holo_light);
-                            MainAct.mPref_show_note_attribute.edit().putString("KEY_ENABLE_FOLDER_DRAGGABLE","no")
+                            MainAct.mPref_show_note_attribute.edit().putString("KEY_ENABLE_FOLDER_DRAGGABLE", "no")
                                     .apply();
-                            DragSortListView listView = (DragSortListView) act.findViewById(R.id.drawer_listview);
+                            DragSortListView listView = (DragSortListView) Drawer.this.act.findViewById(R.id.drawer_listview);
                             listView.setDragEnabled(false);
-                            Toast.makeText(act,act.getResources().getString(R.string.drag_folder)+
+                            Toast.makeText(Drawer.this.act, Drawer.this.act.getResources().getString(R.string.drag_folder) +
                                             ": " +
-                                            act.getResources().getString(R.string.set_disable),
+                                            Drawer.this.act.getResources().getString(R.string.set_disable),
                                     Toast.LENGTH_SHORT).show();
-                        }
-                        else
-                        {
+                        } else {
                             menuItem.setIcon(R.drawable.btn_check_on_holo_light);
-                            MainAct.mPref_show_note_attribute.edit().putString("KEY_ENABLE_FOLDER_DRAGGABLE","yes")
+                            MainAct.mPref_show_note_attribute.edit().putString("KEY_ENABLE_FOLDER_DRAGGABLE", "yes")
                                     .apply();
-                            DragSortListView listView = (DragSortListView) act.findViewById(R.id.drawer_listview);
+                            DragSortListView listView = (DragSortListView) Drawer.this.act.findViewById(R.id.drawer_listview);
                             listView.setDragEnabled(true);
-                            Toast.makeText(act,act.getResources().getString(R.string.drag_folder) +
+                            Toast.makeText(Drawer.this.act, Drawer.this.act.getResources().getString(R.string.drag_folder) +
                                             ": " +
-                                           act.getResources().getString(R.string.set_enable),
+                                            Drawer.this.act.getResources().getString(R.string.set_enable),
                                     Toast.LENGTH_SHORT).show();
                         }
-                        MainAct.mFolder.getAdapter().notifyDataSetChanged();
-                        act.invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+                        mFolderUi.getAdapter().notifyDataSetChanged();
+                        Drawer.this.act.invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
                         return true;
 
                     case MenuId.DELETE_FOLDERS:
 
-                        DB_drawer dB_drawer = new DB_drawer(act);
-                        if(dB_drawer.getFoldersCount(true)>0)
-                        {
+                        DB_drawer dB_drawer = new DB_drawer(Drawer.this.act);
+                        if (dB_drawer.getFoldersCount(true) > 0) {
                             closeDrawer();
                             MainAct.mMenu.setGroupVisible(R.id.group_notes, false); //hide the menu
                             DeleteFolders delFoldersFragment = new DeleteFolders();
-                            MainAct.mFragmentTransaction = MainAct.mAct.getSupportFragmentManager().beginTransaction();
+                            MainAct.mFragmentTransaction = act.getSupportFragmentManager().beginTransaction();
                             MainAct.mFragmentTransaction.setCustomAnimations(R.anim.fragment_slide_in_left, R.anim.fragment_slide_out_left, R.anim.fragment_slide_in_right, R.anim.fragment_slide_out_right);
                             MainAct.mFragmentTransaction.replace(R.id.content_frame, delFoldersFragment).addToBackStack("delete_folders").commit();
-                        }
-                        else
-                        {
-                            Toast.makeText(act, R.string.config_export_none_toast, Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(Drawer.this.act, R.string.config_export_none_toast, Toast.LENGTH_SHORT).show();
                         }
                         return true;
 
@@ -130,59 +127,57 @@ public class Drawer {
             }
         });
 
+        listView = (DragSortListView) this.act.findViewById(R.id.drawer_listview);
 
-
-        act = activity;
-        listView = (DragSortListView) act.findViewById(R.id.drawer_listview);
         // ActionBarDrawerToggle ties together the the proper interactions
         // between the sliding drawer and the action bar app icon
         drawerToggle =new ActionBarDrawerToggle(act,                  /* host Activity */
-                                                drawerLayout,         /* DrawerLayout object */
-                                                toolbar,  /* tool bar */
-                                                R.string.drawer_open,  /* "open drawer" description for accessibility */
-                                                R.string.drawer_close  /* "close drawer" description for accessibility */
-                                                )
+                drawerLayout,         /* DrawerLayout object */
+                toolbar,  /* tool bar */
+                R.string.drawer_open,  /* "open drawer" description for accessibility */
+                R.string.drawer_close  /* "close drawer" description for accessibility */
+        )
+        {
+            public void onDrawerOpened(View drawerView)
             {
-                public void onDrawerOpened(View drawerView)
-                {
-                    System.out.println("Drawer / _onDrawerOpened ");
+                System.out.println("Drawer / _onDrawerOpened ");
 
-                    if(act.getSupportActionBar() != null) {
-                        act.getSupportActionBar().setTitle(R.string.app_name);
-                        toolbar.setLogo(R.mipmap.ic_launcher); //todo Smaller icon?
-                    }
-
-                    act.invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
-
-                    if(listView.getCount() >0) {
-                        // will call Folder_adapter _getView to update audio playing high light
-                        listView.invalidateViews();
-                    }
-                }// onDrawerOpened
-
-                public void onDrawerClosed(View view)
-                {
-                    System.out.println("Drawer / _onDrawerClosed / FolderUi.getFocus_folderPos() = " + FolderUi.getFocus_folderPos());
-
-                    FragmentManager fragmentManager = act.getSupportFragmentManager();
-                    if(fragmentManager.getBackStackEntryCount() ==0 )
-                    {
-                        act.invalidateOptionsMenu(); // creates a call to onPrepareOptionsMenu()
-
-                        DB_drawer dB_drawer = new DB_drawer(act);
-                        if (dB_drawer.getFoldersCount(true) > 0)
-                        {
-                            int pos = listView.getCheckedItemPosition();
-                            MainAct.mFolderTitle = dB_drawer.getFolderTitle(pos,true);
-
-                            if(act.getSupportActionBar() != null) {
-                                act.getSupportActionBar().setTitle(MainAct.mFolderTitle);
-                                toolbar.setLogo(null);
-                            }
-                        }
-                    } // onDrawerClosed
+                if(act.getSupportActionBar() != null) {
+                    act.getSupportActionBar().setTitle(R.string.app_name);
+                    toolbar.setLogo(R.mipmap.ic_launcher); //todo Smaller icon?
                 }
-           };
+
+                act.invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+
+                if(listView.getCount() >0) {
+                    // will call Folder_adapter _getView to update audio playing high light
+                    listView.invalidateViews();
+                }
+            }// onDrawerOpened
+
+            public void onDrawerClosed(View view)
+            {
+                System.out.println("Drawer / _onDrawerClosed / FolderUi.getFocus_folderPos() = " + mFolderUi.getFocus_folderPos());
+
+                FragmentManager fragmentManager = act.getSupportFragmentManager();
+                if(fragmentManager.getBackStackEntryCount() ==0 )
+                {
+                    act.invalidateOptionsMenu(); // creates a call to onPrepareOptionsMenu()
+
+                    DB_drawer dB_drawer = new DB_drawer(act);
+                    if (dB_drawer.getFoldersCount(true) > 0)
+                    {
+                        int pos = listView.getCheckedItemPosition();
+                        MainAct.mFolderTitle = dB_drawer.getFolderTitle(pos,true);
+
+                        if(act.getSupportActionBar() != null) {
+                            act.getSupportActionBar().setTitle(MainAct.mFolderTitle);
+                            toolbar.setLogo(null);
+                        }
+                    }
+                } // onDrawerClosed
+            }
+        };
     }
 
     public void initDrawer()
@@ -192,19 +187,16 @@ public class Drawer {
         drawerLayout.addDrawerListener(drawerToggle);
     }
 
-    public void closeDrawer()
-    {
+    public void closeDrawer() {
         drawerLayout.closeDrawer(mNavigationView);
     }
 
-
-    public boolean isDrawerOpen()
-    {
+    public boolean isDrawerOpen() {
         return drawerLayout.isDrawerOpen(mNavigationView);
     }
 
-    public static int getFolderCount() {
-        DB_drawer dB_drawer = new DB_drawer(MainAct.mAct);
+    public int getFolderCount() {
+        DB_drawer dB_drawer = new DB_drawer(act);
         return dB_drawer.getFoldersCount(true);
     }
 }

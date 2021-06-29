@@ -51,6 +51,8 @@ import java.util.Locale;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.ListFragment;
 
+import static com.cw.audio7.main.MainAct.mFolderUi;
+
 public class Add_audio_1by1 extends ListFragment
 {
     private List<String> filePathArray = null;
@@ -410,7 +412,7 @@ public class Add_audio_1by1 extends ListFragment
     void addAudio(String path)
     {
         String uriStr = getAudioUriString(path);
-        DB_page dB = new DB_page(getActivity(), TabsHost.getCurrentPageTableId());
+        DB_page dB = new DB_page(getActivity(), mFolderUi.tabsHost.getCurrentPageTableId());
         if( !Util.isEmptyString(uriStr)) {
             // insert new link, set marking to 1 for default
             dB.insertNote("",  uriStr, "",  1);

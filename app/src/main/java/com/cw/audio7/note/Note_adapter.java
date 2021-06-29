@@ -51,6 +51,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import static com.cw.audio7.main.MainAct.mFolderUi;
+
 public class Note_adapter extends FragmentStatePagerAdapter
 {
 	static int mLastPosition;
@@ -67,7 +69,7 @@ public class Note_adapter extends FragmentStatePagerAdapter
     	act = activity;
         inflater = act.getLayoutInflater();
         mLastPosition = -1;
-	    db_page = new DB_page(act, TabsHost.getCurrentPageTableId());
+	    db_page = new DB_page(act, mFolderUi.tabsHost.getCurrentPageTableId());
 	    audioUi_note = ui;
         System.out.println("Note_adapter / constructor / mLastPosition = " + mLastPosition);
     }

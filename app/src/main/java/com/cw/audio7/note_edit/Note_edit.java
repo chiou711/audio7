@@ -43,6 +43,8 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import static com.cw.audio7.main.MainAct.mFolderUi;
+
 public class Note_edit extends AppCompatActivity
 		implements FragmentManager.OnBackStackChangedListener
 {
@@ -63,7 +65,7 @@ public class Note_edit extends AppCompatActivity
 	    System.out.println("Note_edit / onCreate");
 
         // check note count first
-	    dB = new DB_page(this, TabsHost.getCurrentPageTableId());
+	    dB = new DB_page(this, mFolderUi.tabsHost.getCurrentPageTableId());
 
         if(dB.getNotesCount(true) ==  0)
         {

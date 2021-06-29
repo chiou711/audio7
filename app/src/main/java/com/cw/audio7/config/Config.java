@@ -20,10 +20,8 @@ package com.cw.audio7.config;
 import java.io.File;
 import java.util.Objects;
 
-import com.cw.audio7.folder.FolderUi;
 import com.cw.audio7.audio.Audio_manager;
 import com.cw.audio7.audio.BackgroundAudioService;
-import com.cw.audio7.tabs.TabsHost;
 import com.cw.audio7.util.BaseBackPressedListener;
 import com.cw.audio7.main.MainAct;
 import com.cw.audio7.R;
@@ -51,6 +49,7 @@ import androidx.fragment.app.Fragment;
 
 import static android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK;
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
+import static com.cw.audio7.main.MainAct.mFolderUi;
 
 public class Config extends Fragment
 {
@@ -298,8 +297,8 @@ public class Config extends Fragment
 			//set last tab Id to 0, otherwise TabId will not start from 0 when deleting all
 			//reset tab Index to 0
 			//fix: select tab over next import amount => clean all => import => export => error
-			TabsHost.setFocus_tabPos(0);
-			FolderUi.setFocus_folderPos(0);
+			mFolderUi.tabsHost.setFocus_tabPos(0);
+			mFolderUi.setFocus_folderPos(0);
 
 			// remove focus view folder table Id key
 			Pref.removePref_focusView_folder_tableId_key(getActivity());

@@ -57,6 +57,8 @@ import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import static com.cw.audio7.main.MainAct.mFolderUi;
+
 public class Note extends Fragment
 {
     /**
@@ -93,7 +95,7 @@ public class Note extends Fragment
 		mEntryPosition = arguments.getInt("POSITION");
 		NoteUi.setFocus_notePos(mEntryPosition);
 
-		DB_page db_page = new DB_page(MainAct.mAct,TabsHost.getCurrentPageTableId());
+		DB_page db_page = new DB_page(MainAct.mAct,mFolderUi.tabsHost.getCurrentPageTableId());
 		NoteUi.setNotesCnt(db_page.getNotesCount(true));
 
 		act = MainAct.mAct;
@@ -153,9 +155,9 @@ public class Note extends Fragment
 
 		// DB
 		DB_folder dbFolder = new DB_folder(act,Pref.getPref_focusView_folder_tableId(act));
-		mStyle = dbFolder.getPageStyle(TabsHost.getFocus_tabPos(), true);
+		mStyle = dbFolder.getPageStyle(mFolderUi.tabsHost.getFocus_tabPos(), true);
 
-		mDb_page = new DB_page(act, TabsHost.getCurrentPageTableId());
+		mDb_page = new DB_page(act, mFolderUi.tabsHost.getCurrentPageTableId());
 
 		if(mDb_page != null) {
 			mNoteId = mDb_page.getNoteId(NoteUi.getFocus_notePos(), true);

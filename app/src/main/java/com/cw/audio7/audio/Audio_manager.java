@@ -21,10 +21,11 @@ import java.util.List;
 
 import com.cw.audio7.db.DB_page;
 import com.cw.audio7.main.MainAct;
-import com.cw.audio7.tabs.TabsHost;
 import com.cw.audio7.util.Util;
 
 import androidx.core.app.NotificationManagerCompat;
+
+import static com.cw.audio7.main.MainAct.mFolderUi;
 
 public class Audio_manager
 {
@@ -189,7 +190,7 @@ public class Audio_manager
 		setTogglePlayerState(false);
 		setPlayNext(false);
 
-		DB_page db_page = new DB_page(MainAct.mAct, TabsHost.getCurrentPageTableId());
+		DB_page db_page = new DB_page(MainAct.mAct, mFolderUi.tabsHost.getCurrentPageTableId());
 
 		int notesCount =  db_page.getNotesCount(true);
 		setPlayingPage_notesCount(notesCount);

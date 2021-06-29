@@ -35,7 +35,6 @@ import com.cw.audio7.audio.Audio7Player;
 import com.cw.audio7.db.DB_drawer;
 import com.cw.audio7.db.DB_folder;
 import com.cw.audio7.db.DB_page;
-import com.cw.audio7.folder.FolderUi;
 import com.cw.audio7.main.MainAct;
 import com.cw.audio7.note.Note;
 import com.cw.audio7.note_edit.Note_edit;
@@ -65,13 +64,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import static com.cw.audio7.db.DB_page.KEY_NOTE_AUDIO_URI;
 import static com.cw.audio7.db.DB_page.KEY_NOTE_MARKING;
+import static com.cw.audio7.main.MainAct.mFolderUi;
 import static com.cw.audio7.page.Page.swapRows;
 
 // Pager adapter
 public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
         implements ItemTouchHelperAdapter
 {
-	private static AppCompatActivity mAct;
+	private AppCompatActivity mAct;
     final DB_folder dbFolder;
 	private DB_page mDb_page;
     private final OnStartDragListener mDragStartListener;
@@ -79,9 +79,9 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
     private int style;
     List<Db_cache> listCache;
 
-    PageAdapter(int pageTableId, OnStartDragListener dragStartListener) {
+    PageAdapter(AppCompatActivity _act,int pageTableId, OnStartDragListener dragStartListener) {
 //        System.out.println("PageAdapter / constructor / pageTableId = " + pageTableId );
-	    mAct = MainAct.mAct;
+	    mAct = _act;
 	    mDragStartListener = dragStartListener;
 
         dbFolder = new DB_folder(mAct,Pref.getPref_focusView_folder_tableId(mAct));
@@ -123,7 +123,7 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
     /**
      * Provide a reference to the type of views that you are using (custom ViewHolder)
      */
-    public static class ViewHolder extends RecyclerView.ViewHolder implements ItemTouchHelperViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder implements ItemTouchHelperViewHolder {
 		TextView rowId;
 		View audioBlock;
         TextView audioTitle;
@@ -294,7 +294,7 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
             (Audio_manager.getPlayerState() != Audio_manager.PLAYER_AT_STOP) )
         {
 //            System.out.println("PageAdapter / _getView / show highlight / position = " + position);
-            TabsHost.getCurrentPage().mHighlightPosition = position;
+            mFolderUi.tabsHost.getCurrentPage().mHighlightPosition = position;
 
             // background case 1: border
 //            holder.audioBlock.setBackgroundResource(R.drawable.bg_highlight_border);
@@ -371,6 +371,7 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
                 else
                     in_sample_size = 1;//8; // 1/8 the width/height of the original
 
+                //todo disable the following will decrease native memory usage
             try {
                 AsyncTaskAudioBitmap audioAsyncTask;
                 audioAsyncTask = new AsyncTaskAudioBitmap(mAct,
@@ -428,9 +429,9 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
                 }
 
                 //Toggle marking will resume page, so do Store v scroll
-                RecyclerView listView = TabsHost.mTabsPagerAdapter.fragmentList.get(TabsHost.getFocus_tabPos()).recyclerView;
-                TabsHost.store_listView_vScroll(listView);
-                TabsHost.isDoingMarking = true;
+                RecyclerView listView = mFolderUi.tabsHost.mTabsPagerAdapter.fragmentList.get(mFolderUi.tabsHost.getFocus_tabPos()).recyclerView;
+                mFolderUi.tabsHost.store_listView_vScroll(listView);
+                mFolderUi.tabsHost.isDoingMarking = true;
 
                 // set marking icon
                 if(marking == 1)
@@ -447,7 +448,7 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
                 }
 
                 // set audio title / artist color
-                DB_page db_page = new DB_page(mAct,TabsHost.getCurrentPageTableId());
+                DB_page db_page = new DB_page(mAct,mFolderUi.tabsHost.getCurrentPageTableId());
                 String audioUri = db_page.getNoteAudioUri(position,true);
 
                 if(!Util.isEmptyString(audioUri)) {
@@ -460,7 +461,7 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
                     }
                 }
 
-                TabsHost.showFooter(MainAct.mAct);
+                mFolderUi.tabsHost.showFooter(MainAct.mAct);
 
                 // update audio info
                 if(Audio7Player.isOnAudioPlayingPage()) {
@@ -484,7 +485,7 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
             public void onClick(View v) {
 
                 // check if selected
-                DB_page db_page = new DB_page(mAct,TabsHost.getCurrentPageTableId());
+                DB_page db_page = new DB_page(mAct,mFolderUi.tabsHost.getCurrentPageTableId());
                 int marking = db_page.getNoteMarking(position,true);
                 if(marking == 0) {
                     Toast.makeText(mAct,R.string.is_an_unchecked_item,Toast.LENGTH_SHORT).show();
@@ -502,7 +503,7 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
                 Audio_manager.setupAudioList();
                 Audio_manager.audio7Player.runAudioState();
 
-                TabsHost.showPlayingTab();
+                mFolderUi.tabsHost.showPlayingTab();
             }
         });
 
@@ -511,7 +512,7 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
 
             @Override
             public boolean onLongClick(View v) {
-                DB_page db_page = new DB_page(mAct, TabsHost.getCurrentPageTableId());
+                DB_page db_page = new DB_page(mAct, mFolderUi.tabsHost.getCurrentPageTableId());
                 Long rowId = db_page.getNoteId(position,true);
 
                 Intent i = new Intent(mAct, Note_edit.class);
@@ -556,8 +557,8 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
 
     // open Note audio panel
     void openAudioPanel_note(int position) {
-        TabsHost.getCurrentPage().mCurrPlayPosition = position;
-        DB_page db_page = new DB_page(mAct,TabsHost.getCurrentPageTableId());
+        mFolderUi.tabsHost.getCurrentPage().mCurrPlayPosition = position;
+        DB_page db_page = new DB_page(mAct,mFolderUi.tabsHost.getCurrentPageTableId());
         int count = db_page.getNotesCount(true);
         if(position < count)
         {
@@ -568,7 +569,7 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
 //                    mAct.startActivity(intent);
 
             // hide the tab layout
-            TabsHost.mTabLayout.setVisibility(View.GONE);
+            mFolderUi.tabsHost.mTabLayout.setVisibility(View.GONE);
             mAct.getSupportFragmentManager()
                     .findFragmentById(R.id.content_frame)
                     .getView()
@@ -587,11 +588,11 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
     }
 
     // open Page audio panel
-    public static void openAudioPanel_page(int position) {
+    public void openAudioPanel_page(int position) {
         System.out.println("PageAdapter / _openAudioPanel_page");
         Audio_manager.setAudioPlayMode(Audio_manager.PAGE_PLAY_MODE);
 
-        DB_page db_page = new DB_page(mAct, TabsHost.getCurrentPageTableId());
+        DB_page db_page = new DB_page(mAct, mFolderUi.tabsHost.getCurrentPageTableId());
         int notesCount = db_page.getNotesCount(true);
         if(position >= notesCount) //end of list
             return ;
@@ -608,22 +609,22 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
             // create new Intent to play audio
             Audio_manager.mAudioPos = position;
 
-            MainAct.showAudioView(uriString);
+            mFolderUi.tabsHost.showAudioView(uriString);
 
             // update playing page position
-            MainAct.mPlaying_pagePos = TabsHost.getFocus_tabPos();
+            MainAct.mPlaying_pagePos = mFolderUi.tabsHost.getFocus_tabPos();
 
             // update playing page table Id
-            MainAct.mPlaying_pageTableId = TabsHost.getCurrentPageTableId();
+            MainAct.mPlaying_pageTableId = mFolderUi.tabsHost.getCurrentPageTableId();
 
             // update playing folder position
-            MainAct.mPlaying_folderPos = FolderUi.getFocus_folderPos();
+            MainAct.mPlaying_folderPos = mFolderUi.getFocus_folderPos();
 
             // update playing folder table Id
             DB_drawer dB_drawer = new DB_drawer(mAct);
             MainAct.mPlaying_folderTableId = dB_drawer.getFolderTableId(MainAct.mPlaying_folderPos,true);
 
-            TabsHost.mTabsPagerAdapter.notifyDataSetChanged();
+            mFolderUi.tabsHost.mTabsPagerAdapter.notifyDataSetChanged();
         }
     }
 
@@ -631,7 +632,7 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
     public static int toggleNoteMarking(AppCompatActivity mAct, int position)
     {
         int marking = 0;
-		DB_page db_page = new DB_page(mAct,TabsHost.getCurrentPageTableId());
+		DB_page db_page = new DB_page(mAct,mFolderUi.tabsHost.getCurrentPageTableId());
         db_page.open();
         int count = db_page.getNotesCount(false);
         if(position >= count) //end of list
@@ -677,7 +678,7 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
         int oriStartPos = fromPos;
         int oriEndPos = toPos;
 
-        mDb_page = new DB_page(mAct, TabsHost.getCurrentPageTableId());
+        mDb_page = new DB_page(mAct, mFolderUi.tabsHost.getCurrentPageTableId());
         if(fromPos >= mDb_page.getNotesCount(true)) // avoid footer error
             return false;
 
@@ -727,7 +728,7 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
         }
 
         // update footer
-        TabsHost.showFooter(mAct);
+        mFolderUi.tabsHost.showFooter(mAct);
         return true;
     }
 

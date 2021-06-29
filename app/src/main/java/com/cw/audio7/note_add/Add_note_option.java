@@ -30,8 +30,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cw.audio7.R;
-import com.cw.audio7.drawer.Drawer;
-import com.cw.audio7.folder.FolderUi;
 import com.cw.audio7.main.MainAct;
 import com.cw.audio7.note_add.add_audio.Add_audio_all;
 import com.cw.audio7.note_add.add_recording.Add_recording_act;
@@ -44,6 +42,9 @@ import java.util.List;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
+
+import static com.cw.audio7.main.MainAct.mDrawer;
+import static com.cw.audio7.main.MainAct.mFolderUi;
 
 /**
  * Created by cw on 2017/10/7.
@@ -86,9 +87,9 @@ public class Add_note_option {
 
         addNoteList = new ArrayList<>();
 
-        int pagesCount = FolderUi.getFolder_pagesCount(act,FolderUi.getFocus_folderPos());
+        int pagesCount = mFolderUi.getFolder_pagesCount(act,mFolderUi.getFocus_folderPos());
 
-        int foldersCount = Drawer.getFolderCount();
+        int foldersCount = mDrawer.getFolderCount();
 
         if(permitted)
         {

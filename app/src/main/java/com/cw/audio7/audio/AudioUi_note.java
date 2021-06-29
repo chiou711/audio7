@@ -28,7 +28,6 @@ import android.widget.Toast;
 import com.cw.audio7.R;
 import com.cw.audio7.main.MainAct;
 import com.cw.audio7.note.NoteUi;
-import com.cw.audio7.tabs.TabsHost;
 import com.cw.audio7.util.Util;
 import com.cw.audio7.util.audio.UtilAudio;
 import com.cw.audio7.util.preferences.Pref;
@@ -37,6 +36,8 @@ import java.util.Locale;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
+
+import static com.cw.audio7.main.MainAct.mFolderUi;
 
 /**
  * Created by cw on 2017/10/26.
@@ -244,7 +245,7 @@ public class AudioUi_note
            UtilAudio.hasAudioExtension(audioName[0]))
         {
             Audio_manager.mAudioPos = NoteUi.getFocus_notePos();
-            MainAct.mPlaying_pageTableId = TabsHost.getCurrentPageTableId();
+            MainAct.mPlaying_pageTableId = mFolderUi.tabsHost.getCurrentPageTableId();
 
             // new instance
             if(Audio_manager.audio7Player == null) {

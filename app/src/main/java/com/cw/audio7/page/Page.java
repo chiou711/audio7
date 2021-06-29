@@ -43,6 +43,8 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import static com.cw.audio7.main.MainAct.mFolderUi;
+
 public class Page extends Fragment implements OnStartDragListener {
 
     public int page_tableId;
@@ -52,12 +54,16 @@ public class Page extends Fragment implements OnStartDragListener {
     public static int mCurrPlayPosition;
     public static int mHighlightPosition;
     public SeekBar seekBarProgress;
-    public AppCompatActivity act;
 
     public PageAdapter itemAdapter;
     private ItemTouchHelper itemTouchHelper;
+    AppCompatActivity act;
 
     public Page(){
+    }
+
+    public Page(AppCompatActivity _act){
+        act = _act;
     }
 
     @Override
@@ -66,14 +72,12 @@ public class Page extends Fragment implements OnStartDragListener {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Bundle args = getArguments();
         page_tableId = args.getInt("page_table_id");
         //System.out.println("Page_recycler / _onCreateView / page_tableId = " + page_tableId);
 
         View rootView = inflater.inflate(R.layout.page_view, container, false);
-        act = MainAct.mAct;
 
         recyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerView);
         TextView blankView = rootView.findViewById(R.id.blankPage);
@@ -103,7 +107,7 @@ public class Page extends Fragment implements OnStartDragListener {
 
         fillData();
 
-        TabsHost.showFooter(MainAct.mAct);
+        mFolderUi.tabsHost.showFooter(act);
 
         ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(itemAdapter);
         itemTouchHelper = new ItemTouchHelper(callback);
@@ -126,9 +130,10 @@ public class Page extends Fragment implements OnStartDragListener {
     public void onResume() {
 //        System.out.println("Page_recycler / _onResume / page_tableId = " + page_tableId);
         super.onResume();
-        if(Pref.getPref_focusView_page_tableId(MainAct.mAct) == page_tableId) {
+        if(Pref.getPref_focusView_page_tableId(act) == page_tableId) {
 //            System.out.println("Page_recycler / _onResume / resume_listView_vScroll");
-            TabsHost.resume_listView_vScroll(recyclerView);
+            if( (mFolderUi.tabsHost!= null) && (recyclerView != null) )
+                mFolderUi.tabsHost.resume_listView_vScroll(recyclerView);
         }
     }
 
@@ -136,7 +141,7 @@ public class Page extends Fragment implements OnStartDragListener {
     {
         //System.out.println("Page_recycler / _fillData / page_tableId = " + page_tableId);
         if(itemAdapter == null)
-            itemAdapter = new PageAdapter(page_tableId, this);
+            itemAdapter = new PageAdapter(act,page_tableId, this);
         // Set PageAdapter_recycler as the adapter for RecyclerView.
         recyclerView.setAdapter(itemAdapter);
     }
@@ -206,7 +211,7 @@ public class Page extends Fragment implements OnStartDragListener {
 
     public int getNotesCountInPage(AppCompatActivity act)
     {
-        int page_table_id = TabsHost.getCurrentPageTableId();
+        int page_table_id = mFolderUi.tabsHost.getCurrentPageTableId();
         DB_page db_page = new DB_page(act,page_table_id );
         int count = db_page.getNotesCount(true);
         return count;

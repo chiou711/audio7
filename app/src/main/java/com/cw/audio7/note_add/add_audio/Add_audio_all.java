@@ -30,8 +30,6 @@ import com.cw.audio7.R;
 import com.cw.audio7.db.DB_drawer;
 import com.cw.audio7.db.DB_folder;
 import com.cw.audio7.db.DB_page;
-import com.cw.audio7.drawer.Drawer;
-import com.cw.audio7.folder.FolderUi;
 import com.cw.audio7.main.MainAct;
 import com.cw.audio7.tabs.TabsHost;
 import com.cw.audio7.util.Util;
@@ -49,6 +47,9 @@ import java.util.Objects;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+
+import static com.cw.audio7.main.MainAct.mDrawer;
+import static com.cw.audio7.main.MainAct.mFolderUi;
 
 public class Add_audio_all extends Fragment
 {
@@ -160,7 +161,7 @@ public class Add_audio_all extends Fragment
                                     if ((pages_count % PAGES_PER_FOLDER) == 0) {
                                         folders_count = (pages_count / PAGES_PER_FOLDER) + 1 + existing_folders_count;
 
-                                        if (folders_count > Drawer.getFolderCount())
+                                        if (folders_count > mDrawer.getFolderCount())
                                             addNewFolder(String.valueOf((pages_count / PAGES_PER_FOLDER) + 1));
                                     }
 
@@ -248,8 +249,8 @@ public class Add_audio_all extends Fragment
         Pref.setPref_focusView_folder_tableId(act, lastFolderTableId);
         Pref.setPref_focusView_page_tableId(act, 1);
 
-        TabsHost.setLastPageTableId(0);
-        TabsHost.setFocus_tabPos(0);
+        mFolderUi.tabsHost.setLastPageTableId(0);
+        mFolderUi.tabsHost.setFocus_tabPos(0);
     }
 
     // add new page
@@ -260,11 +261,11 @@ public class Add_audio_all extends Fragment
         int folders_count = dB_drawer.getFoldersCount(true);
         for (int pos = 0; pos < folders_count; pos++) {
             if (dB_drawer.getFolderTableId(pos, true) == Pref.getPref_focusView_folder_tableId(act))
-                FolderUi.setFocus_folderPos(pos);
+                mFolderUi.setFocus_folderPos(pos);
         }
         // get current Max page table Id
         int currentMaxPageTableId = 0;
-        int pagesCount = FolderUi.getFolder_pagesCount(act, FolderUi.getFocus_folderPos());
+        int pagesCount = mFolderUi.getFolder_pagesCount(act, mFolderUi.getFocus_folderPos());
 
         DB_folder db_folder = new DB_folder(act, DB_folder.getFocusFolder_tableId());
         for (int i = 0; i < pagesCount; i++) {
@@ -286,13 +287,13 @@ public class Add_audio_all extends Fragment
         // commit: final page viewed
         Pref.setPref_focusView_page_tableId(act, newPageTableId);
 
-        TabsHost.setCurrentPageTableId(newPageTableId);
+        mFolderUi.tabsHost.setCurrentPageTableId(newPageTableId);
     }
 
     // add new note
     void addNewNote(String audioUri)
     {
-        DB_page dB = new DB_page(act, TabsHost.getCurrentPageTableId());
+        DB_page dB = new DB_page(act, mFolderUi.tabsHost.getCurrentPageTableId());
         // insert
         if (!Util.isEmptyString(audioUri))
             dB.insertNote("",  audioUri, "",  1);// add new note, get return row Id
@@ -387,7 +388,7 @@ public class Add_audio_all extends Fragment
     {
         List<StorageUtils.StorageInfo> storageList = StorageUtils.getStorageList();
 
-        existing_folders_count = Drawer.getFolderCount();
+        existing_folders_count = mDrawer.getFolderCount();
         folders_count = 0;
         pages_count = 0;
         isDoing = true;

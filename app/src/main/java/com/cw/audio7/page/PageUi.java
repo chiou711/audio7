@@ -22,7 +22,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -36,20 +35,26 @@ import android.widget.Space;
 import com.cw.audio7.R;
 import com.cw.audio7.db.DB_folder;
 import com.cw.audio7.db.DB_page;
-import com.cw.audio7.folder.FolderUi;
 import com.cw.audio7.main.MainAct;
 import com.cw.audio7.define.Define;
-import com.cw.audio7.tabs.TabsHost;
 import com.cw.audio7.util.TouchableEditText;
 import com.cw.audio7.util.Util;
 import com.cw.audio7.util.preferences.Pref;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import static com.cw.audio7.main.MainAct.mFolderUi;
+
 // implement lambda expressions
-public class PageUi
+public class PageUi extends Page
 {
 	public PageUi(){}
+
+	AppCompatActivity act;
+	public  PageUi(AppCompatActivity _act) {
+		super(_act);
+		act = _act;
+	}
 
     /*
 	 * Change Page Color
@@ -86,7 +91,7 @@ public class PageUi
 		// set current selection
 		for(int i=0;i< Util.getStyleCount();i++)
 		{
-			if(Util.getCurrentPageStyle(TabsHost.getFocus_tabPos()) == i)
+			if(Util.getCurrentPageStyle(mFolderUi.tabsHost.getFocus_tabPos()) == i)
 			{
 				RadioButton button = (RadioButton) RG_view.getChildAt(i);
 		    	if(i%2 == 0)
@@ -106,14 +111,14 @@ public class PageUi
 		radioGroup.setOnCheckedChangeListener( (anyName, id) -> {
 				DB_folder db = new DB_folder(MainAct.mAct,DB_folder.getFocusFolder_tableId());
 				int style = radioGroup.indexOfChild(radioGroup.findViewById(id));
-                int pos = TabsHost.getFocus_tabPos();
+                int pos = mFolderUi.tabsHost.getFocus_tabPos();
 				db.updatePage(db.getPageId(pos, true),
 							  db.getPageTitle(pos, true),
 							  db.getPageTableId(pos, true),
 							  style,
                               true);
 	 			dlg.dismiss();
-				FolderUi.startTabsHostRun();
+			mFolderUi.startTabsHostRun();
 		});
 	}
 
@@ -174,7 +179,7 @@ public class PageUi
 			mButton.setText(R.string.btn_Finish);
 			mButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_menu_finish , 0, 0, 0);
 			DB_folder db = new DB_folder(act,Pref.getPref_focusView_folder_tableId(act));
-		    int focus_tabPos = 	TabsHost.getFocus_tabPos();
+		    int focus_tabPos = 	mFolderUi.tabsHost.getFocus_tabPos();
 			if(getTabPositionState() != LEFTMOST)
 			{
 				Pref.setPref_focusView_page_tableId(act, db.getPageTableId(focus_tabPos, true));
@@ -182,7 +187,7 @@ public class PageUi
 						focus_tabPos -1);
 
 				// shift left when audio playing
-				if(MainAct.mPlaying_folderPos == FolderUi.getFocus_folderPos()) {
+				if(MainAct.mPlaying_folderPos == mFolderUi.getFocus_folderPos()) {
 					// target is playing index
 					if (focus_tabPos == MainAct.mPlaying_pagePos)
 						MainAct.mPlaying_pagePos--;
@@ -190,8 +195,8 @@ public class PageUi
 					else if ((focus_tabPos - MainAct.mPlaying_pagePos) == 1)
 						MainAct.mPlaying_pagePos++;
 				}
-				FolderUi.startTabsHostRun();
-				TabsHost.setFocus_tabPos(focus_tabPos-1);
+				mFolderUi.startTabsHostRun();
+				mFolderUi.tabsHost.setFocus_tabPos(focus_tabPos-1);
 				updateButtonState(dlg);
 			}
 	    });
@@ -208,14 +213,14 @@ public class PageUi
 			mButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_menu_finish , 0, 0, 0);
 
 			DB_folder db = new DB_folder(act,Pref.getPref_focusView_folder_tableId(act));
-			int focus_tabPos = 	TabsHost.getFocus_tabPos();
+			int focus_tabPos = 	mFolderUi.tabsHost.getFocus_tabPos();
 			if(getTabPositionState() != RIGHTMOST)
 			{
 				Pref.setPref_focusView_page_tableId(act, db.getPageTableId(focus_tabPos, true));
 				swapPage(focus_tabPos, focus_tabPos +1);
 
 				// shift right when audio playing
-				if(MainAct.mPlaying_folderPos == FolderUi.getFocus_folderPos()) {
+				if(MainAct.mPlaying_folderPos == mFolderUi.getFocus_folderPos()) {
 					// target is playing index
 					if (focus_tabPos== MainAct.mPlaying_pagePos)
 						MainAct.mPlaying_pagePos++;
@@ -223,8 +228,8 @@ public class PageUi
 					else if ((MainAct.mPlaying_pagePos - focus_tabPos) == 1)
 						MainAct.mPlaying_pagePos--;
 				}
-				FolderUi.startTabsHostRun();
-				TabsHost.setFocus_tabPos(TabsHost.getFocus_tabPos()+1);
+				mFolderUi.startTabsHostRun();
+				mFolderUi.tabsHost.setFocus_tabPos(mFolderUi.tabsHost.getFocus_tabPos()+1);
 				updateButtonState(dlg);
 			}
 	    });
@@ -238,7 +243,7 @@ public class PageUi
 
 	private static int getTabPositionState()
 	{
-		int pos = TabsHost.getFocus_tabPos();
+		int pos = mFolderUi.tabsHost.getFocus_tabPos();
 
 		DB_folder db = new DB_folder(MainAct.mAct,Pref.getPref_focusView_folder_tableId(MainAct.mAct));
 		int count = db.getPagesCount(true);
@@ -497,18 +502,18 @@ public class PageUi
 	    // set scroll X
 		final int scrollX = (tabTotalCount) * 60 * 5; //over the last scroll X
 
-        FolderUi.startTabsHostRun();
+		mFolderUi.startTabsHostRun();
 
-		if(TabsHost.mTabLayout != null) {
-			TabsHost.mTabLayout.post(() -> {
-				TabsHost.mTabLayout.scrollTo(scrollX, 0);
+		if(mFolderUi.tabsHost.mTabLayout != null) {
+			mFolderUi.tabsHost.mTabLayout.post(() -> {
+				mFolderUi.tabsHost.mTabLayout.scrollTo(scrollX, 0);
 //					Pref.setPref_focusView_scrollX_byFolderTableId(act, scrollX);
 			});
 		}
 
 		MainAct.mAct.invalidateOptionsMenu();
 		//todo For first folder, first page: tab is not seen
-		TabsHost.setFocus_tabPos(0);
+		mFolderUi.tabsHost.setFocus_tabPos(0);
 	}
 
 	/* 
@@ -540,25 +545,25 @@ public class PageUi
 		final int scrollX = 0; // leftmost
 
 		// commit: scroll X
-        FolderUi.startTabsHostRun();
+		mFolderUi.startTabsHostRun();
 
-        if(TabsHost.mTabLayout != null){
-            TabsHost.mTabLayout.post(new Runnable() {
+        if(mFolderUi.tabsHost.mTabLayout != null){
+	        mFolderUi.tabsHost.mTabLayout.post(new Runnable() {
                 @Override
                 public void run() {
                     System.out.println("PageUi / _insertPage_leftmost / _Runnable / scrollX = " + scrollX);
-                    TabsHost.mTabLayout.scrollTo(scrollX, 0);
+	                mFolderUi.tabsHost.mTabLayout.scrollTo(scrollX, 0);
 //                    Pref.setPref_focusView_scrollX_byFolderTableId(act, scrollX);
                 }
             });
         }
 		
 		// update highlight tab
-		if(MainAct.mPlaying_folderPos == FolderUi.getFocus_folderPos())
+		if(MainAct.mPlaying_folderPos == mFolderUi.getFocus_folderPos())
 			MainAct.mPlaying_pagePos++;
 
 		MainAct.mAct.invalidateOptionsMenu();
-		TabsHost.setFocus_tabPos(0);
+		mFolderUi.tabsHost.setFocus_tabPos(0);
 	}
 	
 	
@@ -579,11 +584,11 @@ public class PageUi
 		for(int i = 0; i<dbFolder.getPagesCount(false); i++)
 		{
 			if(tableId == dbFolder.getPageTableId(i, false)) {
-				TabsHost.setFocus_tabPos(i);
-				TabsHost.setCurrentPageTableId(tableId);
+				mFolderUi.tabsHost.setFocus_tabPos(i);
+				mFolderUi.tabsHost.setCurrentPageTableId(tableId);
 			}
 			
-	    	if(	dbFolder.getPageId(i, false)== TabsHost.getFirstPos_pageId())
+	    	if(	dbFolder.getPageId(i, false)== mFolderUi.tabsHost.getFirstPos_pageId())
 	    		Pref.setPref_focusView_page_tableId(act, dbFolder.getPageTableId(i, false) );
 		}
 		dbFolder.close();

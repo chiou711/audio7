@@ -100,6 +100,8 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import static com.cw.audio7.main.MainAct.mFolderUi;
+
 public class Util 
 {
     SharedPreferences mPref_vibration;
@@ -314,7 +316,7 @@ public class Util
 		mDbFolder = new DB_folder(MainAct.mAct, Pref.getPref_focusView_folder_tableId(MainAct.mAct));
 	    ListView listView = ((AlertDialog) dialogInterface).getListView();
 	    final ListAdapter originalAdapter = listView.getAdapter();
-	    final int style = Util.getCurrentPageStyle(TabsHost.getFocus_tabPos());
+	    final int style = Util.getCurrentPageStyle(mFolderUi.tabsHost.getFocus_tabPos());
         CheckedTextView textViewDefault = new CheckedTextView(mAct) ;
         defaultBgClr = textViewDefault.getDrawingCacheBackgroundColor();
         defaultTextClr = textViewDefault.getCurrentTextColor();
@@ -346,7 +348,7 @@ public class Util
 	            View view = originalAdapter.getView(position, convertView, parent);
 	            //set CheckedTextView in order to change button color
 	            CheckedTextView textView = (CheckedTextView)view;
-	            if(mDbFolder.getPageTableId(position,true) == TabsHost.getCurrentPageTableId())
+	            if(mDbFolder.getPageTableId(position,true) == mFolderUi.tabsHost.getCurrentPageTableId())
 	            {
 		            textView.setTypeface(null, Typeface.BOLD_ITALIC);
 		            textView.setBackgroundColor(ColorSet.mBG_ColorArray[style]);
@@ -491,7 +493,7 @@ public class Util
 
 		String sentString = NEW_LINE;
 
-		int pageTableId = TabsHost.mTabsPagerAdapter.getItem(tabPos).page_tableId;
+		int pageTableId = mFolderUi.tabsHost.mTabsPagerAdapter.getItem(tabPos).page_tableId;
 		List<Long> noteIdArray = new ArrayList<>();
 
 		DB_page dbPage = new DB_page(MainAct.mAct, pageTableId);

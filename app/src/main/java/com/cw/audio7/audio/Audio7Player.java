@@ -30,9 +30,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cw.audio7.R;
-import com.cw.audio7.folder.FolderUi;
 import com.cw.audio7.main.MainAct;
-import com.cw.audio7.tabs.TabsHost;
 import com.cw.audio7.util.ColorSet;
 import com.cw.audio7.util.Util;
 import com.cw.audio7.util.audio.UtilAudio;
@@ -42,6 +40,8 @@ import java.util.Locale;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import static com.cw.audio7.main.MainAct.mFolderUi;
 
 public class Audio7Player
 {
@@ -105,7 +105,7 @@ public class Audio7Player
                     Audio_manager.mAudioPos++;
                     audioUrl = Audio_manager.getAudioStringAt(Audio_manager.mAudioPos);
 
-                    if(Audio_manager.mAudioPos >= TabsHost.getCurrentPage().getNotesCountInPage(act))
+                    if(Audio_manager.mAudioPos >= mFolderUi.tabsHost.getCurrentPage().getNotesCountInPage(act))
                         break;
 				}
 
@@ -264,8 +264,8 @@ public class Audio7Player
 
 							// for page audio gif
 							if(  (Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE) &&
-								 (TabsHost.getCurrentPage().itemAdapter != null)  ) {
-								TabsHost.getCurrentPage().itemAdapter.notifyDataSetChanged();
+								 (mFolderUi.tabsHost.getCurrentPage().itemAdapter != null)  ) {
+								mFolderUi.tabsHost.getCurrentPage().itemAdapter.notifyDataSetChanged();
 							}
 
 							Audio_manager.setTogglePlayerState(false);
@@ -298,8 +298,8 @@ public class Audio7Player
 					tryPlay_nextAudio();
 
 					if(isOnAudioPlayingPage()) {
-						scrollPlayingItemToBeVisible(TabsHost.getCurrentPage().recyclerView);
-						TabsHost.getCurrentPage().itemAdapter.notifyDataSetChanged();
+						scrollPlayingItemToBeVisible(mFolderUi.tabsHost.getCurrentPage().recyclerView);
+						mFolderUi.tabsHost.getCurrentPage().itemAdapter.notifyDataSetChanged();
 					}
 				}
 			}
@@ -309,11 +309,15 @@ public class Audio7Player
     // check if is on audio playing page
     public static boolean isOnAudioPlayingPage()
     {
-        return ( (Audio_manager.getPlayerState() != Audio_manager.PLAYER_AT_STOP) &&
-                     (MainAct.mPlaying_folderPos == FolderUi.getFocus_folderPos()) &&
-		             (TabsHost.getFocus_tabPos() == MainAct.mPlaying_pagePos)     &&
-			         (MainAct.mPlaying_pageTableId == TabsHost.getCurrentPageTableId()) &&
-                     (TabsHost.getCurrentPage().recyclerView != null)                     );
+    	boolean isSameTabPos = false;
+    	if(mFolderUi.tabsHost != null)
+    	    isSameTabPos = (mFolderUi.tabsHost.getFocus_tabPos() == MainAct.mPlaying_pagePos);
+
+	    return ( (Audio_manager.getPlayerState() != Audio_manager.PLAYER_AT_STOP) &&
+                     (MainAct.mPlaying_folderPos == mFolderUi.getFocus_folderPos()) &&
+		             isSameTabPos     &&
+			         (MainAct.mPlaying_pageTableId == mFolderUi.tabsHost.getCurrentPageTableId()) &&
+                     (mFolderUi.tabsHost.getCurrentPage().recyclerView != null)                     );
     }
 
 	/**
@@ -433,8 +437,8 @@ public class Audio7Player
 		}
 
 		// do v scroll
-		TabsHost.store_listView_vScroll(recyclerView);
-		TabsHost.resume_listView_vScroll(recyclerView);
+		mFolderUi.tabsHost.store_listView_vScroll(recyclerView);
+		mFolderUi.tabsHost.resume_listView_vScroll(recyclerView);
 	}
 
     /**

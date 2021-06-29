@@ -32,6 +32,8 @@ import com.mobeta.android.dslv.SimpleDragSortCursorAdapter;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import static com.cw.audio7.main.MainAct.mFolderUi;
+
 /**
  * Created by CW on 2016/8/23.
  */
@@ -44,7 +46,9 @@ public class Folder
     DB_drawer dB_drawer;
     SimpleDragSortCursorAdapter folderAdapter;
 
-    public Folder(AppCompatActivity act)
+    Folder(){};
+
+    public void FolderSetup(AppCompatActivity act)
     {
         this.act = act;
         listView = (DragSortListView) act.findViewById(R.id.drawer_listview);
@@ -146,7 +150,7 @@ public class Folder
             int loop = Math.abs(startPosition-endPosition);
             for(int i=0;i< loop;i++)
             {
-                FolderUi.swapFolderRows(startPosition,endPosition);
+                mFolderUi.swapFolderRows(startPosition,endPosition);
                 if((startPosition-endPosition) >0)
                     endPosition++;
                 else
@@ -162,7 +166,7 @@ public class Folder
                     MainAct.mPlaying_folderPos = i;
             }
             adapter.notifyDataSetChanged();
-            FolderUi.updateFocus_folderPosition();
+            mFolderUi.updateFocus_folderPosition();
         }
     };
 
@@ -198,12 +202,12 @@ public class Folder
         public void onItemClick(AdapterView<?> parent, View view, int position, long id)
         {
             System.out.println("Folder / _onItemClickListener / position = " + position);
-            FolderUi.setFocus_folderPos(position);
+            mFolderUi.setFocus_folderPos(position);
 
             DB_drawer db_drawer = new DB_drawer(act);
             Pref.setPref_focusView_folder_tableId(act,db_drawer.getFolderTableId(position,true) );
 
-            MainAct.openFolder();
+            mFolderUi.openFolder();
         }
     }
 
@@ -222,7 +226,7 @@ public class Folder
         @Override
         public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id)
         {
-            FolderUi.editFolder(act,position, adapter);
+            mFolderUi.editFolder(act,position, adapter);
             return true;
         }
     }

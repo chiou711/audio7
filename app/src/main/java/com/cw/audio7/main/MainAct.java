@@ -29,7 +29,6 @@ import com.cw.audio7.config.Config;
 import com.cw.audio7.db.DB_folder;
 import com.cw.audio7.db.DB_page;
 import com.cw.audio7.drawer.Drawer;
-import com.cw.audio7.folder.Folder;
 import com.cw.audio7.folder.FolderUi;
 import com.cw.audio7.note_add.Add_note_option;
 import com.cw.audio7.note_add.add_audio.Add_audio_all;
@@ -78,7 +77,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.view.GravityCompat;
 import androidx.fragment.app.Fragment;
@@ -102,8 +100,8 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
     public static int mLastOkTabId = 1;
     public static SharedPreferences mPref_show_note_attribute;
     OnBackPressedListener onBackPressedListener;
-    public Drawer drawer;
-    public static Folder mFolder;
+    public static Drawer mDrawer;
+    public static FolderUi mFolderUi;
     public Toolbar mToolbar;
 
     public static MediaBrowserCompat mMediaBrowserCompat;
@@ -218,7 +216,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                     // Close the activity as they have declined
                     // the EULA
                     dialog.dismiss();
-                    mAct.finish();
+                    finish();
             };
 
             // back button listener
@@ -253,11 +251,6 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
         System.out.println("MainAct / _doCreate");
 
 //		Context context = getApplicationContext();
-
-        // enable ActionBar app icon to behave as action to toggle nav drawer
-//	        getActionBar().setDisplayHomeAsUpEnabled(true);
-//	        getActionBar().setHomeButtonEnabled(true);
-//			getActionBar().setBackgroundDrawable(new ColorDrawable(ColorSet.getBarColor(mAct)));
 
         mContext = getBaseContext();
 
@@ -320,25 +313,25 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
 //        System.out.println("MainAct / _onKeyDown / keyCode = " + keyCode);
         switch (keyCode) {
             case KeyEvent.KEYCODE_MEDIA_PREVIOUS: //88
-                if(TabsHost.audioUi_page != null)
-                    TabsHost.audioUi_page.audio_previous_btn.performClick();
+                if(mFolderUi.tabsHost.audioUi_page != null)
+                    mFolderUi.tabsHost.audioUi_page.audio_previous_btn.performClick();
                 return true;
 
             case KeyEvent.KEYCODE_MEDIA_NEXT: //87
-                if(TabsHost.audioUi_page != null)
-                    TabsHost.audioUi_page.audio_next_btn.performClick();
+                if(mFolderUi.tabsHost.audioUi_page != null)
+                    mFolderUi.tabsHost.audioUi_page.audio_next_btn.performClick();
                 return true;
 
             case KeyEvent.KEYCODE_MEDIA_PLAY: //126
-                if(TabsHost.audioUi_page != null)
-                    TabsHost.audioUi_page.audio_play_btn.performClick();
+                if(mFolderUi.tabsHost.audioUi_page != null)
+                    mFolderUi.tabsHost.audioUi_page.audio_play_btn.performClick();
                 else
                     playFirstAudio();
                 return true;
 
             case KeyEvent.KEYCODE_MEDIA_PAUSE: //127
-                if(TabsHost.audioUi_page != null)
-                    TabsHost.audioUi_page.audio_play_btn.performClick();
+                if(mFolderUi.tabsHost.audioUi_page != null)
+                    mFolderUi.tabsHost.audioUi_page.audio_play_btn.performClick();
                 return true;
 
             case KeyEvent.KEYCODE_BACK:
@@ -425,14 +418,14 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
         if (mToolbar != null) {
             setSupportActionBar(mToolbar);
             mToolbar.setNavigationIcon(R.drawable.ic_drawer);
-            mToolbar.setNavigationOnClickListener(v -> Drawer.drawerLayout.openDrawer(GravityCompat.START));
+            mToolbar.setNavigationOnClickListener(v -> mDrawer.drawerLayout.openDrawer(GravityCompat.START));
         }
     }
 
     // set action bar for fragment
     void initActionBar_home()
     {
-        drawer.drawerToggle.setDrawerIndicatorEnabled(false);
+        mDrawer.drawerToggle.setDrawerIndicatorEnabled(false);
 
         if(getSupportActionBar() != null) {
             getSupportActionBar().setTitle(R.string.app_name);
@@ -518,16 +511,16 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
             if(bEULA_accepted)
                 configLayoutView(); //createAssetsFile inside
 
-            if(drawer != null)
-                drawer.drawerToggle.syncState();
+            if(mDrawer != null)
+                mDrawer.drawerToggle.syncState();
 
             // get focus folder table Id, default folder table Id: 1
             DB_drawer dB_drawer = new DB_drawer(this);
             dB_drawer.open();
             for (int i = 0; i < dB_drawer.getFoldersCount(false); i++) {
                 if (dB_drawer.getFolderTableId(i, false) == Pref.getPref_focusView_folder_tableId(this)) {
-                    FolderUi.setFocus_folderPos(i);
-                    System.out.println("MainAct / _onResume / FolderUi.getFocus_folderPos() = " + FolderUi.getFocus_folderPos());
+                    mFolderUi.setFocus_folderPos(i);
+                    System.out.println("MainAct / _onResume / mFolderUi.getFocus_folderPos() = " + mFolderUi.getFocus_folderPos());
                 }
             }
             dB_drawer.close();
@@ -586,8 +579,8 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                 isStorageRequestedExport = false;
             }
 
-            if (FolderUi.mHandler != null)
-                FolderUi.mHandler.removeCallbacks(FolderUi.mTabsHostRun);
+            if (mFolderUi.mHandler != null)
+                mFolderUi.mHandler.removeCallbacks(mFolderUi.mTabsHostRun);
         }
         // fix: home button failed after power off/on in Config fragment
         else {
@@ -597,35 +590,6 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
             }
         }
     }
-
-    // open folder
-    public static void openFolder()
-    {
-        System.out.println("MainAct / _openFolder");
-
-        DB_drawer dB_drawer = new DB_drawer(mAct);
-        int folders_count = dB_drawer.getFoldersCount(true);
-
-        if (folders_count > 0) {
-            int pref_focus_table_id = Pref.getPref_focusView_folder_tableId(MainAct.mAct);
-            for(int folder_pos=0; folder_pos<folders_count; folder_pos++)
-            {
-                if(dB_drawer.getFolderTableId(folder_pos,true) == pref_focus_table_id) {
-                    // select folder
-                    FolderUi.selectFolder(mAct, folder_pos);
-
-                    // set focus folder position
-                    FolderUi.setFocus_folderPos(folder_pos);
-                }
-            }
-            // set focus table Id
-            DB_folder.setFocusFolder_tableId(pref_focus_table_id);
-
-            if (mAct.getSupportActionBar() != null)
-                mAct.getSupportActionBar().setTitle(mFolderTitle);
-        }
-    }
-
 
     @Override
     protected void onDestroy()
@@ -650,7 +614,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
             mMediaBrowserCompat.disconnect();
 
         //hide notification
-        NotificationManagerCompat.from(MainAct.mAct).cancel(BackgroundAudioService.notification_id);
+        NotificationManagerCompat.from(mAct).cancel(BackgroundAudioService.notification_id);
 
         mMediaBrowserCompat = null;
 
@@ -673,9 +637,9 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
         configLayoutView();
 
         // Pass any configuration change to the drawer toggles
-        drawer.drawerToggle.onConfigurationChanged(newConfig);
+        mDrawer.drawerToggle.onConfigurationChanged(newConfig);
 
-		drawer.drawerToggle.syncState();
+		mDrawer.drawerToggle.syncState();
     }
 
 
@@ -714,8 +678,8 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
         }
         else
         {
-            if((drawer != null) && drawer.isDrawerOpen())
-                drawer.closeDrawer();
+            if((mDrawer != null) && mDrawer.isDrawerOpen())
+                mDrawer.closeDrawer();
             else
                 super.onBackPressed();
         }
@@ -738,16 +702,16 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
             System.out.println("MainAct / _onBackStackChanged / init");
             onBackPressedListener = null;
 
-            if(mFolder.adapter!=null)
-                mFolder.adapter.notifyDataSetChanged();
+            if(mFolderUi.adapter!=null)
+                mFolderUi.adapter.notifyDataSetChanged();
 
             configLayoutView();
 
-            drawer.drawerToggle.syncState(); // make sure toggle icon state is correct
+            mDrawer.drawerToggle.syncState(); // make sure toggle icon state is correct
 
             // change audio panel when Note audio is changed to Page audio
-            if (BackgroundAudioService.mMediaPlayer != null)
-                PageAdapter.openAudioPanel_page(Audio_manager.mAudioPos);
+//            if (BackgroundAudioService.mMediaPlayer != null) //todo replace
+//                PageAdapter.openAudioPanel_page(Audio_manager.mAudioPos);
         }
     }
 
@@ -779,8 +743,8 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
     public boolean onPrepareOptionsMenu(android.view.Menu menu) {
         System.out.println("MainAct / _onPrepareOptionsMenu");
 
-        if( (drawer == null) ||
-            (Drawer.drawerLayout == null) ||
+        if( (mDrawer == null) ||
+            (mDrawer.drawerLayout == null) ||
             (!bEULA_accepted) ||
             (mFragmentManager.getBackStackEntryCount() != 0) ) {
             return false;
@@ -793,7 +757,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
          * Folder group
          */
         // If the navigation drawer is open, hide action items related to the content view
-        if(drawer.isDrawerOpen())
+        if(mDrawer.isDrawerOpen())
         {
             // for landscape: the layout file contains folder menu
             if(Util.isLandscapeOrientation(mAct)) {
@@ -816,7 +780,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
             mMenu.findItem(R.id.HANDLE_CHECKED_NOTES).setVisible(false);
             mMenu.setGroupVisible(R.id.group_pages_and_more, false);
         }
-        else if(!drawer.isDrawerOpen())
+        else if(!mDrawer.isDrawerOpen())
         {
             if(Util.isLandscapeOrientation(mAct))
                 mMenu.setGroupVisible(R.id.group_folders, false);
@@ -837,7 +801,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                 Objects.requireNonNull(getSupportActionBar()).setTitle(mFolderTitle);
 
                 // pages count
-                int pgsCnt = FolderUi.getFolder_pagesCount(this,FolderUi.getFocus_folderPos());
+                int pgsCnt = mFolderUi.getFolder_pagesCount(this,mFolderUi.getFocus_folderPos());
 
                 // notes count
                 int notesCnt = 0;
@@ -1020,9 +984,9 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
 
                     initActionBar();
 
-                    mFolderTitle = dB_drawer.getFolderTitle(FolderUi.getFocus_folderPos(),true);
+                    mFolderTitle = dB_drawer.getFolderTitle(mFolderUi.getFocus_folderPos(),true);
                     setTitle(mFolderTitle);
-                    drawer.closeDrawer();
+                    mDrawer.closeDrawer();
                 }
                 return true;
             }
@@ -1031,7 +995,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
 
         // The action bar home/up action should open or close the drawer.
         // ActionBarDrawerToggle will take care of this.
-        if (drawer.drawerToggle.onOptionsItemSelected(item))
+        if (mDrawer.drawerToggle.onOptionsItemSelected(item))
         {
             System.out.println("MainAct / _onOptionsItemSelected / drawerToggle.onOptionsItemSelected(item) == true ");
             return true;
@@ -1040,8 +1004,8 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
         switch (item.getItemId())
         {
             case MenuId.ADD_NEW_FOLDER:
-                FolderUi.renewFirstAndLast_folderId();
-                FolderUi.addNewFolder(this, FolderUi.mLastExist_folderTableId +1, mFolder.getAdapter());
+                mFolderUi.renewFirstAndLast_folderId();
+                mFolderUi.addNewFolder(this, mFolderUi.mLastExist_folderTableId +1, mFolderUi.getAdapter());
                 return true;
 
             case MenuId.ENABLE_FOLDER_DRAG_AND_DROP:
@@ -1068,7 +1032,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                                     getResources().getString(R.string.set_enable),
                             Toast.LENGTH_SHORT).show();
                 }
-                mFolder.getAdapter().notifyDataSetChanged();
+                mFolderUi.getAdapter().notifyDataSetChanged();
                 invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
                 return true;
 
@@ -1077,7 +1041,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
 
                 if(dB_drawer.getFoldersCount(true)>0)
                 {
-                    drawer.closeDrawer();
+                    mDrawer.closeDrawer();
                     mMenu.setGroupVisible(R.id.group_notes, false); //hide the menu
                     DeleteFolders delFoldersFragment = new DeleteFolders();
                     mFragmentTransaction = mFragmentManager.beginTransaction();
@@ -1123,7 +1087,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                     Audio_manager.removeRunnable();
                     Audio_manager.audio7Player.showAudioPanel(this, false);
                     // refresh
-                    TabsHost.reloadCurrentPage();
+                    mFolderUi.tabsHost.reloadCurrentPage();
                     return true; // just stop playing, wait for user action
                 }
                 else // play first audio
@@ -1177,7 +1141,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
 
                 // get current Max page table Id
                 int currentMaxPageTableId = 0;
-                int pgCnt = FolderUi.getFolder_pagesCount(this,FolderUi.getFocus_folderPos());
+                int pgCnt = mFolderUi.getFolder_pagesCount(this,mFolderUi.getFocus_folderPos());
                 DB_folder db_folder = new DB_folder(this,DB_folder.getFocusFolder_tableId());
 
                 for(int i=0;i< pgCnt;i++)
@@ -1234,7 +1198,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                             Toast.LENGTH_SHORT).show();
                 }
                 invalidateOptionsMenu();
-                TabsHost.reloadCurrentPage();//todo Need more to avoid system hang up?
+                mFolderUi.tabsHost.reloadCurrentPage();//todo Need more to avoid system hang up?
 //                recreate();
                 return true;
 
@@ -1254,7 +1218,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                                    Toast.LENGTH_SHORT).show();
                 }
                 invalidateOptionsMenu();
-                TabsHost.reloadCurrentPage();
+                mFolderUi.tabsHost.reloadCurrentPage();
                 return true;
 
             case MenuId.ENABLE_NOTE_SELECT:
@@ -1273,7 +1237,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                             Toast.LENGTH_SHORT).show();
                 }
                 invalidateOptionsMenu();
-                TabsHost.reloadCurrentPage();
+                mFolderUi.tabsHost.reloadCurrentPage();
                 return true;
 
             // sub menu for backup
@@ -1362,31 +1326,31 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
         // initial
         BackgroundAudioService.mMediaPlayer = null;//for first
 
-        String uriString = new DB_page(mAct,TabsHost.getCurrentPageTableId())
+        String uriString = new DB_page(mAct,mFolderUi.tabsHost.getCurrentPageTableId())
                 .getNoteAudioUri(0,true);
 
-        showAudioView(uriString);
+        mFolderUi.tabsHost.showAudioView(uriString);
 
         Audio_manager.setupAudioList();
         Audio_manager.audio7Player.runAudioState();
 
         if(Audio7Player.isOnAudioPlayingPage()) {
-            Audio_manager.audio7Player.scrollPlayingItemToBeVisible(TabsHost.getCurrentPage().recyclerView);
-            TabsHost.getCurrentPage().itemAdapter.notifyDataSetChanged();
+            Audio_manager.audio7Player.scrollPlayingItemToBeVisible(mFolderUi.tabsHost.getCurrentPage().recyclerView);
+            mFolderUi.tabsHost.getCurrentPage().itemAdapter.notifyDataSetChanged();
         }
 
         // update audio play position
-        MainAct.mPlaying_pagePos = TabsHost.getFocus_tabPos();
-        TabsHost.mTabsPagerAdapter.notifyDataSetChanged();
+        MainAct.mPlaying_pagePos = mFolderUi.tabsHost.getFocus_tabPos();
+        mFolderUi.tabsHost.mTabsPagerAdapter.notifyDataSetChanged();
 
         // update playing page position
-        mPlaying_pagePos = TabsHost.getFocus_tabPos();
+        mPlaying_pagePos = mFolderUi.tabsHost.getFocus_tabPos();
 
         // update playing page table Id
-        mPlaying_pageTableId = TabsHost.getCurrentPageTableId();
+        mPlaying_pageTableId = mFolderUi.tabsHost.getCurrentPageTableId();
 
         // update playing folder position
-        mPlaying_folderPos = FolderUi.getFocus_folderPos();
+        mPlaying_folderPos = mFolderUi.getFocus_folderPos();
 
         DB_drawer dB_drawer = new DB_drawer(this);
         MainAct.mPlaying_folderTableId = dB_drawer.getFolderTableId(MainAct.mPlaying_folderPos,true);
@@ -1402,28 +1366,14 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
         initActionBar();
 
         // new drawer
-        drawer = new Drawer(this,mToolbar);
-        drawer.initDrawer();
+        mDrawer = new Drawer(this,mToolbar);
+        mDrawer.initDrawer();
 
         // new folder
-        mFolder = new Folder(this);
+//        if(mFolderUi == null)resume_listView_vScroll
+            mFolderUi = new FolderUi(this);
 
-        openFolder();
-    }
-
-    // show audio view of page
-    public static void showAudioView(String audioUriStr) {
-        if(TabsHost.audioUi_page == null)
-            TabsHost.audioUi_page = new AudioUi_page(mAct,TabsHost.rootView,audioUriStr);
-        else
-            TabsHost.audioUi_page.initAudioPanel(TabsHost.rootView);
-
-        if(Audio_manager.audio7Player == null)
-            Audio_manager.audio7Player = new Audio7Player(mAct, TabsHost.audioUi_page.audioPanel, audioUriStr);
-        else {
-            Audio_manager.audio7Player.setAudioPanel(TabsHost.audioUi_page.audioPanel);
-            Audio_manager.audio7Player.initAudioBlock(audioUriStr);
-        }
+        mFolderUi.openFolder();
     }
 
     // callback: media browser connection

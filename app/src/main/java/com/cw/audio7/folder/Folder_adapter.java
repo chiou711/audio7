@@ -103,7 +103,7 @@ public class Folder_adapter extends SimpleDragSortCursorAdapter
     }
 
 
-    private static class ViewHolder
+    private class ViewHolder
     {
         ImageView audioPlayingIcon;
         TextView folderTitle; // refers to ListView item's ImageView
