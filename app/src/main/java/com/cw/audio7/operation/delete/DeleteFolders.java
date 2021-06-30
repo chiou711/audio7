@@ -61,6 +61,10 @@ public class DeleteFolders extends Fragment {
 
 	public DeleteFolders(){}
 
+    public DeleteFolders(AppCompatActivity _act){
+	    act = _act;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -71,7 +75,6 @@ public class DeleteFolders extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		rootView = inflater.inflate(R.layout.select_page_list, container, false);
-        act = MainAct.mAct;
 
 		// title
 		title = (TextView) rootView.findViewById(R.id.select_list_title);
@@ -167,7 +170,8 @@ public class DeleteFolders extends Fragment {
         //show list for selection
         list_selFolder = new List_selectFolder(act,rootView , mListView);
 
-		((MainAct)act).setOnBackPressedListener(new BaseBackPressedListener(act));
+//        ((MainAct)act).setOnBackPressedListener(new BaseBackPressedListener(act));
+//        act.setOnBackPressedListener(new BaseBackPressedListener(act));
 
 		return rootView;
 	}
@@ -185,7 +189,7 @@ public class DeleteFolders extends Fragment {
         DB_drawer dbDrawer = new DB_drawer(act);
 
         // drawer DB check
-        boolean doDB_check = true;
+        boolean doDB_check = false;
         if(doDB_check) {
             dbDrawer.open();
             for (int i = 0; i < list_selFolder.count; i++) {
@@ -219,10 +223,12 @@ public class DeleteFolders extends Fragment {
 
                 // 2) delete folder table
                 dbDrawer.dropFolderTable(folderTableId,false);
+                System.out.println("DeleteFolders / drop folderTableId = " + folderTableId);
 
                 // 3) delete folder Id
                 int folderId = (int)dbDrawer.getFolderId(i,false);
                 dbDrawer.deleteFolderId(folderId,false);
+                System.out.println("DeleteFolders / delete folderId = " + folderId);
 
                 // change focus
                 mFolderUi.setFocus_folderPos(0);
@@ -257,12 +263,13 @@ public class DeleteFolders extends Fragment {
 //        int scrollX = 0; //over the last scroll X
 //        Pref.setPref_focusView_scrollX_byFolderTableId(act, scrollX );
 
-        if(BackgroundAudioService.mMediaPlayer != null)
-        {
-            Audio_manager.stopAudioPlayer();
-            Audio_manager.mAudioPos = 0;
-            Audio_manager.setPlayerState(Audio_manager.PLAYER_AT_STOP);
-        }
+        //todo TBD
+//        if(BackgroundAudioService.mMediaPlayer != null)
+//        {
+//            Audio_manager.stopAudioPlayer();
+//            Audio_manager.mAudioPos = 0;
+//            Audio_manager.setPlayerState(Audio_manager.PLAYER_AT_STOP);
+//        }
 
         list_selFolder = new List_selectFolder(act,rootView , mListView);
     }

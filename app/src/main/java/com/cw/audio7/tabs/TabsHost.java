@@ -134,15 +134,12 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
         mViewPager = (ViewPager) rootView.findViewById(R.id.tabs_pager);
 
         int pageCount = 0;
-        // mTabsPagerAdapter
-        if(mTabsPagerAdapter == null) {
-            mTabsPagerAdapter = new TabsPagerAdapter(act, act.getSupportFragmentManager());
+        mTabsPagerAdapter = new TabsPagerAdapter(act, act.getSupportFragmentManager());
 
-            // add pages to mTabsPagerAdapter
+        // add pages to mTabsPagerAdapter
 
-            if (mDrawer.getFolderCount() > 0) {
-                pageCount = addPages(mTabsPagerAdapter);
-            }
+        if (mDrawer.getFolderCount() > 0) {
+            pageCount = addPages(mTabsPagerAdapter);
         }
 
         // show blank folder if no page exists
@@ -400,7 +397,7 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
         System.out.println("TabsHost / _onPause");
 
         //  Remove fragments
-//        if(!act.isDestroyed())
+        if(!act.isDestroyed())
             removePages();//Put here will solve onBackStackChanged issue (no Page_recycler / _onCreate)
 
         if (adView != null) {

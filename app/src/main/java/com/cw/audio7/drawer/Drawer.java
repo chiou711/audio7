@@ -36,6 +36,7 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentManager;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.FragmentTransaction;
 
 import static com.cw.audio7.main.MainAct.mFolderUi;
 
@@ -108,14 +109,14 @@ public class Drawer {
 
                     case MenuId.DELETE_FOLDERS:
 
-                        DB_drawer dB_drawer = new DB_drawer(Drawer.this.act);
+                        DB_drawer dB_drawer = new DB_drawer(act);
                         if (dB_drawer.getFoldersCount(true) > 0) {
                             closeDrawer();
                             MainAct.mMenu.setGroupVisible(R.id.group_notes, false); //hide the menu
-                            DeleteFolders delFoldersFragment = new DeleteFolders();
-                            MainAct.mFragmentTransaction = act.getSupportFragmentManager().beginTransaction();
-                            MainAct.mFragmentTransaction.setCustomAnimations(R.anim.fragment_slide_in_left, R.anim.fragment_slide_out_left, R.anim.fragment_slide_in_right, R.anim.fragment_slide_out_right);
-                            MainAct.mFragmentTransaction.replace(R.id.content_frame, delFoldersFragment).addToBackStack("delete_folders").commit();
+                            DeleteFolders delFoldersFragment = new DeleteFolders(act);
+                            FragmentTransaction fragmentTransaction = act.getSupportFragmentManager().beginTransaction();
+                            fragmentTransaction.setCustomAnimations(R.anim.fragment_slide_in_left, R.anim.fragment_slide_out_left, R.anim.fragment_slide_in_right, R.anim.fragment_slide_out_right);
+                            fragmentTransaction.replace(R.id.content_frame, delFoldersFragment).addToBackStack("delete_folders").commit();
                         } else {
                             Toast.makeText(Drawer.this.act, R.string.config_export_none_toast, Toast.LENGTH_SHORT).show();
                         }

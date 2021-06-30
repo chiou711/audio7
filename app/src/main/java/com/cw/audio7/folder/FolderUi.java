@@ -250,7 +250,7 @@ public class FolderUi extends Folder
                 dialog1.dismiss();
                 updateFocus_folderPosition();
 
-                MainAct.mAct.invalidateOptionsMenu();
+                act.invalidateOptionsMenu();
             }
         });
     }
@@ -320,8 +320,6 @@ public class FolderUi extends Folder
         } else if (position < getFocus_folderPos())
             setFocus_folderPos(getFocus_folderPos()-1);
 
-//		System.out.println("FolderUi / MainAct.mFocus_folderPos = " + MainAct.mFocus_folderPos);
-
         // set new focus position
         DragSortListView listView = (DragSortListView) act.findViewById(R.id.drawer_listview);
         listView.setItemChecked(getFocus_folderPos(), true);
@@ -355,7 +353,7 @@ public class FolderUi extends Folder
         // refresh drawer list view
         folderAdapter.notifyDataSetChanged();
 
-        MainAct.mAct.invalidateOptionsMenu();
+        act.invalidateOptionsMenu();
 	}
 
 
@@ -363,7 +361,6 @@ public class FolderUi extends Folder
 	private Cursor mFolderCursor;
 	public void renewFirstAndLast_folderId()
 	{
-        Activity act = MainAct.mAct;
 		DB_drawer db_drawer = new DB_drawer(act);
 		int i = 0;
 		int foldersCount = db_drawer.getFoldersCount(true);
@@ -476,7 +473,6 @@ public class FolderUi extends Folder
 	private String mFolderTitle2;
 	void swapFolderRows(int startPosition, int endPosition)
 	{
-        Activity act = MainAct.mAct;
 		DB_drawer db_drawer = new DB_drawer(act);
 
         db_drawer.open();
@@ -502,7 +498,6 @@ public class FolderUi extends Folder
     // Update focus position
     void updateFocus_folderPosition()
     {
-    	Activity act = MainAct.mAct;
         DB_drawer db_drawer = new DB_drawer(act);
 
 		//update focus position
@@ -566,13 +561,11 @@ public class FolderUi extends Folder
     public Runnable mTabsHostRun = () -> {
 //	    System.out.println("FolderUi / mTabsHostRun");
 
-	    if(tabsHost == null) {
-		    tabsHost = new TabsHost(act);
+	    tabsHost = new TabsHost(act);
 
-		    FragmentTransaction fragmentTransaction = act.getSupportFragmentManager().beginTransaction();
-		    fragmentTransaction.replace(R.id.content_frame, tabsHost).commitAllowingStateLoss();
-		    act.getSupportFragmentManager().executePendingTransactions();
-	    }
+	    FragmentTransaction fragmentTransaction = act.getSupportFragmentManager().beginTransaction();
+	    fragmentTransaction.replace(R.id.content_frame, tabsHost).commitAllowingStateLoss();
+	    act.getSupportFragmentManager().executePendingTransactions();
     };
     
     public int getFolder_pagesCount(AppCompatActivity act,int folderPos)
@@ -582,7 +575,7 @@ public class FolderUi extends Folder
         int pagesCount;
         try {
             int focusFolder_tableId = dB_drawer.getFolderTableId(folderPos, true);
-            DB_folder db_folder = new DB_folder(MainAct.mAct, focusFolder_tableId);
+            DB_folder db_folder = new DB_folder(act, focusFolder_tableId);
             db_folder.open();
             pagesCount = db_folder.getPagesCount(false);
 //            System.out.println("FolderUi / _getFolder_pagesCount / pagesCount = " + pagesCount);
@@ -641,7 +634,7 @@ public class FolderUi extends Folder
 
 	public void openFolder()
 	{
-		System.out.println("MainAct / _openFolder");
+		System.out.println("FolderUi / _openFolder");
 
 		DB_drawer dB_drawer = new DB_drawer(act);
 		int folders_count = dB_drawer.getFoldersCount(true);
