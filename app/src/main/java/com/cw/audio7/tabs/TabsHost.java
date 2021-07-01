@@ -777,6 +777,7 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
 
             for (int i = 0; i < fragmentList.size(); i++) {
                 System.out.println("TabsHost / _removeTabs / i = " + i);
+//                fragmentList.remove(i);
                 act.getSupportFragmentManager().beginTransaction().remove(fragmentList.get(i)).commit();
             }
 

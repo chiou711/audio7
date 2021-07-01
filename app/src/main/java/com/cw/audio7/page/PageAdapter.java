@@ -221,6 +221,7 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
             marking = 0;
         }
 
+        AsyncTaskAudioBitmap audioAsyncTask;
         /**
          *  control block
          */
@@ -373,7 +374,6 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
 
                 //todo disable the following will decrease native memory usage
             try {
-                AsyncTaskAudioBitmap audioAsyncTask;
                 audioAsyncTask = new AsyncTaskAudioBitmap(mAct,
                         audioUri,
                         holder.thumbAudio,

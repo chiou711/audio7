@@ -16,6 +16,7 @@
 
 package com.cw.audio7.audio;
 
+import android.app.ProgressDialog;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -463,7 +464,8 @@ public class Audio7Player
 		    mAudioHandler.postDelayed(audio_runnable,Util.oneSecond/4);
 	    }
 	    else {
-			Async_audioUrlVerify asyncAudioUrlVerify = new Async_audioUrlVerify(act, this, Audio_manager.getAudioStringAt(Audio_manager.mAudioPos));
+	    	ProgressDialog dlg = new ProgressDialog(act);
+			Async_audioUrlVerify asyncAudioUrlVerify = new Async_audioUrlVerify(act, this, dlg,Audio_manager.getAudioStringAt(Audio_manager.mAudioPos));
 			asyncAudioUrlVerify.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "Searching media ...");
 	    }
     }
@@ -489,7 +491,8 @@ public class Audio7Player
 		}
 
 		// Async for waiting Audio Prepare flag
-		Async_audioPrepare asyncAudioPrepare = new Async_audioPrepare(act, this);
+		ProgressDialog dlg = new ProgressDialog(act);
+		Async_audioPrepare asyncAudioPrepare = new Async_audioPrepare(act, this,dlg);
 		asyncAudioPrepare.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "Preparing to play ...");
 	}
 
