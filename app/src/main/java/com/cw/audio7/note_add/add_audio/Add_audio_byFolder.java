@@ -32,9 +32,6 @@ import android.widget.Toast;
 import com.cw.audio7.R;
 import com.cw.audio7.db.DB_folder;
 import com.cw.audio7.db.DB_page;
-import com.cw.audio7.main.MainAct;
-import com.cw.audio7.tabs.TabsHost;
-import com.cw.audio7.util.BaseBackPressedListener;
 import com.cw.audio7.util.ColorSet;
 import com.cw.audio7.util.Util;
 import com.cw.audio7.util.audio.UtilAudio;
@@ -131,7 +128,7 @@ public class Add_audio_byFolder extends ListFragment
             }
         });
 
-        ((MainAct)getActivity()).setOnBackPressedListener(new BaseBackPressedListener(MainAct.mAct));
+//        ((MainAct)getActivity()).setOnBackPressedListener(new BaseBackPressedListener(MainAct.mAct));
 
         return rootView;
     }

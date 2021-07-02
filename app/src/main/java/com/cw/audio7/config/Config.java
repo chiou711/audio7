@@ -22,7 +22,6 @@ import java.util.Objects;
 
 import com.cw.audio7.audio.Audio_manager;
 import com.cw.audio7.audio.BackgroundAudioService;
-import com.cw.audio7.util.BaseBackPressedListener;
 import com.cw.audio7.main.MainAct;
 import com.cw.audio7.R;
 import com.cw.audio7.db.DB_drawer;
@@ -89,7 +88,7 @@ public class Config extends Fragment
 		recover_all_settings_button();
 
 		// set Back pressed listener
-		((MainAct)getActivity()).setOnBackPressedListener(new BaseBackPressedListener(MainAct.mAct));
+//		((MainAct)getActivity()).setOnBackPressedListener(new BaseBackPressedListener(MainAct.mAct));
 
 		return mRootView;
 	}   	

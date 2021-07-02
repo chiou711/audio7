@@ -34,13 +34,10 @@ import com.cw.audio7.note_add.Add_note_option;
 import com.cw.audio7.note_add.add_audio.Add_audio_all;
 import com.cw.audio7.audio.Audio_manager;
 import com.cw.audio7.audio.BackgroundAudioService;
-import com.cw.audio7.audio.AudioUi_page;
 import com.cw.audio7.operation.delete.DeleteFolders;
 import com.cw.audio7.operation.delete.DeletePages;
 import com.cw.audio7.page.Checked_notes_option;
-import com.cw.audio7.page.PageAdapter;
 import com.cw.audio7.page.PageUi;
-import com.cw.audio7.tabs.TabsHost;
 import com.cw.audio7.operation.import_export.Export_toSDCardFragment;
 import com.cw.audio7.operation.import_export.Import_filesList;
 import com.cw.audio7.db.DB_drawer;
@@ -514,16 +511,6 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
             if(mDrawer != null)
                 mDrawer.drawerToggle.syncState();
 
-            // get focus folder table Id, default folder table Id: 1
-            DB_drawer dB_drawer = new DB_drawer(this);
-            dB_drawer.open();
-            for (int i = 0; i < dB_drawer.getFoldersCount(false); i++) {
-                if (dB_drawer.getFolderTableId(i, false) == Pref.getPref_focusView_folder_tableId(this)) {
-                    mFolderUi.setFocus_folderPos(i);
-                    System.out.println("MainAct / _onResume / mFolderUi.getFocus_folderPos() = " + mFolderUi.getFocus_folderPos());
-                }
-            }
-            dB_drawer.close();
         }
     }
 
@@ -710,14 +697,16 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
             mDrawer.drawerToggle.syncState(); // make sure toggle icon state is correct
 
             // change audio panel when Note audio is changed to Page audio
-//            if (BackgroundAudioService.mMediaPlayer != null) //todo replace
+            //todo replace? need this? mFolderUi.tabsHost is null now
+//            if (BackgroundAudioService.mMediaPlayer != null)
 //                PageAdapter.openAudioPanel_page(Audio_manager.mAudioPos);
+//                mFolderUi.tabsHost.getCurrentPage().itemAdapter.openAudioPanel_page(Audio_manager.mAudioPos);
         }
     }
 
-    public void setOnBackPressedListener(OnBackPressedListener onBackPressedListener) {
-        this.onBackPressedListener = onBackPressedListener;
-    }
+//    public void setOnBackPressedListener(OnBackPressedListener onBackPressedListener) {
+//        this.onBackPressedListener = onBackPressedListener;
+//    }
 
     /**
      * on Activity Result

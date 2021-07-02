@@ -86,7 +86,7 @@ public class Folder
 
         // set adapter
         dB_drawer.open();
-        Cursor cursor = dB_drawer.mCursor_folder;
+        Cursor cursor = dB_drawer.cursor_folder;
 
         String[] from = new String[] { DB_drawer.KEY_FOLDER_TITLE};
         int[] to = new int[] { R.id.folderText};

@@ -107,7 +107,8 @@ public class Page extends Fragment implements OnStartDragListener {
 
         fillData();
 
-        mFolderUi.tabsHost.showFooter(act);
+        if(mFolderUi.tabsHost != null)
+            mFolderUi.tabsHost.showFooter(act);
 
         ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(itemAdapter);
         itemTouchHelper = new ItemTouchHelper(callback);
@@ -190,9 +191,9 @@ public class Page extends Fragment implements OnStartDragListener {
         dB_page.close();
     }
 
-    static public void swapTopBottom()
+    static public void swapTopBottom(AppCompatActivity _act)
     {
-        DB_page dB_page = new DB_page(  MainAct.mAct ,DB_page.getFocusPage_tableId());
+        DB_page dB_page = new DB_page(  _act ,DB_page.getFocusPage_tableId());
         int startCursor = dB_page.getNotesCount(true)-1;
         int endCursor = 0;
 

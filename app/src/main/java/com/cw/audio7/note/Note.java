@@ -155,19 +155,21 @@ public class Note extends Fragment
 
 		// DB
 		DB_folder dbFolder = new DB_folder(act,Pref.getPref_focusView_folder_tableId(act));
-		mStyle = dbFolder.getPageStyle(mFolderUi.tabsHost.getFocus_tabPos(), true);
 
-		mDb_page = new DB_page(act, mFolderUi.tabsHost.getCurrentPageTableId());
+		if(mFolderUi.tabsHost != null) {
+			mStyle = dbFolder.getPageStyle(mFolderUi.tabsHost.getFocus_tabPos(), true);
+			mDb_page = new DB_page(act, mFolderUi.tabsHost.getCurrentPageTableId());
 
-		if(mDb_page != null) {
-			mNoteId = mDb_page.getNoteId(NoteUi.getFocus_notePos(), true);
-			mAudioUriInDB = mDb_page.getNoteAudioUri_byId(mNoteId);
+			if (mDb_page != null) {
+				mNoteId = mDb_page.getNoteId(NoteUi.getFocus_notePos(), true);
+				mAudioUriInDB = mDb_page.getNoteAudioUri_byId(mNoteId);
+			}
 		}
 
-		if(UtilAudio.hasAudioExtension(mAudioUriInDB) ||
+		if (UtilAudio.hasAudioExtension(mAudioUriInDB) ||
 				UtilAudio.hasAudioExtension(Util.getDisplayNameByUriString(mAudioUriInDB, act)[0])) {
-				// create new instance after rotation
-				audioUi_note = new AudioUi_note(act, rootView, mAudioUriInDB);
+			// create new instance after rotation
+			audioUi_note = new AudioUi_note(act, rootView, mAudioUriInDB);
 		}
 
 		// Instantiate a ViewPager and a PagerAdapter.
@@ -204,8 +206,8 @@ public class Note extends Fragment
 			// show audio name
 			mNoteId = mDb_page.getNoteId(nextPosition,true);
 			mAudioUriInDB = mDb_page.getNoteAudioUri_byId(mNoteId);
-			System.out.println("Note / _onPageSelected /  mNoteId =" + mNoteId
-					+ "mAudioUriInDB = " + mAudioUriInDB);
+			System.out.println("Note / _onPageSelected /  mNoteId = " + mNoteId
+					+ ", mAudioUriInDB = " + mAudioUriInDB);
 
 			if(UtilAudio.hasAudioExtension(mAudioUriInDB)) {
 				if(audioUi_note == null)

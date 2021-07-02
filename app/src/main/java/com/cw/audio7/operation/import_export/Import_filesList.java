@@ -29,9 +29,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.cw.audio7.main.MainAct;
 import com.cw.audio7.R;
-import com.cw.audio7.util.BaseBackPressedListener;
 import com.cw.audio7.util.ColorSet;
 import com.cw.audio7.util.Util;
 
@@ -124,7 +122,7 @@ public class Import_filesList extends ListFragment
             }
         });
 
-        ((MainAct)getActivity()).setOnBackPressedListener(new BaseBackPressedListener(MainAct.mAct));
+//        ((MainAct)getActivity()).setOnBackPressedListener(new BaseBackPressedListener(MainAct.mAct));
 
         return rootView;
     }

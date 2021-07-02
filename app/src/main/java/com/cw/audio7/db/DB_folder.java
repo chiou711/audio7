@@ -31,15 +31,15 @@ import java.util.Date;
 public class DB_folder
 {
 
-    private Context mContext = null;
-    private static DatabaseHelper mDbHelper ;
-    public SQLiteDatabase mSqlDb;
+    final private Context context;
+    private DatabaseHelper dbHelper;
+    public SQLiteDatabase sqlDb;
 
 	// Table name format: Folder1
-	private static String DB_FOLDER_TABLE_PREFIX = "Folder";
+	final private static String DB_FOLDER_TABLE_PREFIX = "Folder";
 
 	// Table name format: Page1_2
-	private static String DB_PAGE_TABLE_PREFIX = "Page";
+	final private static String DB_PAGE_TABLE_PREFIX = "Page";
     private static String DB_PAGE_TABLE_NAME; // Note: name = prefix + id
 
 	// Page rows
@@ -49,11 +49,8 @@ public class DB_folder
     static final String KEY_PAGE_STYLE = "page_style";
     static final String KEY_PAGE_CREATED = "page_created";
 
-	// DB
-    DB_folder mDb_folder;
-
 	// Cursor
-	static Cursor mCursor_page;
+	Cursor cursor_page;
 
 	// Table Id
 	private static int mTableId_folder;
@@ -61,7 +58,7 @@ public class DB_folder
     /** Constructor */
 	public DB_folder(Context context, int folderTableId)
 	{
-		mContext = context;
+		this.context = context;
 		setFocusFolder_tableId(folderTableId);
 	}
 
@@ -71,14 +68,14 @@ public class DB_folder
      */
 	public DB_folder open() throws SQLException
 	{
-		mDbHelper = new DatabaseHelper(mContext);
+		dbHelper = new DatabaseHelper(context);
 
 		// Will call DatabaseHelper.onCreate()first time when WritableDatabase is not created yet
-		mSqlDb = mDbHelper.getWritableDatabase();
+		sqlDb = dbHelper.getWritableDatabase();
 
         try
         {
-            mCursor_page = this.getPageCursor_byFolderTableId(getFocusFolder_tableId());
+            cursor_page = this.getPageCursor_byFolderTableId(getFocusFolder_tableId());
         }
         catch (Exception e)
         {
@@ -90,9 +87,9 @@ public class DB_folder
 
 	public void close()
 	{
-        if((mCursor_page != null) && (!mCursor_page.isClosed()))
-            mCursor_page.close();
-		mDbHelper.close();
+        if((cursor_page != null) && (!cursor_page.isClosed()))
+            cursor_page.close();
+		dbHelper.close();
 	}
 
     //insert new page table by
@@ -114,7 +111,7 @@ public class DB_folder
 									DB_page.KEY_NOTE_AUDIO_URI + " TEXT," +
 									DB_page.KEY_NOTE_BODY + " TEXT," +
 									DB_page.KEY_NOTE_MARKING + " INTEGER);";
-        mSqlDb.execSQL(dB_insert_table);
+        sqlDb.execSQL(dB_insert_table);
 
         if(enDbOpenClose)
         	db.close();
@@ -129,7 +126,7 @@ public class DB_folder
         //format "Page1_2"
         DB_PAGE_TABLE_NAME = DB_PAGE_TABLE_PREFIX.concat(String.valueOf(getFocusFolder_tableId())+"_"+String.valueOf(id));
         String dB_drop_table = "DROP TABLE IF EXISTS " + DB_PAGE_TABLE_NAME + ";";
-        mSqlDb.execSQL(dB_drop_table);
+        sqlDb.execSQL(dB_drop_table);
 
         if(enDbOpenClose)
             this.close();
@@ -143,7 +140,7 @@ public class DB_folder
         //format "Page1_2"
     	DB_PAGE_TABLE_NAME = DB_PAGE_TABLE_PREFIX.concat(String.valueOf(folderTableId)+"_"+String.valueOf(id));
         String dB_drop_table = "DROP TABLE IF EXISTS " + DB_PAGE_TABLE_NAME + ";";
-        mSqlDb.execSQL(dB_drop_table);         
+        sqlDb.execSQL(dB_drop_table);
 
         this.close();
     } 
@@ -162,7 +159,7 @@ public class DB_folder
 
     // get page cursor
     public Cursor getPageCursor_byFolderTableId(int i) {
-        return mSqlDb.query(DB_FOLDER_TABLE_PREFIX + String.valueOf(i),
+        return sqlDb.query(DB_FOLDER_TABLE_PREFIX + String.valueOf(i),
 							strPageColumns,
 							null,
 							null,
@@ -197,7 +194,7 @@ public class DB_folder
         args.put(KEY_PAGE_TABLE_ID, ntId);
         args.put(KEY_PAGE_STYLE, style);
         args.put(KEY_PAGE_CREATED, now.getTime());
-        long rowId = mSqlDb.insert(intoTable, null, args);
+        long rowId = sqlDb.insert(intoTable, null, args);
 
         if(enDbOpenClose)
             this.close();
@@ -211,7 +208,7 @@ public class DB_folder
 
         if(enDbOpenClose)
             this.open();
-        long rowsNumber = mSqlDb.delete(table, KEY_PAGE_ID + "='" + pageId +"'", null);
+        long rowsNumber = sqlDb.delete(table, KEY_PAGE_ID + "='" + pageId +"'", null);
         if(enDbOpenClose)
             this.close();
 
@@ -224,7 +221,7 @@ public class DB_folder
     }
 
     //update page
-    public boolean updatePage(long id, String title, long ntId, int style, boolean enDbOpenClose)
+    public void  updatePage(long id, String title, long ntId, int style, boolean enDbOpenClose)
     {
         if(enDbOpenClose)
     	    this.open();
@@ -235,17 +232,15 @@ public class DB_folder
         args.put(KEY_PAGE_TABLE_ID, ntId);
         args.put(KEY_PAGE_STYLE, style);
         args.put(KEY_PAGE_CREATED, now.getTime());
-        int rowsNumber = mSqlDb.update(DB_FOLDER_TABLE_PREFIX +String.valueOf(getFocusFolder_tableId()), args, KEY_PAGE_ID + "=" + id, null);
+        sqlDb.update(DB_FOLDER_TABLE_PREFIX +String.valueOf(getFocusFolder_tableId()), args, KEY_PAGE_ID + "=" + id, null);
 
         if(enDbOpenClose)
             this.close();
-
-        return  (rowsNumber>0)?true:false;
     }
 
     public Cursor getPageCursor()
     {
-		return mCursor_page;
+		return cursor_page;
     }
     
 	public int getPagesCount(boolean enDbOpenClose)
@@ -253,7 +248,7 @@ public class DB_folder
 		if(enDbOpenClose)
 			this.open();
 
-        int count = mCursor_page.getCount();
+        int count = cursor_page.getCount();
 
         if(enDbOpenClose)
 			this.close();
@@ -266,9 +261,9 @@ public class DB_folder
         if(enDbOpenClose)
             this.open();
 
-        if(mCursor_page.moveToPosition(position))
+        if(cursor_page.moveToPosition(position))
         {
-            int pageId = mCursor_page.getInt(mCursor_page.getColumnIndex(KEY_PAGE_ID));
+            int pageId = cursor_page.getInt(cursor_page.getColumnIndex(KEY_PAGE_ID));
 //			System.out.println("DB_folder / _getPageId / pageId = " + pageId);
 
             if(enDbOpenClose)
@@ -309,8 +304,8 @@ public class DB_folder
 		if(enDbOpenClose)
 			this.open();
 
-        mCursor_page.moveToPosition(position);
-        int id = mCursor_page.getInt(mCursor_page.getColumnIndex(KEY_PAGE_TABLE_ID));
+        cursor_page.moveToPosition(position);
+        int id = cursor_page.getInt(cursor_page.getColumnIndex(KEY_PAGE_TABLE_ID));
 
         if(enDbOpenClose)
         	this.close();
@@ -323,8 +318,8 @@ public class DB_folder
 		if(enDbOpenClose)
 			this.open();
 
-        mCursor_page.moveToPosition(position);
-        String title = mCursor_page.getString(mCursor_page.getColumnIndex(KEY_PAGE_TITLE));
+        cursor_page.moveToPosition(position);
+        String title = cursor_page.getString(cursor_page.getColumnIndex(KEY_PAGE_TITLE));
 
         if(enDbOpenClose)
         	this.close();
@@ -339,8 +334,8 @@ public class DB_folder
         if(enDbOpenClose)
 		    this.open();
 
-        if(mCursor_page.moveToPosition(position))
-			style = mCursor_page.getInt(mCursor_page.getColumnIndex(KEY_PAGE_STYLE));
+        if(cursor_page.moveToPosition(position))
+			style = cursor_page.getInt(cursor_page.getColumnIndex(KEY_PAGE_STYLE));
 
         if(enDbOpenClose)
             this.close();

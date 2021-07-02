@@ -231,7 +231,7 @@ public class Audio7Player
 					}
 
 					if (BackgroundAudioService.mIsCompleted) {
-//						System.out.println("Audio7Player / _audio_runnable /  BackgroundAudioService.mIsCompleted");
+						System.out.println("Audio7Player / _audio_runnable /  BackgroundAudioService.mIsCompleted");
 						Audio_manager.setPlayNext(true);
 						BackgroundAudioService.mIsCompleted = false;
 					}
@@ -247,12 +247,14 @@ public class Audio7Player
 
 						// play previous
 						if (Audio_manager.isPlayPrevious()) {
+							System.out.println("Audio7Player / _audio_runnable /  isPlayPrevious");
 							audio_previous_btn.performClick();
 							Audio_manager.setPlayPrevious(false);
 						}
 
 						// play next
 						if (Audio_manager.isPlayNext() ) {
+							System.out.println("Audio7Player / _audio_runnable /  isPlayNext");
 							audio_next_btn.performClick();
 							Audio_manager.setPlayNext(false);
 						}
@@ -261,12 +263,13 @@ public class Audio7Player
 						if(Audio_manager.isTogglePlayerState()) {
 
 							/** update audio panel when media controller */
-							updateAudioPanel(MainAct.mAct);
+							updateAudioPanel(act);
 
-							// for page audio gif
-							if(  (Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE) &&
-								 (mFolderUi.tabsHost.getCurrentPage().itemAdapter != null)  ) {
-								mFolderUi.tabsHost.getCurrentPage().itemAdapter.notifyDataSetChanged();
+							// for page audio gif play/pause
+							if( (mFolderUi.tabsHost != null) &&
+								(mFolderUi.tabsHost.getCurrentPage().itemAdapter != null) &&
+								(Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE) ) {
+									mFolderUi.tabsHost.getCurrentPage().itemAdapter.notifyDataSetChanged();
 							}
 
 							Audio_manager.setTogglePlayerState(false);
@@ -525,7 +528,7 @@ public class Audio7Player
 	    if(mAudio_tryTimes < Audio_manager.getAudioFilesCount() ) {
 		    audioUrl = Audio_manager.getAudioStringAt(Audio_manager.mAudioPos);
 
-		    if(UtilAudio.hasAudioExtension(audioUrl) && Util.isUriExisted(audioUrl,MainAct.mAct))
+		    if(UtilAudio.hasAudioExtension(audioUrl) && Util.isUriExisted(audioUrl,act))
 			    startNewAudio();
 	    } else { // try enough times: still no audio file is found
 		    Toast.makeText(act,R.string.audio_message_no_media_file_is_found,Toast.LENGTH_SHORT).show();

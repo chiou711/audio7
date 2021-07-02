@@ -250,10 +250,12 @@ public class AudioUi_page {
         if(Audio7Player.isOnAudioPlayingPage())
             Audio_manager.audio7Player.scrollPlayingItemToBeVisible(mFolderUi.tabsHost.getCurrentPage().recyclerView);
 
-        if(mFolderUi.tabsHost.getCurrentPage().itemAdapter == null)
-            mFolderUi.tabsHost.reloadCurrentPage();
-        else
-            mFolderUi.tabsHost.getCurrentPage().itemAdapter.notifyDataSetChanged();
+        if( mFolderUi.tabsHost!=null ) {
+            if( mFolderUi.tabsHost.getCurrentPage().itemAdapter == null)
+                mFolderUi.tabsHost.reloadCurrentPage();
+            else
+                mFolderUi.tabsHost.getCurrentPage().itemAdapter.notifyDataSetChanged();
+        }
 
         // show new audio length immediately
         Audio_manager.audio7Player.initAudioBlock(Audio_manager.getAudioStringAt(Audio_manager.mAudioPos));

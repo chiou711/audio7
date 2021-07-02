@@ -303,9 +303,7 @@ public class Note_edit_ui {
                         else
                             marking = oriMarking;
 
-                        boolean isOK;
-	        			isOK = dB_page.updateNote(rowId, title,  audioUri,  body,marking, true); // update note
-	        			System.out.println("--- isOK = " + isOK);
+	        			dB_page.updateNote(rowId, title,  audioUri,  body,marking, true); // update note
 	        		}
 	        		currAudioUri = audioUri;
 	        	}

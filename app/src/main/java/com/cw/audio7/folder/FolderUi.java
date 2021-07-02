@@ -16,7 +16,6 @@
 
 package com.cw.audio7.folder;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.Context;
@@ -26,7 +25,6 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Handler;
 import android.os.PowerManager;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -369,7 +367,7 @@ public class FolderUi extends Folder
     	{
 			boolean isFirst;
 			db_drawer.open();
-			mFolderCursor = db_drawer.mCursor_folder;
+			mFolderCursor = db_drawer.cursor_folder;
 			mFolderCursor.moveToPosition(i);
 			isFirst = mFolderCursor.isFirst();
 			db_drawer.close();
@@ -551,6 +549,17 @@ public class FolderUi extends Folder
     public void startTabsHostRun()
     {
 	    System.out.println("FolderUi / _startTabsHostRun");
+
+	    DB_drawer dB_drawer = new DB_drawer(act);
+	    dB_drawer.open();
+	    for (int i = 0; i < dB_drawer.getFoldersCount(false); i++) {
+		    if (dB_drawer.getFolderTableId(i, false) == Pref.getPref_focusView_folder_tableId(act)) {
+			    mFolderUi.setFocus_folderPos(i);
+			    System.out.println("TabsHost / _onCreate / mFolderUi.getFocus_folderPos() = " + mFolderUi.getFocus_folderPos());
+		    }
+	    }
+	    dB_drawer.close();
+
         mHandler = new Handler();
         mHandler.post(mTabsHostRun);
     }

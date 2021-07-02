@@ -180,7 +180,7 @@ public class Note_addAudio extends AppCompatActivity {
 					if( (dB.getNotesCount(true) > 0) &&
 		        		option.equalsIgnoreCase("single_to_top"))
 		        	{
-		        		Page.swapTopBottom();
+		        		Page.swapTopBottom(this);
 		        		//update playing focus
 						Audio_manager.mAudioPos++;
 		        	}
@@ -249,7 +249,7 @@ public class Note_addAudio extends AppCompatActivity {
                             if( (dB.getNotesCount(true) > 0) &&
                                     option.equalsIgnoreCase("directory_to_top") )
                             {
-                                Page.swapTopBottom();
+                                Page.swapTopBottom(this);
                                 //update playing focus
                                 Audio_manager.mAudioPos++;
                             }

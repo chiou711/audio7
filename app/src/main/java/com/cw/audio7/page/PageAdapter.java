@@ -43,7 +43,6 @@ import com.cw.audio7.audio.BackgroundAudioService;
 import com.cw.audio7.page.item_touch_helper.ItemTouchHelperAdapter;
 import com.cw.audio7.page.item_touch_helper.ItemTouchHelperViewHolder;
 import com.cw.audio7.page.item_touch_helper.OnStartDragListener;
-import com.cw.audio7.tabs.TabsHost;
 import com.cw.audio7.util.ColorSet;
 import com.cw.audio7.util.Util;
 import com.cw.audio7.util.audio.UtilAudio;
@@ -71,7 +70,7 @@ import static com.cw.audio7.page.Page.swapRows;
 public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
         implements ItemTouchHelperAdapter
 {
-	private AppCompatActivity mAct;
+	private AppCompatActivity act;
     final DB_folder dbFolder;
 	private DB_page mDb_page;
     private final OnStartDragListener mDragStartListener;
@@ -81,10 +80,10 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
 
     PageAdapter(AppCompatActivity _act,int pageTableId, OnStartDragListener dragStartListener) {
 //        System.out.println("PageAdapter / constructor / pageTableId = " + pageTableId );
-	    mAct = _act;
+	    act = _act;
 	    mDragStartListener = dragStartListener;
 
-        dbFolder = new DB_folder(mAct,Pref.getPref_focusView_folder_tableId(mAct));
+        dbFolder = new DB_folder(act,Pref.getPref_focusView_folder_tableId(act));
 	    page_table_id = pageTableId;
 
         // style
@@ -106,10 +105,10 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
         listCache = new ArrayList<>();
 
         int notesCount = getItemCount();
-        mDb_page = new DB_page(mAct, page_table_id);
+        mDb_page = new DB_page(act, page_table_id);
         mDb_page.open();
         for(int i=0;i<notesCount;i++) {
-            Cursor cursor = mDb_page.mCursor_note;
+            Cursor cursor = mDb_page.cursor_note;
             if (cursor.moveToPosition(i)) {
                 Db_cache cache = new Db_cache();
                 cache.audioUri = cursor.getString(cursor.getColumnIndexOrThrow(KEY_NOTE_AUDIO_URI));
@@ -169,12 +168,12 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
 
         @Override
         public void onItemSelected() {
-            ((CardView)itemView).setCardBackgroundColor(ColorSet.getButtonColor(mAct));
+            ((CardView)itemView).setCardBackgroundColor(ColorSet.getButtonColor(act));
         }
 
         @Override
         public void onItemClear() {
-            ((CardView)itemView).setCardBackgroundColor(mAct.getResources().getColor(R.color.colorBlack));
+            ((CardView)itemView).setCardBackgroundColor(act.getResources().getColor(R.color.colorBlack));
         }
     }
 
@@ -184,7 +183,7 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
 
         int resource_id;
-        if(Pref.getPref_card_view_enable_large_view(mAct))
+        if(Pref.getPref_card_view_enable_large_view(act))
             resource_id = R.layout.page_card_view_high;
         else
             resource_id = R.layout.page_card_view;
@@ -202,7 +201,7 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
 
 //        System.out.println("PageAdapter / _onBindViewHolder / position = " + position);
 
-        ((CardView)holder.itemView).setCardBackgroundColor(mAct.getResources().getColor(R.color.colorBlack));
+        ((CardView)holder.itemView).setCardBackgroundColor(act.getResources().getColor(R.color.colorBlack));
 
         // get DB data
         String audioUri = null;
@@ -227,14 +226,14 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
          */
         // show row Id
         holder.rowId.setText(String.valueOf(position+1));
-        holder.rowId.setTextColor(mAct.getResources().getColor(R.color.colorWhite));
+        holder.rowId.setTextColor(act.getResources().getColor(R.color.colorWhite));
 
-        if( Pref.getPref_card_view_enable_select(mAct) ||
-            Pref.getPref_card_view_enable_draggable(mAct) )
+        if( Pref.getPref_card_view_enable_select(act) ||
+            Pref.getPref_card_view_enable_draggable(act) )
             holder.playlistOperation.setBackgroundColor(ColorSet.mBG_ColorArray[style]);
 
         // show marking check box
-        if(Pref.getPref_card_view_enable_select(mAct)) {
+        if(Pref.getPref_card_view_enable_select(act)) {
             // show checked icon
             holder.btnMarking.setVisibility(View.VISIBLE);
 
@@ -256,18 +255,18 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
         }
 
         // show drag button
-        if(Pref.getPref_card_view_enable_draggable(mAct))
+        if(Pref.getPref_card_view_enable_draggable(act))
             holder.btnDrag.setVisibility(View.VISIBLE);
         else
             holder.btnDrag.setVisibility(View.GONE);
 
         // show audio name
-        if(Util.isUriExisted(audioUri, mAct)) {
+        if(Util.isUriExisted(audioUri, act)) {
 
             // set audio name
             String[] audio_name = null;
             if(!Util.isEmptyString(audioUri))
-                audio_name = Util.getDisplayNameByUriString(audioUri, mAct);
+                audio_name = Util.getDisplayNameByUriString(audioUri, act);
 
 //            System.out.println("-> title = " + audio_name[0]);
 //            System.out.println("-> artist = " + audio_name[1]);
@@ -304,7 +303,7 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
 //            holder.audioTitle.setBackgroundColor(ColorSet.mBG_ColorArray[style]);
 //            holder.audioArtist.setBackgroundColor(ColorSet.mBG_ColorArray[style]);
 
-            holder.rowId.setBackgroundColor(ColorSet.getHighlightColor(mAct));
+            holder.rowId.setBackgroundColor(ColorSet.getHighlightColor(act));
 
             // background case 3: fill highlight
 //            holder.audioTitle.setBackgroundColor(ColorSet.getHighlightColor(mAct));
@@ -338,7 +337,7 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
 //            holder.audioTitle.setBackgroundColor(ColorSet.mBG_ColorArray[style]);
 //            holder.audioArtist.setBackgroundColor(ColorSet.mBG_ColorArray[style]);
 
-            holder.rowId.setBackground(mAct.getDrawable(R.drawable.bg_text_rounded));
+            holder.rowId.setBackground(act.getDrawable(R.drawable.bg_text_rounded));
 
             // gif case
             holder.audioBlock.setVisibility(View.VISIBLE);
@@ -351,8 +350,8 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
                 holder.audioTitle.setTextColor(ColorSet.mText_ColorArray[style]);
                 holder.audioArtist.setTextColor(ColorSet.mText_ColorArray[style]);
             } else {
-                holder.audioTitle.setTextColor(mAct.getResources().getColor(R.color.colorGray));
-                holder.audioArtist.setTextColor(mAct.getResources().getColor(R.color.colorGray));
+                holder.audioTitle.setTextColor(act.getResources().getColor(R.color.colorGray));
+                holder.audioArtist.setTextColor(act.getResources().getColor(R.color.colorGray));
             }
         }
 
@@ -367,14 +366,14 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
                 holder.thumbLength.setVisibility(View.VISIBLE);
 
                 int in_sample_size;
-                if (Pref.getPref_card_view_enable_large_view(mAct))
+                if (Pref.getPref_card_view_enable_large_view(act))
                     in_sample_size = 1;
                 else
                     in_sample_size = 1;//8; // 1/8 the width/height of the original
 
                 //todo disable the following will decrease native memory usage
             try {
-                audioAsyncTask = new AsyncTaskAudioBitmap(mAct,
+                audioAsyncTask = new AsyncTaskAudioBitmap(act,
                         audioUri,
                         holder.thumbAudio,
                         holder.progressBar,
@@ -419,7 +418,7 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
                 System.out.println("PageAdapter / _getView / btnMarking / _onClick");
 
                 // toggle marking and get new setting
-                int marking = toggleNoteMarking(mAct,position);
+                int marking = toggleNoteMarking(act,position);
 
                 updateDbCache();
 
@@ -448,7 +447,7 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
                 }
 
                 // set audio title / artist color
-                DB_page db_page = new DB_page(mAct,mFolderUi.tabsHost.getCurrentPageTableId());
+                DB_page db_page = new DB_page(act,mFolderUi.tabsHost.getCurrentPageTableId());
                 String audioUri = db_page.getNoteAudioUri(position,true);
 
                 if(!Util.isEmptyString(audioUri)) {
@@ -456,8 +455,8 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
                         viewHolder.audioTitle.setTextColor(ColorSet.mText_ColorArray[style]);
                         viewHolder.audioArtist.setTextColor(ColorSet.mText_ColorArray[style]);
                     } else {
-                        viewHolder.audioTitle.setTextColor(mAct.getResources().getColor(R.color.colorGray));
-                        viewHolder.audioArtist.setTextColor(mAct.getResources().getColor(R.color.colorGray));
+                        viewHolder.audioTitle.setTextColor(act.getResources().getColor(R.color.colorGray));
+                        viewHolder.audioArtist.setTextColor(act.getResources().getColor(R.color.colorGray));
                     }
                 }
 
@@ -485,10 +484,10 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
             public void onClick(View v) {
 
                 // check if selected
-                DB_page db_page = new DB_page(mAct,mFolderUi.tabsHost.getCurrentPageTableId());
+                DB_page db_page = new DB_page(act,mFolderUi.tabsHost.getCurrentPageTableId());
                 int marking = db_page.getNoteMarking(position,true);
                 if(marking == 0) {
-                    Toast.makeText(mAct,R.string.is_an_unchecked_item,Toast.LENGTH_SHORT).show();
+                    Toast.makeText(act,R.string.is_an_unchecked_item,Toast.LENGTH_SHORT).show();
                     return;
                 }
 
@@ -512,16 +511,16 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
 
             @Override
             public boolean onLongClick(View v) {
-                DB_page db_page = new DB_page(mAct, mFolderUi.tabsHost.getCurrentPageTableId());
+                DB_page db_page = new DB_page(act, mFolderUi.tabsHost.getCurrentPageTableId());
                 Long rowId = db_page.getNoteId(position,true);
 
-                Intent i = new Intent(mAct, Note_edit.class);
+                Intent i = new Intent(act, Note_edit.class);
                 i.putExtra("list_view_position", position);
                 i.putExtra(DB_page.KEY_NOTE_ID, rowId);
                 i.putExtra(DB_page.KEY_NOTE_TITLE, db_page.getNoteTitle_byId(rowId));
                 i.putExtra(DB_page.KEY_NOTE_AUDIO_URI , db_page.getNoteAudioUri_byId(rowId));
                 i.putExtra(DB_page.KEY_NOTE_BODY, db_page.getNoteBody_byId(rowId));
-                mAct.startActivity(i);
+                act.startActivity(i);
 
                 return true;
             }
@@ -551,14 +550,14 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
-	    mDb_page = new DB_page(mAct, page_table_id);
+	    mDb_page = new DB_page(act, page_table_id);
 	    return  mDb_page.getNotesCount(true);
     }
 
     // open Note audio panel
     void openAudioPanel_note(int position) {
         mFolderUi.tabsHost.getCurrentPage().mCurrPlayPosition = position;
-        DB_page db_page = new DB_page(mAct,mFolderUi.tabsHost.getCurrentPageTableId());
+        DB_page db_page = new DB_page(act,mFolderUi.tabsHost.getCurrentPageTableId());
         int count = db_page.getNotesCount(true);
         if(position < count)
         {
@@ -570,17 +569,17 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
 
             // hide the tab layout
             mFolderUi.tabsHost.mTabLayout.setVisibility(View.GONE);
-            mAct.getSupportFragmentManager()
+            act.getSupportFragmentManager()
                     .findFragmentById(R.id.content_frame)
                     .getView()
-                    .setBackgroundColor(mAct.getResources().getColor(R.color.colorBlack));
+                    .setBackgroundColor(act.getResources().getColor(R.color.colorBlack));
 
             /** Open Note fragment */
             Note noteFragment = new Note();
             final Bundle args = new Bundle();
             args.putInt("POSITION", position);
             noteFragment.setArguments(args);
-            FragmentTransaction transaction = mAct.getSupportFragmentManager().beginTransaction();
+            FragmentTransaction transaction = act.getSupportFragmentManager().beginTransaction();
             transaction.setCustomAnimations(R.anim.fragment_slide_up, R.anim.fragment_slide_down, R.anim.fragment_slide_up, R.anim.fragment_slide_down);
             transaction.replace(R.id.content_frame, noteFragment, "note").addToBackStack("note").commit();
         }
@@ -592,7 +591,7 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
         System.out.println("PageAdapter / _openAudioPanel_page");
         Audio_manager.setAudioPlayMode(Audio_manager.PAGE_PLAY_MODE);
 
-        DB_page db_page = new DB_page(mAct, mFolderUi.tabsHost.getCurrentPageTableId());
+        DB_page db_page = new DB_page(act, mFolderUi.tabsHost.getCurrentPageTableId());
         int notesCount = db_page.getNotesCount(true);
         if(position >= notesCount) //end of list
             return ;
@@ -621,7 +620,7 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
             MainAct.mPlaying_folderPos = mFolderUi.getFocus_folderPos();
 
             // update playing folder table Id
-            DB_drawer dB_drawer = new DB_drawer(mAct);
+            DB_drawer dB_drawer = new DB_drawer(act);
             MainAct.mPlaying_folderTableId = dB_drawer.getFolderTableId(MainAct.mPlaying_folderPos,true);
 
             mFolderUi.tabsHost.mTabsPagerAdapter.notifyDataSetChanged();
@@ -678,7 +677,7 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
         int oriStartPos = fromPos;
         int oriEndPos = toPos;
 
-        mDb_page = new DB_page(mAct, mFolderUi.tabsHost.getCurrentPageTableId());
+        mDb_page = new DB_page(act, mFolderUi.tabsHost.getCurrentPageTableId());
         if(fromPos >= mDb_page.getNotesCount(true)) // avoid footer error
             return false;
 
@@ -728,7 +727,7 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
         }
 
         // update footer
-        mFolderUi.tabsHost.showFooter(mAct);
+        mFolderUi.tabsHost.showFooter(act);
         return true;
     }
 

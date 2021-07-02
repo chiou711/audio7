@@ -36,9 +36,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cw.audio7.operation.List_selectPage;
-import com.cw.audio7.tabs.TabsHost;
-import com.cw.audio7.util.BaseBackPressedListener;
-import com.cw.audio7.main.MainAct;
 import com.cw.audio7.R;
 import com.cw.audio7.util.Util;
 
@@ -121,7 +118,7 @@ public class Export_toSDCardFragment extends Fragment {
 		// step 1: show list for Select
 		mList_selPage = new List_selectPage(getActivity(),rootView,mListView);
 
-		((MainAct)getActivity()).setOnBackPressedListener(new BaseBackPressedListener(MainAct.mAct));
+//		((MainAct)getActivity()).setOnBackPressedListener(new BaseBackPressedListener(MainAct.mAct));
 
 		return rootView;
 	}

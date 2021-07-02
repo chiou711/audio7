@@ -37,9 +37,6 @@ import com.cw.audio7.db.DB_drawer;
 import com.cw.audio7.db.DB_folder;
 import com.cw.audio7.main.MainAct;
 import com.cw.audio7.operation.List_selectFolder;
-import com.cw.audio7.audio.Audio_manager;
-import com.cw.audio7.audio.BackgroundAudioService;
-import com.cw.audio7.util.BaseBackPressedListener;
 import com.cw.audio7.util.Util;
 import com.cw.audio7.util.preferences.Pref;
 

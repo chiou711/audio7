@@ -26,7 +26,7 @@ import com.cw.audio7.define.Define;
 class DatabaseHelper extends SQLiteOpenHelper
 {
     static final String DB_NAME = Define.DB_FILE_NAME;
-    private static int DB_VERSION = 1;
+    final private static int DB_VERSION = 1;
     
     DatabaseHelper(Context context)
     {
