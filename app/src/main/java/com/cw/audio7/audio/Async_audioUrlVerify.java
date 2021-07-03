@@ -75,7 +75,7 @@ class Async_audioUrlVerify extends AsyncTask<String,Integer,String>
  	    // check if audio file exists or not
  		mIsOkUrl = false;
  		String scheme  = Util.getUriScheme(audioStr);
- 		System.out.println("scheme = " + scheme + " / path = " + audioStr);
+ 		System.out.println("Async_audioUrlVerify / doInBackground / scheme = " + scheme + " / path = " + audioStr);
  		
  		// if scheme is https or http
  		boolean isUriExisted;

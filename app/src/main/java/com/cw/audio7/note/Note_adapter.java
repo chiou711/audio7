@@ -20,7 +20,7 @@ import com.cw.audio7.R;
 import com.cw.audio7.db.DB_page;
 import com.cw.audio7.audio.AudioUi_note;
 import com.cw.audio7.audio.Audio_manager;
-import com.cw.audio7.tabs.TabsHost;
+import com.cw.audio7.main.MainAct;
 import com.cw.audio7.util.audio.UtilAudio;
 import com.cw.audio7.util.image.AsyncTaskAudioBitmap;
 import com.cw.audio7.util.ColorSet;
@@ -259,6 +259,7 @@ public class Note_adapter extends FragmentStatePagerAdapter
 			if(Audio_manager.getPlayerState() != Audio_manager.PLAYER_AT_PLAY) {
 				Audio_manager.stopAudioPlayer();
 				audioUi_note.audio_play_btn.performClick();
+				MainAct.mPlaying_folderPos = mFolderUi.getFocus_folderPos();
 			}
 		}
 	    mLastPosition = position;

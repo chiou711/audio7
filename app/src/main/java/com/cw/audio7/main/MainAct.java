@@ -695,12 +695,6 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
             configLayoutView();
 
             mDrawer.drawerToggle.syncState(); // make sure toggle icon state is correct
-
-            // change audio panel when Note audio is changed to Page audio
-            //todo replace? need this? mFolderUi.tabsHost is null now
-//            if (BackgroundAudioService.mMediaPlayer != null)
-//                PageAdapter.openAudioPanel_page(Audio_manager.mAudioPos);
-//                mFolderUi.tabsHost.getCurrentPage().itemAdapter.openAudioPanel_page(Audio_manager.mAudioPos);
         }
     }
 

@@ -26,10 +26,8 @@ import android.widget.TextView;
 
 import com.cw.audio7.R;
 import com.cw.audio7.db.DB_page;
-import com.cw.audio7.main.MainAct;
 import com.cw.audio7.page.item_touch_helper.OnStartDragListener;
 import com.cw.audio7.page.item_touch_helper.SimpleItemTouchHelperCallback;
-import com.cw.audio7.tabs.TabsHost;
 import com.cw.audio7.util.preferences.Pref;
 import com.cw.audio7.util.uil.UilCommon;
 

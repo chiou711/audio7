@@ -331,7 +331,6 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
         isDoingMarking = false;
     }
 
-
     @Override
     public void onResume() {
         super.onResume();

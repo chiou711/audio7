@@ -97,6 +97,16 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
         }
 
         updateDbCache();
+
+        // change audio panel when Note audio is changed to Page audio
+        if ( BackgroundAudioService.mMediaPlayer != null &&
+             MainAct.mPlaying_pageTableId == page_table_id  &&
+             MainAct.mPlaying_folderPos == mFolderUi.getFocus_folderPos())
+        {
+            openAudioPanel_page(Audio_manager.mAudioPos);
+            Audio_manager.audio7Player.updateAudioPanel(act);
+            mFolderUi.tabsHost.showPlayingTab();
+        }
     }
 
     // update list cache from DB
@@ -579,6 +589,7 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
             final Bundle args = new Bundle();
             args.putInt("POSITION", position);
             noteFragment.setArguments(args);
+
             FragmentTransaction transaction = act.getSupportFragmentManager().beginTransaction();
             transaction.setCustomAnimations(R.anim.fragment_slide_up, R.anim.fragment_slide_down, R.anim.fragment_slide_up, R.anim.fragment_slide_down);
             transaction.replace(R.id.content_frame, noteFragment, "note").addToBackStack("note").commit();
