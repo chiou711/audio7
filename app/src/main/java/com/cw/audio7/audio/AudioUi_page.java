@@ -181,7 +181,6 @@ public class AudioUi_page {
 
                 if(Audio_manager.mAudioPos == -1) {
                     Audio_manager.stopAudioPlayer();
-                    Audio_manager.removeRunnable();
                     Audio_manager.audio7Player.showAudioPanel(act,false);
                     mFolderUi.tabsHost.reloadCurrentPage();
                     Toast.makeText(mAct,R.string.toast_cyclic_play_disabled,Toast.LENGTH_LONG).show();
@@ -216,7 +215,6 @@ public class AudioUi_page {
 
                 if(Audio_manager.mAudioPos >= playingPage_notesCnt) {
                     Audio_manager.stopAudioPlayer();
-                    Audio_manager.removeRunnable();
                     Audio_manager.audio7Player.showAudioPanel(act,false);
                     mFolderUi.tabsHost.reloadCurrentPage();
                     Toast.makeText(mAct,R.string.toast_cyclic_play_disabled,Toast.LENGTH_LONG).show();

@@ -469,7 +469,6 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
         if(!Pref.getPref_background_play_enable(this)) {
             // stop audio when screen off
             Audio_manager.stopAudioPlayer();
-            Audio_manager.removeRunnable();
         }
 //        else {
             // continue playing, do nothing
@@ -1067,7 +1066,6 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                     (Audio_manager.getPlayerState() != Audio_manager.PLAYER_AT_STOP))
                 {
                     Audio_manager.stopAudioPlayer();
-                    Audio_manager.removeRunnable();
                     Audio_manager.audio7Player.showAudioPanel(this, false);
                     // refresh
                     mFolderUi.tabsHost.reloadCurrentPage();
@@ -1301,10 +1299,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
 
         // cancel playing
         if(BackgroundAudioService.mMediaPlayer != null)
-        {
             Audio_manager.stopAudioPlayer();
-            Audio_manager.removeRunnable();
-        }
 
         // initial
         BackgroundAudioService.mMediaPlayer = null;//for first

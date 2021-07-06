@@ -122,6 +122,8 @@ public class Audio_manager
 
         //hide notification
         NotificationManagerCompat.from(MainAct.mAct).cancel(BackgroundAudioService.notification_id);
+
+	    removeRunnable();
     }
 
     // remove runnable for update audio playing

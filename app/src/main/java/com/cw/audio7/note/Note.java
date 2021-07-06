@@ -102,7 +102,6 @@ public class Note extends Fragment
 		setHasOptionsMenu(true);
 
 		// force stop audio whenever user touch page mode thumb nail
-		Audio_manager.removeRunnable();
 		Audio_manager.stopAudioPlayer();
 
 		Audio_manager.audio7Player = null;

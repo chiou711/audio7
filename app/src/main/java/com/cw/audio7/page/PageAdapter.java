@@ -505,7 +505,6 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
 //                openAudioPanel_note(position);
 
                 // case 2: open Page audio
-                Audio_manager.removeRunnable();
                 Audio_manager.stopAudioPlayer();
                 Audio_manager.audio7Player = null;
                 openAudioPanel_page(position);
