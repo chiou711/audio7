@@ -16,7 +16,7 @@ public class NotificationDismissReceiver extends BroadcastReceiver {
 		System.out.println("NotificationDismissReceiver / _onReceive / notificationId = " + notificationId);
 
 		Audio_manager.stopAudioPlayer();
-		Audio_manager.audio7Player.showAudioPanel(MainAct.mAct, false);
+		mFolderUi.tabsHost.audio7Player.showAudioPanel(MainAct.mAct, false);
 
 		// refresh
 		mFolderUi.tabsHost.reloadCurrentPage();

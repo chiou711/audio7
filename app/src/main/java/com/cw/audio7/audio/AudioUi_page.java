@@ -43,26 +43,26 @@ import static com.cw.audio7.main.MainAct.mFolderUi;
 public class AudioUi_page {
 
     AppCompatActivity mAct;
-    public ViewGroup audioPanel;
+    private View audioPanel;
 
-    public TextView audio_title;
-    public TextView audio_artist; //todo
-    public TextView audio_curr_pos;
-    public SeekBar audio_seek_bar;
-    public TextView audio_length;
-    public TextView audio_number;
+    private TextView audio_curr_pos;
+    private SeekBar audio_seek_bar;
     public ImageView audio_previous_btn;
     public ImageView audio_play_btn;
     public ImageView audio_next_btn;
 
-    public int mediaFileLength;
+    private int mediaFileLength;
     private String audioUriStr;
+    private Audio7Player audio7Player;
 
-    public AudioUi_page(AppCompatActivity act,View root_view,String audio_uri_str)
+    public AudioUi_page(AppCompatActivity act,Audio7Player _audio7Player, View panel_view,String audio_uri_str)
     {
         mAct = act;
-        audioPanel = root_view.findViewById(R.id.audio_panel);
+        audio7Player = _audio7Player;
+        audioPanel = panel_view;
         audioUriStr = audio_uri_str;
+
+        Audio_manager.setAudioPlayMode(Audio_manager.PAGE_PLAY_MODE);
 
         System.out.println("AudioUi_page / constructor / audioUriStr = " + audioUriStr);
 
@@ -112,7 +112,7 @@ public class AudioUi_page {
                 System.out.println("AudioUi_note / _setOnSeekBarChangeListener / mediaFileLength = " + mediaFileLength);
                 if( BackgroundAudioService.mMediaPlayer != null  )
                 {
-                    int mPlayAudioPosition = (int) (((float)(Audio_manager.audio7Player.getMediaFileLength() / 100)) * seekBar.getProgress());
+                    int mPlayAudioPosition = (int) (((float)(audio7Player.getMediaFileLength() / 100)) * seekBar.getProgress());
                     BackgroundAudioService.mMediaPlayer.seekTo(mPlayAudioPosition);
                 }
             }
@@ -146,11 +146,11 @@ public class AudioUi_page {
             public void onClick(View v)
             {
 //                System.out.println("AudioUi_page / _initAudioBlock / audioPanel_play_button / _onClick");
-                Audio_manager.audio7Player.runAudioState();
+                audio7Player.runAudioState();
 
                 if(Audio7Player.isOnAudioPlayingPage())
                 {
-                    Audio_manager.audio7Player.scrollPlayingItemToBeVisible(mFolderUi.tabsHost.getCurrentPage().recyclerView);
+                    audio7Player.scrollPlayingItemToBeVisible(mFolderUi.tabsHost.getCurrentPage().recyclerView);
                     mFolderUi.tabsHost.getCurrentPage().itemAdapter.notifyDataSetChanged();
                 }
             }
@@ -181,7 +181,7 @@ public class AudioUi_page {
 
                 if(Audio_manager.mAudioPos == -1) {
                     Audio_manager.stopAudioPlayer();
-                    Audio_manager.audio7Player.showAudioPanel(act,false);
+                    audio7Player.showAudioPanel(act,false);
                     mFolderUi.tabsHost.reloadCurrentPage();
                     Toast.makeText(mAct,R.string.toast_cyclic_play_disabled,Toast.LENGTH_LONG).show();
                 }
@@ -215,7 +215,7 @@ public class AudioUi_page {
 
                 if(Audio_manager.mAudioPos >= playingPage_notesCnt) {
                     Audio_manager.stopAudioPlayer();
-                    Audio_manager.audio7Player.showAudioPanel(act,false);
+                    audio7Player.showAudioPanel(act,false);
                     mFolderUi.tabsHost.reloadCurrentPage();
                     Toast.makeText(mAct,R.string.toast_cyclic_play_disabled,Toast.LENGTH_LONG).show();
                 }
@@ -246,7 +246,7 @@ public class AudioUi_page {
 
         // gif case: add this will cause program hang up
         if(Audio7Player.isOnAudioPlayingPage())
-            Audio_manager.audio7Player.scrollPlayingItemToBeVisible(mFolderUi.tabsHost.getCurrentPage().recyclerView);
+            audio7Player.scrollPlayingItemToBeVisible(mFolderUi.tabsHost.getCurrentPage().recyclerView);
 
         if( mFolderUi.tabsHost!=null ) {
             if( mFolderUi.tabsHost.getCurrentPage().itemAdapter == null)
@@ -256,9 +256,9 @@ public class AudioUi_page {
         }
 
         // show new audio length immediately
-        Audio_manager.audio7Player.initAudioBlock(Audio_manager.getAudioStringAt(Audio_manager.mAudioPos));
+        audio7Player.initAudioBlock(Audio_manager.getAudioStringAt(Audio_manager.mAudioPos));
 
-        Audio_manager.audio7Player.runAudioState();
+        audio7Player.runAudioState();
     }
 
 }

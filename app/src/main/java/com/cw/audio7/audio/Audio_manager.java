@@ -26,10 +26,10 @@ import com.cw.audio7.util.Util;
 import androidx.core.app.NotificationManagerCompat;
 
 import static com.cw.audio7.main.MainAct.mFolderUi;
+import static com.cw.audio7.main.MainAct.removeRunnable;
 
 public class Audio_manager
 {
-	public static Audio7Player audio7Player;
 	private static List<String> audioList;
 	private static List<Integer> audioList_checked;
 
@@ -48,6 +48,8 @@ public class Audio_manager
 	public static boolean playNext;
 
 	public static boolean togglePlayerState;
+	public static String mAudioUri;
+	public static boolean kill_runnable = false;
 
 	// get play previous
 	public static boolean isPlayPrevious() {
@@ -126,13 +128,7 @@ public class Audio_manager
 	    removeRunnable();
     }
 
-    // remove runnable for update audio playing
-    public static void removeRunnable() {
-	    if ( (audio7Player != null)  &&
-			 (audio7Player.mAudioHandler != null) )  {
-		    audio7Player.mAudioHandler.removeCallbacks(audio7Player.audio_runnable);
-	    }
-    }
+
 
 
    // Get audio files count

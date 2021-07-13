@@ -67,6 +67,8 @@ import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
 
+import static com.cw.audio7.main.MainAct.audio_runnable;
+import static com.cw.audio7.main.MainAct.mAudioHandler;
 import static com.cw.audio7.main.MainAct.mDrawer;
 import static com.cw.audio7.main.MainAct.mFolderUi;
 
@@ -220,6 +222,7 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
      */
     PageUi pageUi;
     Bundle args;
+    public View audio_panel;
     private int addPages(TabsPagerAdapter adapter)
     {
         lastPageTableId = 0;
@@ -236,7 +239,8 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
                 if (pageTableId > lastPageTableId)
                     lastPageTableId = pageTableId;
 
-                pageUi = new PageUi(act);
+                audio_panel = rootView.findViewById(R.id.audio_panel);
+                pageUi = new PageUi(act,audio_panel);
                 args = new Bundle();
                 args.putInt("page_pos",i);
                 args.putInt("page_table_id",pageTableId);
@@ -301,13 +305,13 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
         {
             RecyclerView listView = page.recyclerView;
 
-            if( (Audio_manager.audio7Player != null) &&
-                    !isDoingMarking &&
-                    (listView != null) &&
-                    (Audio_manager.getPlayerState() != Audio_manager.PLAYER_AT_STOP)  )
+            if( (audio7Player != null) &&
+                !isDoingMarking &&
+                (listView != null) &&
+                (Audio_manager.getPlayerState() != Audio_manager.PLAYER_AT_STOP)  )
             {
                 if ( Audio7Player.isOnAudioPlayingPage())
-                    Audio_manager.audio7Player.scrollPlayingItemToBeVisible(listView); //todo Could hang up if page had too many notes (more then 1000)
+                    audio7Player.scrollPlayingItemToBeVisible(listView); //todo Could hang up if page had too many notes (more then 1000)
             }
         }
 
@@ -331,6 +335,7 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
         isDoingMarking = false;
     }
 
+    public Audio7Player audio7Player;
     @Override
     public void onResume() {
         super.onResume();
@@ -378,16 +383,35 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
          * */
         if( (Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE) &&
             (Audio_manager.getPlayerState() != Audio_manager.PLAYER_AT_STOP)               ) {
-
-            String uriString =  Audio_manager.getAudioStringAt(Audio_manager.mAudioPos);
-            showAudioView(uriString);
-
-            Audio_manager.audio7Player.updateAudioPanel(act);
+            if(audio7Player!=null)
+                audio7Player.updateAudioPanel(act);
         }
 
         if (adView != null) {
             adView.resume();
         }
+
+        // change audio panel when Note audio is changed to Page audio
+        if ( BackgroundAudioService.mMediaPlayer != null &&
+                //MainAct.mPlaying_pageTableId == page_table_id  &&
+                MainAct.mPlaying_folderPos == mFolderUi.getFocus_folderPos())
+        {
+            Audio_manager.kill_runnable = true;
+            System.out.println("MainAct / _onResume /  2");
+            audio7Player = new Audio7Player(act,audio_panel, Audio_manager.mAudioUri);
+            audioUi_page = new AudioUi_page(act, audio7Player,  audio_panel,Audio_manager.mAudioUri);
+
+            if(audio_panel != null)
+                audio_panel.setVisibility(View.VISIBLE);
+
+            audio7Player.updateAudioPanel(act);
+            audio7Player.updateAudioProgress();
+
+            mAudioHandler.postDelayed(audio_runnable,Util.oneSecond*2);
+
+            showPlayingTab();
+        }
+
     }
 
     @Override
@@ -780,22 +804,6 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
                 act.getSupportFragmentManager().beginTransaction().remove(fragmentList.get(i)).commit();
             }
 
-        }
-    }
-
-
-    // show audio view of page
-    public void showAudioView(String audioUriStr) {
-        if(audioUi_page == null) //todo Exception Attempt to read from field 'com.cw.audio7.audio.AudioUi_page com.cw.audio7.tabs.TabsHost.audioUi_page' on a null object reference
-            audioUi_page = new AudioUi_page(act,rootView,audioUriStr);
-        else
-            audioUi_page.initAudioPanel(rootView);
-
-        if(Audio_manager.audio7Player == null)
-            Audio_manager.audio7Player = new Audio7Player(act, audioUi_page.audioPanel, audioUriStr);
-        else {
-            Audio_manager.audio7Player.setAudioPanel(audioUi_page.audioPanel);
-            Audio_manager.audio7Player.initAudioBlock(audioUriStr);
         }
     }
 

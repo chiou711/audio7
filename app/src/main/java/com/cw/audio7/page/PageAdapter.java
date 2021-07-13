@@ -32,6 +32,7 @@ import android.widget.Toast;
 
 import com.cw.audio7.R;
 import com.cw.audio7.audio.Audio7Player;
+import com.cw.audio7.audio.AudioUi_page;
 import com.cw.audio7.db.DB_drawer;
 import com.cw.audio7.db.DB_folder;
 import com.cw.audio7.db.DB_page;
@@ -77,10 +78,14 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
 	private final int page_table_id;
     private int style;
     List<Db_cache> listCache;
+    AudioUi_page audioUi_page;
+    View panelView;
 
-    PageAdapter(AppCompatActivity _act,int pageTableId, OnStartDragListener dragStartListener) {
+
+    PageAdapter(AppCompatActivity _act,View _panelView,int pageTableId, OnStartDragListener dragStartListener) {
 //        System.out.println("PageAdapter / constructor / pageTableId = " + pageTableId );
 	    act = _act;
+	    panelView = _panelView;
 	    mDragStartListener = dragStartListener;
 
         dbFolder = new DB_folder(act,Pref.getPref_focusView_folder_tableId(act));
@@ -97,16 +102,6 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
         }
 
         updateDbCache();
-
-        // change audio panel when Note audio is changed to Page audio
-        if ( BackgroundAudioService.mMediaPlayer != null &&
-             MainAct.mPlaying_pageTableId == page_table_id  &&
-             MainAct.mPlaying_folderPos == mFolderUi.getFocus_folderPos())
-        {
-            openAudioPanel_page(Audio_manager.mAudioPos);
-            Audio_manager.audio7Player.updateAudioPanel(act);
-            mFolderUi.tabsHost.showPlayingTab();
-        }
     }
 
     // update list cache from DB
@@ -406,7 +401,6 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
         setBindViewHolder_listeners(holder,position);
     }
 
-
     /**
      * Set bind view holder listeners
      * @param viewHolder
@@ -506,10 +500,16 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
 
                 // case 2: open Page audio
                 Audio_manager.stopAudioPlayer();
-                Audio_manager.audio7Player = null;
                 openAudioPanel_page(position);
                 Audio_manager.setupAudioList();
-                Audio_manager.audio7Player.runAudioState();
+
+                String audioUriStr = db_page.getNoteAudioUri(position,true);
+                Audio_manager.mAudioUri = audioUriStr;
+
+                mFolderUi.tabsHost.audio7Player = new Audio7Player(act,panelView,audioUriStr);
+                audioUi_page = new AudioUi_page(act, mFolderUi.tabsHost.audio7Player,panelView,audioUriStr);
+
+                mFolderUi.tabsHost.audio7Player.runAudioState();
 
                 mFolderUi.tabsHost.showPlayingTab();
             }
@@ -599,7 +599,6 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
     // open Page audio panel
     public void openAudioPanel_page(int position) {
         System.out.println("PageAdapter / _openAudioPanel_page");
-        Audio_manager.setAudioPlayMode(Audio_manager.PAGE_PLAY_MODE);
 
         DB_page db_page = new DB_page(act, mFolderUi.tabsHost.getCurrentPageTableId());
         int notesCount = db_page.getNotesCount(true);
@@ -617,8 +616,6 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
 
             // create new Intent to play audio
             Audio_manager.mAudioPos = position;
-
-            mFolderUi.tabsHost.showAudioView(uriString);
 
             // update playing page position
             MainAct.mPlaying_pagePos = mFolderUi.tabsHost.getFocus_tabPos();

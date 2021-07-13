@@ -51,8 +51,8 @@ public class PageUi extends Page
 	public PageUi(){}
 
 	AppCompatActivity act;
-	public  PageUi(AppCompatActivity _act) {
-		super(_act);
+	public  PageUi(AppCompatActivity _act,View _panelView) {
+		super(_act,_panelView);
 		act = _act;
 	}
 

@@ -43,33 +43,160 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import static com.cw.audio7.main.MainAct.mFolderUi;
+import static com.cw.audio7.main.MainAct.mAudioHandler;
+import static com.cw.audio7.main.MainAct.audio_runnable;
+import static com.cw.audio7.main.MainAct.removeRunnable;
 
 public class Audio7Player
 {
 	private static final int DURATION_1S = 1000; // 1 seconds per slide
 	private int mAudio_tryTimes; // use to avoid useless looping in Continue mode
     private AppCompatActivity act;
-	public ViewGroup audio_panel;
-    public Handler mAudioHandler;
+	private View audio_panel;
     static int delayBeforeMediaStart = DURATION_1S;
+	static String audioUrl;
 
-	public Audio7Player(AppCompatActivity _act, ViewGroup audio_panel, String audio_uri_str){
+	public Audio7Player(AppCompatActivity _act, View audio_panel, String audio_uri_str){
 		System.out.println("Audio7Player / constructor ");
 
 		act = _act;
 		this.audio_panel = audio_panel;
-
 		initAudioBlock(audio_uri_str);
 
 		// start a new handler
         mAudioHandler = new Handler();
+
+		/**
+		 * Continue mode runnable
+		 */
+		audio_runnable = new Runnable() {
+			@Override
+			public void run() {
+//				System.out.println("Audio7Player / _audio_runnable");
+
+				if(Audio_manager.kill_runnable) {
+					System.out.println("------------ Audio7Player / _audio_runnable / kill runnable = true");
+					removeRunnable();
+				}
+
+				if (Audio_manager.getCheckedAudio(Audio_manager.mAudioPos) == 1) {
+
+					// for incoming call case and after Key protection
+					if (  (Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE) &&
+							isAudioPanelOn(act) )
+					{
+						showAudioPanel(act, true);
+					}
+
+					/** update audio progress */
+					updateAudioProgress();
+
+					// check if audio file exists or not
+					audioUrl = Audio_manager.getAudioStringAt(Audio_manager.mAudioPos);
+
+					if (!Async_audioUrlVerify.mIsOkUrl) {
+						mAudio_tryTimes++;
+						tryPlay_nextAudio();
+						return;
+					} else {
+						if (BackgroundAudioService.mIsPrepared) {
+//						System.out.println("Audio7Player / _audio_runnable /  BackgroundAudioService.mIsPrepared");
+
+							// set media file length
+							if (!Util.isEmptyString(audioUrl)) {
+								TextView audioPanel_file_length = (TextView) act.findViewById(R.id.audioPanel_file_length);
+								if (audioPanel_file_length != null)
+									audioPanel_file_length.setText(UtilAudio.getAudioLengthString(act, audioUrl));
+							}
+							BackgroundAudioService.mIsPrepared = false;
+						}
+
+						if (BackgroundAudioService.mIsCompleted) {
+							System.out.println("Audio7Player / _audio_runnable /  BackgroundAudioService.mIsCompleted");
+							Audio_manager.setPlayNext(true);
+							BackgroundAudioService.mIsCompleted = false;
+						}
+					}
+
+					if (mAudio_tryTimes < Audio_manager.getAudioFilesCount()) {
+						if( Audio_manager.isPlayPrevious() ||
+								Audio_manager.isPlayNext()               )
+						{
+							if(mAudioHandler != null)
+								mAudioHandler.removeCallbacks(audio_runnable);
+							mAudioHandler = null;
+
+							// play previous
+							if (Audio_manager.isPlayPrevious()) {
+								System.out.println("Audio7Player / _audio_runnable /  isPlayPrevious");
+								audio_previous_btn.performClick();
+								Audio_manager.setPlayPrevious(false);
+							}
+
+							// play next
+							if (Audio_manager.isPlayNext() ) {
+								System.out.println("Audio7Player / _audio_runnable /  isPlayNext");
+								audio_next_btn.performClick();
+								Audio_manager.setPlayNext(false);
+							}
+						} else {
+							// toggle play / pause
+							if(Audio_manager.isTogglePlayerState()) {
+
+								/** update audio panel when media controller */
+								updateAudioPanel(act);
+
+								// for page audio gif play/pause
+								if( (mFolderUi.tabsHost != null) &&
+										(mFolderUi.tabsHost.getCurrentPage().itemAdapter != null) &&
+										(Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE) ) {
+									mFolderUi.tabsHost.getCurrentPage().itemAdapter.notifyDataSetChanged();
+								}
+
+								Audio_manager.setTogglePlayerState(false);
+							}
+
+							if (mAudio_tryTimes == 0) {
+								mAudioHandler.postDelayed(audio_runnable, DURATION_1S);
+							} else
+								mAudioHandler.postDelayed(audio_runnable, DURATION_1S / 10);
+						}
+					}
+				}
+				else if( (Audio_manager.getCheckedAudio(Audio_manager.mAudioPos) == 0 ) )// for non-audio item
+				{
+//	   			System.out.println("Audio7Player / audio_runnable / for non-audio item");
+
+					if(Audio_manager.getAudioPlayMode() == Audio_manager.NOTE_PLAY_MODE) {
+						Audio_manager.stopAudioPlayer();
+
+						// case 1: play next
+//					audio_next_btn.performClick();
+
+						// case 2: show unchecked
+						Toast.makeText(act,R.string.is_an_unchecked_item,Toast.LENGTH_SHORT).show();
+						updateAudioPanel(act);
+						updateAudioProgress();
+					}
+
+					if (Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE) {
+						tryPlay_nextAudio();
+
+						if(isOnAudioPlayingPage()) {
+							scrollPlayingItemToBeVisible(mFolderUi.tabsHost.getCurrentPage().recyclerView);
+							mFolderUi.tabsHost.getCurrentPage().itemAdapter.notifyDataSetChanged();
+						}
+					}
+				}
+			}
+		};
 	}
 
-	public void setAudioPanel(ViewGroup audio_panel) {
+	public void setAudioPanel(View audio_panel) {
 		this.audio_panel = audio_panel;
 	}
 
-	public ViewGroup getAudioPanel() {
+	public View getAudioPanel() {
 		return audio_panel;
 	}
 
@@ -188,127 +315,10 @@ public class Audio7Player
         boolean isOn = false;
         if(audio_panel != null)
             isOn = (audio_panel.getVisibility() == View.VISIBLE);
+
+//        System.out.println("Audio7Player / _isAudioPanelOn =  " +isOn );
         return isOn;
     }
-
-    /**
-     * Continue mode runnable
-     */
-	static String audioUrl;
-	public Runnable audio_runnable = new Runnable() {
-		@Override
-		public void run() {
-//			System.out.println("Audio7Player / _audio_runnable");
-			if (Audio_manager.getCheckedAudio(Audio_manager.mAudioPos) == 1) {
-
-				// for incoming call case and after Key protection
-				if (  (Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE) &&
-						!isAudioPanelOn(act) ) {
-					showAudioPanel(act, true);//todo Why not stop?
-				}
-
-				/** update audio progress */
-				updateAudioProgress();
-
-				// check if audio file exists or not
-				audioUrl = Audio_manager.getAudioStringAt(Audio_manager.mAudioPos);
-
-				if (!Async_audioUrlVerify.mIsOkUrl) {
-					mAudio_tryTimes++;
-					tryPlay_nextAudio();
-					return;
-				} else {
-					if (BackgroundAudioService.mIsPrepared) {
-//						System.out.println("Audio7Player / _audio_runnable /  BackgroundAudioService.mIsPrepared");
-
-						// set media file length
-						if (!Util.isEmptyString(audioUrl)) {
-							TextView audioPanel_file_length = (TextView) act.findViewById(R.id.audioPanel_file_length);
-							if (audioPanel_file_length != null)
-								audioPanel_file_length.setText(UtilAudio.getAudioLengthString(act, audioUrl));
-						}
-						BackgroundAudioService.mIsPrepared = false;
-					}
-
-					if (BackgroundAudioService.mIsCompleted) {
-						System.out.println("Audio7Player / _audio_runnable /  BackgroundAudioService.mIsCompleted");
-						Audio_manager.setPlayNext(true);
-						BackgroundAudioService.mIsCompleted = false;
-					}
-				}
-
-				if (mAudio_tryTimes < Audio_manager.getAudioFilesCount()) {
-					if( Audio_manager.isPlayPrevious() ||
-						Audio_manager.isPlayNext()               )
-					{
-						if(mAudioHandler != null)
-							mAudioHandler.removeCallbacks(audio_runnable);
-						mAudioHandler = null;
-
-						// play previous
-						if (Audio_manager.isPlayPrevious()) {
-							System.out.println("Audio7Player / _audio_runnable /  isPlayPrevious");
-							audio_previous_btn.performClick();
-							Audio_manager.setPlayPrevious(false);
-						}
-
-						// play next
-						if (Audio_manager.isPlayNext() ) {
-							System.out.println("Audio7Player / _audio_runnable /  isPlayNext");
-							audio_next_btn.performClick();
-							Audio_manager.setPlayNext(false);
-						}
-					} else {
-						// toggle play / pause
-						if(Audio_manager.isTogglePlayerState()) {
-
-							/** update audio panel when media controller */
-							updateAudioPanel(act);
-
-							// for page audio gif play/pause
-							if( (mFolderUi.tabsHost != null) &&
-								(mFolderUi.tabsHost.getCurrentPage().itemAdapter != null) &&
-								(Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE) ) {
-									mFolderUi.tabsHost.getCurrentPage().itemAdapter.notifyDataSetChanged();
-							}
-
-							Audio_manager.setTogglePlayerState(false);
-						}
-
-						if (mAudio_tryTimes == 0) {
-							mAudioHandler.postDelayed(audio_runnable, DURATION_1S);
-						} else
-							mAudioHandler.postDelayed(audio_runnable, DURATION_1S / 10);
-					}
-				}
-			}
-			else if( (Audio_manager.getCheckedAudio(Audio_manager.mAudioPos) == 0 ) )// for non-audio item
-			{
-//	   			System.out.println("Audio7Player / audio_runnable / for non-audio item");
-
-				if(Audio_manager.getAudioPlayMode() == Audio_manager.NOTE_PLAY_MODE) {
-					Audio_manager.stopAudioPlayer();
-
-					// case 1: play next
-//					audio_next_btn.performClick();
-
-					// case 2: show unchecked
-					Toast.makeText(act,R.string.is_an_unchecked_item,Toast.LENGTH_SHORT).show();
-					updateAudioPanel(act);
-					updateAudioProgress();
-				}
-
-				if (Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE) {
-					tryPlay_nextAudio();
-
-					if(isOnAudioPlayingPage()) {
-						scrollPlayingItemToBeVisible(mFolderUi.tabsHost.getCurrentPage().recyclerView);
-						mFolderUi.tabsHost.getCurrentPage().itemAdapter.notifyDataSetChanged();
-					}
-				}
-			}
-		}
-	};
 
     // check if is on audio playing page
     public static boolean isOnAudioPlayingPage()
@@ -590,7 +600,6 @@ public class Audio7Player
 //		System.out.println("Audio7Player / _updateAudioProgress / getMediaFileLength = " + getMediaFileLength());
 //		System.out.println("Audio7Player / _updateAudioProgress / currentPos = " + currentPos);
 //		System.out.println("Audio7Player / _updateAudioProgress / curr_time_str = " + curr_time_str);
-//		System.out.println("Audio7Player / _updateAudioProgress / mProgress = " + mProgress);
 
 		if(audio_seek_bar != null)
 			audio_seek_bar.setProgress(mProgress); // This math construction give a percentage of "was playing"/"song length"
@@ -604,6 +613,7 @@ public class Audio7Player
 	{
 		System.out.println("Audio7Player / _initAudioBlock " );
 
+		Audio_manager.mAudioUri = audio_uriStr;
 		audio_title = (TextView) audio_panel.findViewById(R.id.audio_title); // first setting
 		audio_artist = (TextView) audio_panel.findViewById(R.id.audio_artist);
 

@@ -56,12 +56,14 @@ public class Page extends Fragment implements OnStartDragListener {
     public PageAdapter itemAdapter;
     private ItemTouchHelper itemTouchHelper;
     AppCompatActivity act;
+    View panelView;
 
     public Page(){
     }
 
-    public Page(AppCompatActivity _act){
+    public Page(AppCompatActivity _act,View _panelView){
         act = _act;
+        panelView = _panelView;
     }
 
     @Override
@@ -140,7 +142,7 @@ public class Page extends Fragment implements OnStartDragListener {
     {
         //System.out.println("Page_recycler / _fillData / page_tableId = " + page_tableId);
         if(itemAdapter == null)
-            itemAdapter = new PageAdapter(act,page_tableId, this);
+            itemAdapter = new PageAdapter(act,panelView,page_tableId, this);
         // Set PageAdapter_recycler as the adapter for RecyclerView.
         recyclerView.setAdapter(itemAdapter);
     }

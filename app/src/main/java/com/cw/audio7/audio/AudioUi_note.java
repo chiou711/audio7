@@ -37,6 +37,8 @@ import java.util.Locale;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
+import static com.cw.audio7.main.MainAct.mAudioHandler;
+import static com.cw.audio7.main.MainAct.audio_runnable;
 import static com.cw.audio7.main.MainAct.mFolderUi;
 
 /**
@@ -74,8 +76,10 @@ public class AudioUi_note
 
         System.out.println("AudioUi_note / constructor /  audioUriStr = " + audioUriStr );
 
+        Audio_manager.setAudioPlayMode(Audio_manager.NOTE_PLAY_MODE);
+
         // set audio block listeners
-        setAudioBlockListener(act);//todo Check
+        setAudioBlockListener(act);
     }
 
     // set audio block listener
@@ -113,9 +117,9 @@ public class AudioUi_note
                     // use this flag to determine new play or not in note
                     BackgroundAudioService.mIsPrepared = false;
 
-                    if( (Audio_manager.audio7Player != null) &&
-                        (Audio_manager.audio7Player.mAudioHandler != null) )
-                        Audio_manager.audio7Player.mAudioHandler.removeCallbacks(Audio_manager.audio7Player.audio_runnable);
+                    if( (mFolderUi.tabsHost.audio7Player != null) &&
+                        (mAudioHandler != null) )
+                        mAudioHandler.removeCallbacks(audio_runnable);
                 }
 
                 playAudioInNotePager(act,audioUriStr);
@@ -128,7 +132,7 @@ public class AudioUi_note
             @Override
             public void onStopTrackingTouch(SeekBar seekBar)
             {
-                mediaFileLength = Audio_manager.audio7Player.getMediaFileLength();
+                mediaFileLength = mFolderUi.tabsHost.audio7Player.getMediaFileLength();
                 System.out.println("AudioUi_note / audio_seek_bar / _setOnSeekBarChangeListener / mediaFileLength = "+
                         mediaFileLength);
                 if( BackgroundAudioService.mMediaPlayer != null  )
@@ -238,8 +242,6 @@ public class AudioUi_note
     {
         System.out.println("AudioUi_note / _playAudioInNotePager");
 
-        Audio_manager.setAudioPlayMode(Audio_manager.NOTE_PLAY_MODE);
-
         String[] audioName = Util.getDisplayNameByUriString(audioUriStr, act);
         if(UtilAudio.hasAudioExtension(audioUriStr) ||
            UtilAudio.hasAudioExtension(audioName[0]))
@@ -248,14 +250,11 @@ public class AudioUi_note
             MainAct.mPlaying_pageTableId = mFolderUi.tabsHost.getCurrentPageTableId();
 
             // new instance
-            if(Audio_manager.audio7Player == null) {
-                Audio_manager.audio7Player = new Audio7Player(act, audioPanel, audioUriStr);
-            } else {
-                Audio_manager.audio7Player.setAudioPanel(audioPanel);
-            }
+            mFolderUi.tabsHost.audio7Player = new Audio7Player(act, audioPanel, audioUriStr);
+            mFolderUi.tabsHost.audio7Player.setAudioPanel(audioPanel);
 
             Audio_manager.setupAudioList();
-            Audio_manager.audio7Player.runAudioState();
+            mFolderUi.tabsHost.audio7Player.runAudioState();
         }
     }
 

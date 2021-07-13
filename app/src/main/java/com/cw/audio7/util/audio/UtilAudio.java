@@ -57,7 +57,7 @@ public class UtilAudio {
             if(BackgroundAudioService.mMediaPlayer != null){
                 Audio_manager.stopAudioPlayer();
                 Audio_manager.mAudioPos = 0;
-	            Audio_manager.audio7Player.showAudioPanel(MainAct.mAct, false);
+	            mFolderUi.tabsHost.audio7Player.showAudioPanel(MainAct.mAct, false);
 	            // remove playing focus
 	            mFolderUi.tabsHost.reloadCurrentPage();
             }

@@ -104,7 +104,7 @@ public class Note extends Fragment
 		// force stop audio whenever user touch page mode thumb nail
 		Audio_manager.stopAudioPlayer();
 
-		Audio_manager.audio7Player = null;
+		mFolderUi.tabsHost.audio7Player = null;
 	}
 
 	public View rootView;
@@ -338,9 +338,9 @@ public class Note extends Fragment
 		        else {
 			        mMenu.findItem(R.id.VIEW_NOTE_CHECK).setIcon(R.drawable.btn_check_off_holo_dark);
 			        stopNoteAudio();
-			        Audio_manager.audio7Player.setAudioPanel(audioUi_note.audioPanel);
-			        Audio_manager.audio7Player.initAudioBlock(mAudioUriInDB);
-			        Audio_manager.audio7Player.updateAudioPanel(act);
+			        mFolderUi.tabsHost.audio7Player.setAudioPanel(audioUi_note.audioPanel);
+			        mFolderUi.tabsHost.audio7Player.initAudioBlock(mAudioUriInDB);
+			        mFolderUi.tabsHost.audio7Player.updateAudioPanel(act);
 		        }
 		        return true;
 

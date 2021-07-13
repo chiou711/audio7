@@ -24,6 +24,7 @@ import java.util.Objects;
 
 import com.cw.audio7.R;
 import com.cw.audio7.audio.Audio7Player;
+import com.cw.audio7.audio.AudioUi_page;
 import com.cw.audio7.config.About;
 import com.cw.audio7.config.Config;
 import com.cw.audio7.db.DB_folder;
@@ -55,6 +56,7 @@ import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.os.Handler;
 import android.os.RemoteException;
 import android.os.StrictMode;
 import android.content.Context;
@@ -69,6 +71,7 @@ import android.support.v4.media.session.PlaybackStateCompat;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -97,13 +100,16 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
     public static int mLastOkTabId = 1;
     public static SharedPreferences mPref_show_note_attribute;
     OnBackPressedListener onBackPressedListener;
-    public static Drawer mDrawer;
-    public static FolderUi mFolderUi;
     public Toolbar mToolbar;
 
     public static MediaBrowserCompat mMediaBrowserCompat;
     public static MediaControllerCompat mMediaControllerCompat;
     public boolean bEULA_accepted;
+
+    public static Drawer mDrawer;
+    public static FolderUi mFolderUi;
+    public static Handler mAudioHandler;
+    public static Runnable audio_runnable;
 
 	// Main Act onCreate
     @Override
@@ -247,9 +253,8 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
     {
         System.out.println("MainAct / _doCreate");
 
-//		Context context = getApplicationContext();
-
-        mContext = getBaseContext();
+//		mContext = getApplicationContext();
+//      mContext = getBaseContext();
 
         // add on back stack changed listener
         mFragmentManager = getSupportFragmentManager();
@@ -509,7 +514,6 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
 
             if(mDrawer != null)
                 mDrawer.drawerToggle.syncState();
-
         }
     }
 
@@ -1066,7 +1070,10 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                     (Audio_manager.getPlayerState() != Audio_manager.PLAYER_AT_STOP))
                 {
                     Audio_manager.stopAudioPlayer();
-                    Audio_manager.audio7Player.showAudioPanel(this, false);
+
+                    if(mFolderUi.tabsHost.audio7Player != null)
+                        mFolderUi.tabsHost.audio7Player.showAudioPanel(this, false);
+
                     // refresh
                     mFolderUi.tabsHost.reloadCurrentPage();
                     return true; // just stop playing, wait for user action
@@ -1293,29 +1300,24 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
 
     void playFirstAudio()
     {
-        Audio_manager.setAudioPlayMode(Audio_manager.PAGE_PLAY_MODE);
         Audio_manager.setPlayerState(Audio_manager.PLAYER_AT_PLAY);
         Audio_manager.mAudioPos = 0;
 
-        // cancel playing
-        if(BackgroundAudioService.mMediaPlayer != null)
-            Audio_manager.stopAudioPlayer();
+        DB_page db_page = new DB_page(this,mFolderUi.tabsHost.getCurrentPageTableId());
 
-        // initial
-        BackgroundAudioService.mMediaPlayer = null;//for first
-
-        String uriString = new DB_page(mAct,mFolderUi.tabsHost.getCurrentPageTableId())
-                .getNoteAudioUri(0,true);
-
-        mFolderUi.tabsHost.showAudioView(uriString);
-
+        Audio_manager.stopAudioPlayer();
         Audio_manager.setupAudioList();
-        Audio_manager.audio7Player.runAudioState();
 
-        if(Audio7Player.isOnAudioPlayingPage()) {
-            Audio_manager.audio7Player.scrollPlayingItemToBeVisible(mFolderUi.tabsHost.getCurrentPage().recyclerView);
-            mFolderUi.tabsHost.getCurrentPage().itemAdapter.notifyDataSetChanged();
-        }
+        String audioUriStr = db_page.getNoteAudioUri(0,true);
+        Audio_manager.mAudioUri = audioUriStr;
+
+        View panelView = mFolderUi.tabsHost.audio_panel;
+        mFolderUi.tabsHost.audio7Player = new Audio7Player(this,panelView,audioUriStr);
+        mFolderUi.tabsHost.audioUi_page = new AudioUi_page(this, mFolderUi.tabsHost.audio7Player,panelView,audioUriStr);
+
+        mFolderUi.tabsHost.audio7Player.runAudioState();
+
+        mFolderUi.tabsHost.showPlayingTab();
 
         // update audio play position
         MainAct.mPlaying_pagePos = mFolderUi.tabsHost.getFocus_tabPos();
@@ -1381,5 +1383,13 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
 //            System.out.println("MainAct / _MediaControllerCompat.Callback / _onPlaybackStateChanged / state = " + state);
         }
     };
+
+    // remove runnable for update audio playing
+    public static void removeRunnable() {
+        if (mAudioHandler != null)
+            mAudioHandler.removeCallbacks(audio_runnable);
+
+        Audio_manager.kill_runnable = false;
+    }
 
 }
