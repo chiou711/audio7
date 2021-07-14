@@ -379,10 +379,9 @@ public class FolderUi extends Folder
 				mLastExist_folderTableId = db_drawer.getFolderTableId(i,true);
 			
 			i++;
-    	} 
+    	}
 	}
 
-    private SharedPreferences mPref_delete_warn;
 	void editFolder(final AppCompatActivity act, final int position, final SimpleDragSortCursorAdapter folderAdapter)
 	{
 		DB_drawer db = new DB_drawer(act);

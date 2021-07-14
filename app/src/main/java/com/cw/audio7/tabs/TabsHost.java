@@ -57,12 +57,12 @@ import com.cw.audio7.util.Util;
 import com.cw.audio7.util.preferences.Pref;
 
 //if(Define.ENABLE_ADMOB), enable the following
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.MobileAds;
+//import com.google.android.gms.ads.AdRequest;
+//import com.google.android.gms.ads.AdView;
+//import com.google.android.gms.ads.MobileAds;
+//import com.google.android.gms.ads.initialization.InitializationStatus;
+//import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 
-import com.google.android.gms.ads.initialization.InitializationStatus;
-import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
@@ -85,7 +85,8 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
 
     public AudioUi_page audioUi_page;
     public static boolean isDoingMarking;
-    private AdView adView;
+    //if(Define.ENABLE_ADMOB), enable the following
+    //private AdView adView;
     AppCompatActivity act;
     public TabsHost()
     {
@@ -100,8 +101,14 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        pagesCount = mFolderUi.getFolder_pagesCount(act,mFolderUi.getFocus_folderPos());
-        System.out.println("TabsHost / _onCreate / pagesCount = " + pagesCount);
+        
+        int folderPos = 0;
+        
+        if(mFolderUi != null) {
+            folderPos = mFolderUi.getFocus_folderPos();
+            pagesCount = mFolderUi.getFolder_pagesCount(act, folderPos);
+            System.out.println("TabsHost / _onCreate / pagesCount = " + pagesCount);
+        }
     }
 
     public View rootView;
@@ -112,23 +119,23 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
 
         // set layout by orientation
         if (Util.isLandscapeOrientation(act)) {
-            if(Define.ENABLE_ADMOB) {
-                if (Define.CODE_MODE == Define.DEBUG_MODE)
-                    rootView = inflater.inflate(R.layout.tabs_host_landscape_test, container, false);
-                else
-                    rootView = inflater.inflate(R.layout.tabs_host_landscape, container, false);
-            }
-            else
+//            if(Define.ENABLE_ADMOB) {
+//                if (Define.CODE_MODE == Define.DEBUG_MODE)
+//                    rootView = inflater.inflate(R.layout.tabs_host_landscape_test, container, false);
+//                else
+//                    rootView = inflater.inflate(R.layout.tabs_host_landscape, container, false);
+//            }
+//            else
                 rootView = inflater.inflate(R.layout.tabs_host_landscape_no_admob, container, false);
         }
         else {
-            if(Define.ENABLE_ADMOB) {
-                if (Define.CODE_MODE == Define.DEBUG_MODE)
-                    rootView = inflater.inflate(R.layout.tabs_host_portrait_test, container, false);
-                else
-                    rootView = inflater.inflate(R.layout.tabs_host_portrait, container, false);
-            }
-            else
+//            if(Define.ENABLE_ADMOB) {
+//                if (Define.CODE_MODE == Define.DEBUG_MODE)
+//                    rootView = inflater.inflate(R.layout.tabs_host_portrait_test, container, false);
+//                else
+//                    rootView = inflater.inflate(R.layout.tabs_host_portrait, container, false);
+//            }
+//            else
                 rootView = inflater.inflate(R.layout.tabs_host_portrait_no_admob, container, false);
         }
 
@@ -200,20 +207,20 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
         // AdMob support
         // if ENABLE_ADMOB = true, enable the following
         // test app id
-        if(Define.ENABLE_ADMOB) {
-            // Initialize the Mobile Ads SDK.
-            MobileAds.initialize(getActivity(), new OnInitializationCompleteListener() {
-                @Override
-                public void onInitializationComplete(InitializationStatus initializationStatus) {}
-            });
-
-            // Create an ad request.
-            AdRequest adRequest = new AdRequest.Builder().build();
-
-            adView = rootView.findViewById(R.id.adView);
-            // Start loading the ad in the background.
-            adView.loadAd(adRequest);
-        }
+//        if(Define.ENABLE_ADMOB) {
+//            // Initialize the Mobile Ads SDK.
+//            MobileAds.initialize(getActivity(), new OnInitializationCompleteListener() {
+//                @Override
+//                public void onInitializationComplete(InitializationStatus initializationStatus) {}
+//            });
+//
+//            // Create an ad request.
+//            AdRequest adRequest = new AdRequest.Builder().build();
+//
+//            adView = rootView.findViewById(R.id.adView);
+//            // Start loading the ad in the background.
+//            adView.loadAd(adRequest);
+//        }
         return rootView;
     }
 
@@ -387,9 +394,11 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
                 audio7Player.updateAudioPanel(act);
         }
 
-        if (adView != null) {
-            adView.resume();
-        }
+//        if(Define.ENABLE_ADMOB) {
+//            if (adView != null) {
+//                adView.resume();
+//            }
+//        }
 
         // change audio panel when Note audio is changed to Page audio
         if ( BackgroundAudioService.mMediaPlayer != null &&
@@ -423,9 +432,11 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
         if(!act.isDestroyed())
             removePages();//Put here will solve onBackStackChanged issue (no Page_recycler / _onCreate)
 
-        if (adView != null) {
-            adView.pause();
-        }
+//        if(Define.ENABLE_ADMOB) {
+//            if (adView != null) {
+//                adView.pause();
+//            }
+//        }
 
 //        mTabsPagerAdapter = null;
     }
@@ -433,9 +444,12 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (adView != null) {
-            adView.destroy();
-        }
+
+//        if(Define.ENABLE_ADMOB) {
+//            if (adView != null) {
+//                adView.destroy();
+//            }
+//        }
     }
 
     // show audio playing tab

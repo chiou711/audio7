@@ -112,8 +112,8 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
         int notesCount = getItemCount();
         mDb_page = new DB_page(act, page_table_id);
         mDb_page.open();
+        Cursor cursor = mDb_page.cursor_note;
         for(int i=0;i<notesCount;i++) {
-            Cursor cursor = mDb_page.cursor_note;
             if (cursor.moveToPosition(i)) {
                 Db_cache cache = new Db_cache();
                 cache.audioUri = cursor.getString(cursor.getColumnIndexOrThrow(KEY_NOTE_AUDIO_URI));
@@ -121,6 +121,7 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
                 listCache.add(cache);
             }
         }
+        cursor.close();
         mDb_page.close();
     }
 

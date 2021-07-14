@@ -542,6 +542,7 @@ public class Util
 			for(int i=0;i< noteIdArray.size();i++)
 			{
 				dbPage.open();
+
 				Cursor cursorNote = dbPage.queryNote(noteIdArray.get(i));
                 String title = cursorNote.getString(cursorNote.getColumnIndexOrThrow(DB_page.KEY_NOTE_TITLE));
 				title = replaceEscapeCharacter(title);
@@ -549,13 +550,12 @@ public class Util
 				String body = cursorNote.getString(cursorNote.getColumnIndexOrThrow(DB_page.KEY_NOTE_BODY));
 				body = replaceEscapeCharacter(body);
 
-				String picUrl = "";
-
 				String audioUrl = cursorNote.getString(cursorNote.getColumnIndexOrThrow(DB_page.KEY_NOTE_AUDIO_URI));
 				audioUrl = replaceEscapeCharacter(audioUrl);
 
 				int mark = cursorNote.getInt(cursorNote.getColumnIndexOrThrow(DB_page.KEY_NOTE_MARKING));
 				String srtMark = (mark == 1)? "[s]":"[n]";
+
 				dbPage.close();
 
 				if(i==0)
@@ -1010,7 +1010,7 @@ public class Util
 
 	static public boolean isLandscapeOrientation(Activity act)
 	{
-		int currentOrientation = act.getResources().getConfiguration().orientation;
+		int currentOrientation = act.getResources().getConfiguration().orientation; //todo Error java.lang.NullPointerException: Attempt to invoke virtual method 'android.content.res.Resources android.app.Activity.getResources()' on a null object reference
 
 		if (currentOrientation == Configuration.ORIENTATION_LANDSCAPE)
 			return true;

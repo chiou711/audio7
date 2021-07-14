@@ -86,7 +86,7 @@ public class DB_page
 
 	public void close()
 	{
-		if((cursor_note != null)&& (!cursor_note.isClosed()))
+		if((cursor_note != null) && (!cursor_note.isClosed()))
 			cursor_note.close();
 
 		dbHelper.close();
@@ -142,8 +142,7 @@ public class DB_page
     {
     	this.open();
 
-        Date now = new Date();  
-        ContentValues args = new ContentValues(); 
+        ContentValues args = new ContentValues();
         args.put(KEY_NOTE_TITLE, title);   
         args.put(KEY_NOTE_AUDIO_URI, audioUri);
         args.put(KEY_NOTE_BODY, body);
@@ -202,8 +201,6 @@ public class DB_page
         args.put(KEY_NOTE_BODY, body);
         args.put(KEY_NOTE_MARKING, marking);
         
-        Cursor cursor = queryNote(rowId);
-
         sqlDb.update(DB_PAGE_TABLE_NAME, args, KEY_NOTE_ID + "=" + rowId, null);
 
 		if(enDbOpenClose)
