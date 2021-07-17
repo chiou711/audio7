@@ -67,6 +67,7 @@ import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
 
+import static com.cw.audio7.main.MainAct.audio_manager;
 import static com.cw.audio7.main.MainAct.audio_runnable;
 import static com.cw.audio7.main.MainAct.mAudioHandler;
 import static com.cw.audio7.main.MainAct.mDrawer;
@@ -118,7 +119,7 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
         System.out.println("TabsHost / _onCreateView");
 
         // set layout by orientation
-        if (Util.isLandscapeOrientation(act)) {
+        if ((act!= null) && Util.isLandscapeOrientation(act)) {
 //            if(Define.ENABLE_ADMOB) {
 //                if (Define.CODE_MODE == Define.DEBUG_MODE)
 //                    rootView = inflater.inflate(R.layout.tabs_host_landscape_test, container, false);
@@ -143,7 +144,9 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
         mViewPager = (ViewPager) rootView.findViewById(R.id.tabs_pager);
 
         int pageCount = 0;
-        mTabsPagerAdapter = new TabsPagerAdapter(act, act.getSupportFragmentManager());
+
+        if(act!= null)
+            mTabsPagerAdapter = new TabsPagerAdapter(act, act.getSupportFragmentManager());
 
         // add pages to mTabsPagerAdapter
 
@@ -228,6 +231,7 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
      * Add pages
      */
     PageUi pageUi;
+    public PageUi mPageUi;
     Bundle args;
     public View audio_panel;
     private int addPages(TabsPagerAdapter adapter)
@@ -248,6 +252,14 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
 
                 audio_panel = rootView.findViewById(R.id.audio_panel);
                 pageUi = new PageUi(act,audio_panel);
+
+                int currPageTableId = Pref.getPref_focusView_page_tableId(act);
+                setCurrentPageTableId(currPageTableId);
+                System.out.println("TabsHost / _addPages / currPageTableId = " + currPageTableId);
+
+                if(pageTableId == currPageTableId)
+                    mPageUi = new PageUi(act,audio_panel);
+
                 args = new Bundle();
                 args.putInt("page_pos",i);
                 args.putInt("page_table_id",pageTableId);
@@ -315,7 +327,7 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
             if( (audio7Player != null) &&
                 !isDoingMarking &&
                 (listView != null) &&
-                (Audio_manager.getPlayerState() != Audio_manager.PLAYER_AT_STOP)  )
+                (audio_manager.getPlayerState() != audio_manager.PLAYER_AT_STOP)  )
             {
                 if ( Audio7Player.isOnAudioPlayingPage())
                     audio7Player.scrollPlayingItemToBeVisible(listView); //todo Could hang up if page had too many notes (more then 1000)
@@ -366,9 +378,8 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
             int pageTableId = mTabsPagerAdapter.dbFolder.getPageTableId(pos, true);
 
             if(pageTableId == Pref.getPref_focusView_page_tableId(act)) {
-//                System.out.println("TabsHost / _onResume / set focus tab pos = " + pos);
+                System.out.println("TabsHost / _onResume / set focus tab pos = " + pos);
                 setFocus_tabPos(pos);
-                setCurrentPageTableId(pageTableId);
             }
         }
 
@@ -388,8 +399,8 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
          * - incoming phone call case
          * - after Key Protect (screen off/on)
          * */
-        if( (Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE) &&
-            (Audio_manager.getPlayerState() != Audio_manager.PLAYER_AT_STOP)               ) {
+        if( (audio_manager.getAudioPlayMode() == audio_manager.PAGE_PLAY_MODE) &&
+            (audio_manager.getPlayerState() != audio_manager.PLAYER_AT_STOP)               ) {
             if(audio7Player!=null)
                 audio7Player.updateAudioPanel(act);
         }
@@ -405,10 +416,9 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
                 //MainAct.mPlaying_pageTableId == page_table_id  &&
                 MainAct.mPlaying_folderPos == mFolderUi.getFocus_folderPos())
         {
-            Audio_manager.kill_runnable = true;
-            System.out.println("MainAct / _onResume /  2");
-            audio7Player = new Audio7Player(act,audio_panel, Audio_manager.mAudioUri);
-            audioUi_page = new AudioUi_page(act, audio7Player,  audio_panel,Audio_manager.mAudioUri);
+            audio_manager.kill_runnable = true;
+            audio7Player = new Audio7Player(act,audio_panel, audio_manager.mAudioUri);
+            audioUi_page = new AudioUi_page(act, audio7Player,  audio_panel,audio_manager.mAudioUri);
 
             if(audio_panel != null)
                 audio_panel.setVisibility(View.VISIBLE);
@@ -460,7 +470,7 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
 
         if(tab != null) {
             if( (MainAct.mPlaying_folderPos == mFolderUi.getFocus_folderPos()) &&
-                (Audio_manager.getPlayerState() != Audio_manager.PLAYER_AT_STOP)  &&
+                (audio_manager.getPlayerState() != audio_manager.PLAYER_AT_STOP)  &&
                 (tab.getPosition() == MainAct.mPlaying_pagePos)                               )
             {
                 if(tab.getCustomView() == null)
@@ -544,7 +554,7 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
 
     public void setCurrentPageTableId(int id)
     {
-        //System.out.println("TabsHost / _setCurrentPageTableId / id = " + id);
+        System.out.println("TabsHost / _setCurrentPageTableId / id = " + id);
         mFocusPageTableId = id;
     }
 
@@ -742,9 +752,9 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
         {
             if(BackgroundAudioService.mMediaPlayer != null)
             {
-                Audio_manager.stopAudioPlayer();
-                Audio_manager.mAudioPos = 0;
-                Audio_manager.setPlayerState(Audio_manager.PLAYER_AT_STOP);
+                audio_manager.stopAudioPlayer(act);
+                audio_manager.mAudioPos = 0;
+                audio_manager.setPlayerState(audio_manager.PLAYER_AT_STOP);
             }
         }
 
@@ -819,6 +829,11 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
             }
 
         }
+    }
+
+    public void stopAudioPlayer() {
+        audio_manager.stopAudioPlayer(act);
+        mFolderUi.tabsHost.audio7Player.showAudioPanel(act, false);
     }
 
 }

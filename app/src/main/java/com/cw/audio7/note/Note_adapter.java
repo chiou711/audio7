@@ -51,6 +51,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import static com.cw.audio7.main.MainAct.audio_manager;
 import static com.cw.audio7.main.MainAct.mFolderUi;
 
 public class Note_adapter extends FragmentStatePagerAdapter
@@ -256,8 +257,8 @@ public class Note_adapter extends FragmentStatePagerAdapter
 			System.out.println("Note_adapter / _setPrimaryItem / auto play ");
 
 			// first audio play
-			if(Audio_manager.getPlayerState() != Audio_manager.PLAYER_AT_PLAY) {
-				Audio_manager.stopAudioPlayer();
+			if(audio_manager.getPlayerState() != audio_manager.PLAYER_AT_PLAY) {
+				audio_manager.stopAudioPlayer(act);
 				audioUi_note.audio_play_btn.performClick();
 				MainAct.mPlaying_folderPos = mFolderUi.getFocus_folderPos();
 			}

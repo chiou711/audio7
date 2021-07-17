@@ -30,6 +30,8 @@ import com.mobeta.android.dslv.DragSortController;
 import com.mobeta.android.dslv.DragSortListView;
 import com.mobeta.android.dslv.SimpleDragSortCursorAdapter;
 
+import java.util.List;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import static com.cw.audio7.main.MainAct.mFolderUi;
@@ -45,6 +47,7 @@ public class Folder
     AppCompatActivity act;
     DB_drawer dB_drawer;
     SimpleDragSortCursorAdapter folderAdapter;
+    public List<String> mFolderTitles;
 
     Folder(){};
 
@@ -76,8 +79,8 @@ public class Folder
         {
             for(int i = 0; i< dB_drawer.getFoldersCount(true); i++)
             {
-                MainAct.mFolderTitles.add(""); // init only
-                MainAct.mFolderTitles.set(i, dB_drawer.getFolderTitle(i,true));
+                mFolderTitles.add(""); // init only
+                mFolderTitles.set(i, dB_drawer.getFolderTitle(i,true));
             }
         }
 

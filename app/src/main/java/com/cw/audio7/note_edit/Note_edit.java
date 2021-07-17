@@ -43,6 +43,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import static com.cw.audio7.main.MainAct.audio_manager;
 import static com.cw.audio7.main.MainAct.mFolderUi;
 
 public class Note_edit extends AppCompatActivity
@@ -156,15 +157,15 @@ public class Note_edit extends AppCompatActivity
 
 
 								if(Audio7Player.isOnAudioPlayingPage())
-									Audio_manager.setupAudioList();
+									audio_manager.setupAudioList(Note_edit.this);
 
 								// Stop Play/Pause if current edit item is played and is not at Stop state
 								if(Page.mHighlightPosition == position)
-									UtilAudio.stopAudioIfNeeded();
+									UtilAudio.stopAudioIfNeeded(Note_edit.this);
 
 								// update highlight position
 								if(position < Page.mHighlightPosition )
-									Audio_manager.mAudioPos--;
+									audio_manager.mAudioPos--;
 
 								finish();
 							}
@@ -395,7 +396,7 @@ public class Note_edit extends AppCompatActivity
 			findViewById(R.id.edit_main).setVisibility(View.INVISIBLE);
 
 			// select Local link
-			Edit_audio_1by1 edit_audio1by1 = new Edit_audio_1by1();
+			Edit_audio_1by1 edit_audio1by1 = new Edit_audio_1by1(Note_edit.this);
 			FragmentTransaction transaction = mFragmentManager.beginTransaction();
 			transaction.setCustomAnimations(R.anim.fragment_slide_in_left, R.anim.fragment_slide_out_left, R.anim.fragment_slide_in_right, R.anim.fragment_slide_out_right);
 			transaction.replace(R.id.content_frame_edit, edit_audio1by1).addToBackStack("Edit audio 1 by 1").commit();

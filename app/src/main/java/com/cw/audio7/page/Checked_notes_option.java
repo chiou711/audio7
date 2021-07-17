@@ -35,9 +35,6 @@ import com.cw.audio7.R;
 import com.cw.audio7.audio.Audio7Player;
 import com.cw.audio7.db.DB_folder;
 import com.cw.audio7.db.DB_page;
-import com.cw.audio7.main.MainAct;
-import com.cw.audio7.audio.Audio_manager;
-import com.cw.audio7.tabs.TabsHost;
 import com.cw.audio7.util.Util;
 import com.cw.audio7.util.audio.UtilAudio;
 import com.cw.audio7.util.preferences.Pref;
@@ -47,6 +44,7 @@ import java.util.List;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import static com.cw.audio7.main.MainAct.audio_manager;
 import static com.cw.audio7.main.MainAct.mFolderUi;
 
 /**
@@ -59,11 +57,11 @@ public class Checked_notes_option {
     public static int MOVE_TO = 0;
     private static int COPY_TO = 1;
     private DB_page mDb_page;
-    private AppCompatActivity mAct;
+    private AppCompatActivity act;
 
     public Checked_notes_option(AppCompatActivity act){
         mDb_page = new DB_page(act, mFolderUi.tabsHost.getCurrentPageTableId());
-        mAct = act;
+        this.act = act;
     }
 
     private Checked_notes_option(int id, int draw_id, int string_id)
@@ -217,9 +215,9 @@ public class Checked_notes_option {
                     mDb_page.close();
 
                     if(option == MOVE_CHECKED_NOTE)
-                        operateCheckedTo(mAct,copyItemsTitle,  copyItemsAudio, copyItemsBody,  MOVE_TO); // move to
+                        operateCheckedTo(this.act,copyItemsTitle,  copyItemsAudio, copyItemsBody,  MOVE_TO); // move to
                     else if(option == COPY_CHECKED_NOTE)
-                        operateCheckedTo(mAct,copyItemsTitle,  copyItemsAudio, copyItemsBody,  COPY_TO);// copy to
+                        operateCheckedTo(this.act,copyItemsTitle,  copyItemsAudio, copyItemsBody,  COPY_TO);// copy to
 
                 }
                 else
@@ -265,21 +263,21 @@ public class Checked_notes_option {
             String noteBody = mDb_page.getNoteBody(i,false);
             mDb_page.updateNote(rowId, noteTitle, audioUri, noteBody , action ,false);// action 1:check all, 0:uncheck all
             // Stop if unmarked item is at playing state
-            if((Audio_manager.mAudioPos == i) && (action == 0) )
+            if((audio_manager.mAudioPos == i) && (action == 0) )
                 bStopAudio = true;
         }
         mDb_page.close();
 
         if(bStopAudio)
-            UtilAudio.stopAudioIfNeeded();
+            UtilAudio.stopAudioIfNeeded(act);
 
         // update audio play list
         if(Audio7Player.isOnAudioPlayingPage())
-            Audio_manager.setupAudioList();
+            audio_manager.setupAudioList(act);
 
         mFolderUi.tabsHost.reloadCurrentPage();
 
-        mFolderUi.tabsHost.showFooter(MainAct.mAct);
+        mFolderUi.tabsHost.showFooter(act);
     }
 
     /**
@@ -299,20 +297,20 @@ public class Checked_notes_option {
             long marking = (mDb_page.getNoteMarking(i,false)==1)?0:1;
             mDb_page.updateNote(rowId, noteTitle, audioUri, noteBody , marking, false);// action 1:check all, 0:uncheck all
             // Stop if unmarked item is at playing state
-            if((Audio_manager.mAudioPos == i) && (marking == 0) )
+            if((audio_manager.mAudioPos == i) && (marking == 0) )
                 bStopAudio = true;
         }
         mDb_page.close();
 
         if(bStopAudio)
-            UtilAudio.stopAudioIfNeeded();
+            UtilAudio.stopAudioIfNeeded(act);
 
         // update audio play list
         if(Audio7Player.isOnAudioPlayingPage())
-            Audio_manager.setupAudioList();
+            audio_manager.setupAudioList(act);
 
         mFolderUi.tabsHost.reloadCurrentPage();
-        mFolderUi.tabsHost.showFooter(MainAct.mAct);
+        mFolderUi.tabsHost.showFooter(act);
     }
 
 
@@ -373,7 +371,7 @@ public class Checked_notes_option {
                         {
                             mDb_page.deleteNote(mDb_page.getNoteId(i,false),false);
                             // update playing highlight
-                            UtilAudio.stopAudioIfNeeded();
+                            UtilAudio.stopAudioIfNeeded(act);
                         }
                     }
                     mDb_page.close();
@@ -407,7 +405,7 @@ public class Checked_notes_option {
             public void onShow(DialogInterface dlgInterface) {
                 // add mark for current page
                 Util util = new Util(act);
-                util.addMarkToCurrentPage(dlgInterface,action);
+                util.addMarkToCurrentPage(act,dlgInterface,action);
             }
         });
         alertDlg.show();
@@ -449,11 +447,11 @@ public class Checked_notes_option {
                                 mDb_page.close();
 
                                 // Stop Play/Pause if current tab's item is played and is not at Stop state
-                                if(Audio_manager.mAudioPos == Page.mHighlightPosition)
-                                    UtilAudio.stopAudioIfNeeded();
+                                if(audio_manager.mAudioPos == Page.mHighlightPosition)
+                                    UtilAudio.stopAudioIfNeeded(act);
 
                                 mFolderUi.tabsHost.reloadCurrentPage();
-                                mFolderUi.tabsHost.showFooter(MainAct.mAct);
+                                mFolderUi.tabsHost.showFooter(act);
                             }
                         });
 
@@ -463,7 +461,7 @@ public class Checked_notes_option {
 
     private boolean noItemChecked()
     {
-        DB_page mDb_page = new DB_page(mAct, mFolderUi.tabsHost.getCurrentPageTableId());
+        DB_page mDb_page = new DB_page(act, mFolderUi.tabsHost.getCurrentPageTableId());
         int checkedItemCount = mDb_page.getCheckedNotesCount();
         return (checkedItemCount == 0);
     }

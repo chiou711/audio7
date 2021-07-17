@@ -26,7 +26,6 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.cw.audio7.R;
-import com.cw.audio7.main.MainAct;
 import com.cw.audio7.util.Util;
 
 import java.io.ByteArrayInputStream;
@@ -41,13 +40,18 @@ import androidx.core.app.NotificationManagerCompat;
 import androidx.media.MediaBrowserServiceCompat;
 import androidx.media.session.MediaButtonReceiver;
 
+import static com.cw.audio7.define.Define.ENABLE_MEDIA_CONTROLLER;
+import static com.cw.audio7.main.MainAct.audio_manager;
+import static com.cw.audio7.main.MainAct.mMediaControllerCompat;
+
 // AudioManager.OnAudioFocusChangeListener: added in API level 8
 public class BackgroundAudioService extends MediaBrowserServiceCompat implements AudioManager.OnAudioFocusChangeListener  {
 
     public static MediaPlayer mMediaPlayer;
-    public static MediaSessionCompat mMediaSessionCompat;
     public static boolean mIsPrepared;
     public static boolean mIsCompleted;
+
+    public static MediaSessionCompat mMediaSessionCompat;
     final public static int notification_id = 78;
 
     // for differentiate Pause source: manual or focus change
@@ -55,6 +59,7 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
 
     boolean enDbgMsg = true;
 //    boolean enDbgMsg = false;
+
     public static PlaybackStateCompat.Builder playbackStateBuilder;
 
     BroadcastReceiver audioNoisyReceiver = new BroadcastReceiver() {
@@ -79,42 +84,47 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
     // do audio play
     void playAudio(){
         System.out.println("BackgroundAudioService / _playAudio");
-        mMediaSessionCompat.setActive(true);
-        setMediaPlaybackState(PlaybackStateCompat.STATE_PLAYING);
 
-        if(mMediaPlayer != null) {
+        if (ENABLE_MEDIA_CONTROLLER) {
+            mMediaSessionCompat.setActive(true);
+            setMediaPlaybackState(PlaybackStateCompat.STATE_PLAYING);
             initMediaSessionMetadata();
             showPlayingNotification();
+        }
 
+        if (mMediaPlayer != null) {
             mMediaPlayer.start();
             mMediaPlayer.setVolume(1.0f, 1.0f);
         }
 
         // update panel status: play
-        Audio_manager.setPlayerState(Audio_manager.PLAYER_AT_PLAY);
+        audio_manager.setPlayerState(audio_manager.PLAYER_AT_PLAY);
 
-        Audio_manager.setTogglePlayerState(true);
+        audio_manager.setTogglePlayerState(true);
 
         isPausedByButton = false;
     }
 
     // do audio pause
     void pauseAudio() {
-        if( mMediaPlayer != null  ) {
-            if(mMediaPlayer.isPlaying())
-                mMediaPlayer.pause();
 
+        if (ENABLE_MEDIA_CONTROLLER) {
             setMediaPlaybackState(PlaybackStateCompat.STATE_PAUSED);
-
             initMediaSessionMetadata();
             showPausedNotification();
         }
 
+        if( mMediaPlayer != null  ) {
+            if(mMediaPlayer.isPlaying())
+                mMediaPlayer.pause();
+        }
+
         // update panel status: pause
-        Audio_manager.setPlayerState(Audio_manager.PLAYER_AT_PAUSE);
-        Audio_manager.setTogglePlayerState(true);
+        audio_manager.setPlayerState(audio_manager.PLAYER_AT_PAUSE);
+        audio_manager.setTogglePlayerState(true);
     }
 
+    //    if (ENABLE_MEDIA_CONTROLLER)
     private MediaSessionCompat.Callback mMediaSessionCallback = new MediaSessionCompat.Callback() {
 
         @Override
@@ -123,9 +133,12 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
             if(enDbgMsg)
                 System.out.println("BackgroundAudioService / mMediaSessionCallback / _onSkipToNext");
 
-            setMediaPlaybackState(PlaybackStateCompat.STATE_SKIPPING_TO_NEXT);
-            mMediaSessionCompat.setActive(true);
-            Audio_manager.setPlayNext(true);
+            if (ENABLE_MEDIA_CONTROLLER) {
+                setMediaPlaybackState(PlaybackStateCompat.STATE_SKIPPING_TO_NEXT);
+                mMediaSessionCompat.setActive(true);
+            }
+
+            audio_manager.setPlayNext(true);
         }
 
         @Override
@@ -133,9 +146,13 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
             super.onSkipToPrevious();
             if(enDbgMsg)
                 System.out.println("BackgroundAudioService / mMediaSessionCallback / _onSkipToPrevious");
-            setMediaPlaybackState(PlaybackStateCompat.STATE_SKIPPING_TO_PREVIOUS);
-            mMediaSessionCompat.setActive(true);
-            Audio_manager.setPlayPrevious(true);
+
+            if (ENABLE_MEDIA_CONTROLLER) {
+                setMediaPlaybackState(PlaybackStateCompat.STATE_SKIPPING_TO_PREVIOUS);
+                mMediaSessionCompat.setActive(true);
+            }
+
+            audio_manager.setPlayPrevious(true);
         }
 
         @Override
@@ -174,10 +191,13 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
 
             initMediaPlayer();
 
+            if(ENABLE_MEDIA_CONTROLLER)
+                initNotification();
+
             setAudioPlayerListeners();
 
             try {
-                mMediaPlayer.setDataSource(MainAct.mAct, uri);
+                mMediaPlayer.setDataSource(getApplicationContext(), uri);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -234,8 +254,10 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
                         mMediaPlayer.release();
 
                         // disconnect media browser
-                        if( MainAct.mMediaControllerCompat.getPlaybackState().getState() == PlaybackStateCompat.STATE_PLAYING ) {
-                            MainAct.mMediaControllerCompat.getTransportControls().stop();// .pause();
+                        if (ENABLE_MEDIA_CONTROLLER &&  Build.VERSION.SDK_INT >= 21) {
+                            if( mMediaControllerCompat.getPlaybackState().getState() == PlaybackStateCompat.STATE_PLAYING ) {
+                                mMediaControllerCompat.getTransportControls().stop();// .pause();
+                            }
                         }
                     }
 
@@ -291,12 +313,14 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
         else
             currPos =  mMediaPlayer.getCurrentPosition();
 
-        if(Audio_manager.getPlayerState() == Audio_manager.PLAYER_AT_PLAY) {
-            playbackStateBuilder.setState(PlaybackStateCompat.STATE_PLAYING, currPos, 0);
-            mMediaSessionCompat.setPlaybackState(playbackStateBuilder.build());
-        } else if(Audio_manager.getPlayerState() == Audio_manager.PLAYER_AT_PAUSE)    {
-            playbackStateBuilder.setState(PlaybackStateCompat.STATE_PAUSED, currPos, 0);
-            mMediaSessionCompat.setPlaybackState(playbackStateBuilder.build());
+        if (ENABLE_MEDIA_CONTROLLER) {
+            if (audio_manager.getPlayerState() == audio_manager.PLAYER_AT_PLAY) {
+                playbackStateBuilder.setState(PlaybackStateCompat.STATE_PLAYING, currPos, 0);
+                mMediaSessionCompat.setPlaybackState(playbackStateBuilder.build());
+            } else if (audio_manager.getPlayerState() == audio_manager.PLAYER_AT_PAUSE) {
+                playbackStateBuilder.setState(PlaybackStateCompat.STATE_PAUSED, currPos, 0);
+                mMediaSessionCompat.setPlaybackState(playbackStateBuilder.build());
+            }
         }
     }
 
@@ -305,8 +329,10 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
         super.onCreate();
         if(enDbgMsg)
             System.out.println("BackgroundAudioService / _onCreate");
-//        initMediaPlayer();
-        initMediaSession();
+
+        if (ENABLE_MEDIA_CONTROLLER)
+            initMediaSession();
+
         initNoisyReceiver();
     }
 
@@ -324,8 +350,11 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
         AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         audioManager.abandonAudioFocus(this);
         unregisterReceiver(audioNoisyReceiver);
-        mMediaSessionCompat.release();
-        NotificationManagerCompat.from(this).cancel(notification_id);
+
+        if (ENABLE_MEDIA_CONTROLLER) {
+            mMediaSessionCompat.release();
+            NotificationManagerCompat.from(this).cancel(notification_id);
+        }
     }
 
     NotificationCompat.Builder builder;
@@ -348,17 +377,21 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
         mMediaPlayer.setWakeMode(getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
         mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         mMediaPlayer.setVolume(1.0f, 1.0f);
+    }
 
-        manager = NotificationManagerCompat.from(this);
 
-        if (Build.VERSION.SDK_INT >= 26) {
+    // init notification
+    void initNotification() {
+        if (ENABLE_MEDIA_CONTROLLER && Build.VERSION.SDK_INT >= 26) {
+            manager = NotificationManagerCompat.from(this);
             NotificationChannel channel = new NotificationChannel(CHANNEL_ID,
-                                                                                    getResources().getString(R.string.app_name),
-                                                                                    NotificationManager.IMPORTANCE_DEFAULT);
+                    getResources().getString(R.string.app_name),
+                    NotificationManager.IMPORTANCE_DEFAULT);
             manager.createNotificationChannel(channel);
         }
     }
 
+//    if (ENABLE_MEDIA_CONTROLLER)
     private void showPlayingNotification() {
         if(enDbgMsg)
             System.out.println("BackgroundAudioService / _showPlayingNotification");
@@ -386,6 +419,7 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
             manager.notify(notification_id, builder.build());
     }
 
+    //if (ENABLE_MEDIA_CONTROLLER)
     private void showPausedNotification() {
         if(enDbgMsg)
             System.out.println("BackgroundAudioService / _showPausedNotification");
@@ -414,6 +448,7 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
     }
 
 
+    //if (ENABLE_MEDIA_CONTROLLER)
     private void initMediaSession() {
         if(enDbgMsg)
             System.out.println("BackgroundAudioService / _initMediaSession");
@@ -433,6 +468,7 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
         playbackStateBuilder = new PlaybackStateCompat.Builder();
     }
 
+    //if (ENABLE_MEDIA_CONTROLLER)
     private void setMediaPlaybackState(int state) {
         if(enDbgMsg)
             System.out.println("BackgroundAudioService / _setMediaPlaybackState / state = " + state);
@@ -455,6 +491,7 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
         mMediaSessionCompat.setPlaybackState(playbackStateBuilder.build());
     }
 
+    //if (ENABLE_MEDIA_CONTROLLER)
     private void initMediaSessionMetadata() {
         if(enDbgMsg)
             System.out.println("BackgroundAudioService / _initMediaSessionMetadata");
@@ -465,8 +502,8 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
 //        metadataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_DISPLAY_ICON, BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher));
 //        metadataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher));
 
-        String audioStr = Audio_manager.getAudioStringAt(Audio_manager.mAudioPos);
-        String[] displayItems=Util.getDisplayNameByUriString(audioStr, MainAct.mAct);
+        String audioStr = audio_manager.getAudioStringAt(audio_manager.mAudioPos);
+        String[] displayItems=Util.getDisplayNameByUriString(audioStr, getApplicationContext());
 
         // prepare bit map
         MediaMetadataRetriever mmr = new MediaMetadataRetriever();

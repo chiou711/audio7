@@ -31,21 +31,27 @@ import com.cw.audio7.audio.Audio_manager;
 import com.cw.audio7.audio.BackgroundAudioService;
 import com.mobeta.android.dslv.SimpleDragSortCursorAdapter;
 
+import androidx.appcompat.app.AppCompatActivity;
+
+import static com.cw.audio7.main.MainAct.audio_manager;
+
 /**
  * Created by cw on 2017/10/6.
  */
 
 public class Folder_adapter extends SimpleDragSortCursorAdapter
 {
-    Folder_adapter(Context context, int layout, Cursor c,
-            String[] from, int[] to, int flags)
+    AppCompatActivity act;
+    Folder_adapter(AppCompatActivity _act, int layout, Cursor c,
+                   String[] from, int[] to, int flags)
     {
-        super(context, layout, c, from, to, flags);
+        super(_act, layout, c, from, to, flags);
+        act = _act;
     }
 
     @Override
     public int getCount() {
-        DB_drawer db_drawer = new DB_drawer(MainAct.mAct);
+        DB_drawer db_drawer = new DB_drawer(act);
         int count = db_drawer.getFoldersCount(true);
         return count;
     }
@@ -69,7 +75,7 @@ public class Folder_adapter extends SimpleDragSortCursorAdapter
         // otherwise, get existing ViewHolder
         if (convertView == null)
         {
-            convertView = MainAct.mAct.getLayoutInflater().inflate(R.layout.folder_row, parent, false);
+            convertView = act.getLayoutInflater().inflate(R.layout.folder_row, parent, false);
 
             // set up ViewHolder for this ListView item
             viewHolder = new ViewHolder();
@@ -83,17 +89,17 @@ public class Folder_adapter extends SimpleDragSortCursorAdapter
 
         // set highlight of selected drawer
         if( (BackgroundAudioService.mMediaPlayer != null) &&
-            (Audio_manager.getPlayerState() != Audio_manager.PLAYER_AT_STOP) &&
+            (audio_manager.getPlayerState() != audio_manager.PLAYER_AT_STOP) &&
             (MainAct.mPlaying_folderPos == position)        )
             viewHolder.audioPlayingIcon.setVisibility(View.VISIBLE);
         else
             viewHolder.audioPlayingIcon.setVisibility(View.GONE);
 
-        DB_drawer db_drawer = new DB_drawer(MainAct.mAct);
+        DB_drawer db_drawer = new DB_drawer(act);
         viewHolder.folderTitle.setText(db_drawer.getFolderTitle(position,true));
 
         // dragger
-        SharedPreferences pref = MainAct.mAct.getSharedPreferences("show_note_attribute", 0);;
+        SharedPreferences pref = act.getSharedPreferences("show_note_attribute", 0);;
         if(pref.getString("KEY_ENABLE_FOLDER_DRAGGABLE", "no").equalsIgnoreCase("yes"))
             viewHolder.dragIcon.setVisibility(View.VISIBLE);
         else

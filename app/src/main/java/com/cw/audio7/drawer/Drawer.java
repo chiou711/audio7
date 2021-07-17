@@ -16,6 +16,7 @@
 
 package com.cw.audio7.drawer;
 
+import android.content.SharedPreferences;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
@@ -51,6 +52,7 @@ public class Drawer {
     public ActionBarDrawerToggle drawerToggle;
     public NavigationView mNavigationView;
     DragSortListView listView;
+    public SharedPreferences mPref_show_note_attribute;
 
     public Drawer(AppCompatActivity _act, Toolbar toolbar) {
         this.act = _act;
@@ -61,8 +63,8 @@ public class Drawer {
         mNavigationView.setItemIconTintList(null);// use original icon color
 
         // set icon for folder draggable: portrait
-        if (Util.isPortraitOrientation(act) && (MainAct.mPref_show_note_attribute != null)) {
-            if (MainAct.mPref_show_note_attribute.getString("KEY_ENABLE_FOLDER_DRAGGABLE", "no")
+        if (Util.isPortraitOrientation(act) && (mPref_show_note_attribute != null)) {
+            if (mPref_show_note_attribute.getString("KEY_ENABLE_FOLDER_DRAGGABLE", "no")
                     .equalsIgnoreCase("yes"))
                 mNavigationView.getMenu().findItem(R.id.ENABLE_FOLDER_DRAG_AND_DROP).setIcon(R.drawable.btn_check_on_holo_light);
             else
@@ -81,10 +83,10 @@ public class Drawer {
                         return true;
 
                     case MenuId.ENABLE_FOLDER_DRAG_AND_DROP:
-                        if (MainAct.mPref_show_note_attribute.getString("KEY_ENABLE_FOLDER_DRAGGABLE", "no")
+                        if (mPref_show_note_attribute.getString("KEY_ENABLE_FOLDER_DRAGGABLE", "no")
                                 .equalsIgnoreCase("yes")) {
                             menuItem.setIcon(R.drawable.btn_check_off_holo_light);
-                            MainAct.mPref_show_note_attribute.edit().putString("KEY_ENABLE_FOLDER_DRAGGABLE", "no")
+                            mPref_show_note_attribute.edit().putString("KEY_ENABLE_FOLDER_DRAGGABLE", "no")
                                     .apply();
                             DragSortListView listView = (DragSortListView) Drawer.this.act.findViewById(R.id.drawer_listview);
                             listView.setDragEnabled(false);
@@ -94,7 +96,7 @@ public class Drawer {
                                     Toast.LENGTH_SHORT).show();
                         } else {
                             menuItem.setIcon(R.drawable.btn_check_on_holo_light);
-                            MainAct.mPref_show_note_attribute.edit().putString("KEY_ENABLE_FOLDER_DRAGGABLE", "yes")
+                            mPref_show_note_attribute.edit().putString("KEY_ENABLE_FOLDER_DRAGGABLE", "yes")
                                     .apply();
                             DragSortListView listView = (DragSortListView) Drawer.this.act.findViewById(R.id.drawer_listview);
                             listView.setDragEnabled(true);
@@ -112,7 +114,9 @@ public class Drawer {
                         DB_drawer dB_drawer = new DB_drawer(act);
                         if (dB_drawer.getFoldersCount(true) > 0) {
                             closeDrawer();
-                            MainAct.mMenu.setGroupVisible(R.id.group_notes, false); //hide the menu
+
+                            //todo More check menu
+//                            mMenu.setGroupVisible(R.id.group_notes, false); //hide the menu
                             DeleteFolders delFoldersFragment = new DeleteFolders(act);
                             FragmentTransaction fragmentTransaction = act.getSupportFragmentManager().beginTransaction();
                             fragmentTransaction.setCustomAnimations(R.anim.fragment_slide_in_left, R.anim.fragment_slide_out_left, R.anim.fragment_slide_in_right, R.anim.fragment_slide_out_right);
@@ -169,10 +173,10 @@ public class Drawer {
                     if (dB_drawer.getFoldersCount(true) > 0)
                     {
                         int pos = listView.getCheckedItemPosition();
-                        MainAct.mFolderTitle = dB_drawer.getFolderTitle(pos,true);
+                        String mFolderTitle = dB_drawer.getFolderTitle(pos,true);
 
                         if(act.getSupportActionBar() != null) {
-                            act.getSupportActionBar().setTitle(MainAct.mFolderTitle);
+                            act.getSupportActionBar().setTitle(mFolderTitle);
                             toolbar.setLogo(null);
                         }
                     }

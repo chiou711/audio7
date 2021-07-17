@@ -44,10 +44,12 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import static android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK;
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
+import static com.cw.audio7.main.MainAct.audio_manager;
 import static com.cw.audio7.main.MainAct.mFolderUi;
 
 public class Config extends Fragment
@@ -64,8 +66,13 @@ public class Config extends Fragment
 	private Context mContext;
 	private LayoutInflater mInflater;
 	String[] mItemArray = new String[]{"1","2","3","4","5","6","7","8","9","10"};
-	
+	AppCompatActivity act;
+
 	public Config(){}
+	public Config(AppCompatActivity _act){
+		act = _act;
+	}
+
 	static View mRootView;
 	
 	
@@ -291,7 +298,7 @@ public class Config extends Fragment
 
 			// stop audio player
 			if(BackgroundAudioService.mMediaPlayer != null)
-				Audio_manager.stopAudioPlayer();
+				audio_manager.stopAudioPlayer(act);
 
 			//set last tab Id to 0, otherwise TabId will not start from 0 when deleting all
 			//reset tab Index to 0
@@ -343,7 +350,7 @@ public class Config extends Fragment
 
 			// stop audio player
 			if(BackgroundAudioService.mMediaPlayer != null)
-				Audio_manager.stopAudioPlayer();
+				audio_manager.stopAudioPlayer(act);
 
 			//remove preference
 			clearSharedPreferencesForSettings(Objects.requireNonNull(getActivity()));

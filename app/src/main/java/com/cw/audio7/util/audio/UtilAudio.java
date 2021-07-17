@@ -30,6 +30,9 @@ import android.app.Activity;
 import android.media.MediaPlayer;
 import android.net.Uri;
 
+import androidx.appcompat.app.AppCompatActivity;
+
+import static com.cw.audio7.main.MainAct.audio_manager;
 import static com.cw.audio7.main.MainAct.mFolderUi;
 
 //import static android.content.Context.TELEPHONY_SERVICE;
@@ -47,17 +50,17 @@ public class UtilAudio {
 //		}
 //	}
 
-    public static void stopAudioIfNeeded()
+    public static void stopAudioIfNeeded(AppCompatActivity act)
     {
 		if( ( (BackgroundAudioService.mMediaPlayer != null) &&
-              (Audio_manager.getPlayerState() != Audio_manager.PLAYER_AT_STOP) ) &&
+              (audio_manager.getPlayerState() != audio_manager.PLAYER_AT_STOP) ) &&
 			(MainAct.mPlaying_folderPos == mFolderUi.getFocus_folderPos()) &&
 			(mFolderUi.tabsHost.getFocus_tabPos() == MainAct.mPlaying_pagePos)                           )
 		{
             if(BackgroundAudioService.mMediaPlayer != null){
-                Audio_manager.stopAudioPlayer();
-                Audio_manager.mAudioPos = 0;
-	            mFolderUi.tabsHost.audio7Player.showAudioPanel(MainAct.mAct, false);
+                audio_manager.stopAudioPlayer(act);
+                audio_manager.mAudioPos = 0;
+	            mFolderUi.tabsHost.audio7Player.showAudioPanel(act, false);
 	            // remove playing focus
 	            mFolderUi.tabsHost.reloadCurrentPage();
             }

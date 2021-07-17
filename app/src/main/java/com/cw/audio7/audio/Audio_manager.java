@@ -20,65 +20,71 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.cw.audio7.db.DB_page;
-import com.cw.audio7.main.MainAct;
 import com.cw.audio7.util.Util;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationManagerCompat;
 
+import static com.cw.audio7.define.Define.ENABLE_MEDIA_CONTROLLER;
 import static com.cw.audio7.main.MainAct.mFolderUi;
 import static com.cw.audio7.main.MainAct.removeRunnable;
 
 public class Audio_manager
 {
-	private static List<String> audioList;
-	private static List<Integer> audioList_checked;
+	private  List<String> audioList;
+	private  List<Integer> audioList_checked;
 
-    private static int mAudioPlayMode;
-    public final static int NOTE_PLAY_MODE = 0;
-    public final static int PAGE_PLAY_MODE = 1;
+    private  int mAudioPlayMode;
+    public final  int NOTE_PLAY_MODE = 0;
+    public final  int PAGE_PLAY_MODE = 1;
 
     private static int mPlayerState;
-    public static int PLAYER_AT_STOP = 0;
-    public static int PLAYER_AT_PLAY = 1;
-    public static int PLAYER_AT_PAUSE = 2;
-    public static int mAudioPos; // index of current media to play
+    public  int PLAYER_AT_STOP = 0;
+    public  int PLAYER_AT_PLAY = 1;
+    public  int PLAYER_AT_PAUSE = 2;
+    public  int mAudioPos; // index of current media to play
 
 	// control buttons
-	public static boolean playPrevious;
-	public static boolean playNext;
+	public  boolean playPrevious;
+	public  boolean playNext;
 
-	public static boolean togglePlayerState;
-	public static String mAudioUri;
-	public static boolean kill_runnable = false;
+	public  boolean togglePlayerState;
+	public  String mAudioUri;
+	public  boolean kill_runnable = false;
+	AppCompatActivity act;
+
+	public Audio_manager(AppCompatActivity _act) {
+		act = _act;
+	}
 
 	// get play previous
-	public static boolean isPlayPrevious() {
+	public boolean isPlayPrevious() {
 		return playPrevious;
 	}
 
 	// set play previous
-	public static void setPlayPrevious(boolean playPrevious) {
-		Audio_manager.playPrevious = playPrevious;
+	public void setPlayPrevious(boolean _playPrevious) {
+		playPrevious = _playPrevious;
 	}
 
 	// get play next
-	public static boolean isPlayNext() {
+	public boolean isPlayNext() {
 		return playNext;
 	}
 
 	// set play next
-	public static void setPlayNext(boolean playNext) {
-		Audio_manager.playNext = playNext;
+	public void setPlayNext(boolean _playNext) {
+		playNext = _playNext;
 	}
 
 	// get toggle player state
-	public static boolean isTogglePlayerState() {
+	public boolean isTogglePlayerState() {
 		return togglePlayerState;
 	}
 
 	// set toggle player state
-	public static void setTogglePlayerState(boolean togglePlayerState) {
-		Audio_manager.togglePlayerState = togglePlayerState;
+	public void setTogglePlayerState(boolean _togglePlayerState) {
+		togglePlayerState = _togglePlayerState;
 	}
 
     /**
@@ -86,27 +92,27 @@ public class Audio_manager
      *
      */
     // player state
-    public static int getPlayerState() {
+    public int getPlayerState() {
         return mPlayerState;
     }
 
-    public static void setPlayerState(int playerState) {
+    public void setPlayerState(int playerState) {
         mPlayerState = playerState;
     }
 
     // Audio play mode
-    public static int getAudioPlayMode() {
+    public int getAudioPlayMode() {
         return mAudioPlayMode;
     }
 
-    public static void setAudioPlayMode(int audioPlayMode) {
+    public void setAudioPlayMode(int audioPlayMode) {
         mAudioPlayMode = audioPlayMode;
     }
 
     /**
      * Stop audio
      */
-    public static void stopAudioPlayer()
+    public void stopAudioPlayer(AppCompatActivity act)
     {
         System.out.println("Audio_manager / _stopAudioPlayer");
 
@@ -120,10 +126,11 @@ public class Audio_manager
             BackgroundAudioService.mMediaPlayer = null;
         }
 
-        Audio_manager.setPlayerState(Audio_manager.PLAYER_AT_STOP);
+        setPlayerState(PLAYER_AT_STOP);
 
         //hide notification
-        NotificationManagerCompat.from(MainAct.mAct).cancel(BackgroundAudioService.notification_id);
+	    if(ENABLE_MEDIA_CONTROLLER)
+            NotificationManagerCompat.from(act).cancel(BackgroundAudioService.notification_id);
 
 	    removeRunnable();
     }
@@ -132,7 +139,7 @@ public class Audio_manager
 
 
    // Get audio files count
-   static int getAudioFilesCount()
+   int getAudioFilesCount()
    {
 	   int size = 0; 
 	   if(audioList != null)
@@ -147,29 +154,29 @@ public class Audio_manager
    }
 
    // Add audio to list
-   private static void addAudio(String path)
+   private void addAudio(String path)
    {
       audioList.add(path);
    }
 
 	// Add audio with marking to list
-	private static void addCheckedAudio(int i)
+	private void addCheckedAudio(int i)
 	{
 		audioList_checked.add(i);
 	}
 
-	private static void setCheckedAudio(int index, int marking)
+	private void setCheckedAudio(int index, int marking)
 	{
 		audioList_checked.set(index,marking);
 	}
 
-	public static int getCheckedAudio(int index)
+	public int getCheckedAudio(int index)
 	{
 		return  audioList_checked.get(index);
 	}
 
 	// return String at position index
-   public static String getAudioStringAt(int index)
+   public String getAudioStringAt(int index)
    {
       if (index >= 0 && index < audioList.size())
          return audioList.get(index);
@@ -178,7 +185,7 @@ public class Audio_manager
    }
    
 	// Set up audio list
-	public static void setupAudioList()
+	public void setupAudioList(AppCompatActivity act)
 	{
 		audioList = new ArrayList<>();
 		audioList_checked = new ArrayList<>();
@@ -188,7 +195,7 @@ public class Audio_manager
 		setTogglePlayerState(false);
 		setPlayNext(false);
 
-		DB_page db_page = new DB_page(MainAct.mAct, mFolderUi.tabsHost.getCurrentPageTableId());
+		DB_page db_page = new DB_page(act, mFolderUi.tabsHost.getCurrentPageTableId());
 
 		int notesCount =  db_page.getNotesCount(true);
 		setPlayingPage_notesCount(notesCount);

@@ -46,14 +46,15 @@ import com.cw.audio7.util.preferences.Pref;
 import com.mobeta.android.dslv.DragSortListView;
 import com.mobeta.android.dslv.SimpleDragSortCursorAdapter;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentTransaction;
 
+import static com.cw.audio7.main.MainAct.audio_manager;
 import static com.cw.audio7.main.MainAct.mDrawer;
-import static com.cw.audio7.main.MainAct.mFolderTitle;
 import static com.cw.audio7.main.MainAct.mFolderUi;
 
 public class FolderUi extends Folder
@@ -62,6 +63,7 @@ public class FolderUi extends Folder
 
 	public FolderUi(AppCompatActivity _act){
 		act = _act;
+		mFolderTitles = new ArrayList<>();
 		FolderSetup(act);
 	};
 
@@ -184,7 +186,7 @@ public class FolderUi extends Folder
                 else
                     folderTitle = act.getResources().getString(R.string.default_folder_name).concat(String.valueOf(newTableId));
 
-                MainAct.mFolderTitles.add(folderTitle);
+                mFolderUi.mFolderTitles.add(folderTitle);
                 // insert new drawer Id and Title
                 db_drawer.insertFolder(newTableId, folderTitle,true );
 
@@ -339,7 +341,7 @@ public class FolderUi extends Folder
             {
                 // stop audio since the folder is deleted
                 if(BackgroundAudioService.mMediaPlayer != null)
-                    Audio_manager.stopAudioPlayer();
+                    audio_manager.stopAudioPlayer(act);
 
                 // update
                 if (foldersCount > 0)
@@ -511,8 +513,9 @@ public class FolderUi extends Folder
         	}
     	}
     	
-    }	
-    
+    }
+
+	public String mFolderTitle;
     // select folder
     public void selectFolder(AppCompatActivity act,final int position)
     {
@@ -627,8 +630,6 @@ public class FolderUi extends Folder
                 System.out.println("   --- page table Id = " + pageTableId);
                 System.out.println("   --- page title = " + pageTitle);
 
-                MainAct.mLastOkTabId = pageId;
-
                 try {
                     DB_page db_page = new DB_page(act,pageTableId);
                     db_page.open();
@@ -666,6 +667,7 @@ public class FolderUi extends Folder
 				act.getSupportActionBar().setTitle(mFolderTitle);
 		}
 	}
+
 }
 
 

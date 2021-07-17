@@ -44,6 +44,7 @@ import com.cw.audio7.util.preferences.Pref;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import static com.cw.audio7.main.MainAct.audio_manager;
 import static com.cw.audio7.main.MainAct.mFolderUi;
 
 public class DeletePages extends Fragment {
@@ -55,7 +56,11 @@ public class DeletePages extends Fragment {
 	public static View rootView;
     AppCompatActivity act;
 
-	public DeletePages(){}
+	public DeletePages(AppCompatActivity _act){
+	    act = _act;
+    }
+
+    public DeletePages(){}
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -66,7 +71,6 @@ public class DeletePages extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		rootView = inflater.inflate(R.layout.select_page_list, container, false);
-        act = MainAct.mAct;
 
         // title
         title = (TextView) rootView.findViewById(R.id.select_list_title);
@@ -166,7 +170,7 @@ public class DeletePages extends Fragment {
 
 	void doDeletePages()
     {
-        DB_folder mDbFolder = new DB_folder(MainAct.mAct,DB_folder.getFocusFolder_tableId());
+        DB_folder mDbFolder = new DB_folder(act,DB_folder.getFocusFolder_tableId());
         mDbFolder.open();
         for(int i = 0; i< list_selPage.count; i++)
         {
@@ -182,9 +186,9 @@ public class DeletePages extends Fragment {
 
                 if( Audio7Player.isOnAudioPlayingPage() &&
                     BackgroundAudioService.mMediaPlayer != null ) {
-                    Audio_manager.stopAudioPlayer();
-                    Audio_manager.mAudioPos = 0;
-                    Audio_manager.setPlayerState(Audio_manager.PLAYER_AT_STOP);
+                    audio_manager.stopAudioPlayer(act);
+                    audio_manager.mAudioPos = 0;
+                    audio_manager.setPlayerState(audio_manager.PLAYER_AT_STOP);
                 }
 
             }

@@ -37,6 +37,7 @@ import java.util.Locale;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
+import static com.cw.audio7.main.MainAct.audio_manager;
 import static com.cw.audio7.main.MainAct.mAudioHandler;
 import static com.cw.audio7.main.MainAct.audio_runnable;
 import static com.cw.audio7.main.MainAct.mFolderUi;
@@ -76,7 +77,7 @@ public class AudioUi_note
 
         System.out.println("AudioUi_note / constructor /  audioUriStr = " + audioUriStr );
 
-        Audio_manager.setAudioPlayMode(Audio_manager.NOTE_PLAY_MODE);
+        audio_manager.setAudioPlayMode(audio_manager.NOTE_PLAY_MODE);
 
         // set audio block listeners
         setAudioBlockListener(act);
@@ -145,15 +146,15 @@ public class AudioUi_note
                     // note audio: slide seek bar anchor from stop to pause
                     isPausedAtSeekerAnchor = true;
                     mAnchorPosition = (int) (((float)(mediaFileLength / 100)) * seekBar.getProgress());
-                    playAudioInNotePager(act, Audio_manager.getAudioStringAt(Audio_manager.mAudioPos));
+                    playAudioInNotePager(act, audio_manager.getAudioStringAt(audio_manager.mAudioPos));
                 }
             }
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
                 // audio player is one time mode in pager
-                if(Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE)
-                    Audio_manager.stopAudioPlayer();
+                if(audio_manager.getAudioPlayMode() == audio_manager.PAGE_PLAY_MODE)
+                    audio_manager.stopAudioPlayer(act);
             }
 
             @Override
@@ -183,7 +184,7 @@ public class AudioUi_note
 //                System.out.println("AudioUi_note /  audio_next_btn / _onClick / NoteUi.getNotesCnt() = " + NoteUi.getNotesCnt());
 //                System.out.println("AudioUi_note /  audio_next_btn / _onClick / NoteUi.getFocus_notePos() = " + NoteUi.getFocus_notePos());
 
-                Audio_manager.stopAudioPlayer();
+                audio_manager.stopAudioPlayer(act);
 
                 int new_pos = NoteUi.getFocus_notePos()-1;
                 if( new_pos < 0 )
@@ -193,7 +194,7 @@ public class AudioUi_note
                         viewPager.setCurrentItem(NoteUi.getNotesCnt()-1);
                     } else {
                         Toast.makeText(act,R.string.toast_cyclic_play_disabled,Toast.LENGTH_SHORT).show();
-                        Audio_manager.stopAudioPlayer();
+                        audio_manager.stopAudioPlayer(act);
                         return;
                     }
                 }
@@ -214,7 +215,7 @@ public class AudioUi_note
 //                System.out.println("AudioUi_note /  audio_next_btn / _onClick / NoteUi.getNotesCnt() = " + NoteUi.getNotesCnt());
 //                System.out.println("AudioUi_note /  audio_next_btn / _onClick / NoteUi.getFocus_notePos() = " + NoteUi.getFocus_notePos());
 
-                Audio_manager.stopAudioPlayer();
+                audio_manager.stopAudioPlayer(act);
 
                 int new_pos = NoteUi.getFocus_notePos()+1;
                 if( new_pos >= NoteUi.getNotesCnt())
@@ -224,7 +225,7 @@ public class AudioUi_note
                         viewPager.setCurrentItem(0);
                     } else {
                         Toast.makeText(act,R.string.toast_cyclic_play_disabled,Toast.LENGTH_SHORT).show();
-                        Audio_manager.stopAudioPlayer();
+                        audio_manager.stopAudioPlayer(act);
                         return;
                     }
                 }
@@ -246,14 +247,14 @@ public class AudioUi_note
         if(UtilAudio.hasAudioExtension(audioUriStr) ||
            UtilAudio.hasAudioExtension(audioName[0]))
         {
-            Audio_manager.mAudioPos = NoteUi.getFocus_notePos();
+            audio_manager.mAudioPos = NoteUi.getFocus_notePos();
             MainAct.mPlaying_pageTableId = mFolderUi.tabsHost.getCurrentPageTableId();
 
             // new instance
             mFolderUi.tabsHost.audio7Player = new Audio7Player(act, audioPanel, audioUriStr);
             mFolderUi.tabsHost.audio7Player.setAudioPanel(audioPanel);
 
-            Audio_manager.setupAudioList();
+            audio_manager.setupAudioList(act);
             mFolderUi.tabsHost.audio7Player.runAudioState();
         }
     }

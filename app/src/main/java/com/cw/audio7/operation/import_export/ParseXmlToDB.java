@@ -33,6 +33,8 @@ import com.cw.audio7.util.preferences.Pref;
 import android.content.Context;
 import android.util.Xml;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import static com.cw.audio7.main.MainAct.mFolderUi;
 
 public class ParseXmlToDB {
@@ -49,16 +51,18 @@ public class ParseXmlToDB {
     private String strSplitter;
     private boolean mEnableInsertDB = true;
     int folderTableId;
+    AppCompatActivity act;
 
-    ParseXmlToDB(FileInputStream fileInputStream, Context context)
+    ParseXmlToDB(FileInputStream fileInputStream, AppCompatActivity _act)
     {
-        mContext = context;
+        act = _act;
+        mContext = _act;
         this.fileInputStream = fileInputStream;
 
         folderTableId = Pref.getPref_focusView_folder_tableId(mContext);
-        mDb_folder = new DB_folder(MainAct.mAct, folderTableId);
+        mDb_folder = new DB_folder(act, folderTableId);
 
-        mDb_page = new DB_page(MainAct.mAct,mFolderUi.tabsHost.getCurrentPageTableId());
+        mDb_page = new DB_page(act,mFolderUi.tabsHost.getCurrentPageTableId());
 
         isParsing = true;
     }
@@ -116,7 +120,7 @@ public class ParseXmlToDB {
                             String folderName = text.trim();
                             if(mEnableInsertDB)
                             {
-                                DB_drawer dB_drawer = new DB_drawer(MainAct.mAct);
+                                DB_drawer dB_drawer = new DB_drawer(act);
                                 int folders_count = dB_drawer.getFoldersCount(true);
 
                                 // get last folder Id
@@ -149,9 +153,8 @@ public class ParseXmlToDB {
 
                                 DB_folder.setFocusFolder_tableId(lastFolderTableId);
 
-                                Pref.setPref_focusView_folder_tableId(MainAct.mAct, lastFolderTableId);
-                                Pref.setPref_focusView_page_tableId(MainAct.mAct, 1);
-//                                TabsHost.setLastPageTableId(0);
+                                Pref.setPref_focusView_folder_tableId(act, lastFolderTableId);
+                                Pref.setPref_focusView_page_tableId(act, 1);
 
                                 mFolderUi.tabsHost.setFocus_tabPos(0);
                             }
@@ -165,7 +168,7 @@ public class ParseXmlToDB {
                                 int style = Util.getNewPageStyle(mContext);
 
                                 // get last page table Id
-                                mDb_folder = new DB_folder(MainAct.mAct,Pref.getPref_focusView_folder_tableId(mContext));
+                                mDb_folder = new DB_folder(act,Pref.getPref_focusView_folder_tableId(mContext));
                                 int lastPageTableId = 0;
                                 for(int i=0; i<mDb_folder.getPagesCount(true); i++)
                                 {
@@ -191,8 +194,8 @@ public class ParseXmlToDB {
 
                                 // update from 0 to 1 if Import starts from Empty
                                 int pgsCnt = mDb_folder.getPagesCount(true);
-                                if((pgsCnt > 0) && (Pref.getPref_focusView_page_tableId(MainAct.mAct) ==0))
-                                    Pref.setPref_focusView_page_tableId(MainAct.mAct, 1);
+                                if((pgsCnt > 0) && (Pref.getPref_focusView_page_tableId(act) ==0))
+                                    Pref.setPref_focusView_page_tableId(act, 1);
                             }
                             fileBody = fileBody.concat(Util.NEW_LINE + "=== " + "Page:" + " " + pageName + " ===");
                        }

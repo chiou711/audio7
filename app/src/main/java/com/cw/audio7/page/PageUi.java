@@ -60,7 +60,7 @@ public class PageUi extends Page
 	 * Change Page Color
 	 *
 	 */
-	public static void changePageColor(final AppCompatActivity act)
+	public void changePageColor(final AppCompatActivity act)
 	{
 		// set color
 		final Builder builder = new Builder(act);
@@ -91,7 +91,7 @@ public class PageUi extends Page
 		// set current selection
 		for(int i=0;i< Util.getStyleCount();i++)
 		{
-			if(Util.getCurrentPageStyle(mFolderUi.tabsHost.getFocus_tabPos()) == i)
+			if(Util.getCurrentPageStyle(act,mFolderUi.tabsHost.getFocus_tabPos()) == i)
 			{
 				RadioButton button = (RadioButton) RG_view.getChildAt(i);
 		    	if(i%2 == 0)
@@ -109,7 +109,7 @@ public class PageUi extends Page
 	    dlg.show();
 
 		radioGroup.setOnCheckedChangeListener( (anyName, id) -> {
-				DB_folder db = new DB_folder(MainAct.mAct,DB_folder.getFocusFolder_tableId());
+				DB_folder db = new DB_folder(act,DB_folder.getFocusFolder_tableId());
 				int style = radioGroup.indexOfChild(radioGroup.findViewById(id));
                 int pos = mFolderUi.tabsHost.getFocus_tabPos();
 				db.updatePage(db.getPageId(pos, true),
@@ -135,7 +135,7 @@ public class PageUi extends Page
      *      left to right order: NegativeButton(button 2), NeutralButton(button 3), PositiveButton(button 1)
 	 *
 	 */
-	public static void shiftPage(final AppCompatActivity act)
+	public void shiftPage(final AppCompatActivity act)
 	{
 	    Builder builder = new Builder(act);
 	    builder.setTitle(R.string.rearrange_page_title)
@@ -241,11 +241,11 @@ public class PageUi extends Page
 	              .setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_menu_close_clear_cancel, 0, 0, 0);
 	}
 
-	private static int getTabPositionState()
+	private int getTabPositionState()
 	{
 		int pos = mFolderUi.tabsHost.getFocus_tabPos();
 
-		DB_folder db = new DB_folder(MainAct.mAct,Pref.getPref_focusView_folder_tableId(MainAct.mAct));
+		DB_folder db = new DB_folder(act,Pref.getPref_focusView_folder_tableId(act));
 		int count = db.getPagesCount(true);
 
 		if( pos == 0 )
@@ -256,7 +256,7 @@ public class PageUi extends Page
 			return MIDDLE;
 	}
 
-	private static void updateButtonState(AlertDialog dlg)
+	private void updateButtonState(AlertDialog dlg)
     {
 	    ((Button)dlg.findViewById(android.R.id.button1))
 			    .setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_menu_forward, 0, 0, 0);
@@ -300,10 +300,10 @@ public class PageUi extends Page
 	 * swap page
 	 *
 	 */
-	private static void swapPage(int start, int end)
+	private void swapPage(int start, int end)
 	{
 		System.out.println("PageUi / _swapPage / start = " + start + " , end = " + end);
-		DB_folder db = new DB_folder(MainAct.mAct,Pref.getPref_focusView_folder_tableId(MainAct.mAct));
+		DB_folder db = new DB_folder(act,Pref.getPref_focusView_folder_tableId(act));
 
         db.open();
 
@@ -341,7 +341,7 @@ public class PageUi extends Page
 	 */
     private static int mAddAt;
     private static SharedPreferences mPref_add_new_page_location;
-	public static  void addNewPage(final AppCompatActivity act, final int newTabId) {
+	public void addNewPage(final AppCompatActivity act, final int newTabId) {
         // get tab name
         String pageName = Define.getTabTitle(act, newTabId);
 
@@ -511,7 +511,7 @@ public class PageUi extends Page
 			});
 		}
 
-		MainAct.mAct.invalidateOptionsMenu();
+		act.invalidateOptionsMenu();
 		//todo For first folder, first page: tab is not seen
 		mFolderUi.tabsHost.setFocus_tabPos(0);
 	}
@@ -520,7 +520,7 @@ public class PageUi extends Page
 	 * Insert Page to Leftmost
 	 * 
 	 */
-	private static void insertPage_leftmost(final AppCompatActivity act, int newTabId, String tabName)
+	private void insertPage_leftmost(final AppCompatActivity act, int newTabId, String tabName)
 	{
 		DB_folder dbFolder = new DB_folder(act,Pref.getPref_focusView_folder_tableId(act));
 		
@@ -562,7 +562,7 @@ public class PageUi extends Page
 		if(MainAct.mPlaying_folderPos == mFolderUi.getFocus_folderPos())
 			MainAct.mPlaying_pagePos++;
 
-		MainAct.mAct.invalidateOptionsMenu();
+		act.invalidateOptionsMenu();
 		mFolderUi.tabsHost.setFocus_tabPos(0);
 	}
 	

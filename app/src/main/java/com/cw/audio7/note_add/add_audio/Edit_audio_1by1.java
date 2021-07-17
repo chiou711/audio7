@@ -60,6 +60,14 @@ public class Edit_audio_1by1 extends ListFragment
     public View rootView;
     ListView listView;
     public static String new_audioUri;
+    AppCompatActivity act;
+
+    public Edit_audio_1by1() {
+    }
+
+    public Edit_audio_1by1(AppCompatActivity _act) {
+        act =_act;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -294,7 +302,8 @@ public class Edit_audio_1by1 extends ListFragment
                     System.out.println("Add_audio_1by1 / _showFilesList / dirName  = " + dirName);
 
                     // get volume name under root
-                    dirName = StorageUtils.getVolumeName(dirName);
+                    StorageUtils storageUtils = new StorageUtils();
+                    dirName = storageUtils.getVolumeName(act,dirName);
 //                        System.out.println("Add_audio_1by1 / _showFilesList / dirName (with volume name) = " + dirName);
 
                     fileNames.add("[ " + dirName +" ]");

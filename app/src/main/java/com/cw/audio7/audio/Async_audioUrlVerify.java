@@ -26,6 +26,8 @@ import java.util.Objects;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import static com.cw.audio7.main.MainAct.audio_manager;
+
 /**
  * Audio Url verification task
  * - a class that will show progress bar in the main GUI context
@@ -58,7 +60,7 @@ class Async_audioUrlVerify extends AsyncTask<String,Integer,String>
 
 		// only for Page play mode
 		// show dialog will affect full screen at Note play mode
-		if( Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE ) {
+		if( audio_manager.getAudioPlayMode() == audio_manager.PAGE_PLAY_MODE ) {
 		    if(!progressDialog.isShowing())  {
 			    if( !Objects.requireNonNull(act.get()).isFinishing() && !Objects.requireNonNull(act.get()).isDestroyed() )
 			    	progressDialog.show();
@@ -172,7 +174,7 @@ class Async_audioUrlVerify extends AsyncTask<String,Integer,String>
 		}
 
 		// prepare audio
-		if (Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE)
+		if (audio_manager.getAudioPlayMode() == audio_manager.PAGE_PLAY_MODE)
 			audio7Player.showAudioPanel(act.get(), true);
 
 		// URL is ready, start Audio Prepare

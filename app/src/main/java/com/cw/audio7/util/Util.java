@@ -148,13 +148,13 @@ public class Util
 	}
 	
 	// export to SD card: for checked pages
-	public String exportToSdCard(String filename, List<Boolean> checkedTabs)
+	public String exportToSdCard(AppCompatActivity act,String filename, List<Boolean> checkedTabs)
 	{   
 		//first row text
 		String data ="";
 
 		//get data from DB
-		data = queryDB(data,checkedTabs);
+		data = queryDB(act,data,checkedTabs);
 		
 		// sent data
 		data = addXmlTag(data);
@@ -217,7 +217,7 @@ public class Util
      * Query current data base
      *
      */
-    private String queryDB(String data, List<Boolean> checkedTabs)
+    private String queryDB(AppCompatActivity act,String data, List<Boolean> checkedTabs)
     {
     	String curData = data;
     	
@@ -230,7 +230,7 @@ public class Util
     	for(int i=0;i<tabCount;i++)
     	{
             if(checkedTabs.get(i))
-				curData = curData.concat(getStringWithXmlTag(i, ID_FOR_TABS));
+				curData = curData.concat(getStringWithXmlTag(act,i, ID_FOR_TABS));
     	}
     	return curData;
     	
@@ -311,12 +311,12 @@ public class Util
 //    }
     
     // add mark to current page
-	public void addMarkToCurrentPage(DialogInterface dialogInterface,final int action)
+	public void addMarkToCurrentPage(AppCompatActivity act,DialogInterface dialogInterface,final int action)
 	{
-		mDbFolder = new DB_folder(MainAct.mAct, Pref.getPref_focusView_folder_tableId(MainAct.mAct));
+		mDbFolder = new DB_folder(act, Pref.getPref_focusView_folder_tableId(act));
 	    ListView listView = ((AlertDialog) dialogInterface).getListView();
 	    final ListAdapter originalAdapter = listView.getAdapter();
-	    final int style = Util.getCurrentPageStyle(mFolderUi.tabsHost.getFocus_tabPos());
+	    final int style = Util.getCurrentPageStyle(act,mFolderUi.tabsHost.getFocus_tabPos());
         CheckedTextView textViewDefault = new CheckedTextView(mAct) ;
         defaultBgClr = textViewDefault.getDrawingCacheBackgroundColor();
         defaultTextClr = textViewDefault.getCurrentTextColor();
@@ -455,10 +455,10 @@ public class Util
     }
 	
     // get current page style
-	static public int getCurrentPageStyle(int page_pos)
+	static public int getCurrentPageStyle(AppCompatActivity act,int page_pos)
 	{
-        int focusFolder_tableId = Pref.getPref_focusView_folder_tableId(MainAct.mAct);
-        DB_folder db = new DB_folder(MainAct.mAct, focusFolder_tableId);
+        int focusFolder_tableId = Pref.getPref_focusView_folder_tableId(act);
+        DB_folder db = new DB_folder(act, focusFolder_tableId);
         return db.getPageStyle(page_pos, true);
 	}
 
@@ -476,7 +476,7 @@ public class Util
      * @param noteId: ID_FOR_TABS for checked tabs(pages), ID_FOR_NOTES for checked notes
      * @return string with tags
      */
-	public static String getStringWithXmlTag(int tabPos,long noteId)
+	public static String getStringWithXmlTag(AppCompatActivity act,int tabPos,long noteId)
 	{
 		String PAGE_TAG_B = "<page>";
 		String PAGE_NAME_TAG_B = "<page_name>";
@@ -496,7 +496,7 @@ public class Util
 		int pageTableId = mFolderUi.tabsHost.mTabsPagerAdapter.getItem(tabPos).page_tableId;
 		List<Long> noteIdArray = new ArrayList<>();
 
-		DB_page dbPage = new DB_page(MainAct.mAct, pageTableId);
+		DB_page dbPage = new DB_page(act, pageTableId);
         dbPage.open();
 
         int count = dbPage.getNotesCount(false);
@@ -560,7 +560,7 @@ public class Util
 
 				if(i==0)
 				{
-					DB_folder db_folder = new DB_folder(MainAct.mAct, Pref.getPref_focusView_folder_tableId(MainAct.mAct));
+					DB_folder db_folder = new DB_folder(act, Pref.getPref_focusView_folder_tableId(act));
 					sentString = sentString.concat(NEW_LINE + PAGE_TAG_B );
 					sentString = sentString.concat(NEW_LINE + PAGE_NAME_TAG_B + db_folder.getCurrentPageTitle() + PAGE_NAME_TAG_E );
 				}
@@ -659,7 +659,7 @@ public class Util
 	}
 	
 	// get display name by URI string
-	public static String[] getDisplayNameByUriString(String uriString, Activity activity) {
+	public static String[] getDisplayNameByUriString(String uriString, Context activity) {
 //		String display_name = "";
 		String scheme = getUriScheme(uriString);
 		String[] displayName = new String[2];

@@ -37,6 +37,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import static com.cw.audio7.main.MainAct.mFolderUi;
@@ -49,6 +50,15 @@ public class Import_fileView extends Fragment
     String filePath;
     File mFile;
     View rootView;
+	AppCompatActivity act;
+
+	public Import_fileView() {
+	}
+
+	public Import_fileView(AppCompatActivity _act) {
+		act = _act;
+	}
+
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -58,11 +68,9 @@ public class Import_fileView extends Fragment
 		mTitleViewText = (TextView) rootView.findViewById(R.id.view_title);
 		mBodyViewText = (TextView) rootView.findViewById(R.id.view_body);
 
-//		getActivity().getActionBar().setDisplayShowHomeEnabled(false);
-
         Import_fileView_asyncTask task = null;
 		if(savedInstanceState == null) {
-			task = new Import_fileView_asyncTask(MainAct.mAct,rootView,filePath);
+			task = new Import_fileView_asyncTask(act,rootView,filePath);
 			task.enableSaveDB(false);// view
 			task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 		}
@@ -147,7 +155,7 @@ public class Import_fileView extends Fragment
 
 			public void onClick(View view)
 			{
-				Import_fileView_asyncTask task = new Import_fileView_asyncTask(MainAct.mAct,rootView,filePath);
+				Import_fileView_asyncTask task = new Import_fileView_asyncTask(act,rootView,filePath);
 				task.enableSaveDB(true);//confirm
 				task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 			}
@@ -176,7 +184,7 @@ public class Import_fileView extends Fragment
     }
 
     // Import default content by XML file
-    public static void importDefaultContentByXml(Activity act, File xmlFile)
+    public static void importDefaultContentByXml(AppCompatActivity act, File xmlFile)
     {
 		System.out.println("Import_fileView / _importDefaultContentByXml / xmlFileName = " + xmlFile.getName());
 

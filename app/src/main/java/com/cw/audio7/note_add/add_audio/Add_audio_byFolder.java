@@ -58,6 +58,14 @@ public class Add_audio_byFolder extends ListFragment
     List<String> fileNames = null;
     public View rootView;
     ListView listView;
+    AppCompatActivity act;
+
+    public Add_audio_byFolder() {
+    }
+
+    public Add_audio_byFolder(AppCompatActivity _act) {
+        act =_act;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -321,7 +329,8 @@ public class Add_audio_byFolder extends ListFragment
                         String dirName = file.getName();
 //                        System.out.println("Add_audio_byFolder / _showFilesList / dirName 1 = " + dirName);
                         // get volume name under root
-                        dirName = StorageUtils.getVolumeName(dirName);
+                        StorageUtils storageUtils = new StorageUtils();
+                        dirName = storageUtils.getVolumeName(act,dirName);
 //                        System.out.println("Add_audio_byFolder / _showFilesList / dirName 2 = " + dirName);
                         fileNames.add("[ " + dirName + " ]");
                     }

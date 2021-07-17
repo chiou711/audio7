@@ -39,6 +39,7 @@ import com.cw.audio7.operation.List_selectPage;
 import com.cw.audio7.R;
 import com.cw.audio7.util.Util;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import static com.cw.audio7.main.MainAct.mFolderUi;
@@ -50,9 +51,15 @@ public class Export_toSDCardFragment extends Fragment {
     ListView mListView;
     int mStyle;
 	List_selectPage mList_selPage;
-	public static View mSelPageDlg,mProgressBar;
+	View mSelPageDlg,mProgressBar;
+	View rootView;
+	AppCompatActivity act;
+
 	public Export_toSDCardFragment(){}
-	public static View rootView;
+
+	public Export_toSDCardFragment(AppCompatActivity _act){
+		act = _act;
+	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -80,7 +87,7 @@ public class Export_toSDCardFragment extends Fragment {
 				mList_selPage.selectAllPages(false);
 		}
 		});
-		mStyle = Util.getCurrentPageStyle(mFolderUi.tabsHost.getFocus_tabPos());
+		mStyle = Util.getCurrentPageStyle(act,mFolderUi.tabsHost.getFocus_tabPos());
 
 		// list view: selecting which pages to send
 		mListView = (ListView)rootView.findViewById(R.id.listView1);
@@ -241,7 +248,7 @@ public class Export_toSDCardFragment extends Fragment {
 		@Override
 		protected Void doInBackground(Void... params) {
 			Util util = new Util(getActivity());
-			util.exportToSdCard(mStrSDCardFileName, // attachment name
+			util.exportToSdCard(act,mStrSDCardFileName, // attachment name
 								mList_selPage.mCheckedTabs); // checked page array
 			return null;
 		}

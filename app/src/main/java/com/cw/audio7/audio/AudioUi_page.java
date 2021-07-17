@@ -34,6 +34,7 @@ import java.util.Locale;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import static com.cw.audio7.main.MainAct.audio_manager;
 import static com.cw.audio7.main.MainAct.mFolderUi;
 
 /**
@@ -62,7 +63,7 @@ public class AudioUi_page {
         audioPanel = panel_view;
         audioUriStr = audio_uri_str;
 
-        Audio_manager.setAudioPlayMode(Audio_manager.PAGE_PLAY_MODE);
+        audio_manager.setAudioPlayMode(audio_manager.PAGE_PLAY_MODE);
 
         System.out.println("AudioUi_page / constructor / audioUriStr = " + audioUriStr);
 
@@ -163,24 +164,24 @@ public class AudioUi_page {
             public void onClick(View v)
             {
                 do {
-                    if(Audio_manager.mAudioPos > 0) {
-                        Audio_manager.mAudioPos--;
+                    if(audio_manager.mAudioPos > 0) {
+                        audio_manager.mAudioPos--;
                     }
-                    else if( Audio_manager.mAudioPos == 0)
+                    else if( audio_manager.mAudioPos == 0)
                     {
                         if(Pref.getPref_cyclic_play_enable(mAct)) {
-                            Audio_manager.mAudioPos = Audio_manager.getPlayingPage_notesCount() - 1;
+                            audio_manager.mAudioPos = Audio_manager.getPlayingPage_notesCount() - 1;
                         }
                         else {
-                            Audio_manager.mAudioPos = -1;
+                            audio_manager.mAudioPos = -1;
                             break;
                         }
                     }
                 }
-                while (Audio_manager.getCheckedAudio(Audio_manager.mAudioPos) == 0);
+                while (audio_manager.getCheckedAudio(audio_manager.mAudioPos) == 0);
 
-                if(Audio_manager.mAudioPos == -1) {
-                    Audio_manager.stopAudioPlayer();
+                if(audio_manager.mAudioPos == -1) {
+                    audio_manager.stopAudioPlayer(act);
                     audio7Player.showAudioPanel(act,false);
                     mFolderUi.tabsHost.reloadCurrentPage();
                     Toast.makeText(mAct,R.string.toast_cyclic_play_disabled,Toast.LENGTH_LONG).show();
@@ -200,21 +201,21 @@ public class AudioUi_page {
                 int playingPage_notesCnt = Audio_manager.getPlayingPage_notesCount();
                 do
                 {
-                    Audio_manager.mAudioPos++;
-                    if( Audio_manager.mAudioPos >= playingPage_notesCnt) {
+                    audio_manager.mAudioPos++;
+                    if( audio_manager.mAudioPos >= playingPage_notesCnt) {
                         if(Pref.getPref_cyclic_play_enable(mAct)) {
-                            Audio_manager.mAudioPos = 0; //back to first index
+                            audio_manager.mAudioPos = 0; //back to first index
                         }
                         else {
-                            Audio_manager.mAudioPos = playingPage_notesCnt;
+                            audio_manager.mAudioPos = playingPage_notesCnt;
                             break;
                         }
                     }
                 }
-                while (Audio_manager.getCheckedAudio(Audio_manager.mAudioPos) == 0); //todo  Invalid index 3, size is 3
+                while (audio_manager.getCheckedAudio(audio_manager.mAudioPos) == 0); //todo  Invalid index 3, size is 3
 
-                if(Audio_manager.mAudioPos >= playingPage_notesCnt) {
-                    Audio_manager.stopAudioPlayer();
+                if(audio_manager.mAudioPos >= playingPage_notesCnt) {
+                    audio_manager.stopAudioPlayer(act);
                     audio7Player.showAudioPanel(act,false);
                     mFolderUi.tabsHost.reloadCurrentPage();
                     Toast.makeText(mAct,R.string.toast_cyclic_play_disabled,Toast.LENGTH_LONG).show();
@@ -256,7 +257,7 @@ public class AudioUi_page {
         }
 
         // show new audio length immediately
-        audio7Player.initAudioBlock(Audio_manager.getAudioStringAt(Audio_manager.mAudioPos));
+        audio7Player.initAudioBlock(audio_manager.getAudioStringAt(audio_manager.mAudioPos));
 
         audio7Player.runAudioState();
     }

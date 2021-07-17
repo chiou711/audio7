@@ -109,7 +109,7 @@ public class Note_edit_ui {
 	private void UI_init_text()
 	{
         int focusFolder_tableId = Pref.getPref_focusView_folder_tableId(act);
-        DB_folder db = new DB_folder(MainAct.mAct, focusFolder_tableId);
+        DB_folder db = new DB_folder(act, focusFolder_tableId);
 		style = db.getPageStyle(mFolderUi.tabsHost.getFocus_tabPos(), true);
 
 		LinearLayout block = (LinearLayout) act.findViewById(R.id.edit_title_block);

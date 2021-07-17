@@ -90,13 +90,20 @@
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="@string/ad_mob_app_id"/>
 
+<!-- for normal        -->
+<!--        <meta-data-->
+<!--            android:name="com.google.android.gms.ads.APPLICATION_ID"-->
+<!--            android:value="@string/ad_mob_app_id"/>-->
+
+<!--  for test      -->
 <!--            <meta-data-->
 <!--                android:name="com.google.android.gms.ads.APPLICATION_ID"-->
 <!--                android:value="@string/ad_mob_app_id_test"/>-->
 
-        <meta-data
-            android:name="com.google.android.gms.ads.AD_MANAGER_APP"
-            android:value="true"/>
+<!--        <meta-data-->
+<!--            android:name="com.google.android.gms.ads.AD_MANAGER_APP"-->
+<!--            android:value="true"/>-->
+
            </application>
 
         </manifest>

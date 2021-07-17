@@ -57,6 +57,7 @@ import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import static com.cw.audio7.main.MainAct.audio_manager;
 import static com.cw.audio7.main.MainAct.mFolderUi;
 
 public class Note extends Fragment
@@ -95,14 +96,14 @@ public class Note extends Fragment
 		mEntryPosition = arguments.getInt("POSITION");
 		NoteUi.setFocus_notePos(mEntryPosition);
 
-		DB_page db_page = new DB_page(MainAct.mAct,mFolderUi.tabsHost.getCurrentPageTableId());
+		DB_page db_page = new DB_page(getActivity(),mFolderUi.tabsHost.getCurrentPageTableId());
 		NoteUi.setNotesCnt(db_page.getNotesCount(true));
 
-		act = MainAct.mAct;
+		act = (AppCompatActivity) getActivity();
 		setHasOptionsMenu(true);
 
 		// force stop audio whenever user touch page mode thumb nail
-		Audio_manager.stopAudioPlayer();
+		audio_manager.stopAudioPlayer(act);
 
 		mFolderUi.tabsHost.audio7Player = null;
 	}
@@ -192,9 +193,9 @@ public class Note extends Fragment
 		@Override
 		public void onPageSelected(int nextPosition)
 		{
-			if(Audio_manager.getAudioPlayMode()  == Audio_manager.NOTE_PLAY_MODE) {
+			if(audio_manager.getAudioPlayMode()  == audio_manager.NOTE_PLAY_MODE) {
 				System.out.println("Note / onPageSelected / stop audio" );
-				Audio_manager.stopAudioPlayer();
+				audio_manager.stopAudioPlayer(act);
 			}
 
 			NoteUi.setFocus_notePos(viewPager.getCurrentItem());
@@ -373,10 +374,10 @@ public class Note extends Fragment
 		   						  .apply();
     }
     
-	public static void stopNoteAudio()
+	public void stopNoteAudio()
 	{
-		if(Audio_manager.getAudioPlayMode() == Audio_manager.NOTE_PLAY_MODE)
-            Audio_manager.stopAudioPlayer();
+		if(audio_manager.getAudioPlayMode() == audio_manager.NOTE_PLAY_MODE)
+            audio_manager.stopAudioPlayer(act);
 	}
 
 	//The BroadcastReceiver that listens for bluetooth broadcasts
@@ -412,7 +413,7 @@ public class Note extends Fragment
 					newPos = NoteUi.getFocus_notePos()-1;
 
 				NoteUi.setFocus_notePos(newPos);
-				Audio_manager.stopAudioPlayer();
+				audio_manager.stopAudioPlayer(act);
 				viewPager.setCurrentItem(newPos);
 
 				BackgroundAudioService.mIsPrepared = false;
@@ -426,7 +427,7 @@ public class Note extends Fragment
 					newPos = NoteUi.getFocus_notePos() + 1;
 
 				NoteUi.setFocus_notePos(newPos);
-				Audio_manager.stopAudioPlayer();
+				audio_manager.stopAudioPlayer(act);
 				viewPager.setCurrentItem(newPos);
 
 				BackgroundAudioService.mIsPrepared = false;
