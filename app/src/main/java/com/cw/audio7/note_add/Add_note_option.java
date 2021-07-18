@@ -20,6 +20,7 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
@@ -54,9 +55,11 @@ public class Add_note_option {
     int option_drawable_id;
     int option_string_id;
     AppCompatActivity act;
+    Menu menu;
 
-    public Add_note_option(AppCompatActivity _act) {
+    public Add_note_option(AppCompatActivity _act, Menu _menu) {
         act = _act;
+        menu = _menu;
     }
 
     Add_note_option(int id, int draw_id, int string_id)
@@ -168,7 +171,7 @@ public class Add_note_option {
 
     private static AlertDialog dlgAddNew;
 
-    private static void startAddNoteOption(AppCompatActivity act, int option)
+    private void startAddNoteOption(AppCompatActivity act, int option)
     {
         System.out.println("MainUi / _startAddNoteOption / option = " + option);
 
@@ -215,12 +218,11 @@ public class Add_note_option {
                 // replace fragment
                 dlgAddNew.dismiss();
 
-                //todo More check menu
                 //hide the menu
-//                MainAct.mMenu.findItem(R.id.ADD_NEW_NOTE).setVisible(false);
-//                MainAct.mMenu.setGroupVisible(R.id.group_notes, false);
-//                MainAct.mMenu.findItem(R.id.HANDLE_CHECKED_NOTES).setVisible(false);
-//                MainAct.mMenu.setGroupVisible(R.id.group_pages_and_more, false);
+                menu.findItem(R.id.ADD_NEW_NOTE).setVisible(false);
+                menu.setGroupVisible(R.id.group_notes, false);
+                menu.findItem(R.id.HANDLE_CHECKED_NOTES).setVisible(false);
+                menu.setGroupVisible(R.id.group_pages_and_more, false);
 
                 Add_audio_1by1 add_audio1by1 = new Add_audio_1by1(act);
                 FragmentTransaction transaction = act.getSupportFragmentManager().beginTransaction();
@@ -237,12 +239,11 @@ public class Add_note_option {
                 Add_audio_byFolder add_audio_byFolder = new Add_audio_byFolder(act);
                 FragmentTransaction transaction = act.getSupportFragmentManager().beginTransaction();
 
-                //todo More check menu
                 //hide the menu
-//                MainAct.mMenu.findItem(R.id.ADD_NEW_NOTE).setVisible(false);
-//                MainAct.mMenu.setGroupVisible(R.id.group_notes, false);
-//                MainAct.mMenu.findItem(R.id.HANDLE_CHECKED_NOTES).setVisible(false);
-//                MainAct.mMenu.setGroupVisible(R.id.group_pages_and_more, false);
+                menu.findItem(R.id.ADD_NEW_NOTE).setVisible(false);
+                menu.setGroupVisible(R.id.group_notes, false);
+                menu.findItem(R.id.HANDLE_CHECKED_NOTES).setVisible(false);
+                menu.setGroupVisible(R.id.group_pages_and_more, false);
 
                 transaction.setCustomAnimations(R.anim.fragment_slide_in_left, R.anim.fragment_slide_out_left, R.anim.fragment_slide_in_right, R.anim.fragment_slide_out_right);
                 transaction.replace(R.id.content_frame, add_audio_byFolder, "add_audio").addToBackStack(null).commit();
@@ -254,12 +255,11 @@ public class Add_note_option {
                 // replace fragment
                 dlgAddNew.dismiss();
 
-                //todo More check menu
                 //hide the menu
-//                MainAct.mMenu.findItem(R.id.ADD_NEW_NOTE).setVisible(false);
-//                MainAct.mMenu.setGroupVisible(R.id.group_notes, false);
-//                MainAct.mMenu.findItem(R.id.HANDLE_CHECKED_NOTES).setVisible(false);
-//                MainAct.mMenu.setGroupVisible(R.id.group_pages_and_more, false);
+                menu.findItem(R.id.ADD_NEW_NOTE).setVisible(false);
+                menu.setGroupVisible(R.id.group_notes, false);
+                menu.findItem(R.id.HANDLE_CHECKED_NOTES).setVisible(false);
+                menu.setGroupVisible(R.id.group_pages_and_more, false);
 
                 // do Add all
                 Pref.setPref_will_create_default_content(act,true);

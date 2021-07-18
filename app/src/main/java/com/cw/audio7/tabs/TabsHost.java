@@ -149,8 +149,8 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
             mTabsPagerAdapter = new TabsPagerAdapter(act, act.getSupportFragmentManager());
 
         // add pages to mTabsPagerAdapter
-
-        if (mDrawer.getFolderCount() > 0) {
+        if ( (mDrawer!=null) &&
+             mDrawer.getFolderCount() > 0)  {
             pageCount = addPages(mTabsPagerAdapter);
         }
 

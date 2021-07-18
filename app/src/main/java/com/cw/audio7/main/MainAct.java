@@ -84,14 +84,13 @@ import static com.cw.audio7.define.Define.ENABLE_MEDIA_CONTROLLER;
 
 public class MainAct extends AppCompatActivity implements FragmentManager.OnBackStackChangedListener
 {
-    public Toolbar mToolbar;
-    public CharSequence mAppTitle;
-    public Config mConfigFragment;
-    public About mAboutFragment;
-    public  Menu mMenu;
-    public FragmentManager mFragmentManager;
-    public FragmentManager.OnBackStackChangedListener mOnBackStackChangedListener;
-    public int mLastOkTabId = 1;
+    public Toolbar toolbar;
+    public CharSequence appTitle;
+    public Config configFragment;
+    public About aboutFragment;
+    public Menu menu;
+    public FragmentManager fragmentManager;
+    public FragmentManager.OnBackStackChangedListener onBackStackChangedListener;
     OnBackPressedListener onBackPressedListener;
     public boolean bEULA_accepted;
 
@@ -127,7 +126,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
         System.out.println("================start application ==================");
         System.out.println("MainAct / _onCreate");
 
-        mAppTitle = getTitle();
+        appTitle = getTitle();
 
         // todo application-specific directories
         // /storage/emulated/0/Android/data/com.cw.audio7/files/Pictures
@@ -155,9 +154,9 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
 
         // Show Api version
         if (Define.CODE_MODE == Define.DEBUG_MODE)
-            Toast.makeText(this, mAppTitle + " " + "API_" + Build.VERSION.SDK_INT, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, appTitle + " " + "API_" + Build.VERSION.SDK_INT, Toast.LENGTH_SHORT).show();
         else
-            Toast.makeText(this, mAppTitle, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, appTitle, Toast.LENGTH_SHORT).show();
 
         //Log.d below can be disabled by applying proguard
         //1. enable proguard-android-optimize.txt in project.properties
@@ -250,9 +249,9 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
 //      mContext = getBaseContext();
 
         // add on back stack changed listener
-        mFragmentManager = getSupportFragmentManager();
-        mOnBackStackChangedListener = this;
-        mFragmentManager.addOnBackStackChangedListener(mOnBackStackChangedListener);
+        fragmentManager = getSupportFragmentManager();
+        onBackStackChangedListener = this;
+        fragmentManager.addOnBackStackChangedListener(onBackStackChangedListener);
 
         //todo if (ENABLE_MEDIA_CONTROLLER)
         // Register Bluetooth device receiver
@@ -363,7 +362,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                     break;
 
                 case Util.PERMISSIONS_REQUEST_STORAGE_ADD_NEW:
-                    Add_note_option add_note_option = new Add_note_option(this);
+                    Add_note_option add_note_option = new Add_note_option(this, menu);
                     add_note_option.createSelection(this,true);
                     break;
 
@@ -380,7 +379,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
         {
             switch (requestCode) {
                 case Util.PERMISSIONS_REQUEST_STORAGE_ADD_NEW:
-                    Add_note_option add_note_option = new Add_note_option(this);
+                    Add_note_option add_note_option = new Add_note_option(this, menu);
                     add_note_option.createSelection(this, false);
                     break;
 
@@ -412,11 +411,11 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
 
     void initActionBar()
     {
-        mToolbar = findViewById(R.id.toolbar);
-        if (mToolbar != null) {
-            setSupportActionBar(mToolbar);
-            mToolbar.setNavigationIcon(R.drawable.ic_drawer);
-            mToolbar.setNavigationOnClickListener(v -> mDrawer.drawerLayout.openDrawer(GravityCompat.START));
+        toolbar = findViewById(R.id.toolbar);
+        if (toolbar != null) {
+            setSupportActionBar(toolbar);
+            toolbar.setNavigationIcon(R.drawable.ic_drawer);
+            toolbar.setNavigationOnClickListener(v -> mDrawer.drawerLayout.openDrawer(GravityCompat.START));
         }
     }
 
@@ -430,9 +429,9 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
             getSupportActionBar().setDisplayShowHomeEnabled(false);//false: no launcher icon
         }
 
-        mToolbar.setNavigationIcon(R.drawable.ic_menu_back);
-        mToolbar.getChildAt(1).setContentDescription(getResources().getString(R.string.btn_back));
-        mToolbar.setNavigationOnClickListener(v -> {
+        toolbar.setNavigationIcon(R.drawable.ic_menu_back);
+        toolbar.getChildAt(1).setContentDescription(getResources().getString(R.string.btn_back));
+        toolbar.setNavigationOnClickListener(v -> {
             System.out.println("MainAct / _initActionBar_home / click to popBackStack");
 
             // check if DB is empty
@@ -536,8 +535,8 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
             isStorageRequestedExport   )
         {
             //hide the menu
-            mMenu.setGroupVisible(R.id.group_notes, false);
-            mMenu.setGroupVisible(R.id.group_pages_and_more, false);
+            menu.setGroupVisible(R.id.group_notes, false);
+            menu.setGroupVisible(R.id.group_pages_and_more, false);
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
             if(isStorageRequestedImport) {
@@ -568,8 +567,8 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
         // fix: home button failed after power off/on in Config fragment
         else {
             if (bEULA_accepted) {
-                if(mFragmentManager != null)
-                    mFragmentManager.popBackStack();
+                if(fragmentManager != null)
+                    fragmentManager.popBackStack();
             }
         }
     }
@@ -616,7 +615,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
         System.out.println("MainAct / _onConfigurationChanged");
 
         // keep fragment when Rotation
-        if(mFragmentManager.getBackStackEntryCount() != 0)
+        if(fragmentManager.getBackStackEntryCount() != 0)
             return;
 
         configLayoutView();
@@ -674,7 +673,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
 
     @Override
     public void onBackStackChanged() {
-        int backStackEntryCount = mFragmentManager.getBackStackEntryCount();
+        int backStackEntryCount = fragmentManager.getBackStackEntryCount();
         System.out.println("MainAct / _onBackStackChanged / backStackEntryCount = " + backStackEntryCount);
 
         if(backStackEntryCount == 1) // fragment
@@ -727,7 +726,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
         if( (mDrawer == null) ||
             (mDrawer.drawerLayout == null) ||
             (!bEULA_accepted) ||
-            (mFragmentManager.getBackStackEntryCount() != 0) ) {
+            (fragmentManager.getBackStackEntryCount() != 0) ) {
             return false;
         }
 
@@ -742,40 +741,40 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
         {
             // for landscape: the layout file contains folder menu
             if(Util.isLandscapeOrientation(this)) {
-                mMenu.setGroupVisible(R.id.group_folders, true);
+                this.menu.setGroupVisible(R.id.group_folders, true);
                 // set icon for folder draggable: landscape
                 if(mDrawer.mPref_show_note_attribute != null)
                 {
                     if (Objects.requireNonNull(mDrawer.mPref_show_note_attribute.getString("KEY_ENABLE_FOLDER_DRAGGABLE", "no"))
                             .equalsIgnoreCase("yes")) {
-                        mMenu.findItem(R.id.ENABLE_FOLDER_DRAG_AND_DROP).setIcon(R.drawable.btn_check_on_holo_light);
+                        this.menu.findItem(R.id.ENABLE_FOLDER_DRAG_AND_DROP).setIcon(R.drawable.btn_check_on_holo_light);
                     } else
-                        mMenu.findItem(R.id.ENABLE_FOLDER_DRAG_AND_DROP).setIcon(R.drawable.btn_check_off_holo_light);
+                        this.menu.findItem(R.id.ENABLE_FOLDER_DRAG_AND_DROP).setIcon(R.drawable.btn_check_off_holo_light);
                 }
             }
 
 //            mMenu.findItem(R.id.DELETE_FOLDERS).setVisible(foldersCnt >0);
 //            mMenu.findItem(R.id.ENABLE_FOLDER_DRAG_AND_DROP).setVisible(foldersCnt >1);
-            mMenu.findItem(R.id.ADD_NEW_NOTE).setVisible(false);
-            mMenu.setGroupVisible(R.id.group_notes, false);
-            mMenu.findItem(R.id.HANDLE_CHECKED_NOTES).setVisible(false);
-            mMenu.setGroupVisible(R.id.group_pages_and_more, false);
+            this.menu.findItem(R.id.ADD_NEW_NOTE).setVisible(false);
+            this.menu.setGroupVisible(R.id.group_notes, false);
+            this.menu.findItem(R.id.HANDLE_CHECKED_NOTES).setVisible(false);
+            this.menu.setGroupVisible(R.id.group_pages_and_more, false);
         }
         else if(!mDrawer.isDrawerOpen())
         {
             if(Util.isLandscapeOrientation(this))
-                mMenu.setGroupVisible(R.id.group_folders, false);
+                this.menu.setGroupVisible(R.id.group_folders, false);
 
-            mMenu.findItem(R.id.ADD_NEW_NOTE).setVisible(true);
-            mMenu.findItem(R.id.HANDLE_CHECKED_NOTES).setVisible(true);
+            this.menu.findItem(R.id.ADD_NEW_NOTE).setVisible(true);
+            this.menu.findItem(R.id.HANDLE_CHECKED_NOTES).setVisible(true);
 
             /*
              * Page group and more
              */
-            mMenu.setGroupVisible(R.id.group_pages_and_more, foldersCnt >0);
+            this.menu.setGroupVisible(R.id.group_pages_and_more, foldersCnt >0);
 
             // group of notes
-            mMenu.setGroupVisible(R.id.group_notes, true);
+            this.menu.setGroupVisible(R.id.group_notes, true);
 
             if(foldersCnt>0)
             {
@@ -799,19 +798,19 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                 }
 
                 // change page color
-                mMenu.findItem(R.id.CHANGE_PAGE_COLOR).setVisible(pgsCnt >0);
+                this.menu.findItem(R.id.CHANGE_PAGE_COLOR).setVisible(pgsCnt >0);
 
                 // pages order
-                mMenu.findItem(R.id.SHIFT_PAGE).setVisible(pgsCnt >1);
+                this.menu.findItem(R.id.SHIFT_PAGE).setVisible(pgsCnt >1);
 
                 // delete pages
-                mMenu.findItem(R.id.DELETE_PAGES).setVisible(pgsCnt >0);
+                this.menu.findItem(R.id.DELETE_PAGES).setVisible(pgsCnt >0);
 
                 // note operation
-                mMenu.findItem(R.id.note_operation).setVisible( (pgsCnt >0) && (notesCnt>0) );
+                this.menu.findItem(R.id.note_operation).setVisible( (pgsCnt >0) && (notesCnt>0) );
 
                 // EXPORT TO SD CARD
-                mMenu.findItem(R.id.EXPORT_TO_SD_CARD).setVisible(pgsCnt >0);
+                this.menu.findItem(R.id.EXPORT_TO_SD_CARD).setVisible(pgsCnt >0);
 
                 /*
                  *  Note group
@@ -823,19 +822,19 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                     (audio_manager.getPlayerState() != audio_manager.PLAYER_AT_STOP) ) {
                     playIconIsVisible = true;
                 }
-                mMenu.findItem(R.id.PLAY).setVisible( playIconIsVisible );
-                mMenu.findItem(R.id.PLAY_CYCLIC).setVisible( playIconIsVisible );
+                this.menu.findItem(R.id.PLAY).setVisible( playIconIsVisible );
+                this.menu.findItem(R.id.PLAY_CYCLIC).setVisible( playIconIsVisible );
 
                 // HANDLE CHECKED NOTES
 	            if(Pref.getPref_card_view_enable_select(this))
-                    mMenu.findItem(R.id.HANDLE_CHECKED_NOTES).setVisible( (pgsCnt >0) && (notesCnt>0) );
+                    this.menu.findItem(R.id.HANDLE_CHECKED_NOTES).setVisible( (pgsCnt >0) && (notesCnt>0) );
                 else
-                    mMenu.findItem(R.id.HANDLE_CHECKED_NOTES).setVisible( false );
+                    this.menu.findItem(R.id.HANDLE_CHECKED_NOTES).setVisible( false );
             }
             else if(foldersCnt==0)
             {
-                mMenu.setGroupVisible(R.id.group_notes, false);
-                mMenu.findItem(R.id.HANDLE_CHECKED_NOTES).setVisible( false );
+                this.menu.setGroupVisible(R.id.group_notes, false);
+                this.menu.findItem(R.id.HANDLE_CHECKED_NOTES).setVisible( false );
             }
         }
         return super.onPrepareOptionsMenu(menu);
@@ -851,7 +850,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
     public boolean onCreateOptionsMenu(android.view.Menu menu)
     {
 //		System.out.println("MainAct / _onCreateOptionsMenu");
-        mMenu = menu;
+        this.menu = menu;
 
         // inflate menu
         getMenuInflater().inflate(R.menu.main_menu, menu);
@@ -944,9 +943,9 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
         {
 
             System.out.println("MainAct / _onOptionsItemSelected / Home key of Config is pressed / mFragmentManager.getBackStackEntryCount() =" +
-            mFragmentManager.getBackStackEntryCount());
+            fragmentManager.getBackStackEntryCount());
 
-            if(mFragmentManager.getBackStackEntryCount() > 0 )
+            if(fragmentManager.getBackStackEntryCount() > 0 )
             {
                 int foldersCnt = dB_drawer.getFoldersCount(true);
                 System.out.println("MainAct / _onOptionsItemSelected / Home key of Config is pressed / foldersCnt = " + foldersCnt);
@@ -961,7 +960,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                 }
                 else
                 {
-                    mFragmentManager.popBackStack();
+                    fragmentManager.popBackStack();
 
                     initActionBar();
 
@@ -1018,14 +1017,14 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                 return true;
 
             case MenuId.DELETE_FOLDERS:
-                mMenu.setGroupVisible(R.id.group_folders, false);
+                menu.setGroupVisible(R.id.group_folders, false);
 
                 if(dB_drawer.getFoldersCount(true)>0)
                 {
                     mDrawer.closeDrawer();
-                    mMenu.setGroupVisible(R.id.group_notes, false); //hide the menu
+                    menu.setGroupVisible(R.id.group_notes, false); //hide the menu
                     DeleteFolders delFoldersFragment = new DeleteFolders();
-                    mFragmentTransaction = mFragmentManager.beginTransaction();
+                    mFragmentTransaction = fragmentManager.beginTransaction();
                     mFragmentTransaction.setCustomAnimations(R.anim.fragment_slide_in_left, R.anim.fragment_slide_out_left, R.anim.fragment_slide_in_right, R.anim.fragment_slide_out_right);
                     mFragmentTransaction.replace(R.id.content_frame, delFoldersFragment).addToBackStack("delete_folders").commit();
                 }
@@ -1039,7 +1038,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                 if( (Build.VERSION.SDK_INT < M /*API23*/) ||
                       !Util.request_permission_WRITE_EXTERNAL_STORAGE(this,
                                 Util.PERMISSIONS_REQUEST_STORAGE_ADD_NEW) ) {
-                    Add_note_option add_note_option = new Add_note_option(this);
+                    Add_note_option add_note_option = new Add_note_option(this, menu);
                     add_note_option.createSelection(this, true);
                 }
                 return true;
@@ -1148,15 +1147,15 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
 
             case MenuId.DELETE_PAGES:
                 //hide the menu
-                mMenu.findItem(R.id.ADD_NEW_NOTE).setVisible(false);
-                mMenu.setGroupVisible(R.id.group_notes, false);
-                mMenu.findItem(R.id.HANDLE_CHECKED_NOTES).setVisible(false);
-                mMenu.setGroupVisible(R.id.group_pages_and_more, false);
+                menu.findItem(R.id.ADD_NEW_NOTE).setVisible(false);
+                menu.setGroupVisible(R.id.group_notes, false);
+                menu.findItem(R.id.HANDLE_CHECKED_NOTES).setVisible(false);
+                menu.setGroupVisible(R.id.group_pages_and_more, false);
 
                 if(dB_folder.getPagesCount(true)>0)
                 {
                     DeletePages delPgsFragment = new DeletePages(this);
-                    mFragmentTransaction = mFragmentManager.beginTransaction();
+                    mFragmentTransaction = fragmentManager.beginTransaction();
                     mFragmentTransaction.setCustomAnimations(R.anim.fragment_slide_in_left, R.anim.fragment_slide_out_left, R.anim.fragment_slide_in_right, R.anim.fragment_slide_out_right);
                     mFragmentTransaction.replace(R.id.content_frame, delPgsFragment).addToBackStack("delete_pages").commit();
                 }
@@ -1230,10 +1229,10 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                     !Util.request_permission_WRITE_EXTERNAL_STORAGE(this,
                                 Util.PERMISSIONS_REQUEST_STORAGE_IMPORT)             ) {
                     //hide the menu
-                    mMenu.findItem(R.id.ADD_NEW_NOTE).setVisible(false);
-                    mMenu.setGroupVisible(R.id.group_notes, false);
-                    mMenu.findItem(R.id.HANDLE_CHECKED_NOTES).setVisible(false);
-                    mMenu.setGroupVisible(R.id.group_pages_and_more, false);
+                    menu.findItem(R.id.ADD_NEW_NOTE).setVisible(false);
+                    menu.setGroupVisible(R.id.group_notes, false);
+                    menu.findItem(R.id.HANDLE_CHECKED_NOTES).setVisible(false);
+                    menu.setGroupVisible(R.id.group_pages_and_more, false);
                     // replace fragment
                     Import_filesList importFragment = new Import_filesList(this);
                     transaction.setCustomAnimations(R.anim.fragment_slide_in_left, R.anim.fragment_slide_out_left, R.anim.fragment_slide_in_right, R.anim.fragment_slide_out_right);
@@ -1246,10 +1245,10 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                     !Util.request_permission_WRITE_EXTERNAL_STORAGE(this,
                                 Util.PERMISSIONS_REQUEST_STORAGE_EXPORT)           ) {
                     //hide the menu
-                    mMenu.findItem(R.id.ADD_NEW_NOTE).setVisible(false);
-                    mMenu.setGroupVisible(R.id.group_notes, false);
-                    mMenu.findItem(R.id.HANDLE_CHECKED_NOTES).setVisible(false);
-                    mMenu.setGroupVisible(R.id.group_pages_and_more, false);
+                    menu.findItem(R.id.ADD_NEW_NOTE).setVisible(false);
+                    menu.setGroupVisible(R.id.group_notes, false);
+                    menu.findItem(R.id.HANDLE_CHECKED_NOTES).setVisible(false);
+                    menu.setGroupVisible(R.id.group_pages_and_more, false);
 
                     if (dB_folder.getPagesCount(true) > 0) {
                         Export_toSDCardFragment exportFragment = new Export_toSDCardFragment(this);
@@ -1262,31 +1261,31 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                 return true;
 
             case MenuId.CONFIG:
-                mMenu.findItem(R.id.ADD_NEW_NOTE).setVisible(false);
-                mMenu.setGroupVisible(R.id.group_notes, false); //hide the menu
-                mMenu.findItem(R.id.HANDLE_CHECKED_NOTES).setVisible(false);
-                mMenu.setGroupVisible(R.id.group_pages_and_more, false);
+                menu.findItem(R.id.ADD_NEW_NOTE).setVisible(false);
+                menu.setGroupVisible(R.id.group_notes, false); //hide the menu
+                menu.findItem(R.id.HANDLE_CHECKED_NOTES).setVisible(false);
+                menu.setGroupVisible(R.id.group_pages_and_more, false);
 
                 setTitle(R.string.settings);
 
-                mConfigFragment = new Config(this);
-                mFragmentTransaction = mFragmentManager.beginTransaction();
+                configFragment = new Config(this);
+                mFragmentTransaction = fragmentManager.beginTransaction();
                 mFragmentTransaction.setCustomAnimations(R.anim.fragment_slide_in_left, R.anim.fragment_slide_out_left, R.anim.fragment_slide_in_right, R.anim.fragment_slide_out_right);
-                mFragmentTransaction.replace(R.id.content_frame, mConfigFragment).addToBackStack("config").commit();
+                mFragmentTransaction.replace(R.id.content_frame, configFragment).addToBackStack("config").commit();
                 return true;
 
             case MenuId.ABOUT:
-                mMenu.findItem(R.id.ADD_NEW_NOTE).setVisible(false);
-                mMenu.setGroupVisible(R.id.group_notes, false); //hide the menu
-                mMenu.findItem(R.id.HANDLE_CHECKED_NOTES).setVisible(false);
-                mMenu.setGroupVisible(R.id.group_pages_and_more, false);
+                menu.findItem(R.id.ADD_NEW_NOTE).setVisible(false);
+                menu.setGroupVisible(R.id.group_notes, false); //hide the menu
+                menu.findItem(R.id.HANDLE_CHECKED_NOTES).setVisible(false);
+                menu.setGroupVisible(R.id.group_pages_and_more, false);
 
                 setTitle(R.string.about_title);
 
-                mAboutFragment = new About();
-                mFragmentTransaction = mFragmentManager.beginTransaction();
+                aboutFragment = new About();
+                mFragmentTransaction = fragmentManager.beginTransaction();
                 mFragmentTransaction.setCustomAnimations(R.anim.fragment_slide_in_left, R.anim.fragment_slide_out_left, R.anim.fragment_slide_in_right, R.anim.fragment_slide_out_right);
-                mFragmentTransaction.replace(R.id.content_frame, mAboutFragment).addToBackStack("about").commit();
+                mFragmentTransaction.replace(R.id.content_frame, aboutFragment).addToBackStack("about").commit();
                 return true;
 
             default:
@@ -1342,7 +1341,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
         initActionBar();
 
         // new drawer
-        mDrawer = new Drawer(this,mToolbar);
+        mDrawer = new Drawer(this, toolbar);
         mDrawer.initDrawer();
 
         // new folder

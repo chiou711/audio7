@@ -115,7 +115,6 @@ public class Drawer {
                         if (dB_drawer.getFoldersCount(true) > 0) {
                             closeDrawer();
 
-                            //todo More check menu
 //                            mMenu.setGroupVisible(R.id.group_notes, false); //hide the menu
                             DeleteFolders delFoldersFragment = new DeleteFolders(act);
                             FragmentTransaction fragmentTransaction = act.getSupportFragmentManager().beginTransaction();
