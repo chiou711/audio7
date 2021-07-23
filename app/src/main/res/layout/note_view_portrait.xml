@@ -3,6 +3,10 @@
 	android:layout_height="match_parent"
 	android:orientation="vertical"
 	>
+	<include
+		android:id="@+id/recorder_toolbar"
+		layout="@layout/recording_toolbar"/>
+
     <!-- view pager  -->
 	<androidx.viewpager.widget.ViewPager
     	android:id="@+id/tabs_pager"

@@ -17,6 +17,7 @@
 package com.cw.audio7.audio;
 
 import android.app.ProgressDialog;
+import android.media.AudioAttributes;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -52,7 +53,7 @@ public class Audio7Player
 {
 	private static final int DURATION_1S = 1000; // 1 seconds per slide
 	private int mAudio_tryTimes; // use to avoid useless looping in Continue mode
-    private AppCompatActivity act;
+    final private AppCompatActivity act;
 	private View audio_panel;
     static int delayBeforeMediaStart = DURATION_1S;
 	static String audioUrl;
@@ -93,7 +94,7 @@ public class Audio7Player
 					updateAudioProgress();
 
 					if(ENABLE_MEDIA_CONTROLLER && Build.VERSION.SDK_INT >= 21)
-						BackgroundAudioService.setSeekerBarProgress();
+						BackgroundAudioService.setSeekerBarProgress(BackgroundAudioService.mMediaPlayer);
 
 					// check if audio file exists or not
 					audioUrl = audio_manager.getAudioStringAt(audio_manager.mAudioPos);
@@ -104,7 +105,7 @@ public class Audio7Player
 						return;
 					} else {
 						if (BackgroundAudioService.mIsPrepared) {
-//						System.out.println("Audio7Player / _audio_runnable /  BackgroundAudioService.mIsPrepared");
+	//						System.out.println("Audio7Player / _audio_runnable /  BackgroundAudioService.mIsPrepared");
 
 							// set media file length
 							if (!Util.isEmptyString(audioUrl)) {
@@ -169,13 +170,13 @@ public class Audio7Player
 				}
 				else if( (audio_manager.getCheckedAudio(audio_manager.mAudioPos) == 0 ) )// for non-audio item
 				{
-//	   			System.out.println("Audio7Player / audio_runnable / for non-audio item");
+	//	   			System.out.println("Audio7Player / audio_runnable / for non-audio item");
 
 					if(audio_manager.getAudioPlayMode() == audio_manager.NOTE_PLAY_MODE) {
 						audio_manager.stopAudioPlayer(act);
 
 						// case 1: play next
-//					audio_next_btn.performClick();
+	//					audio_next_btn.performClick();
 
 						// case 2: show unchecked
 						Toast.makeText(act,R.string.is_an_unchecked_item,Toast.LENGTH_SHORT).show();
@@ -496,8 +497,17 @@ public class Audio7Player
 		} else {
 			BackgroundAudioService.mMediaPlayer = new MediaPlayer();
 			BackgroundAudioService.mMediaPlayer.reset();
+
+			if(Build.VERSION.SDK_INT >= 21)
+			BackgroundAudioService.mMediaPlayer.setAudioAttributes(
+					new AudioAttributes.Builder()
+							.setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+							.setUsage(AudioAttributes.USAGE_MEDIA)
+							.build()
+			);
+
 			try {
-				BackgroundAudioService.mMediaPlayer.setDataSource(act, Uri.parse(audioUrl));
+				BackgroundAudioService.mMediaPlayer.setDataSource(act.getApplicationContext(), Uri.parse(audioUrl));
 
 				// prepare the MediaPlayer to play, this will delay system response
 				BackgroundAudioService.mMediaPlayer.prepare();
@@ -709,25 +719,25 @@ public class Audio7Player
 			@Override
 			public void onPrepared(MediaPlayer mp) {
 
-				// workaround for Can not play issue:
-				// add delay before media player start
-				try {
-					Thread.sleep(Audio7Player.delayBeforeMediaStart );
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
+			// workaround for Can not play issue:
+			// add delay before media player start
+			try {
+				Thread.sleep(delayBeforeMediaStart );
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 
-				BackgroundAudioService.mMediaPlayer.seekTo(0);
-				BackgroundAudioService.mIsPrepared = true;
+			BackgroundAudioService.mMediaPlayer.seekTo(0);
+			BackgroundAudioService.mIsPrepared = true;
 
-				// prepared, start Play audio
-				if(BackgroundAudioService.mMediaPlayer != null) {
-					BackgroundAudioService.mMediaPlayer.start();
-					BackgroundAudioService.mMediaPlayer.setVolume(1.0f, 1.0f);
-				}
+			// prepared, start Play audio
+			if(BackgroundAudioService.mMediaPlayer != null) {
+				BackgroundAudioService.mMediaPlayer.start();
+				BackgroundAudioService.mMediaPlayer.setVolume(1.0f, 1.0f);
+			}
 
-				// update panel status: play
-				audio_manager.setPlayerState(audio_manager.PLAYER_AT_PLAY);
+			// update panel status: play
+			audio_manager.setPlayerState(audio_manager.PLAYER_AT_PLAY);
 
 				audio_manager.setTogglePlayerState(true);
 			}
@@ -738,23 +748,23 @@ public class Audio7Player
 			@Override
 			public void onCompletion(MediaPlayer mp) {
 
-				if(BackgroundAudioService.mMediaPlayer != null) {
-					BackgroundAudioService.mMediaPlayer.release();
-				}
+			if(BackgroundAudioService.mMediaPlayer != null) {
+				BackgroundAudioService.mMediaPlayer.release();
+			}
 
-				// delay interval between each media change
-				try {
-					Thread.sleep(Util.oneSecond * 2);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
+			// delay interval between each media change
+			try {
+				Thread.sleep(Util.oneSecond * 2);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 
 				BackgroundAudioService.mMediaPlayer = null;
 				BackgroundAudioService.mIsCompleted = true;
 			}
 		});
 
-	};
+	}
 
 	// show audio name
 	void showAudioName(AppCompatActivity act,String audio_uriStr)
@@ -772,7 +782,7 @@ public class Audio7Player
 				if(Util.isEmptyString(audio_name[1]))
 					audio_title.setText(audio_name[0]);
 				else
-					audio_title.setText(audio_name[0] + " / " + audio_name[1] );
+					audio_title.setText(String.format("%s / %s", audio_name[0], audio_name[1]));
 			}
 		}
 		else {

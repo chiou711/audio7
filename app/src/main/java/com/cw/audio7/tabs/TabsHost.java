@@ -255,7 +255,7 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
 
                 int currPageTableId = Pref.getPref_focusView_page_tableId(act);
                 setCurrentPageTableId(currPageTableId);
-                System.out.println("TabsHost / _addPages / currPageTableId = " + currPageTableId);
+//                System.out.println("TabsHost / _addPages / currPageTableId = " + currPageTableId);
 
                 if(pageTableId == currPageTableId)
                     mPageUi = new PageUi(act,audio_panel);
@@ -264,7 +264,7 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
                 args.putInt("page_pos",i);
                 args.putInt("page_table_id",pageTableId);
                 pageUi.setArguments(args);
-                System.out.println("TabsHost / _addPages / page_tableId = " + pageTableId);
+//                System.out.println("TabsHost / _addPages / page_tableId = " + pageTableId);
                 adapter.addFragment(pageUi);
             }
         }
@@ -452,9 +452,15 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
     }
 
     @Override
+    public void onStop() {
+        super.onStop();
+        System.out.println("TabsHost / _onStop");
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
-
+        System.out.println("TabsHost / _onDestroy");
 //        if(Define.ENABLE_ADMOB) {
 //            if (adView != null) {
 //                adView.destroy();
@@ -823,7 +829,7 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
                 store_listView_vScroll(listView);
 
             for (int i = 0; i < fragmentList.size(); i++) {
-                System.out.println("TabsHost / _removeTabs / i = " + i);
+//                System.out.println("TabsHost / _removeTabs / i = " + i);
 //                fragmentList.remove(i);
                 act.getSupportFragmentManager().beginTransaction().remove(fragmentList.get(i)).commit();
             }

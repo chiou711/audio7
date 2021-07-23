@@ -29,6 +29,7 @@ import com.cw.audio7.db.DB_folder;
 import com.cw.audio7.db.DB_page;
 import com.cw.audio7.drawer.Drawer;
 import com.cw.audio7.folder.FolderUi;
+import com.cw.audio7.note.NoteAct;
 import com.cw.audio7.note_add.Add_note_option;
 import com.cw.audio7.note_add.add_audio.Add_audio_all;
 import com.cw.audio7.audio.Audio_manager;
@@ -574,6 +575,21 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        System.out.println("MainAct / _onStart");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        System.out.println("MainAct / _onStop");
+
+        if(mFolderUi.tabsHost == null)
+            System.out.println("-- MainAct / _onStop / mFolderUi.tabsHost == null");
+    }
+
+    @Override
     protected void onDestroy()
     {
         System.out.println("MainAct / _onDestroy");
@@ -707,6 +723,9 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
     {
         super.onActivityResult(requestCode,resultCode,data);
         System.out.println("MainAct / _onActivityResult ");
+
+        if(requestCode == NoteAct.VIEW_CURRENT_NOTE)
+            System.out.println("MainAct / _onActivityResult / NoteAct.VIEW_CURRENT_NOTE");
     }
 
     /*=======================================================
@@ -1334,7 +1353,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
     // configure layout view
     void configLayoutView()
     {
-//        System.out.println("MainAct / _configLayoutView");
+        System.out.println("MainAct / _configLayoutView");
 
         setContentView(R.layout.drawer);
 

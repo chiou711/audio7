@@ -53,6 +53,9 @@
         <!-- note: add orientation above, when doing Rotate, activity will not go through the following states:
              onPause/onSaveInstanceState/onStop/onDestroy/
                                                 onCreate/onStart/onRestoreInstanceState/onResume    -->
+        <activity android:name="com.cw.audio7.note.NoteAct"
+            android:configChanges="orientation|keyboard|keyboardHidden|screenSize|screenLayout|uiMode"
+            android:theme="@style/MyTheme"/>
 
         <!--Add_recording-->
         <activity
@@ -85,10 +88,6 @@
             <action android:name="android.media.browse.MediaBrowserService" />
         </intent-filter>
         </service>
-
-        <meta-data
-            android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="@string/ad_mob_app_id"/>
 
 <!-- for normal        -->
 <!--        <meta-data-->

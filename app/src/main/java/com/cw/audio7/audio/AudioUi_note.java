@@ -71,7 +71,11 @@ public class AudioUi_note
     public AudioUi_note(AppCompatActivity act, View root_view, String audio_uri_str)
     {
         rootView = root_view;
-        audioPanel = (ViewGroup) rootView.findViewById(R.id.audioGroup);
+
+        if(root_view != null)
+            audioPanel = (ViewGroup) rootView.findViewById(R.id.audioGroup);
+        else
+            audioPanel = (ViewGroup) act.findViewById(R.id.audioGroup);
 
         audioUriStr = audio_uri_str;
 
@@ -112,6 +116,7 @@ public class AudioUi_note
             @Override
             public void onClick(View v)
             {
+                System.out.println("AudioUi_note / _onClick / audio_play_btn");
                 isPausedAtSeekerAnchor = false;
 
                 if( (BackgroundAudioService.mMediaPlayer == null) ) {
@@ -209,8 +214,12 @@ public class AudioUi_note
         audio_next_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                ViewPager viewPager;
 
-                ViewPager viewPager = rootView.findViewById(R.id.tabs_pager);
+                if(rootView != null)
+                    viewPager = rootView.findViewById(R.id.tabs_pager);
+                else
+                    viewPager = act.findViewById(R.id.tabs_pager);
 
 //                System.out.println("AudioUi_note /  audio_next_btn / _onClick / NoteUi.getNotesCnt() = " + NoteUi.getNotesCnt());
 //                System.out.println("AudioUi_note /  audio_next_btn / _onClick / NoteUi.getFocus_notePos() = " + NoteUi.getFocus_notePos());
@@ -239,7 +248,7 @@ public class AudioUi_note
     }
 
     //  play audio in pager
-    private void playAudioInNotePager(AppCompatActivity act, String audioUriStr)
+    public void playAudioInNotePager(AppCompatActivity act, String audioUriStr)
     {
         System.out.println("AudioUi_note / _playAudioInNotePager");
 

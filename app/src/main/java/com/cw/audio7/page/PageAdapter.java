@@ -37,9 +37,8 @@ import com.cw.audio7.db.DB_drawer;
 import com.cw.audio7.db.DB_folder;
 import com.cw.audio7.db.DB_page;
 import com.cw.audio7.main.MainAct;
-import com.cw.audio7.note.Note;
+import com.cw.audio7.note.NoteAct;
 import com.cw.audio7.note_edit.Note_edit;
-import com.cw.audio7.audio.Audio_manager;
 import com.cw.audio7.audio.BackgroundAudioService;
 import com.cw.audio7.page.item_touch_helper.ItemTouchHelperAdapter;
 import com.cw.audio7.page.item_touch_helper.ItemTouchHelperViewHolder;
@@ -585,15 +584,19 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
                     .getView()
                     .setBackgroundColor(act.getResources().getColor(R.color.colorBlack));
 
-            /** Open Note fragment */
-            Note noteFragment = new Note();
-            final Bundle args = new Bundle();
-            args.putInt("POSITION", position);
-            noteFragment.setArguments(args);
+            /* case 1: Open Note fragment */
+//            Note noteFragment = new Note();
+//            final Bundle args = new Bundle();
+//            args.putInt("POSITION", position);
+//            noteFragment.setArguments(args);
+//            FragmentTransaction transaction = act.getSupportFragmentManager().beginTransaction();
+//            transaction.setCustomAnimations(R.anim.fragment_slide_up, R.anim.fragment_slide_down, R.anim.fragment_slide_up, R.anim.fragment_slide_down);
+//            transaction.replace(R.id.content_frame, noteFragment, "note").addToBackStack("note").commit();
 
-            FragmentTransaction transaction = act.getSupportFragmentManager().beginTransaction();
-            transaction.setCustomAnimations(R.anim.fragment_slide_up, R.anim.fragment_slide_down, R.anim.fragment_slide_up, R.anim.fragment_slide_down);
-            transaction.replace(R.id.content_frame, noteFragment, "note").addToBackStack("note").commit();
+            /* case 2: Open Note Activity*/
+            Intent intent = new Intent(act, NoteAct.class);
+            intent.putExtra("POSITION", position);
+            act.startActivityForResult(intent, NoteAct.VIEW_CURRENT_NOTE);
         }
 
     }

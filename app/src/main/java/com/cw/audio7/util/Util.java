@@ -718,7 +718,7 @@ public class Util
 				{
 					try
 					{
-						mmr.setDataSource(activity,uri);
+						mmr.setDataSource(activity.getApplicationContext(),uri);
 					}
 					catch(Exception e)
 					{
