@@ -1312,6 +1312,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
         }
     }
 
+    /** Entry: Page play */
     void playFirstAudio()
     {
         audio_manager.setPlayerState(audio_manager.PLAYER_AT_PLAY);

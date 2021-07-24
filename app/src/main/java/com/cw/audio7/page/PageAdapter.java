@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 CW Chiu
+ * Copyright (C) 2021 CW Chiu
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,7 +55,6 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 //import es.claucookie.miniequalizerlibrary.EqualizerView;
 //import pl.droidsonroids.gif.GifDrawable;
@@ -499,6 +498,7 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
                 // case 1: open Note audio
 //                openAudioPanel_note(position);
 
+                /** Entry: Page play */
                 // case 2: open Page audio
                 audio_manager.stopAudioPlayer(act);
                 openAudioPanel_page(position);
@@ -567,6 +567,8 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
     // open Note audio panel
     void openAudioPanel_note(int position) {
         mFolderUi.tabsHost.getCurrentPage().mCurrPlayPosition = position;
+        MainAct.mPlaying_pagePos = mFolderUi.tabsHost.getFocus_tabPos();
+
         DB_page db_page = new DB_page(act,mFolderUi.tabsHost.getCurrentPageTableId());
         int count = db_page.getNotesCount(true);
         if(position < count)
@@ -594,6 +596,7 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
 //            transaction.replace(R.id.content_frame, noteFragment, "note").addToBackStack("note").commit();
 
             /* case 2: Open Note Activity*/
+            /** Entry: Note play */
             Intent intent = new Intent(act, NoteAct.class);
             intent.putExtra("POSITION", position);
             act.startActivityForResult(intent, NoteAct.VIEW_CURRENT_NOTE);

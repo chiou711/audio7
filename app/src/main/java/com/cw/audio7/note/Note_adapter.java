@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 CW Chiu
+ * Copyright (C) 2021 CW Chiu
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,6 @@ package com.cw.audio7.note;
 import com.cw.audio7.R;
 import com.cw.audio7.db.DB_page;
 import com.cw.audio7.audio.AudioUi_note;
-import com.cw.audio7.audio.Audio_manager;
 import com.cw.audio7.main.MainAct;
 import com.cw.audio7.util.audio.UtilAudio;
 import com.cw.audio7.util.image.AsyncTaskAudioBitmap;
@@ -253,15 +252,30 @@ public class Note_adapter extends FragmentStatePagerAdapter
 			else
 				audioPanel.setVisibility(View.GONE);
 
-			//auto play
-			System.out.println("Note_adapter / _setPrimaryItem / auto play ");
+			// continue playing or auto play
+			if(audio_manager.getPlayerState() == audio_manager.PLAYER_AT_PLAY) {
+				// continue playing
+				System.out.println("Note_adapter / _setPrimaryItem / continue playing ");
 
-			// first audio play
-			if(audio_manager.getPlayerState() != audio_manager.PLAYER_AT_PLAY) {
+				/** Entry: Page play -> Note play */
+				audioPanel = (ViewGroup) act.findViewById(R.id.audioGroup);
+				if(audioPanel != null)
+					audioPanel.setVisibility(View.VISIBLE);
+
+				mFolderUi.tabsHost.audio7Player.setAudioPanel(audioUi_note.audioPanel);
+				mFolderUi.tabsHost.audio7Player.initAudioBlock(NoteAct.mAudioUriInDB);
+				mFolderUi.tabsHost.audio7Player.updateAudioPanel(act);
+				mFolderUi.tabsHost.audio7Player.updateAudioProgress();
+
+			} else { // first audio play
+				/** Entry: Note play */
+				System.out.println("Note_adapter / _setPrimaryItem / auto play ");
 				audio_manager.stopAudioPlayer(act);
+
 				audioUi_note.audio_play_btn.performClick();
 				MainAct.mPlaying_folderPos = mFolderUi.getFocus_folderPos();
 			}
+
 		}
 	    mLastPosition = position;
 	    

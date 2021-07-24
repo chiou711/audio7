@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 CW Chiu
+ * Copyright (C) 2021 CW Chiu
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,7 +44,7 @@ import static com.cw.audio7.main.MainAct.mFolderUi;
 
 /**
  * Created by cw on 2017/10/26.
- * Modified by cw on 2020/10/09
+ * Modified by cw on 2021/07/24
  */
 
 public class AudioUi_note
@@ -128,6 +128,7 @@ public class AudioUi_note
                         mAudioHandler.removeCallbacks(audio_runnable);
                 }
 
+                /** Entry: Note play */
                 playAudioInNotePager(act,audioUriStr);
             }
         });
@@ -151,6 +152,7 @@ public class AudioUi_note
                     // note audio: slide seek bar anchor from stop to pause
                     isPausedAtSeekerAnchor = true;
                     mAnchorPosition = (int) (((float)(mediaFileLength / 100)) * seekBar.getProgress());
+                    /** Entry: Note play */
                     playAudioInNotePager(act, audio_manager.getAudioStringAt(audio_manager.mAudioPos));
                 }
             }

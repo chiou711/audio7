@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 CW Chiu
+ * Copyright (C) 2021 CW Chiu
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -85,8 +85,7 @@ public class Audio7Player
 
 					// for incoming call case and after Key protection
 					if (  (audio_manager.getAudioPlayMode() == audio_manager.PAGE_PLAY_MODE) &&
-							isAudioPanelOn(act) )
-					{
+							isAudioPanelOn(act) ) {
 						showAudioPanel(act, true);
 					}
 
@@ -217,24 +216,21 @@ public class Audio7Player
 	   	else
 		    System.out.println("Audio7Player / _runAudioState / audio_panel = null ");
 
-	   	// if media player is null, set new fragment
+	   	// if media player is null
 		if( BackgroundAudioService.mMediaPlayer == null )	//for first
 		{
 		 	// show toast if Audio file is not found or No selection of audio file
 			if( audio_manager.getAudioFilesCount() == 0) {
                 audio_manager.setPlayerState(audio_manager.PLAYER_AT_STOP);
 				Toast.makeText(act,R.string.audio_file_not_found,Toast.LENGTH_SHORT).show();
-			}
-			else
-			{
+			} else {
                 audio_manager.setPlayerState(audio_manager.PLAYER_AT_PLAY);
 				mAudio_tryTimes = 0;
 
 				//for 1st play
 				audioUrl = audio_manager.getAudioStringAt(audio_manager.mAudioPos);
 				while (!UtilAudio.hasAudioExtension(audioUrl) &&
-						   !audioUrl.contains("google"))
-				{
+						   !audioUrl.contains("google")) {
                     audio_manager.mAudioPos++;
                     audioUrl = audio_manager.getAudioStringAt(audio_manager.mAudioPos);
 
@@ -245,19 +241,14 @@ public class Audio7Player
 				if( (UtilAudio.hasAudioExtension(audioUrl) && Util.isUriExisted(audioUrl,act)) ||
 						audioUrl.contains("google")) {
                     startNewAudio();
-                }
-                else
-                {
+                } else {
                     audio_manager.setPlayerState(audio_manager.PLAYER_AT_STOP);
 	                Toast.makeText(act,R.string.audio_file_not_found,Toast.LENGTH_SHORT).show();
                 }
 			}
-		}
-		else
-		{
+		} else {
 			// from play to pause
-			if(BackgroundAudioService.mMediaPlayer.isPlaying())
-			{
+			if(BackgroundAudioService.mMediaPlayer.isPlaying()) {
 				System.out.println("Audio7Player / _runAudioState / play -> pause");
                 audio_manager.setPlayerState(audio_manager.PLAYER_AT_PAUSE);
 
@@ -266,9 +257,8 @@ public class Audio7Player
 	                MainAct.mMediaControllerCompat.getTransportControls().pause();
                 else
                     BackgroundAudioService.mMediaPlayer.pause();
-			}
-			else // from pause to play
-			{
+
+			} else { // from pause to play
 				System.out.println("Audio7Player / _runAudioState / pause -> play");
 				mAudio_tryTimes = 0;
 
@@ -330,8 +320,9 @@ public class Audio7Player
     {
     	boolean isSameTabPos = false;
     	if(mFolderUi.tabsHost != null)
-    	    isSameTabPos = (mFolderUi.tabsHost.getFocus_tabPos() == MainAct.mPlaying_pagePos);
+		    isSameTabPos = (mFolderUi.tabsHost.getFocus_tabPos() == MainAct.mPlaying_pagePos);
 
+//	    System.out.println("PageAdapter / _isOnAudioPlayingPage / isSameTabPos = " + isSameTabPos);
 	    return ( (audio_manager.getPlayerState() != audio_manager.PLAYER_AT_STOP) &&
                      (MainAct.mPlaying_folderPos == mFolderUi.getFocus_folderPos()) &&
 		             isSameTabPos     &&

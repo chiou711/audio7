@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 CW Chiu
+ * Copyright (C) 2021 CW Chiu
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -206,6 +206,7 @@ public class Note extends Fragment
 			System.out.println("Note / _onPageSelected /  mNoteId = " + mNoteId
 					+ ", mAudioUriInDB = " + mAudioUriInDB);
 
+			/** Entry: Note play */
 			if(UtilAudio.hasAudioExtension(mAudioUriInDB)) {
 	            audioUi_note = new AudioUi_note(act, rootView,mAudioUriInDB);
 				audioUi_note.playAudioInNotePager(act,mAudioUriInDB);
@@ -444,15 +445,8 @@ public class Note extends Fragment
 				return true;
 
 			case KeyEvent.KEYCODE_BACK:
-//                onBackPressed();
-				return true;
-
 			case KeyEvent.KEYCODE_MEDIA_FAST_FORWARD:
-				return true;
-
 			case KeyEvent.KEYCODE_MEDIA_REWIND:
-				return true;
-
 			case KeyEvent.KEYCODE_MEDIA_STOP:
 				return true;
 		}

@@ -87,7 +87,7 @@ public class NoteAct extends AppCompatActivity
 
 	@Override
 	public void onCreate(@Nullable Bundle savedInstanceState) {
-		System.out.println("Note/ _onCreate");
+		System.out.println("NoteAct / _onCreate");
 		super.onCreate(savedInstanceState);
 
 		if(Util.isLandscapeOrientation(this))
@@ -114,10 +114,11 @@ public class NoteAct extends AppCompatActivity
 
 		act = (AppCompatActivity) this;
 
-		// force stop audio whenever user touch page mode thumb nail
-		audio_manager.stopAudioPlayer(act);
-
-		mFolderUi.tabsHost.audio7Player = null;
+		// force stop audio whenever user touch new thumb nail at page mode
+		if(audio_manager.mAudioPos != mEntryPosition) {
+			audio_manager.stopAudioPlayer(act);
+			mFolderUi.tabsHost.audio7Player = null;
+		}
 
 		// add on back stack changed listener
 		mFragmentManager = getSupportFragmentManager();
@@ -221,6 +222,7 @@ public class NoteAct extends AppCompatActivity
 
 			if(UtilAudio.hasAudioExtension(mAudioUriInDB)) {
 	            audioUi_note = new AudioUi_note(act, null, mAudioUriInDB);
+				/** Entry: Note play */
 				audioUi_note.playAudioInNotePager(act,mAudioUriInDB);
             }
 

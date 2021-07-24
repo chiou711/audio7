@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 CW Chiu
+ * Copyright (C) 2021 CW Chiu
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,11 +44,9 @@ import com.cw.audio7.R;
 import com.cw.audio7.audio.Audio7Player;
 import com.cw.audio7.db.DB_folder;
 import com.cw.audio7.db.DB_page;
-import com.cw.audio7.define.Define;
 
 import com.cw.audio7.main.MainAct;
 import com.cw.audio7.audio.AudioUi_page;
-import com.cw.audio7.audio.Audio_manager;
 import com.cw.audio7.audio.BackgroundAudioService;
 import com.cw.audio7.page.Page;
 import com.cw.audio7.page.PageUi;
@@ -412,6 +410,7 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
 //        }
 
         // change audio panel when Note audio is changed to Page audio
+        /** Entry: Note play -> Page play */
         if ( BackgroundAudioService.mMediaPlayer != null &&
                 //MainAct.mPlaying_pageTableId == page_table_id  &&
                 MainAct.mPlaying_folderPos == mFolderUi.getFocus_folderPos())
