@@ -56,6 +56,9 @@
         <activity android:name="com.cw.audio7.note.NoteAct"
             android:configChanges="orientation|keyboard|keyboardHidden|screenSize|screenLayout|uiMode"
             android:theme="@style/MyTheme"/>
+        <activity android:name="com.cw.audio7.note.ImageDetailActivity"
+            android:configChanges="orientation|keyboard|keyboardHidden|screenSize|screenLayout|uiMode"
+            android:theme="@style/MyTheme"/>
 
         <!--Add_recording-->
         <activity

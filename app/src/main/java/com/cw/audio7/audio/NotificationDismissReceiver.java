@@ -14,9 +14,11 @@ public class NotificationDismissReceiver extends BroadcastReceiver {
 		int notificationId = intent.getExtras().getInt("com.cw.audio7.notificationId");
 		System.out.println("NotificationDismissReceiver / _onReceive / notificationId = " + notificationId);
 
-		mFolderUi.tabsHost.stopAudioPlayer();
+		if(mFolderUi.tabsHost != null ) {
+			mFolderUi.tabsHost.stopAudioPlayer();
 
-		// refresh
-		mFolderUi.tabsHost.reloadCurrentPage();
+			// refresh
+			mFolderUi.tabsHost.reloadCurrentPage();
+		}
 	}
 }

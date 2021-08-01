@@ -18,9 +18,6 @@ package com.cw.audio7.page;
 
 import android.content.Intent;
 import android.database.Cursor;
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -37,6 +34,7 @@ import com.cw.audio7.db.DB_drawer;
 import com.cw.audio7.db.DB_folder;
 import com.cw.audio7.db.DB_page;
 import com.cw.audio7.main.MainAct;
+import com.cw.audio7.note.ImageDetailActivity;
 import com.cw.audio7.note.NoteAct;
 import com.cw.audio7.note_edit.Note_edit;
 import com.cw.audio7.audio.BackgroundAudioService;
@@ -47,10 +45,12 @@ import com.cw.audio7.util.ColorSet;
 import com.cw.audio7.util.Util;
 import com.cw.audio7.util.audio.UtilAudio;
 import com.cw.audio7.util.image.AsyncTaskAudioBitmap;
+import com.cw.audio7.util.image.RecyclingImageView;
 import com.cw.audio7.util.preferences.Pref;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -79,7 +79,6 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
     List<Db_cache> listCache;
     AudioUi_page audioUi_page;
     View panelView;
-
 
     PageAdapter(AppCompatActivity _act,View _panelView,int pageTableId, OnStartDragListener dragStartListener) {
 //        System.out.println("PageAdapter / constructor / pageTableId = " + pageTableId );
@@ -216,10 +215,10 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
 //        System.out.println("PageAdapter / _onBindViewHolder / listCache.size() = " + listCache.size());
         if( (listCache != null)
             && (listCache.size() > 0)
-            && (position!=listCache.size()) )
+            && (holder.getAdapterPosition()!=listCache.size()) )
         {
-            audioUri = listCache.get(position).audioUri;
-            marking = listCache.get(position).marking;
+            audioUri = listCache.get(holder.getAdapterPosition()).audioUri;
+            marking = listCache.get(holder.getAdapterPosition()).marking;
         } else  {
             audioUri = "";
             marking = 0;
@@ -230,7 +229,7 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
          *  control block
          */
         // show row Id
-        holder.rowId.setText(String.valueOf(position+1));
+        holder.rowId.setText(String.valueOf(holder.getAdapterPosition()+1));
         holder.rowId.setTextColor(act.getResources().getColor(R.color.colorWhite));
 
         if( Pref.getPref_card_view_enable_select(act) ||
@@ -294,12 +293,12 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
 
         /** show audio highlight if audio is not at Stop */
         if( (marking !=0) &&
-            (position == audio_manager.mAudioPos)  &&
+            (holder.getAdapterPosition() == audio_manager.mAudioPos)  &&
             Audio7Player.isOnAudioPlayingPage() &&
             (audio_manager.getPlayerState() != audio_manager.PLAYER_AT_STOP) )
         {
 //            System.out.println("PageAdapter / _getView / show highlight / position = " + position);
-            mFolderUi.tabsHost.getCurrentPage().mHighlightPosition = position;
+            mFolderUi.tabsHost.getCurrentPage().mHighlightPosition = holder.getAdapterPosition();
 
             // background case 1: border
 //            holder.audioBlock.setBackgroundResource(R.drawable.bg_highlight_border);
@@ -364,39 +363,59 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
         if(Util.isEmptyString(audioUri))
             holder.audioBlock.setVisibility(View.GONE);
 
-            // case : show audio thumb nail if audio Uri exists
-            if (UtilAudio.hasAudioExtension(audioUri)) {
-                holder.thumbBlock.setVisibility(View.VISIBLE);
-                holder.thumbAudio.setVisibility(View.VISIBLE);
-                holder.thumbLength.setVisibility(View.VISIBLE);
+        // case : show audio thumb nail if audio Uri exists
+        if (UtilAudio.hasAudioExtension(audioUri)) {
+            holder.thumbBlock.setVisibility(View.VISIBLE);
+            holder.thumbAudio.setVisibility(View.VISIBLE);
+            holder.thumbLength.setVisibility(View.VISIBLE);
 
-                int in_sample_size;
-                if (Pref.getPref_card_view_enable_large_view(act))
-                    in_sample_size = 1;
-                else
-                    in_sample_size = 1;//8; // 1/8 the width/height of the original
+            int in_sample_size;
+            if (Pref.getPref_card_view_enable_large_view(act))
+                in_sample_size = 1;
+            else
+                in_sample_size = 8;//8; // 1/8 the width/height of the original
 
-                //todo disable the following will decrease native memory usage
-            try {
-                audioAsyncTask = new AsyncTaskAudioBitmap(act,
-                        audioUri,
-                        holder.thumbAudio,
-                        holder.progressBar,
-                        holder.thumbLength,
-                        false,
-                        in_sample_size);
-                audioAsyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "Searching media ...");
-            } catch (Exception e) {
-                Log.e("PageAdapter", "AsyncTaskAudioBitmap error");
-                holder.thumbBlock.setVisibility(View.GONE);
-                holder.thumbAudio.setVisibility(View.GONE);
+            // todo Select
+            // disable the following will decrease native memory usage
+//            try {
+//                audioAsyncTask = new AsyncTaskAudioBitmap(act,
+//                        audioUri,
+//                        holder.thumbAudio,
+//                        holder.progressBar,
+//                        false,
+//                        in_sample_size);
+//
+//                audioAsyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "Searching media ...");
+//
+//            } catch (Exception e) {
+//                Log.e("PageAdapter", "AsyncTaskAudioBitmap error");
+//                holder.thumbBlock.setVisibility(View.GONE);
+//                holder.thumbAudio.setVisibility(View.GONE);
+//            }
+
+            // todo Select
+            // for Image Cache
+            ImageView imageView;
+            if (holder.thumbAudio  == null) { // if it's not recycled, instantiate and initialize
+                imageView = new RecyclingImageView(act);
+                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                holder.thumbAudio = imageView;
+            } else { // Otherwise re-use the converted view
+                imageView = (ImageView) holder.thumbAudio;
             }
+
+            if(mFolderUi.tabsHost != null)
+                mFolderUi.tabsHost.getCurrentPage().mImageFetcher
+                        .loadImage(audioUri, imageView);
 		}
 		else
 		{
 			holder.thumbBlock.setVisibility(View.GONE);
 			holder.thumbAudio.setVisibility(View.GONE);
 		}
+
+		// audio length
+        Objects.requireNonNull(holder.thumbLength).setText(UtilAudio.getAudioLengthString(act, audioUri));
 
         setBindViewHolder_listeners(holder,position);
     }
@@ -586,6 +605,7 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
                     .getView()
                     .setBackgroundColor(act.getResources().getColor(R.color.colorBlack));
 
+            //todo Select
             /* case 1: Open Note fragment */
 //            Note noteFragment = new Note();
 //            final Bundle args = new Bundle();
@@ -595,11 +615,18 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
 //            transaction.setCustomAnimations(R.anim.fragment_slide_up, R.anim.fragment_slide_down, R.anim.fragment_slide_up, R.anim.fragment_slide_down);
 //            transaction.replace(R.id.content_frame, noteFragment, "note").addToBackStack("note").commit();
 
+            //todo Select
             /* case 2: Open Note Activity*/
             /** Entry: Note play */
             Intent intent = new Intent(act, NoteAct.class);
             intent.putExtra("POSITION", position);
             act.startActivityForResult(intent, NoteAct.VIEW_CURRENT_NOTE);
+
+            //todo Select
+            // case 3: test new sample
+//            Intent intent = new Intent(act, ImageDetailActivity.class);
+//            intent.putExtra("POSITION", position);
+//            act.startActivityForResult(intent, NoteAct.VIEW_CURRENT_NOTE);
         }
 
     }

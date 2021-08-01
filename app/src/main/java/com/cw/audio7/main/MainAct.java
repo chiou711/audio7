@@ -584,9 +584,6 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
     protected void onStop() {
         super.onStop();
         System.out.println("MainAct / _onStop");
-
-        if(mFolderUi.tabsHost == null)
-            System.out.println("-- MainAct / _onStop / mFolderUi.tabsHost == null");
     }
 
     @Override

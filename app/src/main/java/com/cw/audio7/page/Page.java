@@ -21,6 +21,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
+import android.widget.GridView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -28,11 +30,14 @@ import com.cw.audio7.R;
 import com.cw.audio7.db.DB_page;
 import com.cw.audio7.page.item_touch_helper.OnStartDragListener;
 import com.cw.audio7.page.item_touch_helper.SimpleItemTouchHelperCallback;
+import com.cw.audio7.util.image.ImageCache;
+import com.cw.audio7.util.image.ImageFetcher;
 import com.cw.audio7.util.preferences.Pref;
 import com.cw.audio7.util.uil.UilCommon;
 
 import java.util.Objects;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -58,12 +63,30 @@ public class Page extends Fragment implements OnStartDragListener {
     AppCompatActivity act;
     View panelView;
 
+    // for Image Cache
+    public ImageFetcher mImageFetcher;
+    private int mImageThumbSize;
+    private static final String IMAGE_CACHE_DIR = "thumbs";
+    private GridView.LayoutParams mImageViewLayoutParams;
+
     public Page(){
     }
 
     public Page(AppCompatActivity _act,View _panelView){
         act = _act;
         panelView = _panelView;
+
+        // for Image Cache
+        ImageCache.ImageCacheParams cacheParams =
+                new ImageCache.ImageCacheParams(act, IMAGE_CACHE_DIR);
+
+        cacheParams.setMemCacheSizePercent(0.25f); // Set memory cache to 25% of app memory
+
+        mImageThumbSize = act.getResources().getDimensionPixelSize(R.dimen.image_thumbnail_size);
+
+        mImageFetcher = new ImageFetcher(act, mImageThumbSize);
+        mImageFetcher.setLoadingImage(R.drawable.empty_photo);
+        mImageFetcher.addImageCache(act.getSupportFragmentManager(), cacheParams);
     }
 
     @Override
@@ -124,18 +147,55 @@ public class Page extends Fragment implements OnStartDragListener {
             recyclerView.setVisibility(View.VISIBLE);
         }
 
+        // for Image Cache
+        recyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+               if (newState == AbsListView.OnScrollListener.SCROLL_STATE_FLING) {
+                    // Before Honeycomb pause image loading on scroll to help with performance
+                    mImageFetcher.setPauseWork(true);
+                } else {
+                    mImageFetcher.setPauseWork(false);
+                }
+            }
+
+        });
+
         return rootView;
     }
 
+
     @Override
     public void onResume() {
-//        System.out.println("Page_recycler / _onResume / page_tableId = " + page_tableId);
+        System.out.println("Page_recycler / _onResume / page_tableId = " + page_tableId);
         super.onResume();
         if(Pref.getPref_focusView_page_tableId(act) == page_tableId) {
 //            System.out.println("Page_recycler / _onResume / resume_listView_vScroll");
             if( (mFolderUi.tabsHost!= null) && (recyclerView != null) )
                 mFolderUi.tabsHost.resume_listView_vScroll(recyclerView);
         }
+
+        // for Image Cache
+        mImageFetcher.setExitTasksEarly(false);
+    }
+
+    @Override
+    public void onPause() {
+        System.out.println("Page_recycler / _onPause ");
+        super.onPause();
+        // for Image Cache
+        mImageFetcher.setPauseWork(false);
+        mImageFetcher.setExitTasksEarly(true);
+        mImageFetcher.flushCache();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        System.out.println("Page_recycler / _onDestroy");
+        // for Image Cache
+        mImageFetcher.closeCache();
     }
 
     private void fillData()

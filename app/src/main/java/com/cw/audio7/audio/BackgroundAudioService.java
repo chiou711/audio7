@@ -219,6 +219,9 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat
             mMediaSessionCompat.release();
             NotificationManagerCompat.from(this).cancel(notification_id);
         }
+
+        if (mMediaPlayer != null)
+            mMediaPlayer.release();
     }
 
     // do audio play

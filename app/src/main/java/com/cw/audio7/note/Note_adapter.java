@@ -25,6 +25,7 @@ import com.cw.audio7.util.image.AsyncTaskAudioBitmap;
 import com.cw.audio7.util.ColorSet;
 import com.cw.audio7.util.CustomWebView;
 import com.cw.audio7.util.Util;
+import com.cw.audio7.util.image.Images;
 
 import android.annotation.SuppressLint;
 import android.graphics.Color;
@@ -172,23 +173,30 @@ public class Note_adapter extends FragmentStatePagerAdapter
   			// workaround to fix no image in View note
 //		    imageView.setZoom((float) 0.999);
 
-  			try
-			{
-			    AsyncTaskAudioBitmap audioAsyncTask;
-			    audioAsyncTask = new AsyncTaskAudioBitmap(act,
-						    							  audioUri, 
-						    							  imageView,
-						    							  null,
-														  null,
-														  false,
-					                                        1);
-				audioAsyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,"Searching media ...");
-			}
-			catch(Exception e)
-			{
-				System.out.println("Note_adapter / _AsyncTaskAudioBitmap / exception");
-			}
-  		}
+		    // todo Select
+		    // case 1
+//  			try
+//			{
+//			    AsyncTaskAudioBitmap audioAsyncTask;
+//			    audioAsyncTask = new AsyncTaskAudioBitmap(act,
+//						    							  audioUri,
+//						    							  imageView,
+//						    							  null,
+//														  false,
+//					                                        1);
+//				audioAsyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,"Searching media ...");
+//			}
+//			catch(Exception e)
+//			{
+//				System.out.println("Note_adapter / _AsyncTaskAudioBitmap / exception");
+//			}
+
+		    // todo Select
+		    // case 2
+		    // for Image Cache
+		    ((NoteAct)act).getImageFetcher().loadImage(audioUri, imageView);
+
+	    }
   		// show link thumb view
   		else if(Util.isEmptyString(audioUri))
   		{

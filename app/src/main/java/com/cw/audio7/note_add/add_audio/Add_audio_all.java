@@ -249,8 +249,10 @@ public class Add_audio_all extends Fragment
         Pref.setPref_focusView_folder_tableId(act, lastFolderTableId);
         Pref.setPref_focusView_page_tableId(act, 1);
 
-        mFolderUi.tabsHost.setLastPageTableId(0);
-        mFolderUi.tabsHost.setFocus_tabPos(0);
+        if(mFolderUi.tabsHost != null) {
+            mFolderUi.tabsHost.setLastPageTableId(0);
+            mFolderUi.tabsHost.setFocus_tabPos(0);
+        }
     }
 
     // add new page
@@ -287,16 +289,23 @@ public class Add_audio_all extends Fragment
         // commit: final page viewed
         Pref.setPref_focusView_page_tableId(act, newPageTableId);
 
-        mFolderUi.tabsHost.setCurrentPageTableId(newPageTableId);
+        if(mFolderUi.tabsHost != null)
+            mFolderUi.tabsHost.setCurrentPageTableId(newPageTableId);
     }
 
     // add new note
     void addNewNote(String audioUri)
     {
-        DB_page dB = new DB_page(act, mFolderUi.tabsHost.getCurrentPageTableId());
-        // insert
-        if (!Util.isEmptyString(audioUri))
-            dB.insertNote("",  audioUri, "",  1);// add new note, get return row Id
+            int currPageTableId;
+            if(mFolderUi.tabsHost != null)
+                currPageTableId = mFolderUi.tabsHost.getCurrentPageTableId();
+            else
+                currPageTableId = Pref.getPref_focusView_page_tableId(act);
+
+            DB_page dB = new DB_page(act, currPageTableId);
+            // insert
+            if (!Util.isEmptyString(audioUri))
+                dB.insertNote("", audioUri, "", 1);// add new note, get return row Id
     }
 
     // get list array in designated path

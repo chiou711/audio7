@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 CW Chiu
+ * Copyright (C) 2021 CW Chiu
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,11 +31,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import com.cw.audio7.R;
 import com.cw.audio7.util.ColorSet;
-import com.cw.audio7.util.audio.UtilAudio;
 
 import androidx.core.graphics.drawable.DrawableCompat;
 
@@ -46,19 +44,17 @@ public class AsyncTaskAudioBitmap extends AsyncTask<String,Integer,String>
 	final ThreadLocal<Activity> act = new ThreadLocal<>();
 	String audioUri;
 	final ThreadLocal<ImageView> imageView = new ThreadLocal<>();
-	final ThreadLocal<TextView> length = new ThreadLocal<>();
 	MediaMetadataRetriever mmr;
 	Bitmap bitmap;
 	final ThreadLocal<ProgressBar> progressBar = new ThreadLocal<>();
     boolean enRounded;
     int inSampleSize;
 
-	public AsyncTaskAudioBitmap(Activity act, String audioString, ImageView view, ProgressBar progressBar, TextView length,boolean enableRounded, int in_sample_size)
+	public AsyncTaskAudioBitmap(Activity act, String audioString, ImageView view, ProgressBar progressBar, boolean enableRounded, int in_sample_size)
 	{
 		this.act.set(act);
 		audioUri = audioString;
 		imageView.set(view);
-		this.length.set(length);
 		this.progressBar.set(progressBar);
         enRounded = enableRounded;
 		inSampleSize = in_sample_size;
@@ -109,7 +105,7 @@ public class AsyncTaskAudioBitmap extends AsyncTask<String,Integer,String>
 
 		 return null;
 	}
-	
+
 	@Override
 	protected void onProgressUpdate(Integer... progress)
 	{
@@ -130,9 +126,6 @@ public class AsyncTaskAudioBitmap extends AsyncTask<String,Integer,String>
              else
 				 Objects.requireNonNull(imageView.get()).setImageBitmap(bitmap);
 
-             if(length.get() != null)
-                Objects.requireNonNull(length.get()).setText(UtilAudio.getAudioLengthString(act.get(), audioUri));
-
 			 Objects.requireNonNull(imageView.get()).setVisibility(View.VISIBLE);
 		 }
 		 else
@@ -146,8 +139,6 @@ public class AsyncTaskAudioBitmap extends AsyncTask<String,Integer,String>
 				 Objects.requireNonNull(imageView.get()).setImageBitmap(bitmap);
 
 			 Objects.requireNonNull(imageView.get()).setVisibility(View.VISIBLE);
-			 if(length.get() != null)
-				 Objects.requireNonNull(length.get()).setText(UtilAudio.getAudioLengthString(act.get(), audioUri));
 			 ((ViewGroup) Objects.requireNonNull(imageView.get()).getParent()).setVisibility(View.VISIBLE);
 		 }
 

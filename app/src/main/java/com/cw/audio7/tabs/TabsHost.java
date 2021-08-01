@@ -84,9 +84,11 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
 
     public AudioUi_page audioUi_page;
     public static boolean isDoingMarking;
+    AppCompatActivity act;
+
     //if(Define.ENABLE_ADMOB), enable the following
     //private AdView adView;
-    AppCompatActivity act;
+
     public TabsHost()
     {
 //        System.out.println("TabsHost / construct");
@@ -559,7 +561,7 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
 
     public void setCurrentPageTableId(int id)
     {
-        System.out.println("TabsHost / _setCurrentPageTableId / id = " + id);
+//        System.out.println("TabsHost / _setCurrentPageTableId / id = " + id);
         mFocusPageTableId = id;
     }
 

@@ -190,7 +190,6 @@ public class Note_edit_ui {
 						    audioUri,
 						    thumbImage,
 						    progressBarThumb,
-						    null,
 						    false,
 						    1);
 				    audioAsyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,"Searching media ...");

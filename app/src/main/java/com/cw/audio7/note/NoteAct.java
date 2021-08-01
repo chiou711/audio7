@@ -25,10 +25,13 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,6 +45,8 @@ import com.cw.audio7.note_edit.Note_edit;
 import com.cw.audio7.page.PageAdapter;
 import com.cw.audio7.util.Util;
 import com.cw.audio7.util.audio.UtilAudio;
+import com.cw.audio7.util.image.ImageCache;
+import com.cw.audio7.util.image.ImageFetcher;
 import com.cw.audio7.util.preferences.Pref;
 import com.cw.audio7.util.uil.UilCommon;
 
@@ -56,7 +61,7 @@ import androidx.viewpager.widget.ViewPager;
 import static com.cw.audio7.main.MainAct.audio_manager;
 import static com.cw.audio7.main.MainAct.mFolderUi;
 
-public class NoteAct extends AppCompatActivity
+public class NoteAct extends AppCompatActivity implements OnClickListener
 {
 	public static final int VIEW_CURRENT_NOTE = 6;
 	/**
@@ -84,6 +89,9 @@ public class NoteAct extends AppCompatActivity
     public AppCompatActivity act;
     public AudioUi_note audioUi_note;
 	public FragmentManager mFragmentManager;
+	// for Image Cache
+	private static final String IMAGE_CACHE_DIR = "images";
+	private ImageFetcher mImageFetcher;
 
 	@Override
 	public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -122,6 +130,36 @@ public class NoteAct extends AppCompatActivity
 
 		// add on back stack changed listener
 		mFragmentManager = getSupportFragmentManager();
+
+		// for Image Cache
+		// Fetch screen height and width, to use as our max size when loading images as this
+		// activity runs full screen
+		final DisplayMetrics displayMetrics = new DisplayMetrics();
+		getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+		final int height = displayMetrics.heightPixels;
+		final int width = displayMetrics.widthPixels;
+
+		// For this sample we'll use half of the longest width to resize our images. As the
+		// image scaling ensures the image is larger than this, we should be left with a
+		// resolution that is appropriate for both portrait and landscape. For best image quality
+		// we shouldn't divide by 2, but this will use more memory and require a larger memory
+		// cache.
+		final int longest = (height > width ? height : width) / 2;
+
+		ImageCache.ImageCacheParams cacheParams =
+				new ImageCache.ImageCacheParams(this, IMAGE_CACHE_DIR);
+		cacheParams.setMemCacheSizePercent(0.25f); // Set memory cache to 25% of app memory
+
+		// The ImageFetcher takes care of loading images into our ImageView children asynchronously
+		mImageFetcher = new ImageFetcher(this, longest);
+		mImageFetcher.addImageCache(getSupportFragmentManager(), cacheParams);
+		mImageFetcher.setImageFadeIn(false);
+	}
+
+
+	// for Image Cache
+	public ImageFetcher getImageFetcher() {
+		return mImageFetcher;
 	}
 
 	@Override
@@ -293,6 +331,37 @@ public class NoteAct extends AppCompatActivity
 			act.registerReceiver(mReceiver, filter);
 		}
 
+		// for Image Cache
+		mImageFetcher.setExitTasksEarly(false);
+
+		///
+		// Set up activity to go full screen
+//		getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+//
+//		// immersive photo viewing experience
+//		// Hide title text and set home as up
+//		if (getSupportActionBar() != null) {
+//			getSupportActionBar().setDisplayShowTitleEnabled(false);
+//			getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//
+//			// Hide and show the ActionBar as the visibility changes
+//			viewPager.setOnSystemUiVisibilityChangeListener(
+//					new View.OnSystemUiVisibilityChangeListener() {
+//						@Override
+//						public void onSystemUiVisibilityChange(int vis) {
+//							if ((vis & View.SYSTEM_UI_FLAG_LOW_PROFILE) != 0) {
+//								getSupportActionBar().hide();
+//							} else {
+//								getSupportActionBar().show();
+//							}
+//						}
+//					});
+//
+//			// Start low profile mode and hide ActionBar
+//			viewPager.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
+//			getSupportActionBar().hide();
+//		}
+		///
 	}
 
 	@Override
@@ -304,6 +373,10 @@ public class NoteAct extends AppCompatActivity
 
 		// disable full screen
 		Util.setNormalScreen(act);
+
+		// for Image Cache
+		mImageFetcher.setExitTasksEarly(true);
+		mImageFetcher.flushCache();
 	}
 
 	@Override
@@ -319,6 +392,9 @@ public class NoteAct extends AppCompatActivity
 
 		if(mFolderUi.tabsHost == null)
 			System.out.println(">> NoteAct / _onDestroy / mFolderUi.tabsHost == null");
+
+		// for Image Cache
+		mImageFetcher.closeCache();
 	}
 
     // for menu buttons
@@ -450,4 +526,15 @@ public class NoteAct extends AppCompatActivity
 		return false;
 	}
 
+	@Override
+	public void onClick(View view) {
+		final int vis = viewPager.getSystemUiVisibility();
+		if ((vis & View.SYSTEM_UI_FLAG_LOW_PROFILE) != 0) {
+			System.out.println("------------------------ onClick a");
+			viewPager.setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
+		} else {
+			viewPager.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
+			System.out.println("------------------------ onClick b");
+		}
+	}
 }
