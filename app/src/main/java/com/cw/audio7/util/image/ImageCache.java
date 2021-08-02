@@ -579,11 +579,11 @@ public class ImageCache {
                         context.getExternalCacheDir().getPath() :
                         context.getCacheDir().getPath();
 
-        System.out.println("------------- cachePath + File.separator + uniqueName = " + cachePath + File.separator + uniqueName);
-        //System.out: ------------- cachePath + File.separator + uniqueName = /storage/emulated/0/Android/data/com.cw.audio7/cache/thumbs
-        //System.out: ------------- cachePath + File.separator + uniqueName = /storage/emulated/0/Android/data/com.cw.audio7/cache/http
-        //System.out: ------------- cachePath + File.separator + uniqueName = /storage/emulated/0/Android/data/com.cw.audio7/cache/images
-        //
+        //System.out.println("------------- cachePath + File.separator + uniqueName = " + cachePath + File.separator + uniqueName);
+        // example: /storage/emulated/0/Android/data/com.cw.audio7/cache/thumbs
+        // example: /storage/emulated/0/Android/data/com.cw.audio7/cache/http
+        // example: /storage/emulated/0/Android/data/com.cw.audio7/cache/images
+
         return new File(cachePath + File.separator + uniqueName);
     }
 

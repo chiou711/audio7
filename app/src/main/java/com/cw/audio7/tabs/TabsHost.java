@@ -176,20 +176,23 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
 //        mTabLayout.setTabMode(TabLayout.MODE_FIXED);
         mTabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
 
-        mTabLayout.setBackgroundColor(ColorSet.getBarColor(act));
+        if(act != null) {
+            mTabLayout.setBackgroundColor(ColorSet.getBarColor(act));
 
-        // set text color
-        mTabLayout.setTabTextColors(
-                ContextCompat.getColor(act,R.color.colorGray), //normal
-                ContextCompat.getColor(act,R.color.colorWhite) //selected
-        );
+            // set text color
+            mTabLayout.setTabTextColors(
+                    ContextCompat.getColor(act, R.color.colorGray), //normal
+                    ContextCompat.getColor(act, R.color.colorWhite) //selected
+            );
 
-        // tab indicator height
+            // tab indicator height
 //        mTabLayout.setSelectedTabIndicatorHeight(25); //todo ??? Replaced with?
-        mTabLayout.setSelectedTabIndicatorHeight((int) (6 * getResources().getDisplayMetrics().density));
+            mTabLayout.setSelectedTabIndicatorHeight((int) (6 * getResources().getDisplayMetrics().density));
 
-        // indicator color
-        mTabLayout.setSelectedTabIndicatorColor(ColorSet.getTabIndicatorColor(getActivity()));
+            // indicator color
+            mTabLayout.setSelectedTabIndicatorColor(ColorSet.getTabIndicatorColor(act));
+        }
+
 
         // indicator corner
         GradientDrawable gradientDrawable = new GradientDrawable();

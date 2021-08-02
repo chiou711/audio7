@@ -30,7 +30,6 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -61,7 +60,7 @@ import androidx.viewpager.widget.ViewPager;
 import static com.cw.audio7.main.MainAct.audio_manager;
 import static com.cw.audio7.main.MainAct.mFolderUi;
 
-public class NoteAct extends AppCompatActivity implements OnClickListener
+public class NoteAct extends AppCompatActivity
 {
 	public static final int VIEW_CURRENT_NOTE = 6;
 	/**
@@ -107,11 +106,11 @@ public class NoteAct extends AppCompatActivity implements OnClickListener
 		toolbar.setPopupTheme(R.style.ThemeOverlay_AppCompat_Light);
 		setSupportActionBar(toolbar);
 
-		ActionBar actionBar = getSupportActionBar();
-		if (actionBar != null) {
-			actionBar.setDisplayHomeAsUpEnabled(true);
-			actionBar.setDisplayShowHomeEnabled(true);
-		}
+//		ActionBar actionBar = getSupportActionBar();
+//		if (actionBar != null) {
+//			actionBar.setDisplayHomeAsUpEnabled(true);
+//			actionBar.setDisplayShowHomeEnabled(true);
+//		}
 
 		Bundle arguments = getIntent().getExtras();
 		mEntryPosition = arguments.getInt("POSITION");
@@ -156,7 +155,6 @@ public class NoteAct extends AppCompatActivity implements OnClickListener
 		mImageFetcher.setImageFadeIn(false);
 	}
 
-
 	// for Image Cache
 	public ImageFetcher getImageFetcher() {
 		return mImageFetcher;
@@ -165,6 +163,9 @@ public class NoteAct extends AppCompatActivity implements OnClickListener
 	@Override
 	public void onBackPressed() {
 		System.out.println("NoteAct / _onBackPressed" );
+		// add for avoiding exception: The application's PagerAdapter changed the adapter's contents without calling PagerAdapter#notifyDataSetChanged!
+		viewPager.setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
+
 		finish();
 	}
 
@@ -285,10 +286,11 @@ public class NoteAct extends AppCompatActivity implements OnClickListener
 	public void setOutline(AppCompatActivity act)
 	{
 		System.out.println("NoteAct / _setOutline");
+
         // Set full screen or not, and action bar
-		Util.setFullScreen_noImmersive(act);
-        if(act.getSupportActionBar() != null)
-		    act.getSupportActionBar().show();
+//		Util.setFullScreen_noImmersive(act);
+//        if(act.getSupportActionBar() != null)
+//		    act.getSupportActionBar().show();
 
         // renew pager
         showSelectedView();
@@ -302,6 +304,34 @@ public class NoteAct extends AppCompatActivity implements OnClickListener
 
         // renew options menu
         act.invalidateOptionsMenu();
+
+		// Set up activity to go full screen
+		act.getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		ActionBar actionBar = act.getSupportActionBar();
+		// immersive photo viewing experience
+		// Hide title text and set home as up
+		if (actionBar != null) {
+			actionBar.setDisplayShowTitleEnabled(true);//false
+			actionBar.setDisplayHomeAsUpEnabled(true);
+
+			// Hide and show the ActionBar as the visibility changes
+			viewPager.setOnSystemUiVisibilityChangeListener(
+					new View.OnSystemUiVisibilityChangeListener() {
+						@Override
+						public void onSystemUiVisibilityChange(int vis) {
+							if ((vis & View.SYSTEM_UI_FLAG_LOW_PROFILE) != 0) {
+								actionBar.hide();
+							} else {
+								actionBar.show();
+							}
+						}
+					});
+
+			// Start low profile mode and hide ActionBar
+			viewPager.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
+			actionBar.hide();
+		}
+
 	}
 
 	@Override
@@ -333,35 +363,6 @@ public class NoteAct extends AppCompatActivity implements OnClickListener
 
 		// for Image Cache
 		mImageFetcher.setExitTasksEarly(false);
-
-		///
-		// Set up activity to go full screen
-//		getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-//
-//		// immersive photo viewing experience
-//		// Hide title text and set home as up
-//		if (getSupportActionBar() != null) {
-//			getSupportActionBar().setDisplayShowTitleEnabled(false);
-//			getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-//
-//			// Hide and show the ActionBar as the visibility changes
-//			viewPager.setOnSystemUiVisibilityChangeListener(
-//					new View.OnSystemUiVisibilityChangeListener() {
-//						@Override
-//						public void onSystemUiVisibilityChange(int vis) {
-//							if ((vis & View.SYSTEM_UI_FLAG_LOW_PROFILE) != 0) {
-//								getSupportActionBar().hide();
-//							} else {
-//								getSupportActionBar().show();
-//							}
-//						}
-//					});
-//
-//			// Start low profile mode and hide ActionBar
-//			viewPager.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
-//			getSupportActionBar().hide();
-//		}
-		///
 	}
 
 	@Override
@@ -526,15 +527,4 @@ public class NoteAct extends AppCompatActivity implements OnClickListener
 		return false;
 	}
 
-	@Override
-	public void onClick(View view) {
-		final int vis = viewPager.getSystemUiVisibility();
-		if ((vis & View.SYSTEM_UI_FLAG_LOW_PROFILE) != 0) {
-			System.out.println("------------------------ onClick a");
-			viewPager.setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
-		} else {
-			viewPager.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
-			System.out.println("------------------------ onClick b");
-		}
-	}
 }

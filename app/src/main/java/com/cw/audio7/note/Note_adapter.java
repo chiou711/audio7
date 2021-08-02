@@ -54,7 +54,7 @@ import androidx.viewpager.widget.ViewPager;
 import static com.cw.audio7.main.MainAct.audio_manager;
 import static com.cw.audio7.main.MainAct.mFolderUi;
 
-public class Note_adapter extends FragmentStatePagerAdapter
+public class Note_adapter extends FragmentStatePagerAdapter implements View.OnClickListener
 {
 	static int mLastPosition;
 	private final LayoutInflater inflater;
@@ -74,7 +74,7 @@ public class Note_adapter extends FragmentStatePagerAdapter
 	    audioUi_note = ui;
         System.out.println("Note_adapter / constructor / mLastPosition = " + mLastPosition);
     }
-    
+
 	@Override
 	public void destroyItem(ViewGroup container, int position, Object object) {
 		container.removeView((View) object);
@@ -95,6 +95,10 @@ public class Note_adapter extends FragmentStatePagerAdapter
 
         // image view
 	    ImageView imageView = ((ImageView) pagerView.findViewById(R.id.image_view));
+
+	    // set on click listener for toggling full screen or not
+	    imageView.setOnClickListener(this);
+
         String tagImageStr = "current"+ position +"imageView";
         imageView.setTag(tagImageStr);
 
@@ -383,4 +387,13 @@ public class Note_adapter extends FragmentStatePagerAdapter
 		         "</body></html>";
     }
 
+	@Override
+	public void onClick(View view) {
+		final int vis = pager.getSystemUiVisibility();
+		if ((vis & View.SYSTEM_UI_FLAG_LOW_PROFILE) != 0) {
+			pager.setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
+		} else {
+			pager.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
+		}
+	}
 }
