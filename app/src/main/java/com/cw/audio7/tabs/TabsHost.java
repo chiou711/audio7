@@ -321,22 +321,6 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
         // refresh list view of selected page
         Page page = mTabsPagerAdapter.fragmentList.get(getFocus_tabPos());
 
-        if( (tab.getPosition() == MainAct.mPlaying_pagePos) &&
-            (page != null) &&
-            (page.itemAdapter != null)                                 )
-        {
-            RecyclerView listView = page.recyclerView;
-
-            if( (audio7Player != null) &&
-                !isDoingMarking &&
-                (listView != null) &&
-                (audio_manager.getPlayerState() != audio_manager.PLAYER_AT_STOP)  )
-            {
-                if ( Audio7Player.isOnAudioPlayingPage())
-                    audio7Player.scrollPlayingItemToBeVisible(listView); //todo Could hang up if page had too many notes (more then 1000)
-            }
-        }
-
         // add for update page item view
         if((page != null) && (page.itemAdapter != null)) {
             page.itemAdapter.updateDbCache();
@@ -433,6 +417,9 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
             mAudioHandler.postDelayed(audio_runnable,Util.oneSecond*2);
 
             showPlayingTab();
+
+            // do Scroll for changing Note play to Page play
+            audio7Player.doScroll = true;
         }
 
     }
@@ -443,7 +430,7 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
         System.out.println("TabsHost / _onPause");
 
         //  Remove fragments
-        if(!act.isDestroyed())
+        if( (act!=null) && !act.isDestroyed())
             removePages();//Put here will solve onBackStackChanged issue (no Page_recycler / _onCreate)
 
 //        if(Define.ENABLE_ADMOB) {

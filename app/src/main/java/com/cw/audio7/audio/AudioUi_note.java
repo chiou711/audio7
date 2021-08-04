@@ -186,7 +186,13 @@ public class AudioUi_note
         audio_previous_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ViewPager viewPager = rootView.findViewById(R.id.tabs_pager);
+
+                ViewPager viewPager;
+
+                if(rootView != null)
+                    viewPager = rootView.findViewById(R.id.tabs_pager);
+                else
+                    viewPager = act.findViewById(R.id.tabs_pager);
 
 //                System.out.println("AudioUi_note /  audio_next_btn / _onClick / NoteUi.getNotesCnt() = " + NoteUi.getNotesCnt());
 //                System.out.println("AudioUi_note /  audio_next_btn / _onClick / NoteUi.getFocus_notePos() = " + NoteUi.getFocus_notePos());

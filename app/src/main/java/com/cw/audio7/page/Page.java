@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 CW Chiu
+ * Copyright (C) 2021 CW Chiu
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -98,7 +98,7 @@ public class Page extends Fragment implements OnStartDragListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Bundle args = getArguments();
         page_tableId = args.getInt("page_table_id");
-        //System.out.println("Page_recycler / _onCreateView / page_tableId = " + page_tableId);
+//        System.out.println("Page / _onCreateView / page_tableId = " + page_tableId);
 
         View rootView = inflater.inflate(R.layout.page_view, container, false);
 
@@ -168,12 +168,14 @@ public class Page extends Fragment implements OnStartDragListener {
 
     @Override
     public void onResume() {
-        System.out.println("Page_recycler / _onResume / page_tableId = " + page_tableId);
+        System.out.println("Page / _onResume / page_tableId = " + page_tableId);
         super.onResume();
         if(Pref.getPref_focusView_page_tableId(act) == page_tableId) {
-//            System.out.println("Page_recycler / _onResume / resume_listView_vScroll");
-            if( (mFolderUi.tabsHost!= null) && (recyclerView != null) )
+
+            if( (mFolderUi.tabsHost!= null) && (recyclerView != null) ) {
                 mFolderUi.tabsHost.resume_listView_vScroll(recyclerView);
+                System.out.println("Page / _onResume / resume_listView_vScroll");
+            }
         }
 
         // for Image Cache
@@ -182,7 +184,7 @@ public class Page extends Fragment implements OnStartDragListener {
 
     @Override
     public void onPause() {
-        System.out.println("Page_recycler / _onPause ");
+        System.out.println("Page / _onPause ");
         super.onPause();
         // for Image Cache
         mImageFetcher.setPauseWork(false);
@@ -193,14 +195,14 @@ public class Page extends Fragment implements OnStartDragListener {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        System.out.println("Page_recycler / _onDestroy");
+        System.out.println("Page / _onDestroy");
         // for Image Cache
         mImageFetcher.closeCache();
     }
 
     private void fillData()
     {
-        //System.out.println("Page_recycler / _fillData / page_tableId = " + page_tableId);
+        //System.out.println("Page / _fillData / page_tableId = " + page_tableId);
         if(itemAdapter == null)
             itemAdapter = new PageAdapter(act,panelView,page_tableId, this);
         // Set PageAdapter_recycler as the adapter for RecyclerView.

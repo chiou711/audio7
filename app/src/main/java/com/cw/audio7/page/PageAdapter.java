@@ -292,10 +292,10 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
         }
 
         /** show audio highlight if audio is not at Stop */
-        if( (marking !=0) &&
+        if( (audio_manager.getPlayerState() != audio_manager.PLAYER_AT_STOP) &&
+           (marking !=0) &&
             (holder.getAdapterPosition() == audio_manager.mAudioPos)  &&
-            Audio7Player.isOnAudioPlayingPage() &&
-            (audio_manager.getPlayerState() != audio_manager.PLAYER_AT_STOP) )
+            Audio7Player.isOnAudioPlayingPage()            )
         {
 //            System.out.println("PageAdapter / _getView / show highlight / position = " + position);
             mFolderUi.tabsHost.getCurrentPage().mHighlightPosition = holder.getAdapterPosition();
