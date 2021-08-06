@@ -46,6 +46,7 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import static com.cw.audio7.main.MainAct.audio_manager;
 import static com.cw.audio7.main.MainAct.mFolderUi;
 
 public class Page extends Fragment implements OnStartDragListener {
@@ -180,6 +181,10 @@ public class Page extends Fragment implements OnStartDragListener {
 
         // for Image Cache
         mImageFetcher.setExitTasksEarly(false);
+
+        // set doScroll flag for Scroll to playing item
+        if(audio_manager.willDoScroll())
+            audio_manager.doScroll = true;
     }
 
     @Override

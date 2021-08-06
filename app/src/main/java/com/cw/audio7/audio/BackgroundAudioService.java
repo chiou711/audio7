@@ -62,8 +62,8 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat
     // for differentiate Pause source: manual or focus change
     private boolean isPausedByButton;
 
-    boolean enDbgMsg = true;
-//    boolean enDbgMsg = false;
+//    boolean enDbgMsg = true;
+    boolean enDbgMsg = false;
 
     public static PlaybackStateCompat.Builder playbackStateBuilder;
 

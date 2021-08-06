@@ -184,7 +184,7 @@ public class DeletePages extends Fragment {
                 // delete page row
                 mDbFolder.deletePage(DB_folder.getFocusFolder_tableName(),pageId,false);
 
-                if( Audio7Player.isOnAudioPlayingPage() &&
+                if( audio_manager.isOnAudioPlayingPage() &&
                     BackgroundAudioService.mMediaPlayer != null ) {
                     audio_manager.stopAudioPlayer(act);
                     audio_manager.mAudioPos = 0;

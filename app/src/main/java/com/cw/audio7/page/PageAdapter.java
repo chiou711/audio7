@@ -295,7 +295,7 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
         if( (audio_manager.getPlayerState() != audio_manager.PLAYER_AT_STOP) &&
            (marking !=0) &&
             (holder.getAdapterPosition() == audio_manager.mAudioPos)  &&
-            Audio7Player.isOnAudioPlayingPage()            )
+            audio_manager.isOnAudioPlayingPage()            )
         {
 //            System.out.println("PageAdapter / _getView / show highlight / position = " + position);
             mFolderUi.tabsHost.getCurrentPage().mHighlightPosition = holder.getAdapterPosition();
@@ -486,7 +486,7 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
                 mFolderUi.tabsHost.showFooter(act);
 
                 // update audio info
-                if(Audio7Player.isOnAudioPlayingPage()) {
+                if(audio_manager.isOnAudioPlayingPage()) {
                     System.out.println("PageAdapter / _getView / btnMarking / is AudioPlayingPage");
                     audio_manager.setupAudioList(act);
                 }
@@ -532,6 +532,10 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
                 mFolderUi.tabsHost.audio7Player.runAudioState();
 
                 mFolderUi.tabsHost.showPlayingTab();
+
+                // scroll
+                mFolderUi.tabsHost.audio7Player.scrollPlayingItemToBeVisible(mFolderUi.tabsHost.getCurrentPage().recyclerView);
+                audio_manager.doScroll = true; // add for page bottom items
             }
         });
 
@@ -734,7 +738,7 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
                 toPos--;
         }
 
-        if( Audio7Player.isOnAudioPlayingPage() &&
+        if( audio_manager.isOnAudioPlayingPage() &&
                 (BackgroundAudioService.mMediaPlayer != null)				   )
         {
             if( (Page.mHighlightPosition == oriEndPos)  && (oriStartPos > oriEndPos))

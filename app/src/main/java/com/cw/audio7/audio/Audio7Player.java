@@ -57,7 +57,6 @@ public class Audio7Player
 	private View audio_panel;
     static int delayBeforeMediaStart = DURATION_1S;
 	static String audioUrl;
-	public boolean doScroll;
 
 	public Audio7Player(AppCompatActivity _act, View audio_panel, String audio_uri_str){
 		System.out.println("Audio7Player / constructor ");
@@ -78,7 +77,7 @@ public class Audio7Player
 //				System.out.println("Audio7Player / _audio_runnable");
 
 				if(audio_manager.kill_runnable) {
-					System.out.println("------------ Audio7Player / _audio_runnable / kill runnable = true");
+//					System.out.println("------------ Audio7Player / _audio_runnable / kill runnable = true");
 					removeRunnable();
 				}
 
@@ -169,10 +168,8 @@ public class Audio7Player
 					}
 
 					// do Scroll for changing Note play to Page play
-					if(doScroll && isOnAudioPlayingPage()) {
+					if( audio_manager.doScroll && audio_manager.willDoScroll())
 						scrollPlayingItemToBeVisible(mFolderUi.tabsHost.getCurrentPage().recyclerView);
-						mFolderUi.tabsHost.getCurrentPage().itemAdapter.notifyDataSetChanged();
-					}
 
 				}
 				else if( (audio_manager.getCheckedAudio(audio_manager.mAudioPos) == 0 ) )// for non-audio item
@@ -194,7 +191,7 @@ public class Audio7Player
 					if (audio_manager.getAudioPlayMode() == audio_manager.PAGE_PLAY_MODE) {
 						tryPlay_nextAudio();
 
-						if(isOnAudioPlayingPage()) {
+						if(audio_manager.isOnAudioPlayingPage()) {
 							scrollPlayingItemToBeVisible(mFolderUi.tabsHost.getCurrentPage().recyclerView);
 							mFolderUi.tabsHost.getCurrentPage().itemAdapter.notifyDataSetChanged();
 						}
@@ -323,28 +320,6 @@ public class Audio7Player
         return isOn;
     }
 
-    // check if is on audio playing page
-    public static boolean isOnAudioPlayingPage()
-    {
-    	boolean isSameTabPos = false;
-    	if(mFolderUi.tabsHost != null)
-		    isSameTabPos = (mFolderUi.tabsHost.getFocus_tabPos() == MainAct.mPlaying_pagePos);
-
-//	    System.out.println("Audio7Player / _isOnAudioPlayingPage / isSameTabPos = " + isSameTabPos);
-//	    System.out.println("Audio7Player / _isOnAudioPlayingPage /  (audio_manager.getPlayerState() != audio_manager.PLAYER_AT_STOP) = " +
-//			    (audio_manager.getPlayerState() != audio_manager.PLAYER_AT_STOP));
-//	    System.out.println("Audio7Player / _isOnAudioPlayingPage / (MainAct.mPlaying_folderPos == mFolderUi.getFocus_folderPos())  = " +
-//			    (MainAct.mPlaying_folderPos == mFolderUi.getFocus_folderPos()) );
-//	    System.out.println("Audio7Player / _isOnAudioPlayingPage /  (MainAct.mPlaying_pageTableId == mFolderUi.tabsHost.getCurrentPageTableId()) = " +
-//			    (MainAct.mPlaying_pageTableId == mFolderUi.tabsHost.getCurrentPageTableId()));
-//	    System.out.println("Audio7Player / _isOnAudioPlayingPage / (mFolderUi.tabsHost.getCurrentPage().recyclerView != null)    = " +
-//			    (mFolderUi.tabsHost.getCurrentPage().recyclerView != null)   ); //todo Why recycler view null
-	    return ( (audio_manager.getPlayerState() != audio_manager.PLAYER_AT_STOP) &&
-                     (MainAct.mPlaying_folderPos == mFolderUi.getFocus_folderPos()) &&
-		             isSameTabPos     &&
-			         (MainAct.mPlaying_pageTableId == mFolderUi.tabsHost.getCurrentPageTableId()) &&
-                     (mFolderUi.tabsHost.getCurrentPage().recyclerView != null)                     );
-    }
 
 	/**
 	* Scroll playing item to be visible
@@ -366,21 +341,36 @@ public class Audio7Player
 		     (Build.VERSION.SDK_INT < 19)            )
             return;
 
-        boolean showDebugMsg = false;
+        boolean showDebugMsg = false;//true;//false;
 
 		LinearLayoutManager layoutMgr = ((LinearLayoutManager) recyclerView.getLayoutManager());
 		if(layoutMgr == null)
 			return;
 
 		int first_note_pos;
+		int last_note_pos;
 		int itemHeight = 50;
 		int divider_size = 1; // todo check divider.xml size element
 		int dividerHeight;
 
 		first_note_pos = layoutMgr.findFirstCompletelyVisibleItemPosition();
+		last_note_pos = layoutMgr.findLastCompletelyVisibleItemPosition();
 
-		if(showDebugMsg)
+		if(showDebugMsg) {
 			System.out.println("---------------- first_note_pos = " + first_note_pos);
+			System.out.println("---------------- last_note_pos = " + last_note_pos);
+		}
+
+		if( ( (audio_manager.mAudioPos >= first_note_pos ) &&
+			  (audio_manager.mAudioPos <= last_note_pos )      ) ||
+		    ( (first_note_pos ==  RecyclerView.NO_POSITION) &&
+			  (last_note_pos == RecyclerView.NO_POSITION)    ) ) {
+			audio_manager.doScroll = false;
+			if(showDebugMsg)
+				System.out.println("---------------- return and audio_manager.doScroll = false");
+			return;
+		}
+
 
 		// no complete visible position, do offset
 		if(first_note_pos == RecyclerView.NO_POSITION)
@@ -397,7 +387,11 @@ public class Audio7Player
                 recyclerView.scrollBy(0,top_offset);
 
             first_note_pos = layoutMgr.findFirstCompletelyVisibleItemPosition();
-			System.out.println("---------------- first_note_pos (not complete) = " + first_note_pos);
+			last_note_pos = layoutMgr.findLastCompletelyVisibleItemPosition();
+			if(showDebugMsg) {
+				System.out.println("---------------- first_note_pos (not complete) = " + first_note_pos);
+				System.out.println("---------------- last_note_pos (not complete) = " + last_note_pos);
+			}
         }
 
 		// https://stackoverflow.com/questions/6157652/android-getmeasuredheight-returns-wrong-values
@@ -424,9 +418,9 @@ public class Audio7Player
 		if(showDebugMsg)
 			System.out.println("----- audio_manager.mAudioPos = " + audio_manager.mAudioPos);
 
-		while ((first_note_pos != audio_manager.mAudioPos) )
+		while ( (audio_manager.mAudioPos < first_note_pos) ||
+				    (audio_manager.mAudioPos > last_note_pos)    )
 		{
-			int startPos = first_note_pos;
 			// scroll forwards
 			if (first_note_pos > audio_manager.mAudioPos )
 			{
@@ -445,13 +439,21 @@ public class Audio7Player
 			}
 
 			first_note_pos = layoutMgr.findFirstCompletelyVisibleItemPosition();
-			System.out.println("---------------- new first_note_pos (after offset) = " + first_note_pos);
+			last_note_pos = layoutMgr.findLastCompletelyVisibleItemPosition();
+			if(showDebugMsg) {
+				System.out.println("---------------- new first_note_pos (after offset) = " + first_note_pos);
+				System.out.println("---------------- last_note_pos (after offset) = " + last_note_pos);
+			}
 
 			// check if recycler view reached the end
-			if(first_note_pos == startPos)
-				first_note_pos = audio_manager.mAudioPos;
+			if( (audio_manager.mAudioPos >= first_note_pos) &&
+				(audio_manager.mAudioPos <= last_note_pos)   ) {
+				audio_manager.doScroll = false;
+				break;
+			}
 
-			System.out.println("---------------- new first_note_pos (after check) = " + first_note_pos);
+			if(showDebugMsg)
+				System.out.println("---------------- new first_note_pos (after check) = " + first_note_pos);
 
 			// no complete visible position, do offset
 			if(first_note_pos == RecyclerView.NO_POSITION) {
@@ -469,9 +471,6 @@ public class Audio7Player
 		// do v scroll
 		mFolderUi.tabsHost.store_listView_vScroll(recyclerView);
 		mFolderUi.tabsHost.resume_listView_vScroll(recyclerView);
-
-		// scroll is done //todo Scroll about 24 items is OK, but over is not all done
-		doScroll = false;
 	}
 
     /**

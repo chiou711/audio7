@@ -149,7 +149,7 @@ public class AudioUi_page {
 //                System.out.println("AudioUi_page / _initAudioBlock / audioPanel_play_button / _onClick");
                 audio7Player.runAudioState();
 
-                if(Audio7Player.isOnAudioPlayingPage())
+                if(audio_manager.isOnAudioPlayingPage())
                 {
                     audio7Player.scrollPlayingItemToBeVisible(mFolderUi.tabsHost.getCurrentPage().recyclerView);
                     mFolderUi.tabsHost.getCurrentPage().itemAdapter.notifyDataSetChanged();
@@ -246,7 +246,7 @@ public class AudioUi_page {
         }
 
         // gif case: add this will cause program hang up
-        if(Audio7Player.isOnAudioPlayingPage())
+        if(audio_manager.isOnAudioPlayingPage())
             audio7Player.scrollPlayingItemToBeVisible(mFolderUi.tabsHost.getCurrentPage().recyclerView);
 
         if( mFolderUi.tabsHost!=null ) {

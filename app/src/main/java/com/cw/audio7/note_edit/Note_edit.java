@@ -156,7 +156,7 @@ public class Note_edit extends AppCompatActivity
 								note_edit_ui.deleteNote(noteId);
 
 
-								if(Audio7Player.isOnAudioPlayingPage())
+								if(audio_manager.isOnAudioPlayingPage())
 									audio_manager.setupAudioList(Note_edit.this);
 
 								// Stop Play/Pause if current edit item is played and is not at Stop state

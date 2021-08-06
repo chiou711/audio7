@@ -400,9 +400,9 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
 
         // change audio panel when Note audio is changed to Page audio
         /** Entry: Note play -> Page play */
+        /** Entry: background play -> Page play */
         if ( BackgroundAudioService.mMediaPlayer != null &&
-                //MainAct.mPlaying_pageTableId == page_table_id  &&
-                MainAct.mPlaying_folderPos == mFolderUi.getFocus_folderPos())
+             MainAct.mPlaying_folderPos == mFolderUi.getFocus_folderPos())
         {
             audio_manager.kill_runnable = true;
             audio7Player = new Audio7Player(act,audio_panel, audio_manager.mAudioUri);
@@ -417,9 +417,6 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
             mAudioHandler.postDelayed(audio_runnable,Util.oneSecond*2);
 
             showPlayingTab();
-
-            // do Scroll for changing Note play to Page play
-            audio7Player.doScroll = true;
         }
 
     }

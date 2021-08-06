@@ -20,12 +20,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.cw.audio7.db.DB_page;
+import com.cw.audio7.main.MainAct;
 import com.cw.audio7.util.Util;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationManagerCompat;
 
 import static com.cw.audio7.define.Define.ENABLE_MEDIA_CONTROLLER;
+import static com.cw.audio7.main.MainAct.audio_manager;
 import static com.cw.audio7.main.MainAct.mFolderUi;
 import static com.cw.audio7.main.MainAct.removeRunnable;
 
@@ -52,6 +54,8 @@ public class Audio_manager
 	public  String mAudioUri;
 	public  boolean kill_runnable = false;
 	AppCompatActivity act;
+	public boolean doScroll;
+
 
 	public Audio_manager(AppCompatActivity _act) {
 		act = _act;
@@ -227,6 +231,52 @@ public class Audio_manager
 
 	public static int getPlayingPage_notesCount() {
 	    return playingPage_notesCount;
+    }
+
+	// check if is on audio playing page
+	public boolean isOnAudioPlayingPage()
+	{
+		if(mFolderUi.tabsHost == null)
+			return false;
+
+		String prefix = "Audio_manager / _isOnAudioPlayingPage / ";
+		boolean showDbgMsg = false;
+
+		boolean isSameTabPos = (mFolderUi.tabsHost.getFocus_tabPos() == MainAct.mPlaying_pagePos);
+		if(showDbgMsg)
+			System.out.println( prefix + "isSameTabPos = " + isSameTabPos);
+
+		boolean isPlayOrPause = (audio_manager.getPlayerState() != audio_manager.PLAYER_AT_STOP);
+		if(showDbgMsg)
+			System.out.println( prefix + "isPlayOrPause = " +isPlayOrPause);
+
+		boolean isPlayingOnFocusFolderPos = (MainAct.mPlaying_folderPos == mFolderUi.getFocus_folderPos());
+		if(showDbgMsg)
+			System.out.println(prefix + "isPlayingOnFocusFolderPos = " + isPlayingOnFocusFolderPos);
+
+		boolean isPlayingOnCurrPageTableId = (MainAct.mPlaying_pageTableId == mFolderUi.tabsHost.getCurrentPageTableId());
+		if(showDbgMsg)
+			System.out.println(prefix + "isPlayingOnCurrPageTableId = " + isPlayingOnCurrPageTableId);
+
+		boolean isCurrRecycleViewExist = (mFolderUi.tabsHost.getCurrentPage().recyclerView != null);
+		if(showDbgMsg)
+			System.out.println(prefix + "isCurrRecycleViewExist  = " + isCurrRecycleViewExist);
+
+		return  (isPlayOrPause &&
+				isPlayingOnFocusFolderPos &&
+				isSameTabPos     &&
+				isPlayingOnCurrPageTableId &&
+				isCurrRecycleViewExist);
+	}
+
+	public boolean willDoScroll() {
+		return
+		(mFolderUi.tabsHost != null) &&
+	    (audio_manager.getPlayerState() != audio_manager.PLAYER_AT_STOP) &&
+	    (MainAct.mPlaying_folderPos == mFolderUi.getFocus_folderPos()) &&
+	    (mFolderUi.tabsHost.getFocus_tabPos() == MainAct.mPlaying_pagePos)     &&
+	    (MainAct.mPlaying_pageTableId == mFolderUi.tabsHost.getCurrentPageTableId()) ;
+
     }
 	
 }

@@ -272,7 +272,7 @@ public class Checked_notes_option {
             UtilAudio.stopAudioIfNeeded(act);
 
         // update audio play list
-        if(Audio7Player.isOnAudioPlayingPage())
+        if(audio_manager.isOnAudioPlayingPage())
             audio_manager.setupAudioList(act);
 
         mFolderUi.tabsHost.reloadCurrentPage();
@@ -306,7 +306,7 @@ public class Checked_notes_option {
             UtilAudio.stopAudioIfNeeded(act);
 
         // update audio play list
-        if(Audio7Player.isOnAudioPlayingPage())
+        if(audio_manager.isOnAudioPlayingPage())
             audio_manager.setupAudioList(act);
 
         mFolderUi.tabsHost.reloadCurrentPage();
