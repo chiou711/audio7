@@ -60,7 +60,7 @@ public class UtilAudio {
             if(BackgroundAudioService.mMediaPlayer != null){
                 audio_manager.stopAudioPlayer(act);
                 audio_manager.mAudioPos = 0;
-	            mFolderUi.tabsHost.audio7Player.showAudioPanel(act, false);
+	            audio_manager.audio7Player.showAudioPanel(act, false);
 	            // remove playing focus
 	            mFolderUi.tabsHost.reloadCurrentPage();
             }

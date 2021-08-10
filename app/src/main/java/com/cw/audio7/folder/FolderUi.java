@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 CW Chiu
+ * Copyright (C) 2021 CW Chiu
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,10 +33,10 @@ import android.widget.RadioGroup.OnCheckedChangeListener;
 
 import com.cw.audio7.R;
 import com.cw.audio7.db.DB_page;
-import com.cw.audio7.audio.Audio_manager;
 import com.cw.audio7.audio.BackgroundAudioService;
 import com.cw.audio7.db.DB_drawer;
 import com.cw.audio7.db.DB_folder;
+import com.cw.audio7.drawer.Drawer;
 import com.cw.audio7.main.MainAct;
 import com.cw.audio7.define.Define;
 import com.cw.audio7.tabs.TabsHost;
@@ -54,15 +54,16 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentTransaction;
 
 import static com.cw.audio7.main.MainAct.audio_manager;
-import static com.cw.audio7.main.MainAct.mDrawer;
 import static com.cw.audio7.main.MainAct.mFolderUi;
 
 public class FolderUi extends Folder
 {
 	AppCompatActivity act;
+	Drawer drawer;
 
-	public FolderUi(AppCompatActivity _act){
+	public FolderUi(AppCompatActivity _act, Drawer _drawer){
 		act = _act;
+		drawer = _drawer;
 		mFolderTitles = new ArrayList<>();
 		FolderSetup(act);
 	};
@@ -530,7 +531,7 @@ public class FolderUi extends Folder
 	        // update selected item and title, then close the drawer
 	        DragSortListView listView = (DragSortListView) act.findViewById(R.id.drawer_listview);
 	        listView.setItemChecked(position, true); // selected item is colored by different color
-	        drawerLayout.closeDrawer(mDrawer.mNavigationView);
+	        drawerLayout.closeDrawer(drawer.mNavigationView);
 	        act.invalidateOptionsMenu();
 
 	        // use Runnable to make sure only one folder background is seen
@@ -572,7 +573,7 @@ public class FolderUi extends Folder
     public Runnable mTabsHostRun = () -> {
 //	    System.out.println("FolderUi / mTabsHostRun");
 
-	    tabsHost = new TabsHost(act);
+	    tabsHost = new TabsHost(act,drawer);
 
 	    FragmentTransaction fragmentTransaction = act.getSupportFragmentManager().beginTransaction();
 	    fragmentTransaction.replace(R.id.content_frame, tabsHost).commitAllowingStateLoss();

@@ -30,8 +30,8 @@ import com.cw.audio7.R;
 import com.cw.audio7.db.DB_drawer;
 import com.cw.audio7.db.DB_folder;
 import com.cw.audio7.db.DB_page;
+import com.cw.audio7.drawer.Drawer;
 import com.cw.audio7.main.MainAct;
-import com.cw.audio7.tabs.TabsHost;
 import com.cw.audio7.util.Util;
 import com.cw.audio7.util.audio.UtilAudio;
 import com.cw.audio7.util.preferences.Pref;
@@ -48,7 +48,6 @@ import java.util.Objects;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
-import static com.cw.audio7.main.MainAct.mDrawer;
 import static com.cw.audio7.main.MainAct.mFolderUi;
 
 public class Add_audio_all extends Fragment
@@ -58,6 +57,11 @@ public class Add_audio_all extends Fragment
     public View rootView;
     int PAGES_PER_FOLDER = 7;
     AppCompatActivity act;
+    Drawer drawer;
+
+    public Add_audio_all(Drawer _drawer) {
+        drawer = _drawer;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -161,7 +165,7 @@ public class Add_audio_all extends Fragment
                                     if ((pages_count % PAGES_PER_FOLDER) == 0) {
                                         folders_count = (pages_count / PAGES_PER_FOLDER) + 1 + existing_folders_count;
 
-                                        if (folders_count > mDrawer.getFolderCount())
+                                        if (folders_count > drawer.getFolderCount())
                                             addNewFolder(String.valueOf((pages_count / PAGES_PER_FOLDER) + 1));
                                     }
 
@@ -397,7 +401,7 @@ public class Add_audio_all extends Fragment
     {
         List<StorageUtils.StorageInfo> storageList = StorageUtils.getStorageList();
 
-        existing_folders_count = mDrawer.getFolderCount();
+        existing_folders_count = drawer.getFolderCount();
         folders_count = 0;
         pages_count = 0;
         isDoing = true;

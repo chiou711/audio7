@@ -274,10 +274,10 @@ public class Note_adapter extends FragmentStatePagerAdapter implements View.OnCl
 				if(audioPanel != null)
 					audioPanel.setVisibility(View.VISIBLE);
 
-				mFolderUi.tabsHost.audio7Player.setAudioPanel(audioUi_note.audioPanel);
-				mFolderUi.tabsHost.audio7Player.initAudioBlock(NoteAct.mAudioUriInDB);
-				mFolderUi.tabsHost.audio7Player.updateAudioPanel(act);
-				mFolderUi.tabsHost.audio7Player.updateAudioProgress();
+				audio_manager.audio7Player.setAudioPanel(audioUi_note.audioPanel);
+				audio_manager.audio7Player.initAudioBlock(NoteAct.mAudioUriInDB);
+				audio_manager.audio7Player.updateAudioPanel(act);
+				audio_manager.audio7Player.updateAudioProgress();
 
 			} else { // first audio play
 				/** Entry: Note play */

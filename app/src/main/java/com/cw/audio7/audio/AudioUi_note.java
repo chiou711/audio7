@@ -38,8 +38,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
 import static com.cw.audio7.main.MainAct.audio_manager;
-import static com.cw.audio7.main.MainAct.mAudioHandler;
-import static com.cw.audio7.main.MainAct.audio_runnable;
 import static com.cw.audio7.main.MainAct.mFolderUi;
 
 /**
@@ -123,9 +121,9 @@ public class AudioUi_note
                     // use this flag to determine new play or not in note
                     BackgroundAudioService.mIsPrepared = false;
 
-                    if( (mFolderUi.tabsHost.audio7Player != null) &&
-                        (mAudioHandler != null) )
-                        mAudioHandler.removeCallbacks(audio_runnable);
+                    if( (audio_manager.audio7Player != null) &&
+                        (audio_manager.audioHandler != null) )
+                        audio_manager.audioHandler.removeCallbacks(audio_manager.audio_runnable);
                 }
 
                 /** Entry: Note play */
@@ -139,7 +137,7 @@ public class AudioUi_note
             @Override
             public void onStopTrackingTouch(SeekBar seekBar)
             {
-                mediaFileLength = mFolderUi.tabsHost.audio7Player.getMediaFileLength();
+                mediaFileLength = audio_manager.audio7Player.getMediaFileLength();
                 System.out.println("AudioUi_note / audio_seek_bar / _setOnSeekBarChangeListener / mediaFileLength = "+
                         mediaFileLength);
                 if( BackgroundAudioService.mMediaPlayer != null  )
@@ -268,11 +266,17 @@ public class AudioUi_note
             MainAct.mPlaying_pageTableId = mFolderUi.tabsHost.getCurrentPageTableId();
 
             // new instance
-            mFolderUi.tabsHost.audio7Player = new Audio7Player(act, audioPanel, audioUriStr);
-            mFolderUi.tabsHost.audio7Player.setAudioPanel(audioPanel);
+            if(audio_manager.audio7Player == null)
+                audio_manager.audio7Player = new Audio7Player(act, audioPanel, audioUriStr);
+            else {
+                audio_manager.audio7Player.setAudioPanel(audioPanel);
+                audio_manager.audio7Player.initAudioBlock(audioUriStr);
+            }
+
+            audio_manager.audio7Player.setAudioPanel(audioPanel);
 
             audio_manager.setupAudioList(act);
-            mFolderUi.tabsHost.audio7Player.runAudioState();
+            audio_manager.audio7Player.runAudioState();
         }
     }
 

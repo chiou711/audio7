@@ -526,15 +526,21 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
                 String audioUriStr = db_page.getNoteAudioUri(position,true);
                 audio_manager.mAudioUri = audioUriStr;
 
-                mFolderUi.tabsHost.audio7Player = new Audio7Player(act,panelView,audioUriStr);
-                audioUi_page = new AudioUi_page(act, mFolderUi.tabsHost.audio7Player,panelView,audioUriStr);
+                if(audio_manager.audio7Player == null)
+                    audio_manager.audio7Player = new Audio7Player(act,panelView,audioUriStr);
+                else {
+                    audio_manager.audio7Player.setAudioPanel(panelView);
+                    audio_manager.audio7Player.initAudioBlock(audioUriStr);
+                }
 
-                mFolderUi.tabsHost.audio7Player.runAudioState();
+                audioUi_page = new AudioUi_page(act, audio_manager.audio7Player,panelView,audioUriStr);
+
+                audio_manager.audio7Player.runAudioState();
 
                 mFolderUi.tabsHost.showPlayingTab();
 
                 // scroll
-                mFolderUi.tabsHost.audio7Player.scrollPlayingItemToBeVisible(mFolderUi.tabsHost.getCurrentPage().recyclerView);
+                audio_manager.audio7Player.scrollPlayingItemToBeVisible(mFolderUi.tabsHost.getCurrentPage().recyclerView);
                 audio_manager.doScroll = true; // add for page bottom items
             }
         });

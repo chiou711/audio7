@@ -45,6 +45,7 @@ import com.cw.audio7.audio.Audio7Player;
 import com.cw.audio7.db.DB_folder;
 import com.cw.audio7.db.DB_page;
 
+import com.cw.audio7.drawer.Drawer;
 import com.cw.audio7.main.MainAct;
 import com.cw.audio7.audio.AudioUi_page;
 import com.cw.audio7.audio.BackgroundAudioService;
@@ -66,9 +67,6 @@ import com.google.android.material.tabs.TabLayout;
 import java.util.ArrayList;
 
 import static com.cw.audio7.main.MainAct.audio_manager;
-import static com.cw.audio7.main.MainAct.audio_runnable;
-import static com.cw.audio7.main.MainAct.mAudioHandler;
-import static com.cw.audio7.main.MainAct.mDrawer;
 import static com.cw.audio7.main.MainAct.mFolderUi;
 
 public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTabSelectedListener
@@ -85,6 +83,7 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
     public AudioUi_page audioUi_page;
     public static boolean isDoingMarking;
     AppCompatActivity act;
+    Drawer drawer;
 
     //if(Define.ENABLE_ADMOB), enable the following
     //private AdView adView;
@@ -94,8 +93,9 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
 //        System.out.println("TabsHost / construct");
     }
 
-    public TabsHost(AppCompatActivity _act) {
+    public TabsHost(AppCompatActivity _act, Drawer _drawer) {
         act =_act;
+        drawer = _drawer;
     }
 
     int pagesCount;
@@ -149,8 +149,8 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
             mTabsPagerAdapter = new TabsPagerAdapter(act, act.getSupportFragmentManager());
 
         // add pages to mTabsPagerAdapter
-        if ( (mDrawer!=null) &&
-             mDrawer.getFolderCount() > 0)  {
+        if ( (drawer!=null) &&
+             drawer.getFolderCount() > 0)  {
             pageCount = addPages(mTabsPagerAdapter);
         }
 
@@ -341,7 +341,7 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
         isDoingMarking = false;
     }
 
-    public Audio7Player audio7Player;
+//    public Audio7Player audio7Player;
     @Override
     public void onResume() {
         super.onResume();
@@ -351,7 +351,7 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
         // default
         setFocus_tabPos(0);
 
-        if(mDrawer.getFolderCount() == 0)
+        if(drawer!=null && drawer.getFolderCount() == 0)
             return;//todo Check again
 
         int pageCount = 0;
@@ -388,8 +388,8 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
          * */
         if( (audio_manager.getAudioPlayMode() == audio_manager.PAGE_PLAY_MODE) &&
             (audio_manager.getPlayerState() != audio_manager.PLAYER_AT_STOP)               ) {
-            if(audio7Player!=null)
-                audio7Player.updateAudioPanel(act);
+            if(audio_manager.audio7Player!=null)
+                audio_manager.audio7Player.updateAudioPanel(act);
         }
 
 //        if(Define.ENABLE_ADMOB) {
@@ -405,16 +405,23 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
              MainAct.mPlaying_folderPos == mFolderUi.getFocus_folderPos())
         {
             audio_manager.kill_runnable = true;
-            audio7Player = new Audio7Player(act,audio_panel, audio_manager.mAudioUri);
-            audioUi_page = new AudioUi_page(act, audio7Player,  audio_panel,audio_manager.mAudioUri);
+
+            if(audio_manager.audio7Player == null)
+                audio_manager.audio7Player = new Audio7Player(act,audio_panel, audio_manager.mAudioUri);
+            else {
+                audio_manager.audio7Player.setAudioPanel(audio_panel);
+                audio_manager.audio7Player.initAudioBlock(audio_manager.mAudioUri);
+            }
+
+            audioUi_page = new AudioUi_page(act, audio_manager.audio7Player,  audio_panel, audio_manager.mAudioUri);
 
             if(audio_panel != null)
                 audio_panel.setVisibility(View.VISIBLE);
 
-            audio7Player.updateAudioPanel(act);
-            audio7Player.updateAudioProgress();
+            audio_manager.audio7Player.updateAudioPanel(act);
+            audio_manager.audio7Player.updateAudioProgress();
 
-            mAudioHandler.postDelayed(audio_runnable,Util.oneSecond*2);
+            audio_manager.audioHandler.postDelayed(audio_manager.audio_runnable,Util.oneSecond*2);
 
             showPlayingTab();
         }
@@ -827,7 +834,7 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
 
     public void stopAudioPlayer() {
         audio_manager.stopAudioPlayer(act);
-        mFolderUi.tabsHost.audio7Player.showAudioPanel(act, false);
+        audio_manager.audio7Player.showAudioPanel(act, false);
     }
 
 }

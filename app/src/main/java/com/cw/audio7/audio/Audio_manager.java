@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 CW Chiu
+ * Copyright (C) 2021 CW Chiu
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,20 +16,25 @@
 
 package com.cw.audio7.audio;
 
+import android.os.Build;
+import android.os.Handler;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import java.util.ArrayList;
 import java.util.List;
 
+import com.cw.audio7.R;
 import com.cw.audio7.db.DB_page;
 import com.cw.audio7.main.MainAct;
 import com.cw.audio7.util.Util;
+import com.cw.audio7.util.audio.UtilAudio;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationManagerCompat;
 
 import static com.cw.audio7.define.Define.ENABLE_MEDIA_CONTROLLER;
-import static com.cw.audio7.main.MainAct.audio_manager;
 import static com.cw.audio7.main.MainAct.mFolderUi;
-import static com.cw.audio7.main.MainAct.removeRunnable;
 
 public class Audio_manager
 {
@@ -55,10 +60,148 @@ public class Audio_manager
 	public  boolean kill_runnable = false;
 	AppCompatActivity act;
 	public boolean doScroll;
+	public Audio7Player audio7Player;
+	public Runnable audio_runnable;
+	public Handler audioHandler;
 
 
 	public Audio_manager(AppCompatActivity _act) {
 		act = _act;
+
+		// start a new handler
+		audioHandler = new Handler();
+
+		/**
+		 * Continue mode runnable
+		 */
+		audio_runnable = new Runnable() {
+			@Override
+			public void run() {
+//				System.out.println("Audio_manager / _audio_runnable");
+
+				if(kill_runnable) {
+//					System.out.println("------------ Audio_manager / _audio_runnable / kill runnable = true");
+					removeRunnable();
+				}
+
+				if (getCheckedAudio(mAudioPos) == 1) {
+
+					// for incoming call case and after Key protection
+					if (  (getAudioPlayMode() == PAGE_PLAY_MODE) &&
+							audio7Player.isAudioPanelOn(act) ) {
+						audio7Player.showAudioPanel(act, true);
+					}
+
+					/** update audio progress */
+					audio7Player.updateAudioProgress();
+
+					if(ENABLE_MEDIA_CONTROLLER && Build.VERSION.SDK_INT >= 21)
+						BackgroundAudioService.setSeekerBarProgress(BackgroundAudioService.mMediaPlayer);
+
+					// check if audio file exists or not
+					audio7Player.audioUrl = getAudioStringAt(mAudioPos);
+
+					if (!Async_audioUrlVerify.mIsOkUrl) {
+						audio7Player.audio_tryTimes++;
+						audio7Player.tryPlay_nextAudio();
+						return;
+					} else {
+						if (BackgroundAudioService.mIsPrepared) {
+							//						System.out.println("Audio_manager / _audio_runnable /  BackgroundAudioService.mIsPrepared");
+
+							// set media file length
+							if (!Util.isEmptyString(audio7Player.audioUrl)) {
+								TextView audioPanel_file_length = (TextView) act.findViewById(R.id.audioPanel_file_length);
+								if (audioPanel_file_length != null)
+									audioPanel_file_length.setText(UtilAudio.getAudioLengthString(act, audio7Player.audioUrl));
+							}
+							BackgroundAudioService.mIsPrepared = false;
+						}
+
+						if (BackgroundAudioService.mIsCompleted) {
+							System.out.println("Audio_manager / _audio_runnable /  BackgroundAudioService.mIsCompleted");
+							setPlayNext(true);
+							BackgroundAudioService.mIsCompleted = false;
+						}
+					}
+
+					if (audio7Player.audio_tryTimes < getAudioFilesCount()) {
+						if( isPlayPrevious() ||
+								isPlayNext()               )
+						{
+							if(audioHandler != null)
+								audioHandler.removeCallbacks(audio_runnable);
+							audioHandler = null;
+
+							// play previous
+							if (isPlayPrevious()) {
+								System.out.println("Audio_manager / _audio_runnable /  isPlayPrevious");
+								audio7Player.audio_previous_btn.performClick();
+								setPlayPrevious(false);
+							}
+
+							// play next
+							if (isPlayNext() ) {
+								System.out.println("Audio_manager / _audio_runnable /  isPlayNext");
+								audio7Player.audio_next_btn.performClick();
+								setPlayNext(false);
+							}
+						} else {
+							// toggle play / pause
+							if(isTogglePlayerState()) {
+
+								/** update audio panel when media controller */
+								audio7Player.updateAudioPanel(act);
+
+								// for page audio gif play/pause
+								if( (mFolderUi.tabsHost != null) &&
+										(mFolderUi.tabsHost.getCurrentPage().itemAdapter != null) &&
+										(getAudioPlayMode() == PAGE_PLAY_MODE) ) {
+									mFolderUi.tabsHost.getCurrentPage().itemAdapter.notifyDataSetChanged();
+								}
+
+								setTogglePlayerState(false);
+							}
+
+							if (audio7Player.audio_tryTimes == 0) {
+								audioHandler.postDelayed(audio_runnable, audio7Player.DURATION_1S);
+							} else
+								audioHandler.postDelayed(audio_runnable, audio7Player.DURATION_1S / 10);
+						}
+					}
+
+					// do Scroll for changing Note play to Page play
+					if( doScroll && willDoScroll())
+						audio7Player.scrollPlayingItemToBeVisible(mFolderUi.tabsHost.getCurrentPage().recyclerView);
+
+				}
+				else if( (getCheckedAudio(mAudioPos) == 0 ) )// for non-audio item
+				{
+					//	   			System.out.println("Audio_manager / audio_runnable / for non-audio item");
+
+					if(getAudioPlayMode() == NOTE_PLAY_MODE) {
+						stopAudioPlayer(act);
+
+						// case 1: play next
+						//					audio_next_btn.performClick();
+
+						// case 2: show unchecked
+						Toast.makeText(act,R.string.is_an_unchecked_item,Toast.LENGTH_SHORT).show();
+						audio7Player.updateAudioPanel(act);
+						audio7Player.updateAudioProgress();
+					}
+
+					if (getAudioPlayMode() == PAGE_PLAY_MODE) {
+						audio7Player.tryPlay_nextAudio();
+
+						if(isOnAudioPlayingPage()) {
+							audio7Player.scrollPlayingItemToBeVisible(mFolderUi.tabsHost.getCurrentPage().recyclerView);
+							mFolderUi.tabsHost.getCurrentPage().itemAdapter.notifyDataSetChanged();
+						}
+					}
+				}
+			}
+		};
 	}
 
 	// get play previous
@@ -246,7 +389,7 @@ public class Audio_manager
 		if(showDbgMsg)
 			System.out.println( prefix + "isSameTabPos = " + isSameTabPos);
 
-		boolean isPlayOrPause = (audio_manager.getPlayerState() != audio_manager.PLAYER_AT_STOP);
+		boolean isPlayOrPause = (getPlayerState() != PLAYER_AT_STOP);
 		if(showDbgMsg)
 			System.out.println( prefix + "isPlayOrPause = " +isPlayOrPause);
 
@@ -272,11 +415,18 @@ public class Audio_manager
 	public boolean willDoScroll() {
 		return
 		(mFolderUi.tabsHost != null) &&
-	    (audio_manager.getPlayerState() != audio_manager.PLAYER_AT_STOP) &&
+	    (getPlayerState() != PLAYER_AT_STOP) &&
 	    (MainAct.mPlaying_folderPos == mFolderUi.getFocus_folderPos()) &&
 	    (mFolderUi.tabsHost.getFocus_tabPos() == MainAct.mPlaying_pagePos)     &&
 	    (MainAct.mPlaying_pageTableId == mFolderUi.tabsHost.getCurrentPageTableId()) ;
-
     }
+
+	// remove runnable for update audio playing
+	public void removeRunnable() {
+		if (audioHandler != null && audio_runnable != null) {
+			audioHandler.removeCallbacks(audio_runnable);
+			kill_runnable = false;
+		}
+	}
 	
 }

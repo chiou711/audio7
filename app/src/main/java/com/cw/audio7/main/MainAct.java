@@ -54,7 +54,6 @@ import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.Build;
-import android.os.Handler;
 import android.os.RemoteException;
 import android.os.StrictMode;
 import android.content.Context;
@@ -99,10 +98,8 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
     public static MediaBrowserCompat mMediaBrowserCompat;
     public static MediaControllerCompat mMediaControllerCompat;
 
-    public static Drawer mDrawer;
+    public Drawer drawer;
     public static FolderUi mFolderUi;
-    public static Handler mAudioHandler;
-    public static Runnable audio_runnable;
     public static Audio_manager audio_manager;
 
 	// Main Act onCreate
@@ -363,7 +360,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                     break;
 
                 case Util.PERMISSIONS_REQUEST_STORAGE_ADD_NEW:
-                    Add_note_option add_note_option = new Add_note_option(this, menu);
+                    Add_note_option add_note_option = new Add_note_option(this, menu, drawer);
                     add_note_option.createSelection(this,true);
                     break;
 
@@ -380,7 +377,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
         {
             switch (requestCode) {
                 case Util.PERMISSIONS_REQUEST_STORAGE_ADD_NEW:
-                    Add_note_option add_note_option = new Add_note_option(this, menu);
+                    Add_note_option add_note_option = new Add_note_option(this, menu, drawer);
                     add_note_option.createSelection(this, false);
                     break;
 
@@ -416,14 +413,14 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
         if (toolbar != null) {
             setSupportActionBar(toolbar);
             toolbar.setNavigationIcon(R.drawable.ic_drawer);
-            toolbar.setNavigationOnClickListener(v -> mDrawer.drawerLayout.openDrawer(GravityCompat.START));
+            toolbar.setNavigationOnClickListener(v -> drawer.drawerLayout.openDrawer(GravityCompat.START));
         }
     }
 
     // set action bar for fragment
     void initActionBar_home()
     {
-        mDrawer.drawerToggle.setDrawerIndicatorEnabled(false);
+        drawer.drawerToggle.setDrawerIndicatorEnabled(false);
 
         if(getSupportActionBar() != null) {
             getSupportActionBar().setTitle(R.string.app_name);
@@ -505,8 +502,8 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
             if(bEULA_accepted)
                 configLayoutView(); //createAssetsFile inside
 
-            if(mDrawer != null)
-                mDrawer.drawerToggle.syncState();
+            if(drawer != null)
+                drawer.drawerToggle.syncState();
         }
     }
 
@@ -519,7 +516,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
 
             Objects.requireNonNull(getSupportActionBar()).hide();
 
-            Add_audio_all add_audio_all = new Add_audio_all();
+            Add_audio_all add_audio_all = new Add_audio_all(drawer);
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.setCustomAnimations(R.anim.fragment_slide_in_left, R.anim.fragment_slide_out_left, R.anim.fragment_slide_in_right, R.anim.fragment_slide_out_right);
             transaction.add(R.id.content_frame, add_audio_all, "add_audio").addToBackStack(null).commit();
@@ -634,9 +631,9 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
         configLayoutView();
 
         // Pass any configuration change to the drawer toggles
-        mDrawer.drawerToggle.onConfigurationChanged(newConfig);
+        drawer.drawerToggle.onConfigurationChanged(newConfig);
 
-		mDrawer.drawerToggle.syncState();
+		drawer.drawerToggle.syncState();
     }
 
 
@@ -675,8 +672,8 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
         }
         else
         {
-            if((mDrawer != null) && mDrawer.isDrawerOpen())
-                mDrawer.closeDrawer();
+            if((drawer != null) && drawer.isDrawerOpen())
+                drawer.closeDrawer();
             else
                 super.onBackPressed();
         }
@@ -704,7 +701,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
 
             configLayoutView();
 
-            mDrawer.drawerToggle.syncState(); // make sure toggle icon state is correct
+            drawer.drawerToggle.syncState(); // make sure toggle icon state is correct
         }
     }
 
@@ -739,8 +736,8 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
     public boolean onPrepareOptionsMenu(android.view.Menu menu) {
         System.out.println("MainAct / _onPrepareOptionsMenu");
 
-        if( (mDrawer == null) ||
-            (mDrawer.drawerLayout == null) ||
+        if( (drawer == null) ||
+            (drawer.drawerLayout == null) ||
             (!bEULA_accepted) ||
             (fragmentManager.getBackStackEntryCount() != 0) ) {
             return false;
@@ -753,15 +750,15 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
          * Folder group
          */
         // If the navigation drawer is open, hide action items related to the content view
-        if(mDrawer.isDrawerOpen())
+        if(drawer.isDrawerOpen())
         {
             // for landscape: the layout file contains folder menu
             if(Util.isLandscapeOrientation(this)) {
                 this.menu.setGroupVisible(R.id.group_folders, true);
                 // set icon for folder draggable: landscape
-                if(mDrawer.mPref_show_note_attribute != null)
+                if(drawer.mPref_show_note_attribute != null)
                 {
-                    if (Objects.requireNonNull(mDrawer.mPref_show_note_attribute.getString("KEY_ENABLE_FOLDER_DRAGGABLE", "no"))
+                    if (Objects.requireNonNull(drawer.mPref_show_note_attribute.getString("KEY_ENABLE_FOLDER_DRAGGABLE", "no"))
                             .equalsIgnoreCase("yes")) {
                         this.menu.findItem(R.id.ENABLE_FOLDER_DRAG_AND_DROP).setIcon(R.drawable.btn_check_on_holo_light);
                     } else
@@ -776,7 +773,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
             this.menu.findItem(R.id.HANDLE_CHECKED_NOTES).setVisible(false);
             this.menu.setGroupVisible(R.id.group_pages_and_more, false);
         }
-        else if(!mDrawer.isDrawerOpen())
+        else if(!drawer.isDrawerOpen())
         {
             if(Util.isLandscapeOrientation(this))
                 this.menu.setGroupVisible(R.id.group_folders, false);
@@ -872,7 +869,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
         getMenuInflater().inflate(R.menu.main_menu, menu);
 
         playOrStopMusicButton = menu.findItem(R.id.PLAY_OR_STOP_MUSIC);
-        mDrawer.mPref_show_note_attribute = getSharedPreferences("show_note_attribute", 0);
+        drawer.mPref_show_note_attribute = getSharedPreferences("show_note_attribute", 0);
 
         // show cyclic play setting
         if(Pref.getPref_cyclic_play_enable(this))
@@ -982,7 +979,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
 
                     mFolderUi.mFolderTitle = dB_drawer.getFolderTitle(mFolderUi.getFocus_folderPos(),true);
                     setTitle(mFolderUi.mFolderTitle);
-                    mDrawer.closeDrawer();
+                    drawer.closeDrawer();
                 }
                 return true;
             }
@@ -991,7 +988,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
 
         // The action bar home/up action should open or close the drawer.
         // ActionBarDrawerToggle will take care of this.
-        if (mDrawer.drawerToggle.onOptionsItemSelected(item))
+        if (drawer.drawerToggle.onOptionsItemSelected(item))
         {
             System.out.println("MainAct / _onOptionsItemSelected / drawerToggle.onOptionsItemSelected(item) == true ");
             return true;
@@ -1005,10 +1002,10 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                 return true;
 
             case MenuId.ENABLE_FOLDER_DRAG_AND_DROP:
-                if(Objects.requireNonNull(mDrawer.mPref_show_note_attribute.getString("KEY_ENABLE_FOLDER_DRAGGABLE", "no"))
+                if(Objects.requireNonNull(drawer.mPref_show_note_attribute.getString("KEY_ENABLE_FOLDER_DRAGGABLE", "no"))
                         .equalsIgnoreCase("yes"))
                 {
-                    mDrawer.mPref_show_note_attribute.edit().putString("KEY_ENABLE_FOLDER_DRAGGABLE","no")
+                    drawer.mPref_show_note_attribute.edit().putString("KEY_ENABLE_FOLDER_DRAGGABLE","no")
                             .apply();
                     DragSortListView listView = this.findViewById(R.id.drawer_listview);
                     listView.setDragEnabled(false);
@@ -1019,7 +1016,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                 }
                 else
                 {
-                    mDrawer.mPref_show_note_attribute.edit().putString("KEY_ENABLE_FOLDER_DRAGGABLE","yes")
+                    drawer.mPref_show_note_attribute.edit().putString("KEY_ENABLE_FOLDER_DRAGGABLE","yes")
                             .apply();
                     DragSortListView listView = this.findViewById(R.id.drawer_listview);
                     listView.setDragEnabled(true);
@@ -1037,7 +1034,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
 
                 if(dB_drawer.getFoldersCount(true)>0)
                 {
-                    mDrawer.closeDrawer();
+                    drawer.closeDrawer();
                     menu.setGroupVisible(R.id.group_notes, false); //hide the menu
                     DeleteFolders delFoldersFragment = new DeleteFolders();
                     mFragmentTransaction = fragmentManager.beginTransaction();
@@ -1054,7 +1051,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                 if( (Build.VERSION.SDK_INT < M /*API23*/) ||
                       !Util.request_permission_WRITE_EXTERNAL_STORAGE(this,
                                 Util.PERMISSIONS_REQUEST_STORAGE_ADD_NEW) ) {
-                    Add_note_option add_note_option = new Add_note_option(this, menu);
+                    Add_note_option add_note_option = new Add_note_option(this, menu, drawer);
                     add_note_option.createSelection(this, true);
                 }
                 return true;
@@ -1082,8 +1079,8 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                 {
                     audio_manager.stopAudioPlayer(this);
 
-                    if(mFolderUi.tabsHost.audio7Player != null)
-                        mFolderUi.tabsHost.audio7Player.showAudioPanel(this, false);
+                    if(audio_manager.audio7Player != null)
+                        audio_manager.audio7Player.showAudioPanel(this, false);
 
                     // refresh
                     mFolderUi.tabsHost.reloadCurrentPage();
@@ -1324,10 +1321,16 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
         audio_manager.mAudioUri = audioUriStr;
 
         View panelView = mFolderUi.tabsHost.audio_panel;
-        mFolderUi.tabsHost.audio7Player = new Audio7Player(this,panelView,audioUriStr);
-        mFolderUi.tabsHost.audioUi_page = new AudioUi_page(this, mFolderUi.tabsHost.audio7Player,panelView,audioUriStr);
+        if(audio_manager.audio7Player == null)
+            audio_manager.audio7Player = new Audio7Player(this,panelView,audioUriStr);
+        else {
+            audio_manager.audio7Player.setAudioPanel(panelView);
+            audio_manager.audio7Player.initAudioBlock(audioUriStr);
+        }
 
-        mFolderUi.tabsHost.audio7Player.runAudioState();
+        mFolderUi.tabsHost.audioUi_page = new AudioUi_page(this, audio_manager.audio7Player,panelView,audioUriStr);
+
+        audio_manager.audio7Player.runAudioState();
 
         mFolderUi.tabsHost.showPlayingTab();
 
@@ -1358,11 +1361,11 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
         initActionBar();
 
         // new drawer
-        mDrawer = new Drawer(this, toolbar);
-        mDrawer.initDrawer();
+        drawer = new Drawer(this, toolbar);
+        drawer.initDrawer();
 
         // new folder
-        mFolderUi = new FolderUi(this);
+        mFolderUi = new FolderUi(this, drawer);
 
         mFolderUi.openFolder();
     }
@@ -1396,13 +1399,5 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
 //            System.out.println("MainAct / _MediaControllerCompat.Callback / _onPlaybackStateChanged / state = " + state);
         }
     };
-
-    // remove runnable for update audio playing
-    public static void removeRunnable() {
-        if (mAudioHandler != null)
-            mAudioHandler.removeCallbacks(audio_runnable);
-
-        audio_manager.kill_runnable = false;
-    }
 
 }

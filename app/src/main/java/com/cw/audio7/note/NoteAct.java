@@ -124,7 +124,7 @@ public class NoteAct extends AppCompatActivity
 		// force stop audio whenever user touch new thumb nail at page mode
 		if(audio_manager.mAudioPos != mEntryPosition) {
 			audio_manager.stopAudioPlayer(act);
-			mFolderUi.tabsHost.audio7Player = null;
+			audio_manager.audio7Player = null;
 		}
 
 		// add on back stack changed listener
@@ -415,9 +415,9 @@ public class NoteAct extends AppCompatActivity
 		        else {
 			        mMenu.findItem(R.id.VIEW_NOTE_CHECK).setIcon(R.drawable.btn_check_off_holo_dark);
 			        stopNoteAudio();
-			        mFolderUi.tabsHost.audio7Player.setAudioPanel(audioUi_note.audioPanel);
-			        mFolderUi.tabsHost.audio7Player.initAudioBlock(mAudioUriInDB);
-			        mFolderUi.tabsHost.audio7Player.updateAudioPanel(act);
+			        audio_manager.audio7Player.setAudioPanel(audioUi_note.audioPanel);
+			        audio_manager.audio7Player.initAudioBlock(mAudioUriInDB);
+			        audio_manager.audio7Player.updateAudioPanel(act);
 		        }
 		        return true;
 
