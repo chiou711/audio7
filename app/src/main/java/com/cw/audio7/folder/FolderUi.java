@@ -43,6 +43,7 @@ import com.cw.audio7.tabs.TabsHost;
 import com.cw.audio7.util.TouchableEditText;
 import com.cw.audio7.util.Util;
 import com.cw.audio7.util.preferences.Pref;
+import com.cw.audio7.util.system.SystemState;
 import com.mobeta.android.dslv.DragSortListView;
 import com.mobeta.android.dslv.SimpleDragSortCursorAdapter;
 
@@ -535,14 +536,8 @@ public class FolderUi extends Folder
 	        act.invalidateOptionsMenu();
 
 	        // use Runnable to make sure only one folder background is seen
-	        PowerManager pm = (PowerManager) act.getSystemService(Context.POWER_SERVICE);
-	        boolean isScreenOn = Objects.requireNonNull(pm).isScreenOn();
-	        if( isScreenOn) {
-//		        System.out.println("FolderUi / _selectFolder / screen ON");
+	        if(SystemState.isScreenOn(act))
 		        startTabsHostRun();
-	        }
-//	        else
-//		        System.out.println("FolderUi / _selectFolder / screen OFF");
 
         }
     }

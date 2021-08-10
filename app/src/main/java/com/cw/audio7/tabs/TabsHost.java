@@ -62,6 +62,7 @@ import com.cw.audio7.util.preferences.Pref;
 //import com.google.android.gms.ads.initialization.InitializationStatus;
 //import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 
+import com.cw.audio7.util.system.SystemState;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
@@ -467,6 +468,13 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
    public void showPlayingTab() {
 //       System.out.println("TabsHost / _showPlayingTab" );
         // set audio icon after Key Protect
+
+       // return if screen off
+       if(SystemState.isScreenOff(act)) {
+           System.out.println("TabsHost / _showPlayingTab / return");
+           return;
+       }
+
        TabLayout.Tab tab =  mTabLayout.getTabAt(MainAct.mPlaying_pagePos);
 
         if(tab != null) {

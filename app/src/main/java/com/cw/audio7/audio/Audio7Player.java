@@ -37,6 +37,7 @@ import com.cw.audio7.main.MainAct;
 import com.cw.audio7.util.ColorSet;
 import com.cw.audio7.util.Util;
 import com.cw.audio7.util.audio.UtilAudio;
+import com.cw.audio7.util.system.SystemState;
 
 import java.util.Locale;
 import java.util.Objects;
@@ -201,6 +202,11 @@ public class Audio7Player
 	public void scrollPlayingItemToBeVisible(RecyclerView recyclerView)
 	{
 		System.out.println("Audio7Player / _scrollPlayingItemToBeVisible");
+
+		// return if screen off
+		if(SystemState.isScreenOff(act))
+			return;
+
         if ( (recyclerView == null) ||
 		     (recyclerView.getAdapter() == null) ||
 		     (Build.VERSION.SDK_INT < 19)            )
@@ -476,13 +482,9 @@ public class Audio7Player
 	{
 		int currentPos=0;
 
-		// return if not screen on
-		PowerManager pm = (PowerManager) act.getSystemService(Context.POWER_SERVICE);
-		boolean isScreenOn = Objects.requireNonNull(pm).isScreenOn();
-		if( !isScreenOn) {
-			System.out.println("Audio7Player / _updateAudioProgress / return");
+		// return if screen off
+		if(SystemState.isScreenOff(act))
 			return;
-		}
 
 		if(BackgroundAudioService.mMediaPlayer != null)
 			currentPos = BackgroundAudioService.mMediaPlayer.getCurrentPosition();
@@ -688,6 +690,10 @@ public class Audio7Player
 	 * */
 	public void updateAudioPanel(AppCompatActivity act)
 	{
+		// return if screen off
+		if(SystemState.isScreenOff(act))
+			return;
+
 		// update playing state
 		if(audio_manager.getPlayerState() == audio_manager.PLAYER_AT_PLAY)
 		{
