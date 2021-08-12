@@ -264,8 +264,8 @@ public class Note_adapter extends FragmentStatePagerAdapter implements View.OnCl
 			else
 				audioPanel.setVisibility(View.GONE);
 
-			// continue playing or auto play
-			if(audio_manager.getPlayerState() == audio_manager.PLAYER_AT_PLAY) {
+			// continue playing/pausing or auto play
+			if(audio_manager.getPlayerState() != audio_manager.PLAYER_AT_STOP) {
 				// continue playing
 				System.out.println("Note_adapter / _setPrimaryItem / continue playing ");
 
