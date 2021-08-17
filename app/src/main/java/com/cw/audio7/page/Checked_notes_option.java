@@ -32,9 +32,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cw.audio7.R;
-import com.cw.audio7.audio.Audio7Player;
 import com.cw.audio7.db.DB_folder;
 import com.cw.audio7.db.DB_page;
+import com.cw.audio7.drawer.Drawer;
+import com.cw.audio7.folder.Folder;
+import com.cw.audio7.tabs.TabsHost;
 import com.cw.audio7.util.Util;
 import com.cw.audio7.util.audio.UtilAudio;
 import com.cw.audio7.util.preferences.Pref;
@@ -45,7 +47,6 @@ import java.util.List;
 import androidx.appcompat.app.AppCompatActivity;
 
 import static com.cw.audio7.main.MainAct.audio_manager;
-import static com.cw.audio7.main.MainAct.mFolderUi;
 
 /**
  * Created by cw on 2017/11/4.
@@ -58,9 +59,13 @@ public class Checked_notes_option {
     private static int COPY_TO = 1;
     private DB_page mDb_page;
     private AppCompatActivity act;
+    Folder folder;
+    Drawer drawer;
 
-    public Checked_notes_option(AppCompatActivity act){
-        mDb_page = new DB_page(act, mFolderUi.tabsHost.getCurrentPageTableId());
+    public Checked_notes_option(AppCompatActivity act, Drawer _drawer, Folder _folder) {
+        mDb_page = new DB_page(act, TabsHost.getCurrentPageTableId());
+        drawer = _drawer;
+        folder = _folder;
         this.act = act;
     }
 
@@ -269,15 +274,15 @@ public class Checked_notes_option {
         mDb_page.close();
 
         if(bStopAudio)
-            UtilAudio.stopAudioIfNeeded(act);
+            UtilAudio.stopAudioIfNeeded(folder.tabsHost);
 
         // update audio play list
         if(audio_manager.isOnAudioPlayingPage())
             audio_manager.setupAudioList(act);
 
-        mFolderUi.tabsHost.reloadCurrentPage();
+        folder.tabsHost.reloadCurrentPage();
 
-        mFolderUi.tabsHost.showFooter(act);
+        folder.tabsHost.showFooter(act);
     }
 
     /**
@@ -303,14 +308,14 @@ public class Checked_notes_option {
         mDb_page.close();
 
         if(bStopAudio)
-            UtilAudio.stopAudioIfNeeded(act);
+            UtilAudio.stopAudioIfNeeded(folder.tabsHost);
 
         // update audio play list
         if(audio_manager.isOnAudioPlayingPage())
             audio_manager.setupAudioList(act);
 
-        mFolderUi.tabsHost.reloadCurrentPage();
-        mFolderUi.tabsHost.showFooter(act);
+        folder.tabsHost.reloadCurrentPage();
+        folder.tabsHost.showFooter(act);
     }
 
 
@@ -336,7 +341,7 @@ public class Checked_notes_option {
         db_folder.close();
 
         // add * mark to current page
-        pageNames[mFolderUi.tabsHost.getFocus_tabPos()] = pageNames[mFolderUi.tabsHost.getFocus_tabPos()] + " *";
+        pageNames[TabsHost.getFocus_tabPos()] = pageNames[TabsHost.getFocus_tabPos()] + " *";
 
         AlertDialog.Builder builder = new AlertDialog.Builder(act);
         DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener()
@@ -371,20 +376,20 @@ public class Checked_notes_option {
                         {
                             mDb_page.deleteNote(mDb_page.getNoteId(i,false),false);
                             // update playing highlight
-                            UtilAudio.stopAudioIfNeeded(act);
+                            UtilAudio.stopAudioIfNeeded(folder.tabsHost);
                         }
                     }
                     mDb_page.close();
 
                     // reload folder
-                    mFolderUi.openFolder();
+                    folder.openFolder(drawer);
                 }
                 else if(action == COPY_TO)
                 {
                     DB_page.setFocusPage_tableId(srcPageTableId);
 
                     // reload folder
-                    mFolderUi.openFolder();
+                    folder.openFolder(drawer);
                 }
                 dialog.dismiss();
             }
@@ -448,10 +453,10 @@ public class Checked_notes_option {
 
                                 // Stop Play/Pause if current tab's item is played and is not at Stop state
                                 if(audio_manager.mAudioPos == Page.mHighlightPosition)
-                                    UtilAudio.stopAudioIfNeeded(act);
+                                    UtilAudio.stopAudioIfNeeded(folder.tabsHost);
 
-                                mFolderUi.tabsHost.reloadCurrentPage();
-                                mFolderUi.tabsHost.showFooter(act);
+                                folder.tabsHost.reloadCurrentPage();
+                                folder.tabsHost.showFooter(act);
                             }
                         });
 
@@ -461,7 +466,7 @@ public class Checked_notes_option {
 
     private boolean noItemChecked()
     {
-        DB_page mDb_page = new DB_page(act, mFolderUi.tabsHost.getCurrentPageTableId());
+        DB_page mDb_page = new DB_page(act, TabsHost.getCurrentPageTableId());
         int checkedItemCount = mDb_page.getCheckedNotesCount();
         return (checkedItemCount == 0);
     }

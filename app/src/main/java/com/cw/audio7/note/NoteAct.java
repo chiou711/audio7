@@ -42,6 +42,7 @@ import com.cw.audio7.db.DB_page;
 import com.cw.audio7.main.MenuId;
 import com.cw.audio7.note_edit.Note_edit;
 import com.cw.audio7.page.PageAdapter;
+import com.cw.audio7.tabs.TabsHost;
 import com.cw.audio7.util.Util;
 import com.cw.audio7.util.audio.UtilAudio;
 import com.cw.audio7.util.image.ImageCache;
@@ -58,7 +59,6 @@ import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import static com.cw.audio7.main.MainAct.audio_manager;
-import static com.cw.audio7.main.MainAct.mFolderUi;
 
 public class NoteAct extends AppCompatActivity
 {
@@ -106,24 +106,18 @@ public class NoteAct extends AppCompatActivity
 		toolbar.setPopupTheme(R.style.ThemeOverlay_AppCompat_Light);
 		setSupportActionBar(toolbar);
 
-//		ActionBar actionBar = getSupportActionBar();
-//		if (actionBar != null) {
-//			actionBar.setDisplayHomeAsUpEnabled(true);
-//			actionBar.setDisplayShowHomeEnabled(true);
-//		}
-
 		Bundle arguments = getIntent().getExtras();
 		mEntryPosition = arguments.getInt("POSITION");
 		NoteUi.setFocus_notePos(mEntryPosition);
 
-		DB_page db_page = new DB_page(this,mFolderUi.tabsHost.getCurrentPageTableId());
+		DB_page db_page = new DB_page(this, TabsHost.getCurrentPageTableId());
 		NoteUi.setNotesCnt(db_page.getNotesCount(true));
 
 		act = (AppCompatActivity) this;
 
 		// force stop audio whenever user touch new thumb nail at page mode
-		if(audio_manager.mAudioPos != mEntryPosition) {
-			audio_manager.stopAudioPlayer(act);
+		if((audio_manager!=null) && (audio_manager.mAudioPos != mEntryPosition)) {
+			audio_manager.stopAudioPlayer();
 			audio_manager.audio7Player = null;
 		}
 
@@ -206,9 +200,9 @@ public class NoteAct extends AppCompatActivity
 		// DB
 		DB_folder dbFolder = new DB_folder(act,Pref.getPref_focusView_folder_tableId(act));
 
-		if(mFolderUi.tabsHost != null) {
-			mStyle = dbFolder.getPageStyle(mFolderUi.tabsHost.getFocus_tabPos(), true);
-			mDb_page = new DB_page(act, mFolderUi.tabsHost.getCurrentPageTableId());
+		{
+			mStyle = dbFolder.getPageStyle(TabsHost.getFocus_tabPos(), true);
+			mDb_page = new DB_page(act, TabsHost.getCurrentPageTableId());
 
 			if (mDb_page != null) {
 				mNoteId = mDb_page.getNoteId(NoteUi.getFocus_notePos(), true);
@@ -245,7 +239,7 @@ public class NoteAct extends AppCompatActivity
 		{
 			if(audio_manager.getAudioPlayMode()  == audio_manager.NOTE_PLAY_MODE) {
 				System.out.println("NoteAct / onPageSelected / stop audio" );
-				audio_manager.stopAudioPlayer(act);
+				audio_manager.stopAudioPlayer();
 			}
 
 			NoteUi.setFocus_notePos(viewPager.getCurrentItem());
@@ -391,9 +385,6 @@ public class NoteAct extends AppCompatActivity
 		super.onDestroy();
 		System.out.println("NoteAct / _onDestroy");
 
-		if(mFolderUi.tabsHost == null)
-			System.out.println(">> NoteAct / _onDestroy / mFolderUi.tabsHost == null");
-
 		// for Image Cache
 		mImageFetcher.closeCache();
 	}
@@ -453,7 +444,7 @@ public class NoteAct extends AppCompatActivity
 	public void stopNoteAudio()
 	{
 		if(audio_manager.getAudioPlayMode() == audio_manager.NOTE_PLAY_MODE)
-            audio_manager.stopAudioPlayer(act);
+            audio_manager.stopAudioPlayer();
 	}
 
 	//The BroadcastReceiver that listens for bluetooth broadcasts
@@ -489,7 +480,7 @@ public class NoteAct extends AppCompatActivity
 					newPos = NoteUi.getFocus_notePos()-1;
 
 				NoteUi.setFocus_notePos(newPos);
-				audio_manager.stopAudioPlayer(act);
+				audio_manager.stopAudioPlayer();
 				viewPager.setCurrentItem(newPos);
 
 				BackgroundAudioService.mIsPrepared = false;
@@ -503,7 +494,7 @@ public class NoteAct extends AppCompatActivity
 					newPos = NoteUi.getFocus_notePos() + 1;
 
 				NoteUi.setFocus_notePos(newPos);
-				audio_manager.stopAudioPlayer(act);
+				audio_manager.stopAudioPlayer();
 				viewPager.setCurrentItem(newPos);
 
 				BackgroundAudioService.mIsPrepared = false;

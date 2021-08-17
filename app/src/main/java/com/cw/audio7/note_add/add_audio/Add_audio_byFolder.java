@@ -32,6 +32,8 @@ import android.widget.Toast;
 import com.cw.audio7.R;
 import com.cw.audio7.db.DB_folder;
 import com.cw.audio7.db.DB_page;
+import com.cw.audio7.folder.Folder;
+import com.cw.audio7.tabs.TabsHost;
 import com.cw.audio7.util.ColorSet;
 import com.cw.audio7.util.Util;
 import com.cw.audio7.util.audio.UtilAudio;
@@ -50,7 +52,6 @@ import java.util.Locale;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.ListFragment;
 
-import static com.cw.audio7.main.MainAct.mFolderUi;
 
 public class Add_audio_byFolder extends ListFragment
 {
@@ -59,12 +60,16 @@ public class Add_audio_byFolder extends ListFragment
     public View rootView;
     ListView listView;
     AppCompatActivity act;
+    TabsHost tabsHost;
+    Folder folder;
 
     public Add_audio_byFolder() {
     }
 
-    public Add_audio_byFolder(AppCompatActivity _act) {
+    public Add_audio_byFolder(AppCompatActivity _act, Folder _folder) {
         act =_act;
+        folder = _folder;
+        tabsHost = _folder.tabsHost;;
     }
 
     @Override
@@ -231,7 +236,7 @@ public class Add_audio_byFolder extends ListFragment
                 if( (dirCount ==0 ) && (filesCount>0) ) {
                     // get current Max page table Id
                     int currentMaxPageTableId = 0;
-                    int pagesCount = mFolderUi.getFolder_pagesCount(act, mFolderUi.getFocus_folderPos());
+                    int pagesCount = folder.getFolder_pagesCount(act, Folder.getFocus_folderPos());
                     DB_folder db_folder = new DB_folder(act, DB_folder.getFocusFolder_tableId());
 
                     for (int i = 0; i < pagesCount; i++) {
@@ -256,7 +261,7 @@ public class Add_audio_byFolder extends ListFragment
                     // commit: final page viewed
                     Pref.setPref_focusView_page_tableId(act, newPageTableId);
 
-                    mFolderUi.tabsHost.setCurrentPageTableId(newPageTableId);
+                    tabsHost.setCurrentPageTableId(newPageTableId);
 
                     //add directory audio links
                     addAudio_byDir(file.listFiles(),pageName);
@@ -430,7 +435,7 @@ public class Add_audio_byFolder extends ListFragment
                 if (!file.isDirectory() && UtilAudio.hasAudioExtension(file) ) {
                     String uriStr = "file://".concat(file.getPath());
 
-                    DB_page dB = new DB_page(getActivity(), mFolderUi.tabsHost.getCurrentPageTableId());
+                    DB_page dB = new DB_page(getActivity(), tabsHost.getCurrentPageTableId());
                     if( !Util.isEmptyString(uriStr))
                     {
                         // insert

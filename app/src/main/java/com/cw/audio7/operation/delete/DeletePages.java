@@ -32,11 +32,10 @@ import android.widget.Toast;
 import android.database.Cursor;
 
 import com.cw.audio7.R;
-import com.cw.audio7.audio.Audio7Player;
 import com.cw.audio7.db.DB_folder;
+import com.cw.audio7.folder.Folder;
 import com.cw.audio7.main.MainAct;
 import com.cw.audio7.operation.List_selectPage;
-import com.cw.audio7.audio.Audio_manager;
 import com.cw.audio7.audio.BackgroundAudioService;
 import com.cw.audio7.util.Util;
 import com.cw.audio7.util.preferences.Pref;
@@ -45,7 +44,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import static com.cw.audio7.main.MainAct.audio_manager;
-import static com.cw.audio7.main.MainAct.mFolderUi;
 
 public class DeletePages extends Fragment {
     TextView title;
@@ -53,11 +51,13 @@ public class DeletePages extends Fragment {
 	Button btnSelPageOK;
     ListView mListView;
 	List_selectPage list_selPage;
-	public static View rootView;
+	public View rootView;
     AppCompatActivity act;
+    Folder folder;
 
-	public DeletePages(AppCompatActivity _act){
+	public DeletePages(AppCompatActivity _act,Folder _folder){
 	    act = _act;
+	    folder = _folder;
     }
 
     public DeletePages(){}
@@ -140,8 +140,7 @@ public class DeletePages extends Fragment {
         btnSelPageCancel.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-            if(mFolderUi.getFolder_pagesCount(act,mFolderUi.getFocus_folderPos()) == 0)
-            {
+            if(folder.getFolder_pagesCount(act,Folder.getFocus_folderPos()) == 0) {
                 getActivity().finish();
                 Intent intent  = new Intent(act,MainAct.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -186,7 +185,7 @@ public class DeletePages extends Fragment {
 
                 if( audio_manager.isOnAudioPlayingPage() &&
                     BackgroundAudioService.mMediaPlayer != null ) {
-                    audio_manager.stopAudioPlayer(act);
+                    audio_manager.stopAudioPlayer();
                     audio_manager.mAudioPos = 0;
                     audio_manager.setPlayerState(audio_manager.PLAYER_AT_STOP);
                 }

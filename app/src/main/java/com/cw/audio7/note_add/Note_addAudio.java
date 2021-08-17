@@ -18,8 +18,6 @@ package com.cw.audio7.note_add;
 
 import java.io.File;
 
-import com.cw.audio7.audio.Audio7Player;
-import com.cw.audio7.audio.Audio_manager;
 import com.cw.audio7.R;
 import com.cw.audio7.db.DB_page;
 import com.cw.audio7.page.Page;
@@ -37,7 +35,6 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import static com.cw.audio7.main.MainAct.audio_manager;
-import static com.cw.audio7.main.MainAct.mFolderUi;
 
 public class Note_addAudio extends AppCompatActivity {
 
@@ -65,7 +62,7 @@ public class Note_addAudio extends AppCompatActivity {
             (Long) savedInstanceState.getSerializable(DB_page.KEY_NOTE_ID);
 
         // get audio Uri in DB if instance is not null
-		dB = new DB_page(this, mFolderUi.tabsHost.getCurrentPageTableId());
+		dB = new DB_page(this, TabsHost.getCurrentPageTableId());
         if(savedInstanceState != null)
         {
 	        System.out.println("Note_addAudio / noteId =  " + noteId);
@@ -119,7 +116,7 @@ public class Note_addAudio extends AppCompatActivity {
 		{
             setContentView(R.layout.note_add_prepare);
             progress = findViewById(R.id.add_audio_progress);//must add this, otherwise text view is not updated
-            dB = new DB_page(this, mFolderUi.tabsHost.getCurrentPageTableId());
+            dB = new DB_page(this, TabsHost.getCurrentPageTableId());
 
 			// for audio
 			if(requestCode == Util.CHOOSER_SET_AUDIO)

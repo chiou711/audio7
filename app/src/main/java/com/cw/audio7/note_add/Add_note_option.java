@@ -32,6 +32,7 @@ import android.widget.TextView;
 
 import com.cw.audio7.R;
 import com.cw.audio7.drawer.Drawer;
+import com.cw.audio7.folder.Folder;
 import com.cw.audio7.note_add.add_audio.Add_audio_all;
 import com.cw.audio7.note_add.add_recording.Add_recording_act;
 import com.cw.audio7.note_add.add_audio.Add_audio_1by1;
@@ -44,7 +45,6 @@ import java.util.List;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
 
-import static com.cw.audio7.main.MainAct.mFolderUi;
 
 /**
  * Created by cw on 2017/10/7.
@@ -56,11 +56,13 @@ public class Add_note_option {
     AppCompatActivity act;
     Menu menu;
     Drawer drawer;
+    Folder folder;
 
-    public Add_note_option(AppCompatActivity _act, Menu _menu, Drawer _drawer) {
+    public Add_note_option(AppCompatActivity _act, Menu _menu, Drawer _drawer, Folder fUI) {
         act = _act;
         menu = _menu;
         drawer = _drawer;
+        folder = fUI;
     }
 
     Add_note_option(int id, int draw_id, int string_id)
@@ -96,9 +98,9 @@ public class Add_note_option {
 
         addNoteList = new ArrayList<>();
 
-        int pagesCount = mFolderUi.getFolder_pagesCount(act,mFolderUi.getFocus_folderPos());
+        int pagesCount = folder.getFolder_pagesCount(act, folder.getFocus_folderPos());
 
-        int foldersCount = drawer.getFolderCount();
+        int foldersCount = Drawer.getFoldersCount(act);
 
         if(permitted)
         {
@@ -225,7 +227,7 @@ public class Add_note_option {
                 menu.findItem(R.id.HANDLE_CHECKED_NOTES).setVisible(false);
                 menu.setGroupVisible(R.id.group_pages_and_more, false);
 
-                Add_audio_1by1 add_audio1by1 = new Add_audio_1by1(act);
+                Add_audio_1by1 add_audio1by1 = new Add_audio_1by1(act, folder);
                 FragmentTransaction transaction = act.getSupportFragmentManager().beginTransaction();
 
                 transaction.setCustomAnimations(R.anim.fragment_slide_in_left, R.anim.fragment_slide_out_left, R.anim.fragment_slide_in_right, R.anim.fragment_slide_out_right);
@@ -237,7 +239,7 @@ public class Add_note_option {
             {
                 // replace fragment
                 dlgAddNew.dismiss();
-                Add_audio_byFolder add_audio_byFolder = new Add_audio_byFolder(act);
+                Add_audio_byFolder add_audio_byFolder = new Add_audio_byFolder(act, folder);
                 FragmentTransaction transaction = act.getSupportFragmentManager().beginTransaction();
 
                 //hide the menu
@@ -264,7 +266,7 @@ public class Add_note_option {
 
                 // do Add all
                 Pref.setPref_will_create_default_content(act,true);
-                Add_audio_all add_audio_all = new Add_audio_all(drawer);
+                Add_audio_all add_audio_all = new Add_audio_all(drawer, folder); //todo More check
                 FragmentTransaction transaction = act.getSupportFragmentManager().beginTransaction();
                 transaction.setCustomAnimations(R.anim.fragment_slide_in_left, R.anim.fragment_slide_out_left, R.anim.fragment_slide_in_right, R.anim.fragment_slide_out_right);
                 transaction.replace(R.id.content_frame, add_audio_all, "add_audio").addToBackStack(null).commit();

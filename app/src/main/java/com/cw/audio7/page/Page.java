@@ -30,6 +30,7 @@ import com.cw.audio7.R;
 import com.cw.audio7.db.DB_page;
 import com.cw.audio7.page.item_touch_helper.OnStartDragListener;
 import com.cw.audio7.page.item_touch_helper.SimpleItemTouchHelperCallback;
+import com.cw.audio7.tabs.TabsHost;
 import com.cw.audio7.util.image.ImageCache;
 import com.cw.audio7.util.image.ImageFetcher;
 import com.cw.audio7.util.preferences.Pref;
@@ -47,7 +48,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import static com.cw.audio7.main.MainAct.audio_manager;
-import static com.cw.audio7.main.MainAct.mFolderUi;
 
 public class Page extends Fragment implements OnStartDragListener {
 
@@ -68,13 +68,15 @@ public class Page extends Fragment implements OnStartDragListener {
     public ImageFetcher mImageFetcher;
     private int mImageThumbSize;
     private static final String IMAGE_CACHE_DIR = "thumbs";
-    private GridView.LayoutParams mImageViewLayoutParams;
+
+    TabsHost tabsHost;
 
     public Page(){
     }
 
-    public Page(AppCompatActivity _act,View _panelView){
+    public Page(AppCompatActivity _act, TabsHost _tabsHost, View _panelView){
         act = _act;
+        tabsHost = _tabsHost;
         panelView = _panelView;
 
         // for Image Cache
@@ -131,8 +133,8 @@ public class Page extends Fragment implements OnStartDragListener {
 
         fillData();
 
-        if(mFolderUi.tabsHost != null)
-            mFolderUi.tabsHost.showFooter(act);
+        if(tabsHost != null)
+            tabsHost.showFooter(act);
 
         ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(itemAdapter);
         itemTouchHelper = new ItemTouchHelper(callback);
@@ -173,8 +175,8 @@ public class Page extends Fragment implements OnStartDragListener {
         super.onResume();
         if(Pref.getPref_focusView_page_tableId(act) == page_tableId) {
 
-            if( (mFolderUi.tabsHost!= null) && (recyclerView != null) ) {
-                mFolderUi.tabsHost.resume_listView_vScroll(recyclerView);
+            if( (tabsHost!= null) && (recyclerView != null) ) {
+                tabsHost.resume_listView_vScroll(recyclerView);
                 System.out.println("Page / _onResume / resume_listView_vScroll");
             }
         }
@@ -183,7 +185,7 @@ public class Page extends Fragment implements OnStartDragListener {
         mImageFetcher.setExitTasksEarly(false);
 
         // set doScroll flag for Scroll to playing item
-        if(audio_manager.willDoScroll())
+        if( (audio_manager !=null) &&  audio_manager.willDoScroll())
             audio_manager.doScroll = true;
     }
 
@@ -209,7 +211,7 @@ public class Page extends Fragment implements OnStartDragListener {
     {
         //System.out.println("Page / _fillData / page_tableId = " + page_tableId);
         if(itemAdapter == null)
-            itemAdapter = new PageAdapter(act,panelView,page_tableId, this);
+            itemAdapter = new PageAdapter(act, tabsHost,panelView,page_tableId, this);
         // Set PageAdapter_recycler as the adapter for RecyclerView.
         recyclerView.setAdapter(itemAdapter);
     }
@@ -279,7 +281,7 @@ public class Page extends Fragment implements OnStartDragListener {
 
     public int getNotesCountInPage(AppCompatActivity act)
     {
-        int page_table_id = mFolderUi.tabsHost.getCurrentPageTableId();
+        int page_table_id = tabsHost.getCurrentPageTableId();
         DB_page db_page = new DB_page(act,page_table_id );
         int count = db_page.getNotesCount(true);
         return count;

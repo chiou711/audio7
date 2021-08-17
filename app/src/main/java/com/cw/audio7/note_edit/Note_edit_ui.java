@@ -19,7 +19,6 @@ package com.cw.audio7.note_edit;
 import java.util.Date;
 
 import com.cw.audio7.db.DB_folder;
-import com.cw.audio7.main.MainAct;
 import com.cw.audio7.R;
 import com.cw.audio7.db.DB_page;
 import com.cw.audio7.tabs.TabsHost;
@@ -40,7 +39,6 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import static com.cw.audio7.main.MainAct.mFolderUi;
 
 public class Note_edit_ui {
 
@@ -93,7 +91,7 @@ public class Note_edit_ui {
         progressBarThumb = (ProgressBar) act.findViewById(R.id.progress_bar_thumb);
 
 		DB_folder dbFolder = new DB_folder(act, Pref.getPref_focusView_folder_tableId(act));
-		style = dbFolder.getPageStyle(mFolderUi.tabsHost.getFocus_tabPos(), true);
+		style = dbFolder.getPageStyle(TabsHost.getFocus_tabPos(), true);
 
 		thumbImage = (TouchImageView)act.findViewById(R.id.thumb_image);
 
@@ -110,7 +108,7 @@ public class Note_edit_ui {
 	{
         int focusFolder_tableId = Pref.getPref_focusView_folder_tableId(act);
         DB_folder db = new DB_folder(act, focusFolder_tableId);
-		style = db.getPageStyle(mFolderUi.tabsHost.getFocus_tabPos(), true);
+		style = db.getPageStyle(TabsHost.getFocus_tabPos(), true);
 
 		LinearLayout block = (LinearLayout) act.findViewById(R.id.edit_title_block);
 		if(block != null)

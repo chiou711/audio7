@@ -19,13 +19,13 @@ package com.cw.audio7.audio;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cw.audio7.R;
+import com.cw.audio7.folder.Folder;
 import com.cw.audio7.tabs.TabsHost;
 import com.cw.audio7.util.Util;
 import com.cw.audio7.util.preferences.Pref;
@@ -35,7 +35,6 @@ import java.util.Locale;
 import androidx.appcompat.app.AppCompatActivity;
 
 import static com.cw.audio7.main.MainAct.audio_manager;
-import static com.cw.audio7.main.MainAct.mFolderUi;
 
 /**
  * Created by cw on 2017/10/21.
@@ -55,10 +54,12 @@ public class AudioUi_page {
     private int mediaFileLength;
     private String audioUriStr;
     private Audio7Player audio7Player;
+    TabsHost tabsHost;
 
-    public AudioUi_page(AppCompatActivity act,Audio7Player _audio7Player, View panel_view,String audio_uri_str)
+    public AudioUi_page(AppCompatActivity act, TabsHost _tabsHost, Audio7Player _audio7Player, View panel_view, String audio_uri_str)
     {
         mAct = act;
+        tabsHost = _tabsHost;
         audio7Player = _audio7Player;
         audioPanel = panel_view;
         audioUriStr = audio_uri_str;
@@ -151,8 +152,8 @@ public class AudioUi_page {
 
                 if(audio_manager.isOnAudioPlayingPage())
                 {
-                    audio7Player.scrollPlayingItemToBeVisible(mFolderUi.tabsHost.getCurrentPage().recyclerView);
-                    mFolderUi.tabsHost.getCurrentPage().itemAdapter.notifyDataSetChanged();
+                    audio7Player.scrollPlayingItemToBeVisible(tabsHost.getCurrentPage().recyclerView);
+                    tabsHost.getCurrentPage().itemAdapter.notifyDataSetChanged();
                 }
             }
         });
@@ -181,9 +182,9 @@ public class AudioUi_page {
                 while (audio_manager.getCheckedAudio(audio_manager.mAudioPos) == 0);
 
                 if(audio_manager.mAudioPos == -1) {
-                    audio_manager.stopAudioPlayer(act);
-                    audio7Player.showAudioPanel(act,false);
-                    mFolderUi.tabsHost.reloadCurrentPage();
+                    audio_manager.stopAudioPlayer();
+                    audio7Player.showAudioPanel(false);
+                    tabsHost.reloadCurrentPage();
                     Toast.makeText(mAct,R.string.toast_cyclic_play_disabled,Toast.LENGTH_LONG).show();
                 }
                 else
@@ -215,9 +216,9 @@ public class AudioUi_page {
                 while (audio_manager.getCheckedAudio(audio_manager.mAudioPos) == 0); //todo  Invalid index 3, size is 3
 
                 if(audio_manager.mAudioPos >= playingPage_notesCnt) {
-                    audio_manager.stopAudioPlayer(act);
-                    audio7Player.showAudioPanel(act,false);
-                    mFolderUi.tabsHost.reloadCurrentPage();
+                    audio_manager.stopAudioPlayer();
+                    audio7Player.showAudioPanel(false);
+                    tabsHost.reloadCurrentPage();
                     Toast.makeText(mAct,R.string.toast_cyclic_play_disabled,Toast.LENGTH_LONG).show();
                 }
                 else
@@ -247,13 +248,13 @@ public class AudioUi_page {
 
         // gif case: add this will cause program hang up
         if(audio_manager.isOnAudioPlayingPage())
-            audio7Player.scrollPlayingItemToBeVisible(mFolderUi.tabsHost.getCurrentPage().recyclerView);
+            audio7Player.scrollPlayingItemToBeVisible(tabsHost.getCurrentPage().recyclerView);
 
-        if( mFolderUi.tabsHost!=null ) {
-            if( mFolderUi.tabsHost.getCurrentPage().itemAdapter == null)
-                mFolderUi.tabsHost.reloadCurrentPage();
+        if( tabsHost!=null ) {
+            if( tabsHost.getCurrentPage().itemAdapter == null)
+                tabsHost.reloadCurrentPage();
             else
-                mFolderUi.tabsHost.getCurrentPage().itemAdapter.notifyDataSetChanged();
+                tabsHost.getCurrentPage().itemAdapter.notifyDataSetChanged();
         }
 
         // show new audio length immediately

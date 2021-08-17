@@ -23,7 +23,6 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 
 import com.cw.audio7.db.DB_drawer;
-import com.cw.audio7.main.MainAct;
 import com.cw.audio7.db.DB_folder;
 import com.cw.audio7.db.DB_page;
 import com.cw.audio7.tabs.TabsHost;
@@ -34,8 +33,6 @@ import android.content.Context;
 import android.util.Xml;
 
 import androidx.appcompat.app.AppCompatActivity;
-
-import static com.cw.audio7.main.MainAct.mFolderUi;
 
 public class ParseXmlToDB {
 
@@ -62,7 +59,7 @@ public class ParseXmlToDB {
         folderTableId = Pref.getPref_focusView_folder_tableId(mContext);
         mDb_folder = new DB_folder(act, folderTableId);
 
-        mDb_page = new DB_page(act,mFolderUi.tabsHost.getCurrentPageTableId());
+        mDb_page = new DB_page(act, TabsHost.getCurrentPageTableId());
 
         isParsing = true;
     }
@@ -156,7 +153,7 @@ public class ParseXmlToDB {
                                 Pref.setPref_focusView_folder_tableId(act, lastFolderTableId);
                                 Pref.setPref_focusView_page_tableId(act, 1);
 
-                                mFolderUi.tabsHost.setFocus_tabPos(0);
+                                TabsHost.setFocus_tabPos(0);
                             }
                             fileBody = fileBody.concat(Util.NEW_LINE + "*** " + "Folder:" + " " + folderName + " ***");
                         }
@@ -177,20 +174,20 @@ public class ParseXmlToDB {
                                 }
 
                                 // set last page table Id
-                                mFolderUi.tabsHost.setLastPageTableId(lastPageTableId);
+                                TabsHost.setLastPageTableId(lastPageTableId);
 
                                 // style is not set in XML file, so insert default style instead
                                 mDb_folder.insertPage(DB_folder.getFocusFolder_tableName(),
                                                       pageName,
-                                        mFolderUi.tabsHost.getLastPageTableId() + 1,
+                                        TabsHost.getLastPageTableId() + 1,
                                                       style ,
                                                       true);
 
                                 // insert page table for new tab
-                                mDb_folder.insertPageTable(mDb_folder,DB_folder.getFocusFolder_tableId(), mFolderUi.tabsHost.getLastPageTableId() + 1, true );
+                                mDb_folder.insertPageTable(mDb_folder,DB_folder.getFocusFolder_tableId(), TabsHost.getLastPageTableId() + 1, true );
 
                                 // update last tab Id after Insert
-                                mFolderUi.tabsHost.setLastPageTableId(mFolderUi.tabsHost.getLastPageTableId() + 1);//todo ??? logic error? should be max page Id?
+                                TabsHost.setLastPageTableId(TabsHost.getLastPageTableId() + 1);//todo ??? logic error? should be max page Id?
 
                                 // update from 0 to 1 if Import starts from Empty
                                 int pgsCnt = mDb_folder.getPagesCount(true);
@@ -222,7 +219,7 @@ public class ParseXmlToDB {
                            System.out.println("ParseXmlToDB / _parseXMLAndInsertDB / name 2 = " + name);
                            if(mEnableInsertDB)
                            {
-                               DB_page.setFocusPage_tableId(mFolderUi.tabsHost.getLastPageTableId());
+                               DB_page.setFocusPage_tableId(TabsHost.getLastPageTableId());
                                if(title.length() !=0 || body.length() != 0 ||  audio.length() !=0 )
                                {
                                    if(!Util.isEmptyString(audio))

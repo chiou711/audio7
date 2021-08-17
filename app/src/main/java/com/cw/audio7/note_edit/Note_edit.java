@@ -16,8 +16,7 @@
 
 package com.cw.audio7.note_edit;
 
-import com.cw.audio7.audio.Audio7Player;
-import com.cw.audio7.audio.Audio_manager;
+import com.cw.audio7.folder.Folder;
 import com.cw.audio7.note_add.add_audio.Edit_audio_1by1;
 import com.cw.audio7.page.Page;
 import com.cw.audio7.R;
@@ -44,7 +43,6 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import static com.cw.audio7.main.MainAct.audio_manager;
-import static com.cw.audio7.main.MainAct.mFolderUi;
 
 public class Note_edit extends AppCompatActivity
 		implements FragmentManager.OnBackStackChangedListener
@@ -58,6 +56,7 @@ public class Note_edit extends AppCompatActivity
     int position;
 	public static FragmentManager.OnBackStackChangedListener mOnBackStackChangedListener;
 	public FragmentManager mFragmentManager;
+	Folder folder;
 
 	@Override
     protected void onCreate(Bundle savedInstanceState) 
@@ -66,7 +65,7 @@ public class Note_edit extends AppCompatActivity
 	    System.out.println("Note_edit / onCreate");
 
         // check note count first
-	    dB = new DB_page(this, mFolderUi.tabsHost.getCurrentPageTableId());
+	    dB = new DB_page(this, TabsHost.getCurrentPageTableId());
 
         if(dB.getNotesCount(true) ==  0)
         {
@@ -96,6 +95,7 @@ public class Note_edit extends AppCompatActivity
     	body = extras.getString(DB_page.KEY_NOTE_BODY);
 
         //initialization
+	    folder = new Folder(this,null); //todo More check
         note_edit_ui = new Note_edit_ui(this, dB, noteId, title,  audioUri,  body);
         note_edit_ui.UI_init();
 
@@ -161,7 +161,7 @@ public class Note_edit extends AppCompatActivity
 
 								// Stop Play/Pause if current edit item is played and is not at Stop state
 								if(Page.mHighlightPosition == position)
-									UtilAudio.stopAudioIfNeeded(Note_edit.this);
+									UtilAudio.stopAudioIfNeeded(folder.tabsHost);
 
 								// update highlight position
 								if(position < Page.mHighlightPosition )
@@ -396,7 +396,7 @@ public class Note_edit extends AppCompatActivity
 			findViewById(R.id.edit_main).setVisibility(View.INVISIBLE);
 
 			// select Local link
-			Edit_audio_1by1 edit_audio1by1 = new Edit_audio_1by1(Note_edit.this);
+			Edit_audio_1by1 edit_audio1by1 = new Edit_audio_1by1(Note_edit.this,folder);
 			FragmentTransaction transaction = mFragmentManager.beginTransaction();
 			transaction.setCustomAnimations(R.anim.fragment_slide_in_left, R.anim.fragment_slide_out_left, R.anim.fragment_slide_in_right, R.anim.fragment_slide_out_right);
 			transaction.replace(R.id.content_frame_edit, edit_audio1by1).addToBackStack("Edit audio 1 by 1").commit();

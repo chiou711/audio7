@@ -17,19 +17,15 @@
 package com.cw.audio7.util;
 
 import java.io.BufferedWriter;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -39,10 +35,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import com.cw.audio7.main.MainAct;
+import com.cw.audio7.folder.Folder;
 import com.cw.audio7.page.Checked_notes_option;
 import com.cw.audio7.R;
 import com.cw.audio7.db.DB_folder;
@@ -66,7 +60,6 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.LabeledIntent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.content.res.AssetManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.Cursor;
@@ -100,9 +93,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
-import static com.cw.audio7.main.MainAct.mFolderUi;
-
-public class Util 
+public class Util
 {
     SharedPreferences mPref_vibration;
     private static Context mContext;
@@ -148,13 +139,13 @@ public class Util
 	}
 	
 	// export to SD card: for checked pages
-	public String exportToSdCard(AppCompatActivity act,String filename, List<Boolean> checkedTabs)
+	public String exportToSdCard(AppCompatActivity act,Folder folder,String filename, List<Boolean> checkedTabs)
 	{   
 		//first row text
 		String data ="";
 
 		//get data from DB
-		data = queryDB(act,data,checkedTabs);
+		data = queryDB(act,folder,data,checkedTabs);
 		
 		// sent data
 		data = addXmlTag(data);
@@ -217,7 +208,7 @@ public class Util
      * Query current data base
      *
      */
-    private String queryDB(AppCompatActivity act,String data, List<Boolean> checkedTabs)
+    private String queryDB(AppCompatActivity act,Folder folder,String data, List<Boolean> checkedTabs)
     {
     	String curData = data;
     	
@@ -230,7 +221,7 @@ public class Util
     	for(int i=0;i<tabCount;i++)
     	{
             if(checkedTabs.get(i))
-				curData = curData.concat(getStringWithXmlTag(act,i, ID_FOR_TABS));
+				curData = curData.concat(getStringWithXmlTag(act,folder,i, ID_FOR_TABS));
     	}
     	return curData;
     	
@@ -316,7 +307,7 @@ public class Util
 		mDbFolder = new DB_folder(act, Pref.getPref_focusView_folder_tableId(act));
 	    ListView listView = ((AlertDialog) dialogInterface).getListView();
 	    final ListAdapter originalAdapter = listView.getAdapter();
-	    final int style = Util.getCurrentPageStyle(act,mFolderUi.tabsHost.getFocus_tabPos());
+	    final int style = Util.getCurrentPageStyle(act, TabsHost.getFocus_tabPos());
         CheckedTextView textViewDefault = new CheckedTextView(mAct) ;
         defaultBgClr = textViewDefault.getDrawingCacheBackgroundColor();
         defaultTextClr = textViewDefault.getCurrentTextColor();
@@ -348,7 +339,7 @@ public class Util
 	            View view = originalAdapter.getView(position, convertView, parent);
 	            //set CheckedTextView in order to change button color
 	            CheckedTextView textView = (CheckedTextView)view;
-	            if(mDbFolder.getPageTableId(position,true) == mFolderUi.tabsHost.getCurrentPageTableId())
+	            if(mDbFolder.getPageTableId(position,true) == TabsHost.getCurrentPageTableId())
 	            {
 		            textView.setTypeface(null, Typeface.BOLD_ITALIC);
 		            textView.setBackgroundColor(ColorSet.mBG_ColorArray[style]);
@@ -476,7 +467,7 @@ public class Util
      * @param noteId: ID_FOR_TABS for checked tabs(pages), ID_FOR_NOTES for checked notes
      * @return string with tags
      */
-	public static String getStringWithXmlTag(AppCompatActivity act,int tabPos,long noteId)
+	public static String getStringWithXmlTag(AppCompatActivity act, Folder folder,int tabPos, long noteId)
 	{
 		String PAGE_TAG_B = "<page>";
 		String PAGE_NAME_TAG_B = "<page_name>";
@@ -493,7 +484,7 @@ public class Util
 
 		String sentString = NEW_LINE;
 
-		int pageTableId = mFolderUi.tabsHost.mTabsPagerAdapter.getItem(tabPos).page_tableId;
+		int pageTableId = folder.tabsHost.mTabsPagerAdapter.getItem(tabPos).page_tableId;
 		List<Long> noteIdArray = new ArrayList<>();
 
 		DB_page dbPage = new DB_page(act, pageTableId);

@@ -28,6 +28,7 @@ import android.widget.Toast;
 import com.cw.audio7.R;
 import com.cw.audio7.main.MainAct;
 import com.cw.audio7.note.NoteUi;
+import com.cw.audio7.tabs.TabsHost;
 import com.cw.audio7.util.Util;
 import com.cw.audio7.util.audio.UtilAudio;
 import com.cw.audio7.util.preferences.Pref;
@@ -38,7 +39,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
 import static com.cw.audio7.main.MainAct.audio_manager;
-import static com.cw.audio7.main.MainAct.mFolderUi;
 
 /**
  * Created by cw on 2017/10/26.
@@ -159,7 +159,7 @@ public class AudioUi_note
             public void onStartTrackingTouch(SeekBar seekBar) {
                 // audio player is one time mode in pager
                 if(audio_manager.getAudioPlayMode() == audio_manager.PAGE_PLAY_MODE)
-                    audio_manager.stopAudioPlayer(act);
+                    audio_manager.stopAudioPlayer();
             }
 
             @Override
@@ -195,7 +195,7 @@ public class AudioUi_note
 //                System.out.println("AudioUi_note /  audio_next_btn / _onClick / NoteUi.getNotesCnt() = " + NoteUi.getNotesCnt());
 //                System.out.println("AudioUi_note /  audio_next_btn / _onClick / NoteUi.getFocus_notePos() = " + NoteUi.getFocus_notePos());
 
-                audio_manager.stopAudioPlayer(act);
+                audio_manager.stopAudioPlayer();
 
                 int new_pos = NoteUi.getFocus_notePos()-1;
                 if( new_pos < 0 )
@@ -205,7 +205,7 @@ public class AudioUi_note
                         viewPager.setCurrentItem(NoteUi.getNotesCnt()-1);
                     } else {
                         Toast.makeText(act,R.string.toast_cyclic_play_disabled,Toast.LENGTH_SHORT).show();
-                        audio_manager.stopAudioPlayer(act);
+                        audio_manager.stopAudioPlayer();
                         return;
                     }
                 }
@@ -230,7 +230,7 @@ public class AudioUi_note
 //                System.out.println("AudioUi_note /  audio_next_btn / _onClick / NoteUi.getNotesCnt() = " + NoteUi.getNotesCnt());
 //                System.out.println("AudioUi_note /  audio_next_btn / _onClick / NoteUi.getFocus_notePos() = " + NoteUi.getFocus_notePos());
 
-                audio_manager.stopAudioPlayer(act);
+                audio_manager.stopAudioPlayer();
 
                 int new_pos = NoteUi.getFocus_notePos()+1;
                 if( new_pos >= NoteUi.getNotesCnt())
@@ -240,7 +240,7 @@ public class AudioUi_note
                         viewPager.setCurrentItem(0);
                     } else {
                         Toast.makeText(act,R.string.toast_cyclic_play_disabled,Toast.LENGTH_SHORT).show();
-                        audio_manager.stopAudioPlayer(act);
+                        audio_manager.stopAudioPlayer();
                         return;
                     }
                 }
@@ -263,11 +263,11 @@ public class AudioUi_note
            UtilAudio.hasAudioExtension(audioName[0]))
         {
             audio_manager.mAudioPos = NoteUi.getFocus_notePos();
-            MainAct.mPlaying_pageTableId = mFolderUi.tabsHost.getCurrentPageTableId();
+            MainAct.mPlaying_pageTableId = TabsHost.getCurrentPageTableId();
 
             // new instance
             if(audio_manager.audio7Player == null)
-                audio_manager.audio7Player = new Audio7Player(act, audioPanel, audioUriStr);
+                audio_manager.audio7Player = new Audio7Player(act, null,audioPanel, audioUriStr);
             else {
                 audio_manager.audio7Player.setAudioPanel(audioPanel);
                 audio_manager.audio7Player.initAudioBlock(audioUriStr);

@@ -4,7 +4,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-import static com.cw.audio7.main.MainAct.mFolderUi;
+import static com.cw.audio7.main.MainAct.audio_manager;
+
 
 // cf https://stackoverflow.com/questions/12654820/is-it-possible-to-check-if-a-notification-is-visible-or-canceled
 public class NotificationDismissReceiver extends BroadcastReceiver {
@@ -14,11 +15,12 @@ public class NotificationDismissReceiver extends BroadcastReceiver {
 		int notificationId = intent.getExtras().getInt("com.cw.audio7.notificationId");
 		System.out.println("NotificationDismissReceiver / _onReceive / notificationId = " + notificationId);
 
-		if(mFolderUi.tabsHost != null ) {
-			mFolderUi.tabsHost.stopAudioPlayer();
+		{
+			audio_manager.stopAudioPlayer( );
+			audio_manager.audio7Player.showAudioPanel(false);
 
-			// refresh
-			mFolderUi.tabsHost.reloadCurrentPage();
+			// refresh //todo Check more
+//			mFUI.tabsHost.reloadCurrentPage();
 		}
 	}
 }

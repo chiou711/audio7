@@ -26,7 +26,9 @@ import java.util.List;
 
 import com.cw.audio7.R;
 import com.cw.audio7.db.DB_page;
+import com.cw.audio7.folder.Folder;
 import com.cw.audio7.main.MainAct;
+import com.cw.audio7.tabs.TabsHost;
 import com.cw.audio7.util.Util;
 import com.cw.audio7.util.audio.UtilAudio;
 
@@ -34,7 +36,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationManagerCompat;
 
 import static com.cw.audio7.define.Define.ENABLE_MEDIA_CONTROLLER;
-import static com.cw.audio7.main.MainAct.mFolderUi;
 
 public class Audio_manager
 {
@@ -63,10 +64,12 @@ public class Audio_manager
 	public Audio7Player audio7Player;
 	public Runnable audio_runnable;
 	public Handler audioHandler;
+	Folder folder;
 
 
-	public Audio_manager(AppCompatActivity _act) {
+	public Audio_manager(AppCompatActivity _act, Folder _folder) {
 		act = _act;
+		folder = _folder;
 
 		// start a new handler
 		audioHandler = new Handler();
@@ -89,7 +92,7 @@ public class Audio_manager
 					// for incoming call case and after Key protection
 					if (  (getAudioPlayMode() == PAGE_PLAY_MODE) &&
 							audio7Player.isAudioPanelOn(act) ) {
-						audio7Player.showAudioPanel(act, true);
+						audio7Player.showAudioPanel(true);
 					}
 
 					/** update audio progress */
@@ -154,10 +157,11 @@ public class Audio_manager
 								audio7Player.updateAudioPanel(act);
 
 								// for page audio gif play/pause
-								if( (mFolderUi.tabsHost != null) &&
-										(mFolderUi.tabsHost.getCurrentPage().itemAdapter != null) &&
-										(getAudioPlayMode() == PAGE_PLAY_MODE) ) {
-									mFolderUi.tabsHost.getCurrentPage().itemAdapter.notifyDataSetChanged();
+								if( (folder !=null) &&
+									(folder.tabsHost != null) &&
+									(folder.tabsHost.getCurrentPage().itemAdapter != null) &&
+									(getAudioPlayMode() == PAGE_PLAY_MODE) ) {
+									folder.tabsHost.getCurrentPage().itemAdapter.notifyDataSetChanged();
 								}
 
 								setTogglePlayerState(false);
@@ -172,7 +176,7 @@ public class Audio_manager
 
 					// do Scroll for changing Note play to Page play
 					if( doScroll && willDoScroll())
-						audio7Player.scrollPlayingItemToBeVisible(mFolderUi.tabsHost.getCurrentPage().recyclerView);
+						audio7Player.scrollPlayingItemToBeVisible(folder.tabsHost.getCurrentPage().recyclerView);
 
 				}
 				else if( (getCheckedAudio(mAudioPos) == 0 ) )// for non-audio item
@@ -180,7 +184,7 @@ public class Audio_manager
 					//	   			System.out.println("Audio_manager / audio_runnable / for non-audio item");
 
 					if(getAudioPlayMode() == NOTE_PLAY_MODE) {
-						stopAudioPlayer(act);
+						stopAudioPlayer();
 
 						// case 1: play next
 						//					audio_next_btn.performClick();
@@ -195,8 +199,8 @@ public class Audio_manager
 						audio7Player.tryPlay_nextAudio();
 
 						if(isOnAudioPlayingPage()) {
-							audio7Player.scrollPlayingItemToBeVisible(mFolderUi.tabsHost.getCurrentPage().recyclerView);
-							mFolderUi.tabsHost.getCurrentPage().itemAdapter.notifyDataSetChanged();
+							audio7Player.scrollPlayingItemToBeVisible(folder.tabsHost.getCurrentPage().recyclerView);
+							folder.tabsHost.getCurrentPage().itemAdapter.notifyDataSetChanged();
 						}
 					}
 				}
@@ -259,7 +263,7 @@ public class Audio_manager
     /**
      * Stop audio
      */
-    public void stopAudioPlayer(AppCompatActivity act)
+    public void stopAudioPlayer()
     {
         System.out.println("Audio_manager / _stopAudioPlayer");
 
@@ -342,7 +346,7 @@ public class Audio_manager
 		setTogglePlayerState(false);
 		setPlayNext(false);
 
-		DB_page db_page = new DB_page(act, mFolderUi.tabsHost.getCurrentPageTableId());
+		DB_page db_page = new DB_page(act, TabsHost.getCurrentPageTableId());
 
 		int notesCount =  db_page.getNotesCount(true);
 		setPlayingPage_notesCount(notesCount);
@@ -379,13 +383,13 @@ public class Audio_manager
 	// check if is on audio playing page
 	public boolean isOnAudioPlayingPage()
 	{
-		if(mFolderUi.tabsHost == null)
+		if((folder == null) || (folder.tabsHost == null))
 			return false;
 
 		String prefix = "Audio_manager / _isOnAudioPlayingPage / ";
 		boolean showDbgMsg = false;
 
-		boolean isSameTabPos = (mFolderUi.tabsHost.getFocus_tabPos() == MainAct.mPlaying_pagePos);
+		boolean isSameTabPos = (TabsHost.getFocus_tabPos() == MainAct.mPlaying_pagePos);
 		if(showDbgMsg)
 			System.out.println( prefix + "isSameTabPos = " + isSameTabPos);
 
@@ -393,15 +397,15 @@ public class Audio_manager
 		if(showDbgMsg)
 			System.out.println( prefix + "isPlayOrPause = " +isPlayOrPause);
 
-		boolean isPlayingOnFocusFolderPos = (MainAct.mPlaying_folderPos == mFolderUi.getFocus_folderPos());
+		boolean isPlayingOnFocusFolderPos = (MainAct.mPlaying_folderPos == folder.getFocus_folderPos());
 		if(showDbgMsg)
 			System.out.println(prefix + "isPlayingOnFocusFolderPos = " + isPlayingOnFocusFolderPos);
 
-		boolean isPlayingOnCurrPageTableId = (MainAct.mPlaying_pageTableId == mFolderUi.tabsHost.getCurrentPageTableId());
+		boolean isPlayingOnCurrPageTableId = (MainAct.mPlaying_pageTableId == TabsHost.getCurrentPageTableId());
 		if(showDbgMsg)
 			System.out.println(prefix + "isPlayingOnCurrPageTableId = " + isPlayingOnCurrPageTableId);
 
-		boolean isCurrRecycleViewExist = (mFolderUi.tabsHost.getCurrentPage().recyclerView != null);
+		boolean isCurrRecycleViewExist = (folder.tabsHost.getCurrentPage().recyclerView != null);
 		if(showDbgMsg)
 			System.out.println(prefix + "isCurrRecycleViewExist  = " + isCurrRecycleViewExist);
 
@@ -414,11 +418,10 @@ public class Audio_manager
 
 	public boolean willDoScroll() {
 		return
-		(mFolderUi.tabsHost != null) &&
 	    (getPlayerState() != PLAYER_AT_STOP) &&
-	    (MainAct.mPlaying_folderPos == mFolderUi.getFocus_folderPos()) &&
-	    (mFolderUi.tabsHost.getFocus_tabPos() == MainAct.mPlaying_pagePos)     &&
-	    (MainAct.mPlaying_pageTableId == mFolderUi.tabsHost.getCurrentPageTableId()) ;
+	    (MainAct.mPlaying_folderPos == Folder.getFocus_folderPos()) &&
+		(TabsHost.getFocus_tabPos() == MainAct.mPlaying_pagePos)     &&
+	    (MainAct.mPlaying_pageTableId == TabsHost.getCurrentPageTableId()) ;
     }
 
 	// remove runnable for update audio playing

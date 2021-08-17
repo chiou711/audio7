@@ -175,7 +175,7 @@ class Async_audioUrlVerify extends AsyncTask<String,Integer,String>
 
 		// prepare audio
 		if (audio_manager.getAudioPlayMode() == audio_manager.PAGE_PLAY_MODE)
-			audio7Player.showAudioPanel(act.get(), true);
+			audio7Player.showAudioPanel( true);
 
 		// URL is ready, start Audio Prepare
 		audio7Player.prepareAudio();

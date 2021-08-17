@@ -17,14 +17,12 @@
 package com.cw.audio7.audio;
 
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.media.AudioAttributes;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Handler;
-import android.os.PowerManager;
 import android.text.method.ScrollingMovementMethod;
 import android.view.View;
 import android.widget.ImageView;
@@ -34,13 +32,13 @@ import android.widget.Toast;
 
 import com.cw.audio7.R;
 import com.cw.audio7.main.MainAct;
+import com.cw.audio7.tabs.TabsHost;
 import com.cw.audio7.util.ColorSet;
 import com.cw.audio7.util.Util;
 import com.cw.audio7.util.audio.UtilAudio;
 import com.cw.audio7.util.system.SystemState;
 
 import java.util.Locale;
-import java.util.Objects;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -48,7 +46,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import static com.cw.audio7.define.Define.ENABLE_MEDIA_CONTROLLER;
 import static com.cw.audio7.main.MainAct.audio_manager;
-import static com.cw.audio7.main.MainAct.mFolderUi;
 
 public class Audio7Player
 {
@@ -58,11 +55,13 @@ public class Audio7Player
 	int audio_tryTimes; // use to avoid useless looping in Continue mode
     int delayBeforeMediaStart = DURATION_1S;
 	String audioUrl;
+	TabsHost tabsHost;
 
-	public Audio7Player(AppCompatActivity _act, View audio_panel, String audio_uri_str){
+	public Audio7Player(AppCompatActivity _act, TabsHost _tabsHost, View audio_panel, String audio_uri_str){
 		System.out.println("Audio7Player / constructor ");
 
 		act = _act;
+		tabsHost = _tabsHost;
 		this.audio_panel = audio_panel;
 		initAudioBlock(audio_uri_str);
 	}
@@ -105,7 +104,7 @@ public class Audio7Player
                     audio_manager.mAudioPos++;
                     audioUrl = audio_manager.getAudioStringAt(audio_manager.mAudioPos);
 
-                    if(audio_manager.mAudioPos >= mFolderUi.tabsHost.getCurrentPage().getNotesCountInPage(act))
+                    if(audio_manager.mAudioPos >= tabsHost.getCurrentPage().getNotesCountInPage(act))
                         break;
 				}
 
@@ -147,7 +146,7 @@ public class Audio7Player
 	}
 
 	// set list view footer audio control
-	public void showAudioPanel(AppCompatActivity act,boolean enable)
+	public void showAudioPanel( boolean enable)
 	{
 //		System.out.println("Audio7Player / _showAudioPanel / enable = " + enable);
         if(audio_panel != null) {
@@ -340,8 +339,10 @@ public class Audio7Player
 		}
 
 		// do v scroll
-		mFolderUi.tabsHost.store_listView_vScroll(recyclerView);
-		mFolderUi.tabsHost.resume_listView_vScroll(recyclerView);
+		if(tabsHost != null) {
+			tabsHost.store_listView_vScroll(recyclerView);
+			tabsHost.resume_listView_vScroll(recyclerView);
+		}
 	}
 
     /**
@@ -398,7 +399,7 @@ public class Audio7Player
 				BackgroundAudioService.mMediaPlayer.prepare();
 			} catch (Exception e) {
 				Toast.makeText(act, R.string.audio_message_could_not_open_file, Toast.LENGTH_SHORT).show();
-				audio_manager.stopAudioPlayer(act);
+				audio_manager.stopAudioPlayer();
 			}
 
 			// set audio player listeners
@@ -452,7 +453,7 @@ public class Audio7Player
 			    MainAct.mSubMenuItemAudio.setIcon(R.drawable.ic_menu_slideshow);
 
 		    // stop media player
-		    audio_manager.stopAudioPlayer(act);
+		    audio_manager.stopAudioPlayer();
 	    }
         System.out.println("Audio7Player / _playNextAudio / audio_manager.mAudioPos = " + audio_manager.mAudioPos);
     }
@@ -496,7 +497,7 @@ public class Audio7Player
 											String.format(Locale.ENGLISH,"%02d", curMin)+":" +
 											String.format(Locale.ENGLISH,"%02d", curSec);
 
-		System.out.println("Audio7Player / _updateAudioProgress / curr_time_str = " + curr_time_str);
+//		System.out.println("Audio7Player / _updateAudioProgress / curr_time_str = " + curr_time_str);
 
 		// set current play time and the play length of audio file
 		if(audio_curr_pos != null) {
@@ -507,7 +508,6 @@ public class Audio7Player
 		mProgress = (int)(((float)currentPos/ getMediaFileLength())*100);
 //		System.out.println("Audio7Player / _updateAudioProgress / getMediaFileLength = " + getMediaFileLength());
 //		System.out.println("Audio7Player / _updateAudioProgress / currentPos = " + currentPos);
-//		System.out.println("Audio7Player / _updateAudioProgress / curr_time_str = " + curr_time_str);
 
 		if(audio_seek_bar != null)
 			audio_seek_bar.setProgress(mProgress); // This math construction give a percentage of "was playing"/"song length"

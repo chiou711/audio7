@@ -29,12 +29,12 @@ import android.widget.ListView;
 
 import com.cw.audio7.R;
 import com.cw.audio7.db.DB_drawer;
+import com.cw.audio7.folder.Folder;
 import com.cw.audio7.util.ColorSet;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.cw.audio7.main.MainAct.mFolderUi;
 
 /**
  * Created by cw on 2017/10/4.
@@ -217,7 +217,7 @@ public class List_selectFolder
             // Show current page
             //??? how to set left padding of text view of a CheckedTextview
             // workaround: set single line to true and add one space in front of the text
-            if(position == mFolderUi.getFocus_folderPos())
+            if(position == Folder.getFocus_folderPos())
             {
                 chkTV.setTypeface(chkTV.getTypeface(), Typeface.BOLD_ITALIC);
                 chkTV.setText( " " + mList.get(position) + "*" );

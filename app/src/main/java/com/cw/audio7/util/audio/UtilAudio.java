@@ -19,9 +19,9 @@ package com.cw.audio7.util.audio;
 import java.io.File;
 import java.util.Locale;
 
+import com.cw.audio7.folder.Folder;
 import com.cw.audio7.main.MainAct;
 import com.cw.audio7.R;
-import com.cw.audio7.audio.Audio_manager;
 import com.cw.audio7.audio.BackgroundAudioService;
 import com.cw.audio7.tabs.TabsHost;
 import com.cw.audio7.util.Util;
@@ -33,7 +33,6 @@ import android.net.Uri;
 import androidx.appcompat.app.AppCompatActivity;
 
 import static com.cw.audio7.main.MainAct.audio_manager;
-import static com.cw.audio7.main.MainAct.mFolderUi;
 
 //import static android.content.Context.TELEPHONY_SERVICE;
 
@@ -50,19 +49,19 @@ public class UtilAudio {
 //		}
 //	}
 
-    public static void stopAudioIfNeeded(AppCompatActivity act)
+    public static void stopAudioIfNeeded(TabsHost tabsHost)
     {
 		if( ( (BackgroundAudioService.mMediaPlayer != null) &&
               (audio_manager.getPlayerState() != audio_manager.PLAYER_AT_STOP) ) &&
-			(MainAct.mPlaying_folderPos == mFolderUi.getFocus_folderPos()) &&
-			(mFolderUi.tabsHost.getFocus_tabPos() == MainAct.mPlaying_pagePos)                           )
+			(MainAct.mPlaying_folderPos == Folder.getFocus_folderPos()) &&
+			(TabsHost.getFocus_tabPos() == MainAct.mPlaying_pagePos)                           )
 		{
             if(BackgroundAudioService.mMediaPlayer != null){
-                audio_manager.stopAudioPlayer(act);
+                audio_manager.stopAudioPlayer();
                 audio_manager.mAudioPos = 0;
-	            audio_manager.audio7Player.showAudioPanel(act, false);
+	            audio_manager.audio7Player.showAudioPanel(false);
 	            // remove playing focus
-	            mFolderUi.tabsHost.reloadCurrentPage();
+	            tabsHost.reloadCurrentPage();
             }
 
 			if(MainAct.mSubMenuItemAudio != null)

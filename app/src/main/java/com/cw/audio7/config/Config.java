@@ -20,8 +20,8 @@ package com.cw.audio7.config;
 import java.io.File;
 import java.util.Objects;
 
-import com.cw.audio7.audio.Audio_manager;
 import com.cw.audio7.audio.BackgroundAudioService;
+import com.cw.audio7.folder.Folder;
 import com.cw.audio7.main.MainAct;
 import com.cw.audio7.R;
 import com.cw.audio7.db.DB_drawer;
@@ -50,7 +50,6 @@ import androidx.fragment.app.Fragment;
 import static android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK;
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 import static com.cw.audio7.main.MainAct.audio_manager;
-import static com.cw.audio7.main.MainAct.mFolderUi;
 
 public class Config extends Fragment
 {
@@ -67,10 +66,12 @@ public class Config extends Fragment
 	private LayoutInflater mInflater;
 	String[] mItemArray = new String[]{"1","2","3","4","5","6","7","8","9","10"};
 	AppCompatActivity act;
+	Folder folder;
 
 	public Config(){}
-	public Config(AppCompatActivity _act){
+	public Config(AppCompatActivity _act,Folder _folder){
 		act = _act;
+		folder = _folder;
 	}
 
 	static View mRootView;
@@ -298,13 +299,13 @@ public class Config extends Fragment
 
 			// stop audio player
 			if(BackgroundAudioService.mMediaPlayer != null)
-				audio_manager.stopAudioPlayer(act);
+				audio_manager.stopAudioPlayer();
 
 			//set last tab Id to 0, otherwise TabId will not start from 0 when deleting all
 			//reset tab Index to 0
 			//fix: select tab over next import amount => clean all => import => export => error
-			mFolderUi.tabsHost.setFocus_tabPos(0);
-			mFolderUi.setFocus_folderPos(0);
+			folder.tabsHost.setFocus_tabPos(0);
+			folder.setFocus_folderPos(0);
 
 			// remove focus view folder table Id key
 			Pref.removePref_focusView_folder_tableId_key(getActivity());
@@ -350,7 +351,7 @@ public class Config extends Fragment
 
 			// stop audio player
 			if(BackgroundAudioService.mMediaPlayer != null)
-				audio_manager.stopAudioPlayer(act);
+				audio_manager.stopAudioPlayer();
 
 			//remove preference
 			clearSharedPreferencesForSettings(Objects.requireNonNull(getActivity()));

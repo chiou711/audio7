@@ -21,12 +21,10 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
 import com.cw.audio7.R;
-import com.cw.audio7.main.MainAct;
 import com.cw.audio7.tabs.TabsHost;
 import com.cw.audio7.util.ColorSet;
 import com.cw.audio7.util.Util;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
@@ -39,9 +37,6 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-
-import static com.cw.audio7.main.MainAct.mFolderUi;
-
 
 public class Import_fileView extends Fragment
 {
@@ -188,7 +183,7 @@ public class Import_fileView extends Fragment
     {
 		System.out.println("Import_fileView / _importDefaultContentByXml / xmlFileName = " + xmlFile.getName());
 
-	    mFolderUi.tabsHost.setLastPageTableId(0);
+	    TabsHost.setLastPageTableId(0);
 
         FileInputStream fileInputStream = null;
 

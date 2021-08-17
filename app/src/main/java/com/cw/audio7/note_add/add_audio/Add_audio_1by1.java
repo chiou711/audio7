@@ -33,7 +33,7 @@ import android.widget.Toast;
 
 import com.cw.audio7.R;
 import com.cw.audio7.db.DB_page;
-import com.cw.audio7.tabs.TabsHost;
+import com.cw.audio7.folder.Folder;
 import com.cw.audio7.util.ColorSet;
 import com.cw.audio7.util.Util;
 import com.cw.audio7.util.audio.UtilAudio;
@@ -51,7 +51,6 @@ import java.util.Locale;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.ListFragment;
 
-import static com.cw.audio7.main.MainAct.mFolderUi;
 
 public class Add_audio_1by1 extends ListFragment
 {
@@ -60,12 +59,14 @@ public class Add_audio_1by1 extends ListFragment
     public View rootView;
     ListView listView;
     AppCompatActivity act;
+    Folder folder;
 
     public Add_audio_1by1() {
     }
 
-    public Add_audio_1by1(AppCompatActivity _act) {
+    public Add_audio_1by1(AppCompatActivity _act, Folder _folder) {
         act =_act;
+        folder = _folder;
     }
 
     @Override
@@ -231,7 +232,7 @@ public class Add_audio_1by1 extends ListFragment
                     view2.setVisibility(View.GONE);
 
                     // add path to DB
-                    addAudio(currFilePath);
+                    addAudio(currFilePath, folder);
 
                     checkedArr.set(selectedRow,true);
                     fileListAdapter.notifyDataSetChanged();
@@ -418,10 +419,10 @@ public class Add_audio_1by1 extends ListFragment
     }
 
     // add audio
-    void addAudio(String path)
+    void addAudio(String path, Folder folder)
     {
         String uriStr = getAudioUriString(path);
-        DB_page dB = new DB_page(getActivity(), mFolderUi.tabsHost.getCurrentPageTableId());
+        DB_page dB = new DB_page(getActivity(), folder.tabsHost.getCurrentPageTableId());
         if( !Util.isEmptyString(uriStr)) {
             // insert new link, set marking to 1 for default
             dB.insertNote("",  uriStr, "",  1);

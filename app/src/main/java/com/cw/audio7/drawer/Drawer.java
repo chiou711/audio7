@@ -23,8 +23,7 @@ import android.widget.Toast;
 
 import com.cw.audio7.R;
 import com.cw.audio7.db.DB_drawer;
-import com.cw.audio7.folder.FolderUi;
-import com.cw.audio7.main.MainAct;
+import com.cw.audio7.folder.Folder;
 import com.cw.audio7.operation.delete.DeleteFolders;
 import com.cw.audio7.util.Util;
 import com.google.android.material.navigation.NavigationView;
@@ -39,8 +38,6 @@ import androidx.fragment.app.FragmentManager;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentTransaction;
 
-import static com.cw.audio7.main.MainAct.mFolderUi;
-
 /**
  * Created by CW on 2016/8/24.
  */
@@ -53,6 +50,8 @@ public class Drawer {
     public NavigationView mNavigationView;
     DragSortListView listView;
     public SharedPreferences mPref_show_note_attribute;
+    Folder folder;
+    public static int foldersCount;
 
     public Drawer(AppCompatActivity _act, Toolbar toolbar) {
         this.act = _act;
@@ -78,8 +77,8 @@ public class Drawer {
                 menuItem.setChecked(true);
                 switch (menuItem.getItemId()) {
                     case MenuId.ADD_NEW_FOLDER:
-                        mFolderUi.renewFirstAndLast_folderId();
-                        mFolderUi.addNewFolder(act, mFolderUi.mLastExist_folderTableId + 1, mFolderUi.getAdapter());
+                        folder.renewFirstAndLast_folderId();
+                        folder.addNewFolder(act, folder.mLastExist_folderTableId + 1, folder.getAdapter());
                         return true;
 
                     case MenuId.ENABLE_FOLDER_DRAG_AND_DROP:
@@ -105,7 +104,7 @@ public class Drawer {
                                             Drawer.this.act.getResources().getString(R.string.set_enable),
                                     Toast.LENGTH_SHORT).show();
                         }
-                        mFolderUi.getAdapter().notifyDataSetChanged();
+                        folder.getAdapter().notifyDataSetChanged();
                         Drawer.this.act.invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
                         return true;
 
@@ -135,46 +134,41 @@ public class Drawer {
 
         // ActionBarDrawerToggle ties together the the proper interactions
         // between the sliding drawer and the action bar app icon
-        drawerToggle =new ActionBarDrawerToggle(act,                  /* host Activity */
+        drawerToggle = new ActionBarDrawerToggle(act,                  /* host Activity */
                 drawerLayout,         /* DrawerLayout object */
                 toolbar,  /* tool bar */
                 R.string.drawer_open,  /* "open drawer" description for accessibility */
                 R.string.drawer_close  /* "close drawer" description for accessibility */
-        )
-        {
-            public void onDrawerOpened(View drawerView)
-            {
+        ) {
+            public void onDrawerOpened(View drawerView) {
                 System.out.println("Drawer / _onDrawerOpened ");
 
-                if(act.getSupportActionBar() != null) {
+                if (act.getSupportActionBar() != null) {
                     act.getSupportActionBar().setTitle(R.string.app_name);
                     toolbar.setLogo(R.mipmap.ic_launcher); //todo Smaller icon?
                 }
 
                 act.invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
 
-                if(listView.getCount() >0) {
+                if (listView.getCount() > 0) {
                     // will call Folder_adapter _getView to update audio playing high light
                     listView.invalidateViews();
                 }
             }// onDrawerOpened
 
-            public void onDrawerClosed(View view)
-            {
-                System.out.println("Drawer / _onDrawerClosed / FolderUi.getFocus_folderPos() = " + mFolderUi.getFocus_folderPos());
+            public void onDrawerClosed(View view) {
+                System.out.println("Drawer / _onDrawerClosed / Folder.getFocus_folderPos() = " + Folder.getFocus_folderPos());
 
                 FragmentManager fragmentManager = act.getSupportFragmentManager();
-                if(fragmentManager.getBackStackEntryCount() ==0 )
-                {
+                if (fragmentManager.getBackStackEntryCount() == 0) {
                     act.invalidateOptionsMenu(); // creates a call to onPrepareOptionsMenu()
 
                     DB_drawer dB_drawer = new DB_drawer(act);
-                    if (dB_drawer.getFoldersCount(true) > 0)
-                    {
+                    if (dB_drawer.getFoldersCount(true) > 0) {
                         int pos = listView.getCheckedItemPosition();
-                        String mFolderTitle = dB_drawer.getFolderTitle(pos,true);
+                        String mFolderTitle = dB_drawer.getFolderTitle(pos, true);
 
-                        if(act.getSupportActionBar() != null) {
+                        if (act.getSupportActionBar() != null) {
                             act.getSupportActionBar().setTitle(mFolderTitle);
                             toolbar.setLogo(null);
                         }
@@ -184,11 +178,21 @@ public class Drawer {
         };
     }
 
-    public void initDrawer()
-    {
+    public void initDrawer() {
         // set a custom shadow that overlays the main content when the drawer opens
         drawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
         drawerLayout.addDrawerListener(drawerToggle);
+
+        setFoldersCount(getFoldersCount(act));
+    }
+
+    public static int getFoldersCount(AppCompatActivity act) {
+        DB_drawer dB_drawer = new DB_drawer(act);
+        return dB_drawer.getFoldersCount(true);
+    }
+
+    public static void setFoldersCount(int foldersCount) {
+        Drawer.foldersCount = foldersCount;
     }
 
     public void closeDrawer() {
@@ -199,8 +203,6 @@ public class Drawer {
         return drawerLayout.isDrawerOpen(mNavigationView);
     }
 
-    public int getFolderCount() {
-        DB_drawer dB_drawer = new DB_drawer(act);
-        return dB_drawer.getFoldersCount(true);
-    }
 }
+
+

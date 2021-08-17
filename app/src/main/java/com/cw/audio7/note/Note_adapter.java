@@ -19,17 +19,16 @@ package com.cw.audio7.note;
 import com.cw.audio7.R;
 import com.cw.audio7.db.DB_page;
 import com.cw.audio7.audio.AudioUi_note;
+import com.cw.audio7.folder.Folder;
 import com.cw.audio7.main.MainAct;
+import com.cw.audio7.tabs.TabsHost;
 import com.cw.audio7.util.audio.UtilAudio;
-import com.cw.audio7.util.image.AsyncTaskAudioBitmap;
 import com.cw.audio7.util.ColorSet;
 import com.cw.audio7.util.CustomWebView;
 import com.cw.audio7.util.Util;
-import com.cw.audio7.util.image.Images;
 
 import android.annotation.SuppressLint;
 import android.graphics.Color;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.text.Html;
 import android.text.Spannable;
@@ -52,7 +51,6 @@ import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import static com.cw.audio7.main.MainAct.audio_manager;
-import static com.cw.audio7.main.MainAct.mFolderUi;
 
 public class Note_adapter extends FragmentStatePagerAdapter implements View.OnClickListener
 {
@@ -70,7 +68,7 @@ public class Note_adapter extends FragmentStatePagerAdapter implements View.OnCl
     	act = activity;
         inflater = act.getLayoutInflater();
         mLastPosition = -1;
-	    db_page = new DB_page(act, mFolderUi.tabsHost.getCurrentPageTableId());
+	    db_page = new DB_page(act, TabsHost.getCurrentPageTableId());
 	    audioUi_note = ui;
         System.out.println("Note_adapter / constructor / mLastPosition = " + mLastPosition);
     }
@@ -90,7 +88,7 @@ public class Note_adapter extends FragmentStatePagerAdapter implements View.OnCl
     	// 1. picture group:  thumb nail
     	// 2. text group: title, body, time 
     	View pagerView = inflater.inflate(R.layout.note_view_adapter, container, false);
-    	int style = Note.getStyle();
+    	int style = NoteAct.getStyle();
         pagerView.setBackgroundColor(ColorSet.mBG_ColorArray[style]);
 
         // image view
@@ -282,10 +280,11 @@ public class Note_adapter extends FragmentStatePagerAdapter implements View.OnCl
 			} else { // first audio play
 				/** Entry: Note play */
 				System.out.println("Note_adapter / _setPrimaryItem / auto play ");
-				audio_manager.stopAudioPlayer(act);
+
+				audio_manager.stopAudioPlayer();
 
 				audioUi_note.audio_play_btn.performClick();
-				MainAct.mPlaying_folderPos = mFolderUi.getFocus_folderPos();
+				MainAct.mPlaying_folderPos = Folder.getFocus_folderPos();
 			}
 
 		}
@@ -300,7 +299,7 @@ public class Note_adapter extends FragmentStatePagerAdapter implements View.OnCl
     // Get HTML string with view port
     private String getHtmlStringWithViewPort(int position, int viewPort)
     {
-    	int mStyle = Note.mStyle;
+    	int mStyle = NoteAct.mStyle;
     	
     	System.out.println("Note_adapter / _getHtmlStringWithViewPort");
     	String strTitle = db_page.getNoteTitle(position,true);
