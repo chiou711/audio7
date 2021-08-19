@@ -26,7 +26,7 @@ import java.util.Objects;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import static com.cw.audio7.main.MainAct.audio_manager;
+import static com.cw.audio7.audio.BackgroundAudioService.audio_manager;
 
 /**
  * Audio Url verification task

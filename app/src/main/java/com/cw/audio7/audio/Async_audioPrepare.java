@@ -25,8 +25,7 @@ import android.os.AsyncTask;
 import android.widget.Toast;
 
 import java.util.Objects;
-
-import static com.cw.audio7.main.MainAct.audio_manager;
+import static com.cw.audio7.audio.BackgroundAudioService.audio_manager;
 
 /***************************************************************
  * 

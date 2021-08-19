@@ -25,7 +25,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cw.audio7.R;
-import com.cw.audio7.folder.Folder;
 import com.cw.audio7.tabs.TabsHost;
 import com.cw.audio7.util.Util;
 import com.cw.audio7.util.preferences.Pref;
@@ -34,7 +33,7 @@ import java.util.Locale;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import static com.cw.audio7.main.MainAct.audio_manager;
+import static com.cw.audio7.audio.BackgroundAudioService.audio_manager;
 
 /**
  * Created by cw on 2017/10/21.

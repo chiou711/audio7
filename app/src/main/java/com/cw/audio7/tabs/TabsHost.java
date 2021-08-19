@@ -69,7 +69,7 @@ import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
 
-import static com.cw.audio7.main.MainAct.audio_manager;
+import static com.cw.audio7.audio.BackgroundAudioService.audio_manager;
 
 public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTabSelectedListener
 {

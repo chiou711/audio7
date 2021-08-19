@@ -43,7 +43,7 @@ import com.cw.audio7.util.preferences.Pref;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
-import static com.cw.audio7.main.MainAct.audio_manager;
+import static com.cw.audio7.audio.BackgroundAudioService.audio_manager;
 
 public class DeletePages extends Fragment {
     TextView title;

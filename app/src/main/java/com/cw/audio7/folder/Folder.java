@@ -51,9 +51,7 @@ import java.util.List;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentTransaction;
-
-import static com.cw.audio7.main.MainAct.audio_manager;
-
+import static com.cw.audio7.audio.BackgroundAudioService.audio_manager;
 
 /**
  * Created by CW on 2016/8/23.

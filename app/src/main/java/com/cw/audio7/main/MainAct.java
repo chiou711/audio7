@@ -32,7 +32,6 @@ import com.cw.audio7.folder.Folder;
 import com.cw.audio7.note.NoteAct;
 import com.cw.audio7.note_add.Add_note_option;
 import com.cw.audio7.note_add.add_audio.Add_audio_all;
-import com.cw.audio7.audio.Audio_manager;
 import com.cw.audio7.audio.BackgroundAudioService;
 import com.cw.audio7.operation.delete.DeleteFolders;
 import com.cw.audio7.operation.delete.DeletePages;
@@ -80,6 +79,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import static android.os.Build.VERSION_CODES.M;
+import static com.cw.audio7.audio.BackgroundAudioService.audio_manager;
 import static com.cw.audio7.define.Define.ENABLE_MEDIA_CONTROLLER;
 
 public class MainAct extends AppCompatActivity implements FragmentManager.OnBackStackChangedListener
@@ -100,7 +100,6 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
 
     public Drawer drawer;
     public Folder folder;
-    public static Audio_manager audio_manager;
 
 	// Main Act onCreate
     @Override

@@ -33,7 +33,7 @@ import com.mobeta.android.dslv.SimpleDragSortCursorAdapter;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import static com.cw.audio7.main.MainAct.audio_manager;
+import static com.cw.audio7.audio.BackgroundAudioService.audio_manager;
 
 /**
  * Created by cw on 2017/10/6.

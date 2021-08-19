@@ -30,24 +30,9 @@ import android.app.Activity;
 import android.media.MediaPlayer;
 import android.net.Uri;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import static com.cw.audio7.main.MainAct.audio_manager;
-
-//import static android.content.Context.TELEPHONY_SERVICE;
+import static com.cw.audio7.audio.BackgroundAudioService.audio_manager;
 
 public class UtilAudio {
-
-//	public static void setPhoneListener(AppCompatActivity act)
-//	{
-//		System.out.println("UtilAudio/ _setPhoneListener");
-//
-//		// To Registers a listener object to receive notification when incoming call
-//		TelephonyManager telMgr = (TelephonyManager) act.getSystemService(TELEPHONY_SERVICE);
-//		if (telMgr != null) {
-//			telMgr.listen(UtilAudio.phoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
-//		}
-//	}
 
     public static void stopAudioIfNeeded(TabsHost tabsHost)
     {

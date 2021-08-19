@@ -63,8 +63,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import static com.cw.audio7.db.DB_page.KEY_NOTE_AUDIO_URI;
 import static com.cw.audio7.db.DB_page.KEY_NOTE_MARKING;
-import static com.cw.audio7.main.MainAct.audio_manager;
 import static com.cw.audio7.page.Page.swapRows;
+import static com.cw.audio7.audio.BackgroundAudioService.audio_manager;
 
 // Pager adapter
 public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>

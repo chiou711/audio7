@@ -41,7 +41,6 @@ import androidx.media.MediaBrowserServiceCompat;
 import androidx.media.session.MediaButtonReceiver;
 
 import static com.cw.audio7.define.Define.ENABLE_MEDIA_CONTROLLER;
-import static com.cw.audio7.main.MainAct.audio_manager;
 import static com.cw.audio7.main.MainAct.mMediaControllerCompat;
 
 // AudioManager.OnAudioFocusChangeListener: added in API level 8
@@ -62,7 +61,9 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat
     // for differentiate Pause source: manual or focus change
     private boolean isPausedByButton;
 
-//    boolean enDbgMsg = true;
+    public static Audio_manager audio_manager;
+
+    //    boolean enDbgMsg = true;
     boolean enDbgMsg = false;
 
     public static PlaybackStateCompat.Builder playbackStateBuilder;
