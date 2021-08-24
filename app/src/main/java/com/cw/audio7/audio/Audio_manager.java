@@ -77,7 +77,8 @@ public class Audio_manager
 		/**
 		 * Continue mode runnable
 		 */
-		audio_runnable = new Runnable() {
+		if(audio_runnable == null)
+			audio_runnable = new Runnable() {
 			@Override
 			public void run() {
 //				System.out.println("Audio_manager / _audio_runnable");
@@ -280,8 +281,10 @@ public class Audio_manager
         setPlayerState(PLAYER_AT_STOP);
 
         //hide notification
-	    if(ENABLE_MEDIA_CONTROLLER)
-            NotificationManagerCompat.from(act).cancel(BackgroundAudioService.notification_id);
+	    if(ENABLE_MEDIA_CONTROLLER) {
+	    	if(act != null)
+		        NotificationManagerCompat.from(act).cancel(BackgroundAudioService.notification_id);
+	    }
 
 	    removeRunnable();
     }
@@ -336,7 +339,7 @@ public class Audio_manager
    }
    
 	// Set up audio list
-	public void setupAudioList(AppCompatActivity act)
+	public void setupAudioList()
 	{
 		audioList = new ArrayList<>();
 		audioList_checked = new ArrayList<>();
@@ -346,7 +349,7 @@ public class Audio_manager
 		setTogglePlayerState(false);
 		setPlayNext(false);
 
-		DB_page db_page = new DB_page(act, TabsHost.getCurrentPageTableId());
+		DB_page db_page = new DB_page(TabsHost.getCurrentPageTableId());
 
 		int notesCount =  db_page.getNotesCount(true);
 		setPlayingPage_notesCount(notesCount);

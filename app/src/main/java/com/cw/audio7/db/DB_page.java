@@ -21,7 +21,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
-import java.util.Date;
+
+import static com.cw.audio7.main.MainAct.dbHelper;
 
 
 /**
@@ -30,9 +31,6 @@ import java.util.Date;
  */
 public class DB_page
 {
-
-    final private Context context;
-    private static DatabaseHelper dbHelper;
     private SQLiteDatabase sqlDb;
 
 	// Table name format: Page1_2
@@ -53,9 +51,8 @@ public class DB_page
     private static int mTableId_page;
 
     /** Constructor */
-	public DB_page(Context context, int pageTableId)
+	public DB_page(int pageTableId)
 	{
-		this.context = context;
 		setFocusPage_tableId(pageTableId);
 	}
 
@@ -65,8 +62,6 @@ public class DB_page
      */
 	public DB_page open() throws SQLException
 	{
-		dbHelper = new DatabaseHelper(context);
-
 		// Will call DatabaseHelper.onCreate()first time when WritableDatabase is not created yet
 		sqlDb = dbHelper.getWritableDatabase();
 

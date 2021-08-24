@@ -28,6 +28,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.provider.BaseColumns;
 import android.widget.Toast;
 
+import static com.cw.audio7.main.MainAct.dbHelper;
+
 /**
  *  Data Base Class for Drawer
  *
@@ -36,7 +38,6 @@ public class DB_drawer
 {
 
     final private Context context;
-    private DatabaseHelper dbHelper;
     private SQLiteDatabase sqlDb;
 
     // Table name format: Drawer
@@ -66,12 +67,15 @@ public class DB_drawer
      */
 	public DB_drawer open() throws SQLException
 	{
-		dbHelper = new DatabaseHelper(context);
-
 		// Will call DatabaseHelper.onCreate()first time when WritableDatabase is not created yet
-		sqlDb = dbHelper.getWritableDatabase();
-        cursor_folder = this.getFolderCursor();
-		return DB_drawer.this;
+		try {
+			sqlDb = dbHelper.getWritableDatabase();
+			cursor_folder = this.getFolderCursor();
+			return DB_drawer.this;
+		} catch (Exception e){
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	public void close()
@@ -221,7 +225,11 @@ public class DB_drawer
     {
         if(enDbOpenClose)
             this.open();
-    	int count = cursor_folder.getCount();
+
+        int count = 0;
+        if(cursor_folder != null)
+	        count = cursor_folder.getCount();
+
         if(enDbOpenClose)
             this.close();
     	return count;

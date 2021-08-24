@@ -275,7 +275,7 @@ public class AudioUi_note
 
             audio_manager.audio7Player.setAudioPanel(audioPanel);
 
-            audio_manager.setupAudioList(act);
+            audio_manager.setupAudioList();
             audio_manager.audio7Player.runAudioState();
         }
     }

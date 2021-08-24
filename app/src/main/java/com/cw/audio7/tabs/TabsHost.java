@@ -151,7 +151,7 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
             mTabsPagerAdapter = new TabsPagerAdapter(act, act.getSupportFragmentManager());
 
         // add pages to mTabsPagerAdapter
-        if ( Drawer.getFoldersCount(act) > 0) {
+        if ( (act != null) && Drawer.getFoldersCount(act) > 0) {
             pageCount = addPages(mTabsPagerAdapter);
         }
 
@@ -611,7 +611,7 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
      */
     void editPageTitle(final int tabPos, final AppCompatActivity act)
     {
-        final DB_folder mDbFolder = new DB_folder(act,Folder.getFocus_folderTableId());
+        final DB_folder mDbFolder = new DB_folder(Folder.getFocus_folderTableId());
 
         // get tab name
         String title = mDbFolder.getPageTitle(tabPos, true);
@@ -795,7 +795,7 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
     static String getFooterMessage(AppCompatActivity mAct)
     {
         int pageTableId = Pref.getPref_focusView_page_tableId(mAct);
-        DB_page mDb_page = new DB_page(mAct, pageTableId);
+        DB_page mDb_page = new DB_page(pageTableId);
         return mAct.getResources().getText(R.string.footer_checked).toString() +
                 "/" +
                 mAct.getResources().getText(R.string.footer_total).toString() +

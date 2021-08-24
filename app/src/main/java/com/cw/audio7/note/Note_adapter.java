@@ -68,7 +68,7 @@ public class Note_adapter extends FragmentStatePagerAdapter implements View.OnCl
     	act = activity;
         inflater = act.getLayoutInflater();
         mLastPosition = -1;
-	    db_page = new DB_page(act, TabsHost.getCurrentPageTableId());
+	    db_page = new DB_page(TabsHost.getCurrentPageTableId());
 	    audioUi_note = ui;
         System.out.println("Note_adapter / constructor / mLastPosition = " + mLastPosition);
     }

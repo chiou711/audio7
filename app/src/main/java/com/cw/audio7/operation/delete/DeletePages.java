@@ -169,7 +169,7 @@ public class DeletePages extends Fragment {
 
 	void doDeletePages()
     {
-        DB_folder mDbFolder = new DB_folder(act,DB_folder.getFocusFolder_tableId());
+        DB_folder mDbFolder = new DB_folder(DB_folder.getFocusFolder_tableId());
         mDbFolder.open();
         for(int i = 0; i< list_selPage.count; i++)
         {

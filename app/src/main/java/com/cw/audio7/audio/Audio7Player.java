@@ -104,7 +104,7 @@ public class Audio7Player
                     audio_manager.mAudioPos++;
                     audioUrl = audio_manager.getAudioStringAt(audio_manager.mAudioPos);
 
-                    if(audio_manager.mAudioPos >= tabsHost.getCurrentPage().getNotesCountInPage(act))
+                    if(audio_manager.mAudioPos >= tabsHost.getCurrentPage().getNotesCountInPage())
                         break;
 				}
 

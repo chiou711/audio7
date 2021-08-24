@@ -500,7 +500,7 @@ public class Folder
         Pref.removePref_focusView_page_tableId_key(act, folderTableId);
 
         // 1) delete related page table
-        DB_folder dbFolder = new DB_folder(act, folderTableId);
+        DB_folder dbFolder = new DB_folder(folderTableId);
         int pgsCnt = dbFolder.getPagesCount(true);
         for (int i = 0; i < pgsCnt; i++) {
             int pageTableId = dbFolder.getPageTableId(i, true);
@@ -640,7 +640,7 @@ public class Folder
         int pagesCount;
         try {
             int focusFolder_tableId = dB_drawer.getFolderTableId(folderPos, true);
-            DB_folder db_folder = new DB_folder(act, focusFolder_tableId);
+            DB_folder db_folder = new DB_folder(focusFolder_tableId);
             db_folder.open();
             pagesCount = db_folder.getPagesCount(false);
 //            System.out.println("Folder / _getFolder_pagesCount / pagesCount = " + pagesCount);
@@ -670,7 +670,7 @@ public class Folder
             System.out.println("--- folder table Id = " + folderTableId +
                     ", folder title = " + folderTitle);
 
-            DB_folder db_folder = new DB_folder(act,folderTableId);
+            DB_folder db_folder = new DB_folder(folderTableId);
 
             int pagesCount = db_folder.getPagesCount(true);
 
@@ -685,7 +685,7 @@ public class Folder
                 System.out.println("   --- page title = " + pageTitle);
 
                 try {
-                    DB_page db_page = new DB_page(act,pageTableId);
+                    DB_page db_page = new DB_page(pageTableId);
                     db_page.open();
                     db_page.close();
                 } catch (Exception e) {
@@ -814,7 +814,7 @@ public class Folder
                 {
                     for(int i = 1; i<= Define.INITIAL_PAGES_COUNT; i++)
                     {
-                        DB_folder dB_folder = new DB_folder(act,newTableId);
+                        DB_folder dB_folder = new DB_folder(newTableId);
                         int style = Util.getNewPageStyle(act);
                         dB_folder.insertPage(DB_folder.getFocusFolder_tableName(),
                                 Define.getTabTitle(act,1),

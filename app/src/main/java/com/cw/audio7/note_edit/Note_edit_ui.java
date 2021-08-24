@@ -90,7 +90,7 @@ public class Note_edit_ui {
 	    thumbImage = (TouchImageView)act.findViewById(R.id.thumb_image);
         progressBarThumb = (ProgressBar) act.findViewById(R.id.progress_bar_thumb);
 
-		DB_folder dbFolder = new DB_folder(act, Pref.getPref_focusView_folder_tableId(act));
+		DB_folder dbFolder = new DB_folder(Pref.getPref_focusView_folder_tableId(act));
 		style = dbFolder.getPageStyle(TabsHost.getFocus_tabPos(), true);
 
 		thumbImage = (TouchImageView)act.findViewById(R.id.thumb_image);
@@ -107,7 +107,7 @@ public class Note_edit_ui {
 	private void UI_init_text()
 	{
         int focusFolder_tableId = Pref.getPref_focusView_folder_tableId(act);
-        DB_folder db = new DB_folder(act, focusFolder_tableId);
+        DB_folder db = new DB_folder(focusFolder_tableId);
 		style = db.getPageStyle(TabsHost.getFocus_tabPos(), true);
 
 		LinearLayout block = (LinearLayout) act.findViewById(R.id.edit_title_block);

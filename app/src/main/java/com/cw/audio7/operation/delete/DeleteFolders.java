@@ -143,7 +143,7 @@ public class DeleteFolders extends Fragment {
                 DB_drawer db_drawer = new DB_drawer(act);
 
                 int focusFolder_tableId = Pref.getPref_focusView_folder_tableId(act);
-                DB_folder db_folder = new DB_folder(act,focusFolder_tableId);
+                DB_folder db_folder = new DB_folder(focusFolder_tableId);
                 if((db_drawer.getFoldersCount(true) == 0) || (db_folder.getPagesCount(true) == 0))
                 {
                     System.out.println("DeleteFolders / _btnSelPageCancel / will call MainAct");
@@ -209,7 +209,7 @@ public class DeleteFolders extends Fragment {
                 Pref.removePref_focusView_page_tableId_key(act, folderTableId);
 
                 // 1) delete related page tables
-                DB_folder dbFolder = new DB_folder(act, folderTableId);
+                DB_folder dbFolder = new DB_folder(folderTableId);
                 int pgsCnt = dbFolder.getPagesCount(true);
                 for (int j = 0; j < pgsCnt; j++) {
                     int pageTableId = dbFolder.getPageTableId(j, true);

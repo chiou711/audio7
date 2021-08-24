@@ -25,6 +25,7 @@ import com.cw.audio7.folder.Folder;
 import com.cw.audio7.main.MainAct;
 import com.cw.audio7.R;
 import com.cw.audio7.db.DB_drawer;
+import com.cw.audio7.tabs.TabsHost;
 import com.cw.audio7.util.ColorSet;
 import com.cw.audio7.util.Util;
 import com.cw.audio7.util.preferences.Pref;
@@ -304,8 +305,8 @@ public class Config extends Fragment
 			//set last tab Id to 0, otherwise TabId will not start from 0 when deleting all
 			//reset tab Index to 0
 			//fix: select tab over next import amount => clean all => import => export => error
-			folder.tabsHost.setFocus_tabPos(0);
-			folder.setFocus_folderPos(0);
+			TabsHost.setFocus_tabPos(0);
+			Folder.setFocus_folderPos(0);
 
 			// remove focus view folder table Id key
 			Pref.removePref_focusView_folder_tableId_key(getActivity());

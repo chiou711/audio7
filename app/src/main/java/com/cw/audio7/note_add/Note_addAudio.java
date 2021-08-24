@@ -62,7 +62,7 @@ public class Note_addAudio extends AppCompatActivity {
             (Long) savedInstanceState.getSerializable(DB_page.KEY_NOTE_ID);
 
         // get audio Uri in DB if instance is not null
-		dB = new DB_page(this, TabsHost.getCurrentPageTableId());
+		dB = new DB_page(TabsHost.getCurrentPageTableId());
         if(savedInstanceState != null)
         {
 	        System.out.println("Note_addAudio / noteId =  " + noteId);
@@ -116,7 +116,7 @@ public class Note_addAudio extends AppCompatActivity {
 		{
             setContentView(R.layout.note_add_prepare);
             progress = findViewById(R.id.add_audio_progress);//must add this, otherwise text view is not updated
-            dB = new DB_page(this, TabsHost.getCurrentPageTableId());
+            dB = new DB_page(TabsHost.getCurrentPageTableId());
 
 			// for audio
 			if(requestCode == Util.CHOOSER_SET_AUDIO)
@@ -178,7 +178,7 @@ public class Note_addAudio extends AppCompatActivity {
 					if( (dB.getNotesCount(true) > 0) &&
 		        		option.equalsIgnoreCase("single_to_top"))
 		        	{
-		        		Page.swapTopBottom(this);
+		        		Page.swapTopBottom();
 		        		//update playing focus
 						audio_manager.mAudioPos++;
 		        	}
@@ -247,7 +247,7 @@ public class Note_addAudio extends AppCompatActivity {
                             if( (dB.getNotesCount(true) > 0) &&
                                     option.equalsIgnoreCase("directory_to_top") )
                             {
-                                Page.swapTopBottom(this);
+                                Page.swapTopBottom();
                                 //update playing focus
                                 audio_manager.mAudioPos++;
                             }
@@ -279,7 +279,7 @@ public class Note_addAudio extends AppCompatActivity {
 
 	        	// to avoid exception due to playing tab is different with focus tab
 				if(audio_manager.isOnAudioPlayingPage())
-					audio_manager.setupAudioList(this);
+					audio_manager.setupAudioList();
 
 	        	finish();
 			}

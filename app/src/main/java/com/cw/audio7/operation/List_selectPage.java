@@ -65,7 +65,7 @@ public class List_selectPage
         int pos = listView.getCheckedItemPosition();
         mFolderTitle = dB_drawer.getFolderTitle(pos,true);
 
-        mDb_folder = new DB_folder(mAct, Pref.getPref_focusView_folder_tableId(mAct));
+        mDb_folder = new DB_folder(Pref.getPref_focusView_folder_tableId(mAct));
 
         // checked Text View: select all
         mCheckTvSelAll = (CheckedTextView) rootView.findViewById(R.id.chkSelectAllPages);

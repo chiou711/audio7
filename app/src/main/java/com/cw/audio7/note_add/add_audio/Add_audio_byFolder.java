@@ -237,7 +237,7 @@ public class Add_audio_byFolder extends ListFragment
                     // get current Max page table Id
                     int currentMaxPageTableId = 0;
                     int pagesCount = folder.getFolder_pagesCount(act, Folder.getFocus_folderPos());
-                    DB_folder db_folder = new DB_folder(act, DB_folder.getFocusFolder_tableId());
+                    DB_folder db_folder = new DB_folder(DB_folder.getFocusFolder_tableId());
 
                     for (int i = 0; i < pagesCount; i++) {
                         int id = db_folder.getPageTableId(i, true);
@@ -435,7 +435,7 @@ public class Add_audio_byFolder extends ListFragment
                 if (!file.isDirectory() && UtilAudio.hasAudioExtension(file) ) {
                     String uriStr = "file://".concat(file.getPath());
 
-                    DB_page dB = new DB_page(getActivity(), tabsHost.getCurrentPageTableId());
+                    DB_page dB = new DB_page(TabsHost.getCurrentPageTableId());
                     if( !Util.isEmptyString(uriStr))
                     {
                         // insert

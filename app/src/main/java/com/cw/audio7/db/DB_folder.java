@@ -23,6 +23,7 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 
 import java.util.Date;
+import static com.cw.audio7.main.MainAct.dbHelper;
 
 /**
  *  Data Base Class for Folder
@@ -31,8 +32,6 @@ import java.util.Date;
 public class DB_folder
 {
 
-    final private Context context;
-    private DatabaseHelper dbHelper;
     public SQLiteDatabase sqlDb;
 
 	// Table name format: Folder1
@@ -56,9 +55,7 @@ public class DB_folder
 	private static int mTableId_folder;
 
     /** Constructor */
-	public DB_folder(Context context, int folderTableId)
-	{
-		this.context = context;
+	public DB_folder(int folderTableId) {
 		setFocusFolder_tableId(folderTableId);
 	}
 
@@ -68,8 +65,6 @@ public class DB_folder
      */
 	public DB_folder open() throws SQLException
 	{
-		dbHelper = new DatabaseHelper(context);
-
 		// Will call DatabaseHelper.onCreate()first time when WritableDatabase is not created yet
 		sqlDb = dbHelper.getWritableDatabase();
 

@@ -34,7 +34,7 @@ import com.cw.audio7.tabs.TabsHost;
 import com.cw.audio7.util.image.ImageCache;
 import com.cw.audio7.util.image.ImageFetcher;
 import com.cw.audio7.util.preferences.Pref;
-import com.cw.audio7.util.uil.UilCommon;
+//import com.cw.audio7.util.uil.UilCommon;
 
 import java.util.Objects;
 
@@ -128,7 +128,7 @@ public class Page extends Fragment implements OnStartDragListener {
         itemDecorator.setDrawable(Objects.requireNonNull(ContextCompat.getDrawable(getContext(), R.drawable.divider)));
         recyclerView.addItemDecoration(itemDecorator);
 
-        UilCommon.init();
+//        UilCommon.init();
 
         fillData();
 
@@ -259,9 +259,9 @@ public class Page extends Fragment implements OnStartDragListener {
         dB_page.close();
     }
 
-    static public void swapTopBottom(AppCompatActivity _act)
+    static public void swapTopBottom()
     {
-        DB_page dB_page = new DB_page(  _act ,DB_page.getFocusPage_tableId());
+        DB_page dB_page = new DB_page(DB_page.getFocusPage_tableId());
         int startCursor = dB_page.getNotesCount(true)-1;
         int endCursor = 0;
 
@@ -278,10 +278,10 @@ public class Page extends Fragment implements OnStartDragListener {
     }
 
 
-    public int getNotesCountInPage(AppCompatActivity act)
+    public int getNotesCountInPage()
     {
-        int page_table_id = tabsHost.getCurrentPageTableId();
-        DB_page db_page = new DB_page(act,page_table_id );
+        int page_table_id = TabsHost.getCurrentPageTableId();
+        DB_page db_page = new DB_page(page_table_id );
         int count = db_page.getNotesCount(true);
         return count;
     }

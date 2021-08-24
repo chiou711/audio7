@@ -278,7 +278,7 @@ public class Add_audio_all extends Fragment
         int currentMaxPageTableId = 0;
         int pagesCount = folder.getFolder_pagesCount(act, Folder.getFocus_folderPos());
 
-        DB_folder db_folder = new DB_folder(act, DB_folder.getFocusFolder_tableId());
+        DB_folder db_folder = new DB_folder(DB_folder.getFocusFolder_tableId());
         for (int i = 0; i < pagesCount; i++) {
             int id = db_folder.getPageTableId(i, true);
             if (id > currentMaxPageTableId)
@@ -307,11 +307,11 @@ public class Add_audio_all extends Fragment
     {
             int currPageTableId;
             if(tabsHost != null)
-                currPageTableId = tabsHost.getCurrentPageTableId();
+                currPageTableId = TabsHost.getCurrentPageTableId();
             else
                 currPageTableId = Pref.getPref_focusView_page_tableId(act);
 
-            DB_page dB = new DB_page(act, currPageTableId);
+            DB_page dB = new DB_page(currPageTableId);
             // insert
             if (!Util.isEmptyString(audioUri))
                 dB.insertNote("", audioUri, "", 1);// add new note, get return row Id

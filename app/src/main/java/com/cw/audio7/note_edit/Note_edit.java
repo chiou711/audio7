@@ -65,7 +65,7 @@ public class Note_edit extends AppCompatActivity
 	    System.out.println("Note_edit / onCreate");
 
         // check note count first
-	    dB = new DB_page(this, TabsHost.getCurrentPageTableId());
+	    dB = new DB_page(TabsHost.getCurrentPageTableId());
 
         if(dB.getNotesCount(true) ==  0)
         {
@@ -157,7 +157,7 @@ public class Note_edit extends AppCompatActivity
 
 
 								if(audio_manager.isOnAudioPlayingPage())
-									audio_manager.setupAudioList(Note_edit.this);
+									audio_manager.setupAudioList();
 
 								// Stop Play/Pause if current edit item is played and is not at Stop state
 								if(Page.mHighlightPosition == position)

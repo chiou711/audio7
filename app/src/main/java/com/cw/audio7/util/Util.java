@@ -214,7 +214,7 @@ public class Util
     	
     	// folder
     	int folderTableId = Pref.getPref_focusView_folder_tableId(mContext);
-    	mDbFolder = new DB_folder(mContext, folderTableId);
+    	mDbFolder = new DB_folder(folderTableId);
 
     	// page
     	int tabCount = checkedTabs.size();
@@ -304,7 +304,7 @@ public class Util
     // add mark to current page
 	public void addMarkToCurrentPage(AppCompatActivity act,DialogInterface dialogInterface,final int action)
 	{
-		mDbFolder = new DB_folder(act, Pref.getPref_focusView_folder_tableId(act));
+		mDbFolder = new DB_folder(Pref.getPref_focusView_folder_tableId(act));
 	    ListView listView = ((AlertDialog) dialogInterface).getListView();
 	    final ListAdapter originalAdapter = listView.getAdapter();
 	    final int style = Util.getCurrentPageStyle(act, TabsHost.getFocus_tabPos());
@@ -449,7 +449,7 @@ public class Util
 	static public int getCurrentPageStyle(AppCompatActivity act,int page_pos)
 	{
         int focusFolder_tableId = Pref.getPref_focusView_folder_tableId(act);
-        DB_folder db = new DB_folder(act, focusFolder_tableId);
+        DB_folder db = new DB_folder(focusFolder_tableId);
         return db.getPageStyle(page_pos, true);
 	}
 
@@ -487,7 +487,7 @@ public class Util
 		int pageTableId = folder.tabsHost.mTabsPagerAdapter.getItem(tabPos).page_tableId;
 		List<Long> noteIdArray = new ArrayList<>();
 
-		DB_page dbPage = new DB_page(act, pageTableId);
+		DB_page dbPage = new DB_page(pageTableId);
         dbPage.open();
 
         int count = dbPage.getNotesCount(false);
@@ -551,7 +551,7 @@ public class Util
 
 				if(i==0)
 				{
-					DB_folder db_folder = new DB_folder(act, Pref.getPref_focusView_folder_tableId(act));
+					DB_folder db_folder = new DB_folder(Pref.getPref_focusView_folder_tableId(act));
 					sentString = sentString.concat(NEW_LINE + PAGE_TAG_B );
 					sentString = sentString.concat(NEW_LINE + PAGE_NAME_TAG_B + db_folder.getCurrentPageTitle() + PAGE_NAME_TAG_E );
 				}

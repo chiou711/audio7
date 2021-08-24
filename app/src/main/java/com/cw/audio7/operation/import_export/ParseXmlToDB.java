@@ -38,10 +38,10 @@ public class ParseXmlToDB {
 
     private String pageName,title,body,audio;
     private DB_folder mDb_folder;
-    private DB_page mDb_page;
+    private final DB_page mDb_page;
 
-    private Context mContext;
-   
+    private final Context mContext;
+
     private FileInputStream fileInputStream = null;
     public static boolean isParsing;
     String fileBody = "";
@@ -57,9 +57,9 @@ public class ParseXmlToDB {
         this.fileInputStream = fileInputStream;
 
         folderTableId = Pref.getPref_focusView_folder_tableId(mContext);
-        mDb_folder = new DB_folder(act, folderTableId);
+        mDb_folder = new DB_folder(folderTableId);
 
-        mDb_page = new DB_page(act, TabsHost.getCurrentPageTableId());
+        mDb_page = new DB_page(TabsHost.getCurrentPageTableId());
 
         isParsing = true;
     }
@@ -165,7 +165,7 @@ public class ParseXmlToDB {
                                 int style = Util.getNewPageStyle(mContext);
 
                                 // get last page table Id
-                                mDb_folder = new DB_folder(act,Pref.getPref_focusView_folder_tableId(mContext));
+                                mDb_folder = new DB_folder(Pref.getPref_focusView_folder_tableId(mContext));
                                 int lastPageTableId = 0;
                                 for(int i=0; i<mDb_folder.getPagesCount(true); i++)
                                 {

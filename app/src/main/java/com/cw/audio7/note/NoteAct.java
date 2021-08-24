@@ -48,7 +48,7 @@ import com.cw.audio7.util.audio.UtilAudio;
 import com.cw.audio7.util.image.ImageCache;
 import com.cw.audio7.util.image.ImageFetcher;
 import com.cw.audio7.util.preferences.Pref;
-import com.cw.audio7.util.uil.UilCommon;
+//import com.cw.audio7.util.uil.UilCommon;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
@@ -110,7 +110,7 @@ public class NoteAct extends AppCompatActivity
 		mEntryPosition = arguments.getInt("POSITION");
 		NoteUi.setFocus_notePos(mEntryPosition);
 
-		DB_page db_page = new DB_page(this, TabsHost.getCurrentPageTableId());
+		DB_page db_page = new DB_page(TabsHost.getCurrentPageTableId());
 		NoteUi.setNotesCnt(db_page.getNotesCount(true));
 
 		act = (AppCompatActivity) this;
@@ -195,17 +195,18 @@ public class NoteAct extends AppCompatActivity
 
 		mPref_show_note_attribute = act.getSharedPreferences("show_note_attribute", 0);
 
-		UilCommon.init();
+//		UilCommon.init();
 
 		// DB
-		DB_folder dbFolder = new DB_folder(act,Pref.getPref_focusView_folder_tableId(act));
+		DB_folder dbFolder = new DB_folder(Pref.getPref_focusView_folder_tableId(act));
 
 		{
 			mStyle = dbFolder.getPageStyle(TabsHost.getFocus_tabPos(), true);
-			mDb_page = new DB_page(act, TabsHost.getCurrentPageTableId());
+			mDb_page = new DB_page(TabsHost.getCurrentPageTableId());
 
 			if (mDb_page != null) {
-				mNoteId = mDb_page.getNoteId(NoteUi.getFocus_notePos(), true);
+				if(mNoteId == null)
+					mNoteId = mDb_page.getNoteId(NoteUi.getFocus_notePos(), true);
 				mAudioUriInDB = mDb_page.getNoteAudioUri_byId(mNoteId);
 			}
 		}
@@ -398,7 +399,7 @@ public class NoteAct extends AppCompatActivity
                 return true;
 
 	        case MenuId.VIEW_NOTE_CHECK:
-		        int markingNow = PageAdapter.toggleNoteMarking(act,NoteUi.getFocus_notePos());
+		        int markingNow = PageAdapter.toggleNoteMarking(NoteUi.getFocus_notePos());
 
 		        // update marking
 		        if(markingNow == 1)

@@ -27,6 +27,7 @@ import com.cw.audio7.config.About;
 import com.cw.audio7.config.Config;
 import com.cw.audio7.db.DB_folder;
 import com.cw.audio7.db.DB_page;
+import com.cw.audio7.db.DatabaseHelper;
 import com.cw.audio7.drawer.Drawer;
 import com.cw.audio7.folder.Folder;
 import com.cw.audio7.note.NoteAct;
@@ -39,6 +40,7 @@ import com.cw.audio7.page.Checked_notes_option;
 import com.cw.audio7.operation.import_export.Export_toSDCardFragment;
 import com.cw.audio7.operation.import_export.Import_filesList;
 import com.cw.audio7.db.DB_drawer;
+import com.cw.audio7.tabs.TabsHost;
 import com.cw.audio7.util.Dialog_EULA;
 import com.cw.audio7.util.image.UtilImage;
 import com.cw.audio7.define.Define;
@@ -101,7 +103,10 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
     public Drawer drawer;
     public Folder folder;
 
-	// Main Act onCreate
+    public static DatabaseHelper dbHelper;
+
+
+    // Main Act onCreate
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -429,7 +434,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
             // check if DB is empty
             DB_drawer db_drawer = new DB_drawer(this);
             int focusFolder_tableId = Pref.getPref_focusView_folder_tableId(this);
-            DB_folder db_folder = new DB_folder(this,focusFolder_tableId);
+            DB_folder db_folder = new DB_folder(focusFolder_tableId);
             if((db_drawer.getFoldersCount(true) == 0) ||
                (db_folder.getPagesCount(true) == 0)      )
             {
@@ -493,11 +498,14 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
 //                DB_page.setFocusPage_tableId(Pref.getPref_focusView_page_tableId(this));
 //            }//if(ENABLE_DB_CHECK)
 
+            dbHelper = new DatabaseHelper(this);
+
             if(bEULA_accepted)
                 configLayoutView(); //createAssetsFile inside
 
             if(drawer != null)
                 drawer.drawerToggle.syncState();
+
         }
     }
 
@@ -542,7 +550,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
 
             if(isStorageRequestedExport)
             {
-                DB_folder dB_folder = new DB_folder(this, Pref.getPref_focusView_folder_tableId(this));
+                DB_folder dB_folder = new DB_folder(Pref.getPref_focusView_folder_tableId(this));
                 if (dB_folder.getPagesCount(true) > 0) {
                     Export_toSDCardFragment exportFragment = new Export_toSDCardFragment(this,folder);
                     transaction.setCustomAnimations(R.anim.fragment_slide_in_left, R.anim.fragment_slide_out_left, R.anim.fragment_slide_in_right, R.anim.fragment_slide_out_right);
@@ -795,7 +803,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                 int pageTableId = Pref.getPref_focusView_page_tableId(this);
 
                 if(pageTableId > 0) {
-                    DB_page dB_page = new DB_page(this, pageTableId);
+                    DB_page dB_page = new DB_page(pageTableId);
                     try {
                         notesCnt = dB_page.getNotesCount(true);
                     } catch (Exception e) {
@@ -940,7 +948,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
         //System.out.println("MainAct / _onOptionsItemSelected");
         setMenuUiState(item.getItemId());
         DB_drawer dB_drawer = new DB_drawer(this);
-        DB_folder dB_folder = new DB_folder(this, Pref.getPref_focusView_folder_tableId(this));
+        DB_folder dB_folder = new DB_folder(Pref.getPref_focusView_folder_tableId(this));
 //        DB_page dB_page = new DB_page(this,Pref.getPref_focusView_page_tableId(this));
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -1132,7 +1140,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                 // get current Max page table Id
                 int currentMaxPageTableId = 0;
                 int pgCnt = folder.getFolder_pagesCount(this, folder.getFocus_folderPos());
-                DB_folder db_folder = new DB_folder(this,DB_folder.getFocusFolder_tableId());
+                DB_folder db_folder = new DB_folder(DB_folder.getFocusFolder_tableId());
 
                 for(int i=0;i< pgCnt;i++)
                 {
@@ -1306,10 +1314,10 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
         audio_manager.setPlayerState(audio_manager.PLAYER_AT_PLAY);
         audio_manager.mAudioPos = 0;
 
-        DB_page db_page = new DB_page(this, folder.tabsHost.getCurrentPageTableId());
+        DB_page db_page = new DB_page(TabsHost.getCurrentPageTableId());
 
         audio_manager.stopAudioPlayer();
-        audio_manager.setupAudioList(this);
+        audio_manager.setupAudioList();
 
         String audioUriStr = db_page.getNoteAudioUri(0,true);
         audio_manager.mAudioUri = audioUriStr;
@@ -1329,17 +1337,17 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
         folder.tabsHost.showPlayingTab();
 
         // update audio play position
-        MainAct.mPlaying_pagePos = folder.tabsHost.getFocus_tabPos();
+        MainAct.mPlaying_pagePos = TabsHost.getFocus_tabPos();
         folder.tabsHost.mTabsPagerAdapter.notifyDataSetChanged();
 
         // update playing page position
-        mPlaying_pagePos = folder.tabsHost.getFocus_tabPos();
+        mPlaying_pagePos = TabsHost.getFocus_tabPos();
 
         // update playing page table Id
-        mPlaying_pageTableId = folder.tabsHost.getCurrentPageTableId();
+        mPlaying_pageTableId = TabsHost.getCurrentPageTableId();
 
         // update playing folder position
-        mPlaying_folderPos = folder.getFocus_folderPos();
+        mPlaying_folderPos = Folder.getFocus_folderPos();
 
         DB_drawer dB_drawer = new DB_drawer(this);
         MainAct.mPlaying_folderTableId = dB_drawer.getFolderTableId(MainAct.mPlaying_folderPos,true);

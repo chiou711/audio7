@@ -63,7 +63,7 @@ public class Checked_notes_option {
     Drawer drawer;
 
     public Checked_notes_option(AppCompatActivity act, Drawer _drawer, Folder _folder) {
-        mDb_page = new DB_page(act, TabsHost.getCurrentPageTableId());
+        mDb_page = new DB_page(TabsHost.getCurrentPageTableId());
         drawer = _drawer;
         folder = _folder;
         this.act = act;
@@ -278,7 +278,7 @@ public class Checked_notes_option {
 
         // update audio play list
         if(audio_manager.isOnAudioPlayingPage())
-            audio_manager.setupAudioList(act);
+            audio_manager.setupAudioList();
 
         folder.tabsHost.reloadCurrentPage();
 
@@ -312,7 +312,7 @@ public class Checked_notes_option {
 
         // update audio play list
         if(audio_manager.isOnAudioPlayingPage())
-            audio_manager.setupAudioList(act);
+            audio_manager.setupAudioList();
 
         folder.tabsHost.reloadCurrentPage();
         folder.tabsHost.showFooter(act);
@@ -328,7 +328,7 @@ public class Checked_notes_option {
     {
         //list all pages
         int focusFolder_tableId = Pref.getPref_focusView_folder_tableId(act);
-        DB_folder db_folder = new DB_folder(act, focusFolder_tableId);
+        DB_folder db_folder = new DB_folder(focusFolder_tableId);
         db_folder.open();
         int tabCount = db_folder.getPagesCount(false);
         final String[] pageNames = new String[tabCount];
@@ -466,7 +466,7 @@ public class Checked_notes_option {
 
     private boolean noItemChecked()
     {
-        DB_page mDb_page = new DB_page(act, TabsHost.getCurrentPageTableId());
+        DB_page mDb_page = new DB_page(TabsHost.getCurrentPageTableId());
         int checkedItemCount = mDb_page.getCheckedNotesCount();
         return (checkedItemCount == 0);
     }
