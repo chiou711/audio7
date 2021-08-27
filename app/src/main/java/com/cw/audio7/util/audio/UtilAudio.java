@@ -22,7 +22,6 @@ import java.util.Locale;
 import com.cw.audio7.folder.Folder;
 import com.cw.audio7.main.MainAct;
 import com.cw.audio7.R;
-import com.cw.audio7.audio.BackgroundAudioService;
 import com.cw.audio7.tabs.TabsHost;
 import com.cw.audio7.util.Util;
 
@@ -30,21 +29,22 @@ import android.app.Activity;
 import android.media.MediaPlayer;
 import android.net.Uri;
 
-import static com.cw.audio7.audio.BackgroundAudioService.audio_manager;
+import static com.cw.audio7.audio.BackgroundAudioService.mAudio_manager;
+import static com.cw.audio7.audio.BackgroundAudioService.mMediaPlayer;
 
 public class UtilAudio {
 
     public static void stopAudioIfNeeded(TabsHost tabsHost)
     {
-		if( ( (BackgroundAudioService.mMediaPlayer != null) &&
-              (audio_manager.getPlayerState() != audio_manager.PLAYER_AT_STOP) ) &&
+		if( ( (mMediaPlayer != null) &&
+              (mAudio_manager.getPlayerState() != mAudio_manager.PLAYER_AT_STOP) ) &&
 			(MainAct.mPlaying_folderPos == Folder.getFocus_folderPos()) &&
 			(TabsHost.getFocus_tabPos() == MainAct.mPlaying_pagePos)                           )
 		{
-            if(BackgroundAudioService.mMediaPlayer != null){
-                audio_manager.stopAudioPlayer();
-                audio_manager.mAudioPos = 0;
-	            audio_manager.audio7Player.showAudioPanel(false);
+            if(mMediaPlayer != null){
+                mAudio_manager.stopAudioPlayer();
+                mAudio_manager.mAudioPos = 0;
+	            mAudio_manager.audio7Player.showAudioPanel(false);
 	            // remove playing focus
 	            tabsHost.reloadCurrentPage();
             }

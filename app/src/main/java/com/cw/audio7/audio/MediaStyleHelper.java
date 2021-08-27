@@ -37,7 +37,7 @@ public class MediaStyleHelper {
 //                .setDeleteIntent(
 //                        MediaButtonReceiver.buildMediaButtonPendingIntent(context,
 //                                PlaybackStateCompat.ACTION_STOP))
-                .setDeleteIntent(createOnDismissIntent(context, BackgroundAudioService.notification_id))
+                .setDeleteIntent(createOnDismissIntent(context, BackgroundAudioService.mNotification_id))
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
         return builder;
     }

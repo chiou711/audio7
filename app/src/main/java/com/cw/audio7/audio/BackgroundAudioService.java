@@ -20,12 +20,14 @@ import android.os.PowerManager;
 import android.os.ResultReceiver;
 import android.support.v4.media.MediaBrowserCompat;
 import android.support.v4.media.MediaMetadataCompat;
+import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.cw.audio7.R;
+import com.cw.audio7.db.DatabaseHelper;
 import com.cw.audio7.util.Util;
 
 import java.io.ByteArrayInputStream;
@@ -41,7 +43,6 @@ import androidx.media.MediaBrowserServiceCompat;
 import androidx.media.session.MediaButtonReceiver;
 
 import static com.cw.audio7.define.Define.ENABLE_MEDIA_CONTROLLER;
-import static com.cw.audio7.main.MainAct.mMediaControllerCompat;
 
 // AudioManager.OnAudioFocusChangeListener: added in API level 8
 public class BackgroundAudioService extends MediaBrowserServiceCompat
@@ -56,17 +57,24 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat
     public static boolean mIsCompleted;
 
     public static MediaSessionCompat mMediaSessionCompat;
-    final public static int notification_id = 78;
+
+    //if (ENABLE_MEDIA_CONTROLLER)
+    public static MediaBrowserCompat mMediaBrowserCompat;
+    public static MediaControllerCompat mMediaControllerCompat;
+
+    final public static int mNotification_id = 78;
 
     // for differentiate Pause source: manual or focus change
     private boolean isPausedByButton;
 
-    public static Audio_manager audio_manager;
+    public static Audio_manager mAudio_manager;
 
     //    boolean enDbgMsg = true;
     boolean enDbgMsg = false;
 
     public static PlaybackStateCompat.Builder playbackStateBuilder;
+
+    public static DatabaseHelper dbHelper;
 
     @Override
     public void onCreate() {
@@ -218,7 +226,7 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat
 
         if (ENABLE_MEDIA_CONTROLLER) {
             mMediaSessionCompat.release();
-            NotificationManagerCompat.from(this).cancel(notification_id);
+            NotificationManagerCompat.from(this).cancel(mNotification_id);
         }
 
         if (mMediaPlayer != null)
@@ -242,9 +250,9 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat
         }
 
         // update panel status: play
-        audio_manager.setPlayerState(audio_manager.PLAYER_AT_PLAY);
+        mAudio_manager.setPlayerState(mAudio_manager.PLAYER_AT_PLAY);
 
-        audio_manager.setTogglePlayerState(true);
+        mAudio_manager.setTogglePlayerState(true);
 
         isPausedByButton = false;
     }
@@ -264,8 +272,8 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat
         }
 
         // update panel status: pause
-        audio_manager.setPlayerState(audio_manager.PLAYER_AT_PAUSE);
-        audio_manager.setTogglePlayerState(true);
+        mAudio_manager.setPlayerState(mAudio_manager.PLAYER_AT_PAUSE);
+        mAudio_manager.setTogglePlayerState(true);
     }
 
     // is Failed Retrieved Audio Focus
@@ -288,10 +296,10 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat
             currPos =  mediaPlayer.getCurrentPosition();
 
         if (ENABLE_MEDIA_CONTROLLER) {
-            if (audio_manager.getPlayerState() == audio_manager.PLAYER_AT_PLAY) {
+            if (mAudio_manager.getPlayerState() == mAudio_manager.PLAYER_AT_PLAY) {
                 playbackStateBuilder.setState(PlaybackStateCompat.STATE_PLAYING, currPos, 0);
                 mMediaSessionCompat.setPlaybackState(playbackStateBuilder.build());
-            } else if (audio_manager.getPlayerState() == audio_manager.PLAYER_AT_PAUSE) {
+            } else if (mAudio_manager.getPlayerState() == mAudio_manager.PLAYER_AT_PAUSE) {
                 playbackStateBuilder.setState(PlaybackStateCompat.STATE_PAUSED, currPos, 0);
                 mMediaSessionCompat.setPlaybackState(playbackStateBuilder.build());
             }
@@ -313,7 +321,7 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat
                 mMediaSessionCompat.setActive(true);
             }
 
-            audio_manager.setPlayNext(true);
+            mAudio_manager.setPlayNext(true);
         }
 
         @Override
@@ -327,7 +335,7 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat
                 mMediaSessionCompat.setActive(true);
             }
 
-            audio_manager.setPlayPrevious(true);
+            mAudio_manager.setPlayPrevious(true);
         }
 
         @Override
@@ -428,7 +436,7 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat
 //        metadataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_DISPLAY_ICON, BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher));
 //        metadataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher));
 
-        String audioStr = audio_manager.getAudioStringAt(audio_manager.mAudioPos);
+        String audioStr = mAudio_manager.getAudioStringAt(mAudio_manager.mAudioPos);
         String[] displayItems=Util.getDisplayNameByUriString(audioStr, getApplicationContext());
 
         // prepare bit map
@@ -514,9 +522,9 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat
         builder.setShowWhen(false);
 
         if (Build.VERSION.SDK_INT >= 26)
-            manager.notify(notification_id,builder.setChannelId(CHANNEL_ID).build());
+            manager.notify(mNotification_id,builder.setChannelId(CHANNEL_ID).build());
         else
-            manager.notify(notification_id, builder.build());
+            manager.notify(mNotification_id, builder.build());
     }
 
     //if (ENABLE_MEDIA_CONTROLLER)
@@ -542,9 +550,9 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat
         builder.setShowWhen(false);
 
         if (Build.VERSION.SDK_INT >= 26)
-            manager.notify(notification_id,builder.setChannelId(CHANNEL_ID).build());
+            manager.notify(mNotification_id,builder.setChannelId(CHANNEL_ID).build());
         else
-            manager.notify(notification_id, builder.build());
+            manager.notify(mNotification_id, builder.build());
     }
 
     @Override

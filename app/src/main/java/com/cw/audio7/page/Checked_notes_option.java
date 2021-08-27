@@ -46,7 +46,7 @@ import java.util.List;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import static com.cw.audio7.audio.BackgroundAudioService.audio_manager;
+import static com.cw.audio7.audio.BackgroundAudioService.mAudio_manager;
 
 /**
  * Created by cw on 2017/11/4.
@@ -268,7 +268,7 @@ public class Checked_notes_option {
             String noteBody = mDb_page.getNoteBody(i,false);
             mDb_page.updateNote(rowId, noteTitle, audioUri, noteBody , action ,false);// action 1:check all, 0:uncheck all
             // Stop if unmarked item is at playing state
-            if((audio_manager.mAudioPos == i) && (action == 0) )
+            if((mAudio_manager.mAudioPos == i) && (action == 0) )
                 bStopAudio = true;
         }
         mDb_page.close();
@@ -277,8 +277,8 @@ public class Checked_notes_option {
             UtilAudio.stopAudioIfNeeded(folder.tabsHost);
 
         // update audio play list
-        if(audio_manager.isOnAudioPlayingPage())
-            audio_manager.setupAudioList();
+        if(mAudio_manager.isOnAudioPlayingPage())
+            mAudio_manager.setupAudioList();
 
         folder.tabsHost.reloadCurrentPage();
 
@@ -302,7 +302,7 @@ public class Checked_notes_option {
             long marking = (mDb_page.getNoteMarking(i,false)==1)?0:1;
             mDb_page.updateNote(rowId, noteTitle, audioUri, noteBody , marking, false);// action 1:check all, 0:uncheck all
             // Stop if unmarked item is at playing state
-            if((audio_manager.mAudioPos == i) && (marking == 0) )
+            if((mAudio_manager.mAudioPos == i) && (marking == 0) )
                 bStopAudio = true;
         }
         mDb_page.close();
@@ -311,8 +311,8 @@ public class Checked_notes_option {
             UtilAudio.stopAudioIfNeeded(folder.tabsHost);
 
         // update audio play list
-        if(audio_manager.isOnAudioPlayingPage())
-            audio_manager.setupAudioList();
+        if(mAudio_manager.isOnAudioPlayingPage())
+            mAudio_manager.setupAudioList();
 
         folder.tabsHost.reloadCurrentPage();
         folder.tabsHost.showFooter(act);
@@ -452,7 +452,7 @@ public class Checked_notes_option {
                                 mDb_page.close();
 
                                 // Stop Play/Pause if current tab's item is played and is not at Stop state
-                                if(audio_manager.mAudioPos == Page.mHighlightPosition)
+                                if(mAudio_manager.mAudioPos == Page.mHighlightPosition)
                                     UtilAudio.stopAudioIfNeeded(folder.tabsHost);
 
                                 folder.tabsHost.reloadCurrentPage();

@@ -26,7 +26,7 @@ import java.util.Objects;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import static com.cw.audio7.audio.BackgroundAudioService.audio_manager;
+import static com.cw.audio7.audio.BackgroundAudioService.mAudio_manager;
 
 /**
  * Audio Url verification task
@@ -60,7 +60,7 @@ class Async_audioUrlVerify extends AsyncTask<String,Integer,String>
 
 		// only for Page play mode
 		// show dialog will affect full screen at Note play mode
-		if( audio_manager.getAudioPlayMode() == audio_manager.PAGE_PLAY_MODE ) {
+		if( mAudio_manager.getAudioPlayMode() == mAudio_manager.PAGE_PLAY_MODE ) {
 		    if(!progressDialog.isShowing())  {
 			    if( !Objects.requireNonNull(act.get()).isFinishing() && !Objects.requireNonNull(act.get()).isDestroyed() )
 			    	progressDialog.show();
@@ -174,7 +174,7 @@ class Async_audioUrlVerify extends AsyncTask<String,Integer,String>
 		}
 
 		// prepare audio
-		if (audio_manager.getAudioPlayMode() == audio_manager.PAGE_PLAY_MODE)
+		if (mAudio_manager.getAudioPlayMode() == mAudio_manager.PAGE_PLAY_MODE)
 			audio7Player.showAudioPanel( true);
 
 		// URL is ready, start Audio Prepare

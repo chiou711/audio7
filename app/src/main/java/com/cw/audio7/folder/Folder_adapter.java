@@ -16,7 +16,6 @@
 
 package com.cw.audio7.folder;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.view.View;
@@ -27,13 +26,12 @@ import android.widget.TextView;
 import com.cw.audio7.R;
 import com.cw.audio7.db.DB_drawer;
 import com.cw.audio7.main.MainAct;
-import com.cw.audio7.audio.Audio_manager;
-import com.cw.audio7.audio.BackgroundAudioService;
 import com.mobeta.android.dslv.SimpleDragSortCursorAdapter;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import static com.cw.audio7.audio.BackgroundAudioService.audio_manager;
+import static com.cw.audio7.audio.BackgroundAudioService.mAudio_manager;
+import static com.cw.audio7.audio.BackgroundAudioService.mMediaPlayer;
 
 /**
  * Created by cw on 2017/10/6.
@@ -88,8 +86,8 @@ public class Folder_adapter extends SimpleDragSortCursorAdapter
             viewHolder = (ViewHolder) convertView.getTag();
 
         // set highlight of selected drawer
-        if( (BackgroundAudioService.mMediaPlayer != null) &&
-            (audio_manager.getPlayerState() != audio_manager.PLAYER_AT_STOP) &&
+        if( (mMediaPlayer != null) &&
+            (mAudio_manager.getPlayerState() != mAudio_manager.PLAYER_AT_STOP) &&
             (MainAct.mPlaying_folderPos == position)        )
             viewHolder.audioPlayingIcon.setVisibility(View.VISIBLE);
         else

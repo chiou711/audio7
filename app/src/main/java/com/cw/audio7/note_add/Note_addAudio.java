@@ -34,7 +34,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import static com.cw.audio7.audio.BackgroundAudioService.audio_manager;
+import static com.cw.audio7.audio.BackgroundAudioService.mAudio_manager;
 
 public class Note_addAudio extends AppCompatActivity {
 
@@ -180,7 +180,7 @@ public class Note_addAudio extends AppCompatActivity {
 		        	{
 		        		Page.swapTopBottom();
 		        		//update playing focus
-						audio_manager.mAudioPos++;
+						mAudio_manager.mAudioPos++;
 		        	}
 
 		        	if(!Util.isEmptyString(uriStr))
@@ -249,7 +249,7 @@ public class Note_addAudio extends AppCompatActivity {
                             {
                                 Page.swapTopBottom();
                                 //update playing focus
-                                audio_manager.mAudioPos++;
+                                mAudio_manager.mAudioPos++;
                             }
 
                             // avoid showing empty toast
@@ -278,8 +278,8 @@ public class Note_addAudio extends AppCompatActivity {
 //	        	chooseAudioMedia();
 
 	        	// to avoid exception due to playing tab is different with focus tab
-				if(audio_manager.isOnAudioPlayingPage())
-					audio_manager.setupAudioList();
+				if(mAudio_manager.isOnAudioPlayingPage())
+					mAudio_manager.setupAudioList();
 
 	        	finish();
 			}

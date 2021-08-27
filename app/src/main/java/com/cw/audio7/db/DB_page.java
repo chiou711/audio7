@@ -17,12 +17,11 @@
 package com.cw.audio7.db;
 
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 
-import static com.cw.audio7.main.MainAct.dbHelper;
+import static com.cw.audio7.audio.BackgroundAudioService.dbHelper;
 
 
 /**

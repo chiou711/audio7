@@ -20,7 +20,6 @@ package com.cw.audio7.config;
 import java.io.File;
 import java.util.Objects;
 
-import com.cw.audio7.audio.BackgroundAudioService;
 import com.cw.audio7.folder.Folder;
 import com.cw.audio7.main.MainAct;
 import com.cw.audio7.R;
@@ -50,7 +49,8 @@ import androidx.fragment.app.Fragment;
 
 import static android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK;
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
-import static com.cw.audio7.audio.BackgroundAudioService.audio_manager;
+import static com.cw.audio7.audio.BackgroundAudioService.mAudio_manager;
+import static com.cw.audio7.audio.BackgroundAudioService.mMediaPlayer;
 
 public class Config extends Fragment
 {
@@ -299,8 +299,8 @@ public class Config extends Fragment
 			db_drawer.deleteDB();
 
 			// stop audio player
-			if(BackgroundAudioService.mMediaPlayer != null)
-				audio_manager.stopAudioPlayer();
+			if(mMediaPlayer != null)
+				mAudio_manager.stopAudioPlayer();
 
 			//set last tab Id to 0, otherwise TabId will not start from 0 when deleting all
 			//reset tab Index to 0
@@ -351,8 +351,8 @@ public class Config extends Fragment
 		public void onClick(DialogInterface dialog, int which) {
 
 			// stop audio player
-			if(BackgroundAudioService.mMediaPlayer != null)
-				audio_manager.stopAudioPlayer();
+			if(mMediaPlayer != null)
+				mAudio_manager.stopAudioPlayer();
 
 			//remove preference
 			clearSharedPreferencesForSettings(Objects.requireNonNull(getActivity()));

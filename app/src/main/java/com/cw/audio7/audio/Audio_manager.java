@@ -35,6 +35,7 @@ import com.cw.audio7.util.audio.UtilAudio;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationManagerCompat;
 
+import static com.cw.audio7.audio.BackgroundAudioService.mMediaPlayer;
 import static com.cw.audio7.define.Define.ENABLE_MEDIA_CONTROLLER;
 
 public class Audio_manager
@@ -100,7 +101,7 @@ public class Audio_manager
 					audio7Player.updateAudioProgress();
 
 					if(ENABLE_MEDIA_CONTROLLER && Build.VERSION.SDK_INT >= 21)
-						BackgroundAudioService.setSeekerBarProgress(BackgroundAudioService.mMediaPlayer);
+						BackgroundAudioService.setSeekerBarProgress(mMediaPlayer);
 
 					// check if audio file exists or not
 					audio7Player.audioUrl = getAudioStringAt(mAudioPos);
@@ -269,13 +270,13 @@ public class Audio_manager
         System.out.println("Audio_manager / _stopAudioPlayer");
 
         // stop media player
-        if(BackgroundAudioService.mMediaPlayer != null) {
-            if (BackgroundAudioService.mMediaPlayer.isPlaying()) {
-                BackgroundAudioService.mMediaPlayer.pause();
-                BackgroundAudioService.mMediaPlayer.stop();
+        if(mMediaPlayer != null) {
+            if (mMediaPlayer.isPlaying()) {
+                mMediaPlayer.pause();
+                mMediaPlayer.stop();
             }
-            BackgroundAudioService.mMediaPlayer.release();
-            BackgroundAudioService.mMediaPlayer = null;
+            mMediaPlayer.release();
+            mMediaPlayer = null;
         }
 
         setPlayerState(PLAYER_AT_STOP);
@@ -283,7 +284,7 @@ public class Audio_manager
         //hide notification
 	    if(ENABLE_MEDIA_CONTROLLER) {
 	    	if(act != null)
-		        NotificationManagerCompat.from(act).cancel(BackgroundAudioService.notification_id);
+		        NotificationManagerCompat.from(act).cancel(BackgroundAudioService.mNotification_id);
 	    }
 
 	    removeRunnable();
@@ -400,7 +401,7 @@ public class Audio_manager
 		if(showDbgMsg)
 			System.out.println( prefix + "isPlayOrPause = " +isPlayOrPause);
 
-		boolean isPlayingOnFocusFolderPos = (MainAct.mPlaying_folderPos == folder.getFocus_folderPos());
+		boolean isPlayingOnFocusFolderPos = (MainAct.mPlaying_folderPos == Folder.getFocus_folderPos());
 		if(showDbgMsg)
 			System.out.println(prefix + "isPlayingOnFocusFolderPos = " + isPlayingOnFocusFolderPos);
 

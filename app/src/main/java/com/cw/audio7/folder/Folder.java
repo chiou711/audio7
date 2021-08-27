@@ -29,7 +29,6 @@ import android.widget.EditText;
 import android.widget.RadioGroup;
 
 import com.cw.audio7.R;
-import com.cw.audio7.audio.BackgroundAudioService;
 import com.cw.audio7.db.DB_drawer;
 import com.cw.audio7.db.DB_folder;
 import com.cw.audio7.db.DB_page;
@@ -51,7 +50,8 @@ import java.util.List;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentTransaction;
-import static com.cw.audio7.audio.BackgroundAudioService.audio_manager;
+import static com.cw.audio7.audio.BackgroundAudioService.mAudio_manager;
+import static com.cw.audio7.audio.BackgroundAudioService.mMediaPlayer;
 
 /**
  * Created by CW on 2016/8/23.
@@ -548,15 +548,15 @@ public class Folder
         }
 
         // update audio playing highlight if needed
-        if(BackgroundAudioService.mMediaPlayer != null)
+        if(mMediaPlayer != null)
         {
             if (MainAct.mPlaying_folderPos > position)
                 MainAct.mPlaying_folderPos--;
             else if (MainAct.mPlaying_folderPos == position)
             {
                 // stop audio since the folder is deleted
-                if(BackgroundAudioService.mMediaPlayer != null)
-                    audio_manager.stopAudioPlayer();
+                if(mMediaPlayer != null)
+                    mAudio_manager.stopAudioPlayer();
 
                 // update
                 if (foldersCount > 0)
@@ -853,7 +853,7 @@ public class Folder
                     Pref.setPref_focusView_folder_tableId(act,db_drawer.getFolderTableId(getFocus_folderPos(),true) );
 
                     // update playing highlight if needed
-                    if(BackgroundAudioService.mMediaPlayer != null)
+                    if(mMediaPlayer != null)
                         MainAct.mPlaying_folderPos++;
                 }
 

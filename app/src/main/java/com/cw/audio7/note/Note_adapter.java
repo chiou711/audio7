@@ -50,7 +50,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
-import static com.cw.audio7.audio.BackgroundAudioService.audio_manager;
+import static com.cw.audio7.audio.BackgroundAudioService.mAudio_manager;
 
 public class Note_adapter extends FragmentStatePagerAdapter implements View.OnClickListener
 {
@@ -263,7 +263,7 @@ public class Note_adapter extends FragmentStatePagerAdapter implements View.OnCl
 				audioPanel.setVisibility(View.GONE);
 
 			// continue playing/pausing or auto play
-			if(audio_manager.getPlayerState() != audio_manager.PLAYER_AT_STOP) {
+			if(mAudio_manager.getPlayerState() != mAudio_manager.PLAYER_AT_STOP) {
 				// continue playing
 				System.out.println("Note_adapter / _setPrimaryItem / continue playing ");
 
@@ -272,16 +272,16 @@ public class Note_adapter extends FragmentStatePagerAdapter implements View.OnCl
 				if(audioPanel != null)
 					audioPanel.setVisibility(View.VISIBLE);
 
-				audio_manager.audio7Player.setAudioPanel(audioUi_note.audioPanel);
-				audio_manager.audio7Player.initAudioBlock(NoteAct.mAudioUriInDB);
-				audio_manager.audio7Player.updateAudioPanel(act);
-				audio_manager.audio7Player.updateAudioProgress();
+				mAudio_manager.audio7Player.setAudioPanel(audioUi_note.audioPanel);
+				mAudio_manager.audio7Player.initAudioBlock(NoteAct.mAudioUriInDB);
+				mAudio_manager.audio7Player.updateAudioPanel(act);
+				mAudio_manager.audio7Player.updateAudioProgress();
 
 			} else { // first audio play
 				/** Entry: Note play */
 				System.out.println("Note_adapter / _setPrimaryItem / auto play ");
 
-				audio_manager.stopAudioPlayer();
+				mAudio_manager.stopAudioPlayer();
 
 				audioUi_note.audio_play_btn.performClick();
 				MainAct.mPlaying_folderPos = Folder.getFocus_folderPos();

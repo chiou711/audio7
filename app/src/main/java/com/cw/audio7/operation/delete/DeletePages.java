@@ -36,14 +36,14 @@ import com.cw.audio7.db.DB_folder;
 import com.cw.audio7.folder.Folder;
 import com.cw.audio7.main.MainAct;
 import com.cw.audio7.operation.List_selectPage;
-import com.cw.audio7.audio.BackgroundAudioService;
 import com.cw.audio7.util.Util;
 import com.cw.audio7.util.preferences.Pref;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
-import static com.cw.audio7.audio.BackgroundAudioService.audio_manager;
+import static com.cw.audio7.audio.BackgroundAudioService.mAudio_manager;
+import static com.cw.audio7.audio.BackgroundAudioService.mMediaPlayer;
 
 public class DeletePages extends Fragment {
     TextView title;
@@ -183,11 +183,11 @@ public class DeletePages extends Fragment {
                 // delete page row
                 mDbFolder.deletePage(DB_folder.getFocusFolder_tableName(),pageId,false);
 
-                if( audio_manager.isOnAudioPlayingPage() &&
-                    BackgroundAudioService.mMediaPlayer != null ) {
-                    audio_manager.stopAudioPlayer();
-                    audio_manager.mAudioPos = 0;
-                    audio_manager.setPlayerState(audio_manager.PLAYER_AT_STOP);
+                if( mAudio_manager.isOnAudioPlayingPage() &&
+                    mMediaPlayer != null ) {
+                    mAudio_manager.stopAudioPlayer();
+                    mAudio_manager.mAudioPos = 0;
+                    mAudio_manager.setPlayerState(mAudio_manager.PLAYER_AT_STOP);
                 }
 
             }

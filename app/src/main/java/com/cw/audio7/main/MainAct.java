@@ -81,7 +81,10 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import static android.os.Build.VERSION_CODES.M;
-import static com.cw.audio7.audio.BackgroundAudioService.audio_manager;
+import static com.cw.audio7.audio.BackgroundAudioService.mAudio_manager;
+import static com.cw.audio7.audio.BackgroundAudioService.mMediaBrowserCompat;
+import static com.cw.audio7.audio.BackgroundAudioService.mMediaControllerCompat;
+import static com.cw.audio7.audio.BackgroundAudioService.mMediaPlayer;
 import static com.cw.audio7.define.Define.ENABLE_MEDIA_CONTROLLER;
 
 public class MainAct extends AppCompatActivity implements FragmentManager.OnBackStackChangedListener
@@ -96,14 +99,10 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
     OnBackPressedListener onBackPressedListener;
     public boolean bEULA_accepted;
 
-    //if (ENABLE_MEDIA_CONTROLLER)
-    public static MediaBrowserCompat mMediaBrowserCompat;
-    public static MediaControllerCompat mMediaControllerCompat;
-
     public Drawer drawer;
     public Folder folder;
 
-    public static DatabaseHelper dbHelper;
+//    public static DatabaseHelper dbHelper;
 
 
     // Main Act onCreate
@@ -465,7 +464,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
         // background play
         if(!Pref.getPref_background_play_enable(this)) {
             // stop audio when screen off
-            audio_manager.stopAudioPlayer();
+            mAudio_manager.stopAudioPlayer();
         }
 //        else {
             // continue playing, do nothing
@@ -498,7 +497,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
 //                DB_page.setFocusPage_tableId(Pref.getPref_focusView_page_tableId(this));
 //            }//if(ENABLE_DB_CHECK)
 
-            dbHelper = new DatabaseHelper(this);
+            BackgroundAudioService.dbHelper = new DatabaseHelper(this);
 
             if(bEULA_accepted)
                 configLayoutView(); //createAssetsFile inside
@@ -600,8 +599,8 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
         }
 
         // stop audio player
-        if(BackgroundAudioService.mMediaPlayer != null)
-            audio_manager.stopAudioPlayer();
+        if(mMediaPlayer != null)
+            mAudio_manager.stopAudioPlayer();
 
         if (ENABLE_MEDIA_CONTROLLER) {
             // disconnect MediaBrowserCompat
@@ -609,7 +608,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                 mMediaBrowserCompat.disconnect();
 
             //hide notification
-            NotificationManagerCompat.from(this).cancel(BackgroundAudioService.notification_id);
+            NotificationManagerCompat.from(this).cancel(BackgroundAudioService.mNotification_id);
 
             mMediaBrowserCompat = null;
         }
@@ -796,7 +795,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                 Objects.requireNonNull(getSupportActionBar()).setTitle(folder.mFolderTitle);
 
                 // pages count
-                int pgsCnt = folder.getFolder_pagesCount(this, folder.getFocus_folderPos());
+                int pgsCnt = folder.getFolder_pagesCount(this, Folder.getFocus_folderPos());
 
                 // notes count
                 int notesCnt = 0;
@@ -834,7 +833,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                 // play icon
                 boolean playIconIsVisible= false;
                 if( ((pgsCnt >0) && (notesCnt>0)) ||
-                    (audio_manager.getPlayerState() != audio_manager.PLAYER_AT_STOP) ) {
+                    (mAudio_manager.getPlayerState() != mAudio_manager.PLAYER_AT_STOP) ) {
                     playIconIsVisible = true;
                 }
                 this.menu.findItem(R.id.PLAY).setVisible( playIconIsVisible );
@@ -979,7 +978,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
 
                     initActionBar();
 
-                    folder.mFolderTitle = dB_drawer.getFolderTitle(folder.getFocus_folderPos(),true);
+                    folder.mFolderTitle = dB_drawer.getFolderTitle(Folder.getFocus_folderPos(),true);
                     setTitle(folder.mFolderTitle);
                     drawer.closeDrawer();
                 }
@@ -1060,8 +1059,8 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
 
             case MenuId.OPEN_PLAY_SUBMENU:
                 // new play instance: stop button is off
-                if( (BackgroundAudioService.mMediaPlayer != null) &&
-                    (audio_manager.getPlayerState() != audio_manager.PLAYER_AT_STOP))
+                if( (mMediaPlayer != null) &&
+                    (mAudio_manager.getPlayerState() != mAudio_manager.PLAYER_AT_STOP))
                 {
                     // show Stop
                     playOrStopMusicButton.setTitle(R.string.menu_button_stop_audio);
@@ -1076,13 +1075,13 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                 return true;
 
             case MenuId.PLAY_OR_STOP_AUDIO:
-                if( (BackgroundAudioService.mMediaPlayer != null) &&
-                    (audio_manager.getPlayerState() != audio_manager.PLAYER_AT_STOP))
+                if( (mMediaPlayer != null) &&
+                    (mAudio_manager.getPlayerState() != mAudio_manager.PLAYER_AT_STOP))
                 {
-                    audio_manager.stopAudioPlayer();
+                    mAudio_manager.stopAudioPlayer();
 
-                    if(audio_manager.audio7Player != null)
-                        audio_manager.audio7Player.showAudioPanel(false);
+                    if(mAudio_manager.audio7Player != null)
+                        mAudio_manager.audio7Player.showAudioPanel(false);
 
                     // refresh
                     folder.tabsHost.reloadCurrentPage();
@@ -1139,7 +1138,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
 
                 // get current Max page table Id
                 int currentMaxPageTableId = 0;
-                int pgCnt = folder.getFolder_pagesCount(this, folder.getFocus_folderPos());
+                int pgCnt = folder.getFolder_pagesCount(this, Folder.getFocus_folderPos());
                 DB_folder db_folder = new DB_folder(DB_folder.getFocusFolder_tableId());
 
                 for(int i=0;i< pgCnt;i++)
@@ -1311,28 +1310,28 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
     /** Entry: Page play */
     void playFirstAudio()
     {
-        audio_manager.setPlayerState(audio_manager.PLAYER_AT_PLAY);
-        audio_manager.mAudioPos = 0;
+        mAudio_manager.setPlayerState(mAudio_manager.PLAYER_AT_PLAY);
+        mAudio_manager.mAudioPos = 0;
 
         DB_page db_page = new DB_page(TabsHost.getCurrentPageTableId());
 
-        audio_manager.stopAudioPlayer();
-        audio_manager.setupAudioList();
+        mAudio_manager.stopAudioPlayer();
+        mAudio_manager.setupAudioList();
 
         String audioUriStr = db_page.getNoteAudioUri(0,true);
-        audio_manager.mAudioUri = audioUriStr;
+        mAudio_manager.mAudioUri = audioUriStr;
 
         View panelView = folder.tabsHost.audio_panel;
-        if(audio_manager.audio7Player == null)
-            audio_manager.audio7Player = new Audio7Player(this, folder.tabsHost,panelView,audioUriStr);
+        if(mAudio_manager.audio7Player == null)
+            mAudio_manager.audio7Player = new Audio7Player(this, folder.tabsHost,panelView,audioUriStr);
         else {
-            audio_manager.audio7Player.setAudioPanel(panelView);
-            audio_manager.audio7Player.initAudioBlock(audioUriStr);
+            mAudio_manager.audio7Player.setAudioPanel(panelView);
+            mAudio_manager.audio7Player.initAudioBlock(audioUriStr);
         }
 
-        folder.tabsHost.audioUi_page = new AudioUi_page(this, folder.tabsHost,audio_manager.audio7Player,panelView,audioUriStr);
+        folder.tabsHost.audioUi_page = new AudioUi_page(this, folder.tabsHost, mAudio_manager.audio7Player,panelView,audioUriStr);
 
-        audio_manager.audio7Player.runAudioState();
+        mAudio_manager.audio7Player.runAudioState();
 
         folder.tabsHost.showPlayingTab();
 

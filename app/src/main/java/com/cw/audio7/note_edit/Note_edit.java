@@ -42,7 +42,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import static com.cw.audio7.audio.BackgroundAudioService.audio_manager;
+import static com.cw.audio7.audio.BackgroundAudioService.mAudio_manager;
 
 public class Note_edit extends AppCompatActivity
 		implements FragmentManager.OnBackStackChangedListener
@@ -156,8 +156,8 @@ public class Note_edit extends AppCompatActivity
 								note_edit_ui.deleteNote(noteId);
 
 
-								if(audio_manager.isOnAudioPlayingPage())
-									audio_manager.setupAudioList();
+								if(mAudio_manager.isOnAudioPlayingPage())
+									mAudio_manager.setupAudioList();
 
 								// Stop Play/Pause if current edit item is played and is not at Stop state
 								if(Page.mHighlightPosition == position)
@@ -165,7 +165,7 @@ public class Note_edit extends AppCompatActivity
 
 								// update highlight position
 								if(position < Page.mHighlightPosition )
-									audio_manager.mAudioPos--;
+									mAudio_manager.mAudioPos--;
 
 								finish();
 							}

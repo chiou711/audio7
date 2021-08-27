@@ -28,7 +28,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.provider.BaseColumns;
 import android.widget.Toast;
 
-import static com.cw.audio7.main.MainAct.dbHelper;
+import static com.cw.audio7.audio.BackgroundAudioService.dbHelper;
 
 /**
  *  Data Base Class for Drawer

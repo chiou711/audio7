@@ -22,7 +22,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
-import android.widget.GridView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -46,7 +45,7 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import static com.cw.audio7.audio.BackgroundAudioService.audio_manager;
+import static com.cw.audio7.audio.BackgroundAudioService.mAudio_manager;
 
 public class Page extends Fragment implements OnStartDragListener {
 
@@ -184,8 +183,8 @@ public class Page extends Fragment implements OnStartDragListener {
         mImageFetcher.setExitTasksEarly(false);
 
         // set doScroll flag for Scroll to playing item
-        if( (audio_manager !=null) &&  audio_manager.willDoScroll())
-            audio_manager.doScroll = true;
+        if( (mAudio_manager !=null) &&  mAudio_manager.willDoScroll())
+            mAudio_manager.doScroll = true;
     }
 
     @Override

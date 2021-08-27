@@ -37,7 +37,6 @@ import com.cw.audio7.folder.Folder;
 import com.cw.audio7.main.MainAct;
 import com.cw.audio7.note.NoteAct;
 import com.cw.audio7.note_edit.Note_edit;
-import com.cw.audio7.audio.BackgroundAudioService;
 import com.cw.audio7.page.item_touch_helper.ItemTouchHelperAdapter;
 import com.cw.audio7.page.item_touch_helper.ItemTouchHelperViewHolder;
 import com.cw.audio7.page.item_touch_helper.OnStartDragListener;
@@ -61,10 +60,11 @@ import androidx.recyclerview.widget.RecyclerView;
 //import pl.droidsonroids.gif.GifDrawable;
 //import pl.droidsonroids.gif.GifImageView;
 
+import static com.cw.audio7.audio.BackgroundAudioService.mMediaPlayer;
 import static com.cw.audio7.db.DB_page.KEY_NOTE_AUDIO_URI;
 import static com.cw.audio7.db.DB_page.KEY_NOTE_MARKING;
 import static com.cw.audio7.page.Page.swapRows;
-import static com.cw.audio7.audio.BackgroundAudioService.audio_manager;
+import static com.cw.audio7.audio.BackgroundAudioService.mAudio_manager;
 
 // Pager adapter
 public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
@@ -294,11 +294,11 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
         }
 
         /** show audio highlight if audio is not at Stop */
-        if( (audio_manager!=null) &&
-            (audio_manager.getPlayerState() != audio_manager.PLAYER_AT_STOP) &&
+        if( (mAudio_manager !=null) &&
+            (mAudio_manager.getPlayerState() != mAudio_manager.PLAYER_AT_STOP) &&
             (marking !=0) &&
-            (holder.getAdapterPosition() == audio_manager.mAudioPos)  &&
-            audio_manager.isOnAudioPlayingPage()            )
+            (holder.getAdapterPosition() == mAudio_manager.mAudioPos)  &&
+            mAudio_manager.isOnAudioPlayingPage()            )
         {
 //            System.out.println("PageAdapter / _getView / show highlight / position = " + position);
             tabsHost.getCurrentPage().mHighlightPosition = holder.getAdapterPosition();
@@ -328,7 +328,7 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
 
             // gif case 2
             // cf: https://github.com/claucookie/mini-equalizer-library-android
-            if(audio_manager.getPlayerState() == audio_manager.PLAYER_AT_PLAY)
+            if(mAudio_manager.getPlayerState() == mAudio_manager.PLAYER_AT_PLAY)
                 holder.gifAudio.animateBars();
             else
                 holder.gifAudio.stopBars();
@@ -449,7 +449,7 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
                 updateDbCache();
 
                 // Stop if unmarked item is at playing state
-                if(audio_manager.mAudioPos == position) {
+                if(mAudio_manager.mAudioPos == position) {
                     UtilAudio.stopAudioIfNeeded(tabsHost);
                 }
 
@@ -489,9 +489,9 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
                 tabsHost.showFooter(act);
 
                 // update audio info
-                if(audio_manager.isOnAudioPlayingPage()) {
+                if(mAudio_manager.isOnAudioPlayingPage()) {
                     System.out.println("PageAdapter / _getView / btnMarking / is AudioPlayingPage");
-                    audio_manager.setupAudioList();
+                    mAudio_manager.setupAudioList();
                 }
             }
         });
@@ -522,29 +522,29 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
 
                 /** Entry: Page play */
                 // case 2: open Page audio
-                audio_manager.stopAudioPlayer();
+                mAudio_manager.stopAudioPlayer();
                 openAudioPanel_page(position);
-                audio_manager.setupAudioList();
+                mAudio_manager.setupAudioList();
 
                 String audioUriStr = db_page.getNoteAudioUri(position,true);
-                audio_manager.mAudioUri = audioUriStr;
+                mAudio_manager.mAudioUri = audioUriStr;
 
-                if(audio_manager.audio7Player == null)
-                    audio_manager.audio7Player = new Audio7Player(act, tabsHost,panelView,audioUriStr);
+                if(mAudio_manager.audio7Player == null)
+                    mAudio_manager.audio7Player = new Audio7Player(act, tabsHost,panelView,audioUriStr);
                 else {
-                    audio_manager.audio7Player.setAudioPanel(panelView);
-                    audio_manager.audio7Player.initAudioBlock(audioUriStr);
+                    mAudio_manager.audio7Player.setAudioPanel(panelView);
+                    mAudio_manager.audio7Player.initAudioBlock(audioUriStr);
                 }
 
-                audioUi_page = new AudioUi_page(act, tabsHost,audio_manager.audio7Player,panelView,audioUriStr);
+                audioUi_page = new AudioUi_page(act, tabsHost, mAudio_manager.audio7Player,panelView,audioUriStr);
 
-                audio_manager.audio7Player.runAudioState();
+                mAudio_manager.audio7Player.runAudioState();
 
                 tabsHost.showPlayingTab();
 
                 // scroll
-                audio_manager.audio7Player.scrollPlayingItemToBeVisible(tabsHost.getCurrentPage().recyclerView);
-                audio_manager.doScroll = true; // add for page bottom items
+                mAudio_manager.audio7Player.scrollPlayingItemToBeVisible(tabsHost.getCurrentPage().recyclerView);
+                mAudio_manager.doScroll = true; // add for page bottom items
             }
         });
 
@@ -663,7 +663,7 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
         if(isAudioUri) {
 
             // create new Intent to play audio
-            audio_manager.mAudioPos = position;
+            mAudio_manager.mAudioPos = position;
 
             // update playing page position
             MainAct.mPlaying_pagePos = TabsHost.getFocus_tabPos();
@@ -747,8 +747,8 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
                 toPos--;
         }
 
-        if( audio_manager.isOnAudioPlayingPage() &&
-                (BackgroundAudioService.mMediaPlayer != null)				   )
+        if( mAudio_manager.isOnAudioPlayingPage() &&
+                (mMediaPlayer != null)				   )
         {
             if( (Page.mHighlightPosition == oriEndPos)  && (oriStartPos > oriEndPos))
             {
@@ -777,8 +777,8 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
                 Page.mHighlightPosition++;
             }
 
-            audio_manager.mAudioPos = Page.mHighlightPosition;
-            audio_manager.setupAudioList();
+            mAudio_manager.mAudioPos = Page.mHighlightPosition;
+            mAudio_manager.setupAudioList();
         }
 
         // update footer

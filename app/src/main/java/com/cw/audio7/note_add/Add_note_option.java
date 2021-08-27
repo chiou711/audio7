@@ -98,7 +98,7 @@ public class Add_note_option {
 
         addNoteList = new ArrayList<>();
 
-        int pagesCount = folder.getFolder_pagesCount(act, folder.getFocus_folderPos());
+        int pagesCount = folder.getFolder_pagesCount(act, Folder.getFocus_folderPos());
 
         int foldersCount = Drawer.getFoldersCount(act);
 

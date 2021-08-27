@@ -25,7 +25,8 @@ import android.os.AsyncTask;
 import android.widget.Toast;
 
 import java.util.Objects;
-import static com.cw.audio7.audio.BackgroundAudioService.audio_manager;
+import static com.cw.audio7.audio.BackgroundAudioService.mAudio_manager;
+import static com.cw.audio7.audio.BackgroundAudioService.mMediaPlayer;
 
 /***************************************************************
  * 
@@ -55,7 +56,7 @@ public class Async_audioPrepare extends AsyncTask<String,Integer,String>
 
 		// only for Page play mode
 		// show dialog will affect full screen at Note play mode
-        if( audio_manager.getAudioPlayMode() == audio_manager.PAGE_PLAY_MODE)
+        if( mAudio_manager.getAudioPlayMode() == mAudio_manager.PAGE_PLAY_MODE)
         {
 	        if(!Objects.requireNonNull(act.get()).isFinishing() && !Objects.requireNonNull(act.get()).isDestroyed())
 		        progressDialog.show();
@@ -75,8 +76,8 @@ public class Async_audioPrepare extends AsyncTask<String,Integer,String>
 
 		 while(	(!isTimeOut) &&
 				    (!BackgroundAudioService.mIsPrepared) &&
-				    ( (BackgroundAudioService.mMediaPlayer != null) &&
-				      (!BackgroundAudioService.mMediaPlayer.isPlaying()) ) )
+				    ( (mMediaPlayer != null) &&
+				      (!mMediaPlayer.isPlaying()) ) )
 		 {
 			 System.out.println("Async_audioPrepare / doInBackground / count = " + count);
 			 count++;
