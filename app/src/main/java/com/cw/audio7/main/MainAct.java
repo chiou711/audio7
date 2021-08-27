@@ -102,9 +102,6 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
     public Drawer drawer;
     public Folder folder;
 
-//    public static DatabaseHelper dbHelper;
-
-
     // Main Act onCreate
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -858,7 +855,6 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
      * onCreate Options Menu
      *
      *************************/
-    public static MenuItem mSubMenuItemAudio;
     MenuItem playOrStopMusicButton;
     @Override
     public boolean onCreateOptionsMenu(android.view.Menu menu)
@@ -929,7 +925,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
      * on options item selected
      *
      ******************************/
-    public static FragmentTransaction mFragmentTransaction;
+    public FragmentTransaction mFragmentTransaction;
     public static int mPlaying_pageTableId;
     public static int mPlaying_pagePos;
     public static int mPlaying_folderPos;
@@ -1393,7 +1389,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
 
     //if (ENABLE_MEDIA_CONTROLLER)
     // callback: media controller
-    public static final MediaControllerCompat.Callback mMediaControllerCompatCallback = new MediaControllerCompat.Callback() {
+    public final MediaControllerCompat.Callback mMediaControllerCompatCallback = new MediaControllerCompat.Callback() {
         @Override
         public void onPlaybackStateChanged(PlaybackStateCompat state) {
             super.onPlaybackStateChanged(state);

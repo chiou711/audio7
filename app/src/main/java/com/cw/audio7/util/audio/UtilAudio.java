@@ -49,8 +49,6 @@ public class UtilAudio {
 	            tabsHost.reloadCurrentPage();
             }
 
-			if(MainAct.mSubMenuItemAudio != null)
-				MainAct.mSubMenuItemAudio.setIcon(R.drawable.ic_menu_slideshow);
 		}
     }
 

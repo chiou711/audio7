@@ -451,10 +451,6 @@ public class Audio7Player
 	    } else { // try enough times: still no audio file is found
 		    Toast.makeText(act,R.string.audio_message_no_media_file_is_found,Toast.LENGTH_SHORT).show();
 
-		    // do not show highlight
-		    if(MainAct.mSubMenuItemAudio != null)
-			    MainAct.mSubMenuItemAudio.setIcon(R.drawable.ic_menu_slideshow);
-
 		    // stop media player
 		    mAudio_manager.stopAudioPlayer();
 	    }
