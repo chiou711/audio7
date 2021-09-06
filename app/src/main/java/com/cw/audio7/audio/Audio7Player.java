@@ -609,11 +609,11 @@ public class Audio7Player
 
 			// workaround for Can not play issue:
 			// add delay before media player start
-			try {
-				Thread.sleep(delayBeforeMediaStart );
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+//			try {
+//				Thread.sleep(delayBeforeMediaStart );
+//			} catch (InterruptedException e) {
+//				e.printStackTrace();
+//			}
 
 			mMediaPlayer.seekTo(0);
 			BackgroundAudioService.mIsPrepared = true;
@@ -641,11 +641,11 @@ public class Audio7Player
 			}
 
 			// delay interval between each media change
-			try {
-				Thread.sleep(Util.oneSecond * 2);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+//			try {
+//				Thread.sleep(Util.oneSecond * 2);
+//			} catch (InterruptedException e) {
+//				e.printStackTrace();
+//			}
 
 				mMediaPlayer = null;
 				BackgroundAudioService.mIsCompleted = true;

@@ -102,6 +102,7 @@ class Async_audioUrlVerify extends AsyncTask<String,Integer,String>
 		 					    mProgress = 0;
  				         
 		 					Util.tryUrlConnection(audioStr, act.get());
+
 		 					// wait for response
 		 					Thread.sleep(Util.oneSecond);
  						

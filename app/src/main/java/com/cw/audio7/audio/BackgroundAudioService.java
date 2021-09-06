@@ -70,7 +70,7 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat
     public static Audio_manager mAudio_manager;
 
     //    boolean enDbgMsg = true;
-    boolean enDbgMsg = false;
+    boolean enDbgMsg = true;
 
     public static PlaybackStateCompat.Builder playbackStateBuilder;
 
@@ -189,11 +189,11 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat
         }
 
         // delay interval between each media change
-        try {
-            Thread.sleep(Util.oneSecond * 2);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            Thread.sleep(Util.oneSecond * 2);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
 
         mMediaPlayer = null;
         mIsCompleted = true;
