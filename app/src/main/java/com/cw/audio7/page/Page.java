@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 CW Chiu
+ * Copyright (C) 2021 CW Chiu
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,20 +21,23 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.cw.audio7.R;
 import com.cw.audio7.db.DB_page;
-import com.cw.audio7.main.MainAct;
 import com.cw.audio7.page.item_touch_helper.OnStartDragListener;
 import com.cw.audio7.page.item_touch_helper.SimpleItemTouchHelperCallback;
 import com.cw.audio7.tabs.TabsHost;
+import com.cw.audio7.util.image.ImageCache;
+import com.cw.audio7.util.image.ImageFetcher;
 import com.cw.audio7.util.preferences.Pref;
-import com.cw.audio7.util.uil.UilCommon;
+//import com.cw.audio7.util.uil.UilCommon;
 
 import java.util.Objects;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -42,6 +45,7 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import static com.cw.audio7.audio.BackgroundAudioService.mAudio_manager;
 
 public class Page extends Fragment implements OnStartDragListener {
 
@@ -52,12 +56,38 @@ public class Page extends Fragment implements OnStartDragListener {
     public static int mCurrPlayPosition;
     public static int mHighlightPosition;
     public SeekBar seekBarProgress;
-    public AppCompatActivity act;
 
     public PageAdapter itemAdapter;
     private ItemTouchHelper itemTouchHelper;
+    AppCompatActivity act;
+    View panelView;
+
+    // for Image Cache
+    public ImageFetcher mImageFetcher;
+    private int mImageThumbSize;
+    private static final String IMAGE_CACHE_DIR = "thumbs";
+
+    TabsHost tabsHost;
 
     public Page(){
+    }
+
+    public Page(AppCompatActivity _act, TabsHost _tabsHost, View _panelView){
+        act = _act;
+        tabsHost = _tabsHost;
+        panelView = _panelView;
+
+        // for Image Cache
+        ImageCache.ImageCacheParams cacheParams =
+                new ImageCache.ImageCacheParams(act, IMAGE_CACHE_DIR);
+
+        cacheParams.setMemCacheSizePercent(0.25f); // Set memory cache to 25% of app memory
+
+        mImageThumbSize = act.getResources().getDimensionPixelSize(R.dimen.image_thumbnail_size);
+
+        mImageFetcher = new ImageFetcher(act, mImageThumbSize);
+        mImageFetcher.setLoadingImage(R.drawable.empty_photo);
+        mImageFetcher.addImageCache(act.getSupportFragmentManager(), cacheParams);
     }
 
     @Override
@@ -66,14 +96,12 @@ public class Page extends Fragment implements OnStartDragListener {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Bundle args = getArguments();
         page_tableId = args.getInt("page_table_id");
-        //System.out.println("Page_recycler / _onCreateView / page_tableId = " + page_tableId);
+//        System.out.println("Page / _onCreateView / page_tableId = " + page_tableId);
 
         View rootView = inflater.inflate(R.layout.page_view, container, false);
-        act = MainAct.mAct;
 
         recyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerView);
         TextView blankView = rootView.findViewById(R.id.blankPage);
@@ -99,11 +127,12 @@ public class Page extends Fragment implements OnStartDragListener {
         itemDecorator.setDrawable(Objects.requireNonNull(ContextCompat.getDrawable(getContext(), R.drawable.divider)));
         recyclerView.addItemDecoration(itemDecorator);
 
-        UilCommon.init();
+//        UilCommon.init();
 
         fillData();
 
-        TabsHost.showFooter(MainAct.mAct);
+        if(tabsHost != null)
+            tabsHost.showFooter(act);
 
         ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(itemAdapter);
         itemTouchHelper = new ItemTouchHelper(callback);
@@ -119,24 +148,68 @@ public class Page extends Fragment implements OnStartDragListener {
             recyclerView.setVisibility(View.VISIBLE);
         }
 
+        // for Image Cache
+        recyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+               if (newState == AbsListView.OnScrollListener.SCROLL_STATE_FLING) {
+                    // Before Honeycomb pause image loading on scroll to help with performance
+                    mImageFetcher.setPauseWork(true);
+                } else {
+                    mImageFetcher.setPauseWork(false);
+                }
+            }
+
+        });
+
         return rootView;
     }
 
+
     @Override
     public void onResume() {
-//        System.out.println("Page_recycler / _onResume / page_tableId = " + page_tableId);
+        System.out.println("Page / _onResume / page_tableId = " + page_tableId);
         super.onResume();
-        if(Pref.getPref_focusView_page_tableId(MainAct.mAct) == page_tableId) {
-//            System.out.println("Page_recycler / _onResume / resume_listView_vScroll");
-            TabsHost.resume_listView_vScroll(recyclerView);
+        if(Pref.getPref_focusView_page_tableId(act) == page_tableId) {
+
+            if( (tabsHost!= null) && (recyclerView != null) ) {
+                tabsHost.resume_listView_vScroll(recyclerView);
+                System.out.println("Page / _onResume / resume_listView_vScroll");
+            }
         }
+
+        // for Image Cache
+        mImageFetcher.setExitTasksEarly(false);
+
+        // set doScroll flag for Scroll to playing item
+        if( (mAudio_manager !=null) &&  mAudio_manager.willDoScroll())
+            mAudio_manager.doScroll = true;
+    }
+
+    @Override
+    public void onPause() {
+        System.out.println("Page / _onPause ");
+        super.onPause();
+        // for Image Cache
+        mImageFetcher.setPauseWork(false);
+        mImageFetcher.setExitTasksEarly(true);
+        mImageFetcher.flushCache();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        System.out.println("Page / _onDestroy");
+        // for Image Cache
+        mImageFetcher.closeCache();
     }
 
     private void fillData()
     {
-        //System.out.println("Page_recycler / _fillData / page_tableId = " + page_tableId);
+        //System.out.println("Page / _fillData / page_tableId = " + page_tableId);
         if(itemAdapter == null)
-            itemAdapter = new PageAdapter(page_tableId, this);
+            itemAdapter = new PageAdapter(act, tabsHost,panelView,page_tableId, this);
         // Set PageAdapter_recycler as the adapter for RecyclerView.
         recyclerView.setAdapter(itemAdapter);
     }
@@ -187,7 +260,7 @@ public class Page extends Fragment implements OnStartDragListener {
 
     static public void swapTopBottom()
     {
-        DB_page dB_page = new DB_page(  MainAct.mAct ,DB_page.getFocusPage_tableId());
+        DB_page dB_page = new DB_page(DB_page.getFocusPage_tableId());
         int startCursor = dB_page.getNotesCount(true)-1;
         int endCursor = 0;
 
@@ -204,10 +277,10 @@ public class Page extends Fragment implements OnStartDragListener {
     }
 
 
-    public int getNotesCountInPage(AppCompatActivity act)
+    public int getNotesCountInPage()
     {
         int page_table_id = TabsHost.getCurrentPageTableId();
-        DB_page db_page = new DB_page(act,page_table_id );
+        DB_page db_page = new DB_page(page_table_id );
         int count = db_page.getNotesCount(true);
         return count;
     }

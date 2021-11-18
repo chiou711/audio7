@@ -33,6 +33,7 @@ import android.widget.Toast;
 
 import com.cw.audio7.R;
 import com.cw.audio7.db.DB_page;
+import com.cw.audio7.folder.Folder;
 import com.cw.audio7.tabs.TabsHost;
 import com.cw.audio7.util.ColorSet;
 import com.cw.audio7.util.Util;
@@ -51,12 +52,23 @@ import java.util.Locale;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.ListFragment;
 
+
 public class Add_audio_1by1 extends ListFragment
 {
     private List<String> filePathArray = null;
     List<String> fileNames = null;
     public View rootView;
     ListView listView;
+    AppCompatActivity act;
+    Folder folder;
+
+    public Add_audio_1by1() {
+    }
+
+    public Add_audio_1by1(AppCompatActivity _act, Folder _folder) {
+        act =_act;
+        folder = _folder;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -221,7 +233,7 @@ public class Add_audio_1by1 extends ListFragment
                     view2.setVisibility(View.GONE);
 
                     // add path to DB
-                    addAudio(currFilePath);
+                    addAudio(currFilePath, folder);
 
                     checkedArr.set(selectedRow,true);
                     fileListAdapter.notifyDataSetChanged();
@@ -281,7 +293,8 @@ public class Add_audio_1by1 extends ListFragment
                     System.out.println("Add_audio_1by1 / _showFilesList / dirName  = " + dirName);
 
                     // get volume name under root
-                    dirName = StorageUtils.getVolumeName(dirName);
+                    StorageUtils storageUtils = new StorageUtils(act);
+                    dirName = storageUtils.getVolumeName(act,dirName);
 //                        System.out.println("Add_audio_1by1 / _showFilesList / dirName (with volume name) = " + dirName);
 
                     fileNames.add("[ " + dirName +" ]");
@@ -407,10 +420,10 @@ public class Add_audio_1by1 extends ListFragment
     }
 
     // add audio
-    void addAudio(String path)
+    void addAudio(String path, Folder folder)
     {
         String uriStr = getAudioUriString(path);
-        DB_page dB = new DB_page(getActivity(), TabsHost.getCurrentPageTableId());
+        DB_page dB = new DB_page(TabsHost.getCurrentPageTableId());
         if( !Util.isEmptyString(uriStr)) {
             // insert new link, set marking to 1 for default
             dB.insertNote("",  uriStr, "",  1);

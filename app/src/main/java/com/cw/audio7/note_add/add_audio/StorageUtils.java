@@ -25,6 +25,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import static android.content.Context.STORAGE_SERVICE;
 
 
@@ -32,10 +34,18 @@ import static android.content.Context.STORAGE_SERVICE;
 public class StorageUtils {
 
 	private static final String TAG = "StorageUtils";
+	AppCompatActivity act;
+
+	public StorageUtils() {
+	}
+
+	public StorageUtils(AppCompatActivity _act) {
+		act = _act;
+	}
 
 	public static class StorageInfo {
 
-		public final String path;
+		public String path;
 		public final boolean internal;
 		public final boolean readonly;
 		public final int display_number;
@@ -148,14 +158,14 @@ public class StorageUtils {
 		return list;
 	}
 
-	public static String getVolumeName(String dirName) {
+	public String getVolumeName(AppCompatActivity act, String dirName) {
 		String volumeName = dirName;
 
 		String[] splits = dirName.split("/");
 		for (String split : splits) {
 //          System.out.println("-- split = " + split);
 
-			StorageManager storage = (StorageManager) MainAct.mAct.getSystemService(STORAGE_SERVICE);
+			StorageManager storage = (StorageManager) act.getSystemService(STORAGE_SERVICE);
 			if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
 				List<StorageVolume> volumes = storage.getStorageVolumes();
 				for (StorageVolume volume : volumes) {
@@ -164,12 +174,12 @@ public class StorageUtils {
 
 					if(split.contains("emulated")) {
 						if (volume.getUuid() == null) {
-							volumeName = volume.getDescription(MainAct.mAct);
+							volumeName = volume.getDescription(act);
 //							System.out.println("-- volumeName 1:" + volumeName);
 						}
 					}
 					else if (split.equals(volume.getUuid())) {
-						volumeName = volume.getDescription(MainAct.mAct);
+						volumeName = volume.getDescription(act);
 //						System.out.println("-- volumeName 2:" + volumeName);
 					}
 				}
@@ -181,9 +191,9 @@ public class StorageUtils {
 
 	public void getUsbDeviceDetail() {
 
-		UsbManager manager = (UsbManager) MainAct.mAct.getSystemService(Context.USB_SERVICE);
+		UsbManager manager = (UsbManager) act.getSystemService(Context.USB_SERVICE);
 
-		Context context = MainAct.mAct;
+		Context context = act;
 
 		HashMap<String, UsbDevice> deviceList = manager.getDeviceList();
 		Iterator<UsbDevice> deviceIterator = deviceList.values().iterator();

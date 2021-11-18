@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 CW Chiu
+ * Copyright (C) 2021 CW Chiu
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,9 +18,6 @@ package com.cw.audio7.page;
 
 import android.content.Intent;
 import android.database.Cursor;
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -32,15 +29,14 @@ import android.widget.Toast;
 
 import com.cw.audio7.R;
 import com.cw.audio7.audio.Audio7Player;
+import com.cw.audio7.audio.AudioUi_page;
 import com.cw.audio7.db.DB_drawer;
 import com.cw.audio7.db.DB_folder;
 import com.cw.audio7.db.DB_page;
-import com.cw.audio7.folder.FolderUi;
+import com.cw.audio7.folder.Folder;
 import com.cw.audio7.main.MainAct;
-import com.cw.audio7.note.Note;
+import com.cw.audio7.note.NoteAct;
 import com.cw.audio7.note_edit.Note_edit;
-import com.cw.audio7.audio.Audio_manager;
-import com.cw.audio7.audio.BackgroundAudioService;
 import com.cw.audio7.page.item_touch_helper.ItemTouchHelperAdapter;
 import com.cw.audio7.page.item_touch_helper.ItemTouchHelperViewHolder;
 import com.cw.audio7.page.item_touch_helper.OnStartDragListener;
@@ -49,42 +45,50 @@ import com.cw.audio7.util.ColorSet;
 import com.cw.audio7.util.Util;
 import com.cw.audio7.util.audio.UtilAudio;
 import com.cw.audio7.util.image.AsyncTaskAudioBitmap;
+import com.cw.audio7.util.image.RecyclingImageView;
 import com.cw.audio7.util.preferences.Pref;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 //import es.claucookie.miniequalizerlibrary.EqualizerView;
 //import pl.droidsonroids.gif.GifDrawable;
 //import pl.droidsonroids.gif.GifImageView;
 
+import static com.cw.audio7.audio.BackgroundAudioService.mMediaPlayer;
 import static com.cw.audio7.db.DB_page.KEY_NOTE_AUDIO_URI;
 import static com.cw.audio7.db.DB_page.KEY_NOTE_MARKING;
 import static com.cw.audio7.page.Page.swapRows;
+import static com.cw.audio7.audio.BackgroundAudioService.mAudio_manager;
 
 // Pager adapter
 public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
         implements ItemTouchHelperAdapter
 {
-	private static AppCompatActivity mAct;
+	private AppCompatActivity act;
     final DB_folder dbFolder;
 	private DB_page mDb_page;
     private final OnStartDragListener mDragStartListener;
 	private final int page_table_id;
     private int style;
     List<Db_cache> listCache;
+    AudioUi_page audioUi_page;
+    View panelView;
+    TabsHost tabsHost;
 
-    PageAdapter(int pageTableId, OnStartDragListener dragStartListener) {
+    PageAdapter(AppCompatActivity _act, TabsHost _tabsHost, View _panelView, int pageTableId, OnStartDragListener dragStartListener) {
 //        System.out.println("PageAdapter / constructor / pageTableId = " + pageTableId );
-	    mAct = MainAct.mAct;
+	    act = _act;
+        tabsHost = _tabsHost;
+	    panelView = _panelView;
 	    mDragStartListener = dragStartListener;
 
-        dbFolder = new DB_folder(mAct,Pref.getPref_focusView_folder_tableId(mAct));
+        dbFolder = new DB_folder(Pref.getPref_focusView_folder_tableId(act));
 	    page_table_id = pageTableId;
 
         // style
@@ -106,10 +110,10 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
         listCache = new ArrayList<>();
 
         int notesCount = getItemCount();
-        mDb_page = new DB_page(mAct, page_table_id);
+        mDb_page = new DB_page(page_table_id);
         mDb_page.open();
+        Cursor cursor = mDb_page.cursor_note;
         for(int i=0;i<notesCount;i++) {
-            Cursor cursor = mDb_page.mCursor_note;
             if (cursor.moveToPosition(i)) {
                 Db_cache cache = new Db_cache();
                 cache.audioUri = cursor.getString(cursor.getColumnIndexOrThrow(KEY_NOTE_AUDIO_URI));
@@ -117,13 +121,14 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
                 listCache.add(cache);
             }
         }
+        cursor.close();
         mDb_page.close();
     }
 
     /**
      * Provide a reference to the type of views that you are using (custom ViewHolder)
      */
-    public static class ViewHolder extends RecyclerView.ViewHolder implements ItemTouchHelperViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder implements ItemTouchHelperViewHolder {
 		TextView rowId;
 		View audioBlock;
         TextView audioTitle;
@@ -169,12 +174,12 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
 
         @Override
         public void onItemSelected() {
-            ((CardView)itemView).setCardBackgroundColor(ColorSet.getButtonColor(mAct));
+            ((CardView)itemView).setCardBackgroundColor(ColorSet.getButtonColor(act));
         }
 
         @Override
         public void onItemClear() {
-            ((CardView)itemView).setCardBackgroundColor(mAct.getResources().getColor(R.color.colorBlack));
+            ((CardView)itemView).setCardBackgroundColor(act.getResources().getColor(R.color.colorBlack));
         }
     }
 
@@ -184,7 +189,7 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
 
         int resource_id;
-        if(Pref.getPref_card_view_enable_large_view(mAct))
+        if(Pref.getPref_card_view_enable_large_view(act))
             resource_id = R.layout.page_card_view_high;
         else
             resource_id = R.layout.page_card_view;
@@ -202,7 +207,7 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
 
 //        System.out.println("PageAdapter / _onBindViewHolder / position = " + position);
 
-        ((CardView)holder.itemView).setCardBackgroundColor(mAct.getResources().getColor(R.color.colorBlack));
+        ((CardView)holder.itemView).setCardBackgroundColor(act.getResources().getColor(R.color.colorBlack));
 
         // get DB data
         String audioUri = null;
@@ -212,28 +217,29 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
 //        System.out.println("PageAdapter / _onBindViewHolder / listCache.size() = " + listCache.size());
         if( (listCache != null)
             && (listCache.size() > 0)
-            && (position!=listCache.size()) )
+            && (holder.getAdapterPosition()!=listCache.size()) )
         {
-            audioUri = listCache.get(position).audioUri;
-            marking = listCache.get(position).marking;
+            audioUri = listCache.get(holder.getAdapterPosition()).audioUri;
+            marking = listCache.get(holder.getAdapterPosition()).marking;
         } else  {
             audioUri = "";
             marking = 0;
         }
 
+        AsyncTaskAudioBitmap audioAsyncTask;
         /**
          *  control block
          */
         // show row Id
-        holder.rowId.setText(String.valueOf(position+1));
-        holder.rowId.setTextColor(mAct.getResources().getColor(R.color.colorWhite));
+        holder.rowId.setText(String.valueOf(holder.getAdapterPosition()+1));
+        holder.rowId.setTextColor(act.getResources().getColor(R.color.colorWhite));
 
-        if( Pref.getPref_card_view_enable_select(mAct) ||
-            Pref.getPref_card_view_enable_draggable(mAct) )
+        if( Pref.getPref_card_view_enable_select(act) ||
+            Pref.getPref_card_view_enable_draggable(act) )
             holder.playlistOperation.setBackgroundColor(ColorSet.mBG_ColorArray[style]);
 
         // show marking check box
-        if(Pref.getPref_card_view_enable_select(mAct)) {
+        if(Pref.getPref_card_view_enable_select(act)) {
             // show checked icon
             holder.btnMarking.setVisibility(View.VISIBLE);
 
@@ -255,18 +261,18 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
         }
 
         // show drag button
-        if(Pref.getPref_card_view_enable_draggable(mAct))
+        if(Pref.getPref_card_view_enable_draggable(act))
             holder.btnDrag.setVisibility(View.VISIBLE);
         else
             holder.btnDrag.setVisibility(View.GONE);
 
         // show audio name
-        if(Util.isUriExisted(audioUri, mAct)) {
+        if(Util.isUriExisted(audioUri, act)) {
 
             // set audio name
             String[] audio_name = null;
             if(!Util.isEmptyString(audioUri))
-                audio_name = Util.getDisplayNameByUriString(audioUri, mAct);
+                audio_name = Util.getDisplayNameByUriString(audioUri, act);
 
 //            System.out.println("-> title = " + audio_name[0]);
 //            System.out.println("-> artist = " + audio_name[1]);
@@ -288,13 +294,14 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
         }
 
         /** show audio highlight if audio is not at Stop */
-        if( (marking !=0) &&
-            (position == Audio_manager.mAudioPos)  &&
-            Audio7Player.isOnAudioPlayingPage() &&
-            (Audio_manager.getPlayerState() != Audio_manager.PLAYER_AT_STOP) )
+        if( (mAudio_manager !=null) &&
+            (mAudio_manager.getPlayerState() != mAudio_manager.PLAYER_AT_STOP) &&
+            (marking !=0) &&
+            (holder.getAdapterPosition() == mAudio_manager.mAudioPos)  &&
+            mAudio_manager.isOnAudioPlayingPage()            )
         {
 //            System.out.println("PageAdapter / _getView / show highlight / position = " + position);
-            TabsHost.getCurrentPage().mHighlightPosition = position;
+            tabsHost.getCurrentPage().mHighlightPosition = holder.getAdapterPosition();
 
             // background case 1: border
 //            holder.audioBlock.setBackgroundResource(R.drawable.bg_highlight_border);
@@ -303,7 +310,7 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
 //            holder.audioTitle.setBackgroundColor(ColorSet.mBG_ColorArray[style]);
 //            holder.audioArtist.setBackgroundColor(ColorSet.mBG_ColorArray[style]);
 
-            holder.rowId.setBackgroundColor(ColorSet.getHighlightColor(mAct));
+            holder.rowId.setBackgroundColor(ColorSet.getHighlightColor(act));
 
             // background case 3: fill highlight
 //            holder.audioTitle.setBackgroundColor(ColorSet.getHighlightColor(mAct));
@@ -321,7 +328,7 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
 
             // gif case 2
             // cf: https://github.com/claucookie/mini-equalizer-library-android
-            if(Audio_manager.getPlayerState() == Audio_manager.PLAYER_AT_PLAY)
+            if(mAudio_manager.getPlayerState() == mAudio_manager.PLAYER_AT_PLAY)
                 holder.gifAudio.animateBars();
             else
                 holder.gifAudio.stopBars();
@@ -337,7 +344,7 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
 //            holder.audioTitle.setBackgroundColor(ColorSet.mBG_ColorArray[style]);
 //            holder.audioArtist.setBackgroundColor(ColorSet.mBG_ColorArray[style]);
 
-            holder.rowId.setBackground(mAct.getDrawable(R.drawable.bg_text_rounded));
+            holder.rowId.setBackground(act.getDrawable(R.drawable.bg_text_rounded));
 
             // gif case
             holder.audioBlock.setVisibility(View.VISIBLE);
@@ -350,8 +357,8 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
                 holder.audioTitle.setTextColor(ColorSet.mText_ColorArray[style]);
                 holder.audioArtist.setTextColor(ColorSet.mText_ColorArray[style]);
             } else {
-                holder.audioTitle.setTextColor(mAct.getResources().getColor(R.color.colorGray));
-                holder.audioArtist.setTextColor(mAct.getResources().getColor(R.color.colorGray));
+                holder.audioTitle.setTextColor(act.getResources().getColor(R.color.colorGray));
+                holder.audioArtist.setTextColor(act.getResources().getColor(R.color.colorGray));
             }
         }
 
@@ -359,33 +366,50 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
         if(Util.isEmptyString(audioUri))
             holder.audioBlock.setVisibility(View.GONE);
 
-            // case : show audio thumb nail if audio Uri exists
-            if (UtilAudio.hasAudioExtension(audioUri)) {
-                holder.thumbBlock.setVisibility(View.VISIBLE);
-                holder.thumbAudio.setVisibility(View.VISIBLE);
-                holder.thumbLength.setVisibility(View.VISIBLE);
+        // case : show audio thumb nail if audio Uri exists
+        if (UtilAudio.hasAudioExtension(audioUri)) {
+            holder.thumbBlock.setVisibility(View.VISIBLE);
+            holder.thumbAudio.setVisibility(View.VISIBLE);
+            holder.thumbLength.setVisibility(View.VISIBLE);
 
-                int in_sample_size;
-                if (Pref.getPref_card_view_enable_large_view(mAct))
-                    in_sample_size = 1;
-                else
-                    in_sample_size = 1;//8; // 1/8 the width/height of the original
+            int in_sample_size;
+            if (Pref.getPref_card_view_enable_large_view(act))
+                in_sample_size = 1;
+            else
+                in_sample_size = 8;//8; // 1/8 the width/height of the original
 
-            try {
-                AsyncTaskAudioBitmap audioAsyncTask;
-                audioAsyncTask = new AsyncTaskAudioBitmap(mAct,
-                        audioUri,
-                        holder.thumbAudio,
-                        holder.progressBar,
-                        holder.thumbLength,
-                        false,
-                        in_sample_size);
-                audioAsyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "Searching media ...");
-            } catch (Exception e) {
-                Log.e("PageAdapter", "AsyncTaskAudioBitmap error");
-                holder.thumbBlock.setVisibility(View.GONE);
-                holder.thumbAudio.setVisibility(View.GONE);
+            // todo Select
+            // disable the following will decrease native memory usage
+//            try {
+//                audioAsyncTask = new AsyncTaskAudioBitmap(act,
+//                        audioUri,
+//                        holder.thumbAudio,
+//                        holder.progressBar,
+//                        false,
+//                        in_sample_size);
+//
+//                audioAsyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "Searching media ...");
+//
+//            } catch (Exception e) {
+//                Log.e("PageAdapter", "AsyncTaskAudioBitmap error");
+//                holder.thumbBlock.setVisibility(View.GONE);
+//                holder.thumbAudio.setVisibility(View.GONE);
+//            }
+
+            // todo Select
+            // for Image Cache
+            ImageView imageView;
+            if (holder.thumbAudio  == null) { // if it's not recycled, instantiate and initialize
+                imageView = new RecyclingImageView(act);
+                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                holder.thumbAudio = imageView;
+            } else { // Otherwise re-use the converted view
+                imageView = (ImageView) holder.thumbAudio;
             }
+
+            if(tabsHost != null)
+                tabsHost.getCurrentPage().mImageFetcher
+                        .loadImage(audioUri, imageView);
 		}
 		else
 		{
@@ -393,9 +417,11 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
 			holder.thumbAudio.setVisibility(View.GONE);
 		}
 
+		// audio length
+        Objects.requireNonNull(holder.thumbLength).setText(UtilAudio.getAudioLengthString(act, audioUri));
+
         setBindViewHolder_listeners(holder,position);
     }
-
 
     /**
      * Set bind view holder listeners
@@ -418,18 +444,18 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
                 System.out.println("PageAdapter / _getView / btnMarking / _onClick");
 
                 // toggle marking and get new setting
-                int marking = toggleNoteMarking(mAct,position);
+                int marking = toggleNoteMarking(position);
 
                 updateDbCache();
 
                 // Stop if unmarked item is at playing state
-                if(Audio_manager.mAudioPos == position) {
-                    UtilAudio.stopAudioIfNeeded();
+                if(mAudio_manager.mAudioPos == position) {
+                    UtilAudio.stopAudioIfNeeded(tabsHost);
                 }
 
                 //Toggle marking will resume page, so do Store v scroll
-                RecyclerView listView = TabsHost.mTabsPagerAdapter.fragmentList.get(TabsHost.getFocus_tabPos()).recyclerView;
-                TabsHost.store_listView_vScroll(listView);
+                RecyclerView listView = tabsHost.mTabsPagerAdapter.fragmentList.get(TabsHost.getFocus_tabPos()).recyclerView;
+                tabsHost.store_listView_vScroll(listView);
                 TabsHost.isDoingMarking = true;
 
                 // set marking icon
@@ -447,7 +473,7 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
                 }
 
                 // set audio title / artist color
-                DB_page db_page = new DB_page(mAct,TabsHost.getCurrentPageTableId());
+                DB_page db_page = new DB_page(TabsHost.getCurrentPageTableId());
                 String audioUri = db_page.getNoteAudioUri(position,true);
 
                 if(!Util.isEmptyString(audioUri)) {
@@ -455,17 +481,17 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
                         viewHolder.audioTitle.setTextColor(ColorSet.mText_ColorArray[style]);
                         viewHolder.audioArtist.setTextColor(ColorSet.mText_ColorArray[style]);
                     } else {
-                        viewHolder.audioTitle.setTextColor(mAct.getResources().getColor(R.color.colorGray));
-                        viewHolder.audioArtist.setTextColor(mAct.getResources().getColor(R.color.colorGray));
+                        viewHolder.audioTitle.setTextColor(act.getResources().getColor(R.color.colorGray));
+                        viewHolder.audioArtist.setTextColor(act.getResources().getColor(R.color.colorGray));
                     }
                 }
 
-                TabsHost.showFooter(MainAct.mAct);
+                tabsHost.showFooter(act);
 
                 // update audio info
-                if(Audio7Player.isOnAudioPlayingPage()) {
+                if(mAudio_manager.isOnAudioPlayingPage()) {
                     System.out.println("PageAdapter / _getView / btnMarking / is AudioPlayingPage");
-                    Audio_manager.setupAudioList();
+                    mAudio_manager.setupAudioList();
                 }
             }
         });
@@ -484,25 +510,41 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
             public void onClick(View v) {
 
                 // check if selected
-                DB_page db_page = new DB_page(mAct,TabsHost.getCurrentPageTableId());
+                DB_page db_page = new DB_page(TabsHost.getCurrentPageTableId());
                 int marking = db_page.getNoteMarking(position,true);
                 if(marking == 0) {
-                    Toast.makeText(mAct,R.string.is_an_unchecked_item,Toast.LENGTH_SHORT).show();
+                    Toast.makeText(act,R.string.is_an_unchecked_item,Toast.LENGTH_SHORT).show();
                     return;
                 }
 
                 // case 1: open Note audio
 //                openAudioPanel_note(position);
 
+                /** Entry: Page play */
                 // case 2: open Page audio
-                Audio_manager.removeRunnable();
-                Audio_manager.stopAudioPlayer();
-                Audio_manager.audio7Player = null;
+                mAudio_manager.stopAudioPlayer();
                 openAudioPanel_page(position);
-                Audio_manager.setupAudioList();
-                Audio_manager.audio7Player.runAudioState();
+                mAudio_manager.setupAudioList();
 
-                TabsHost.showPlayingTab();
+                String audioUriStr = db_page.getNoteAudioUri(position,true);
+                mAudio_manager.mAudioUri = audioUriStr;
+
+                if(mAudio_manager.audio7Player == null)
+                    mAudio_manager.audio7Player = new Audio7Player(act, tabsHost,panelView,audioUriStr);
+                else {
+                    mAudio_manager.audio7Player.setAudioPanel(panelView);
+                    mAudio_manager.audio7Player.initAudioBlock(audioUriStr);
+                }
+
+                audioUi_page = new AudioUi_page(act, tabsHost, mAudio_manager.audio7Player,panelView,audioUriStr);
+
+                mAudio_manager.audio7Player.runAudioState();
+
+                tabsHost.showPlayingTab();
+
+                // scroll
+                mAudio_manager.audio7Player.scrollPlayingItemToBeVisible(tabsHost.getCurrentPage().recyclerView);
+                mAudio_manager.doScroll = true; // add for page bottom items
             }
         });
 
@@ -511,16 +553,16 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
 
             @Override
             public boolean onLongClick(View v) {
-                DB_page db_page = new DB_page(mAct, TabsHost.getCurrentPageTableId());
+                DB_page db_page = new DB_page(TabsHost.getCurrentPageTableId());
                 Long rowId = db_page.getNoteId(position,true);
 
-                Intent i = new Intent(mAct, Note_edit.class);
+                Intent i = new Intent(act, Note_edit.class);
                 i.putExtra("list_view_position", position);
                 i.putExtra(DB_page.KEY_NOTE_ID, rowId);
                 i.putExtra(DB_page.KEY_NOTE_TITLE, db_page.getNoteTitle_byId(rowId));
                 i.putExtra(DB_page.KEY_NOTE_AUDIO_URI , db_page.getNoteAudioUri_byId(rowId));
                 i.putExtra(DB_page.KEY_NOTE_BODY, db_page.getNoteBody_byId(rowId));
-                mAct.startActivity(i);
+                act.startActivity(i);
 
                 return true;
             }
@@ -550,14 +592,16 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
-	    mDb_page = new DB_page(mAct, page_table_id);
+	    mDb_page = new DB_page(page_table_id);
 	    return  mDb_page.getNotesCount(true);
     }
 
     // open Note audio panel
     void openAudioPanel_note(int position) {
-        TabsHost.getCurrentPage().mCurrPlayPosition = position;
-        DB_page db_page = new DB_page(mAct,TabsHost.getCurrentPageTableId());
+        tabsHost.getCurrentPage().mCurrPlayPosition = position;
+        MainAct.mPlaying_pagePos = TabsHost.getFocus_tabPos();
+
+        DB_page db_page = new DB_page(TabsHost.getCurrentPageTableId());
         int count = db_page.getNotesCount(true);
         if(position < count)
         {
@@ -568,30 +612,43 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
 //                    mAct.startActivity(intent);
 
             // hide the tab layout
-            TabsHost.mTabLayout.setVisibility(View.GONE);
-            mAct.getSupportFragmentManager()
+            tabsHost.mTabLayout.setVisibility(View.GONE);
+            act.getSupportFragmentManager()
                     .findFragmentById(R.id.content_frame)
                     .getView()
-                    .setBackgroundColor(mAct.getResources().getColor(R.color.colorBlack));
+                    .setBackgroundColor(act.getResources().getColor(R.color.colorBlack));
 
-            /** Open Note fragment */
-            Note noteFragment = new Note();
-            final Bundle args = new Bundle();
-            args.putInt("POSITION", position);
-            noteFragment.setArguments(args);
-            FragmentTransaction transaction = mAct.getSupportFragmentManager().beginTransaction();
-            transaction.setCustomAnimations(R.anim.fragment_slide_up, R.anim.fragment_slide_down, R.anim.fragment_slide_up, R.anim.fragment_slide_down);
-            transaction.replace(R.id.content_frame, noteFragment, "note").addToBackStack("note").commit();
+            //todo Select
+            /* case 1: Open Note fragment */
+//            Note noteFragment = new Note();
+//            final Bundle args = new Bundle();
+//            args.putInt("POSITION", position);
+//            noteFragment.setArguments(args);
+//            FragmentTransaction transaction = act.getSupportFragmentManager().beginTransaction();
+//            transaction.setCustomAnimations(R.anim.fragment_slide_up, R.anim.fragment_slide_down, R.anim.fragment_slide_up, R.anim.fragment_slide_down);
+//            transaction.replace(R.id.content_frame, noteFragment, "note").addToBackStack("note").commit();
+
+            //todo Select
+            /* case 2: Open Note Activity*/
+            /** Entry: Note play */
+            Intent intent = new Intent(act, NoteAct.class);
+            intent.putExtra("POSITION", position);
+            act.startActivityForResult(intent, NoteAct.VIEW_CURRENT_NOTE);
+
+            //todo Select
+            // case 3: test new sample
+//            Intent intent = new Intent(act, ImageDetailActivity.class);
+//            intent.putExtra("POSITION", position);
+//            act.startActivityForResult(intent, NoteAct.VIEW_CURRENT_NOTE);
         }
 
     }
 
     // open Page audio panel
-    public static void openAudioPanel_page(int position) {
+    public void openAudioPanel_page(int position) {
         System.out.println("PageAdapter / _openAudioPanel_page");
-        Audio_manager.setAudioPlayMode(Audio_manager.PAGE_PLAY_MODE);
 
-        DB_page db_page = new DB_page(mAct, TabsHost.getCurrentPageTableId());
+        DB_page db_page = new DB_page(TabsHost.getCurrentPageTableId());
         int notesCount = db_page.getNotesCount(true);
         if(position >= notesCount) //end of list
             return ;
@@ -606,9 +663,7 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
         if(isAudioUri) {
 
             // create new Intent to play audio
-            Audio_manager.mAudioPos = position;
-
-            MainAct.showAudioView(uriString);
+            mAudio_manager.mAudioPos = position;
 
             // update playing page position
             MainAct.mPlaying_pagePos = TabsHost.getFocus_tabPos();
@@ -617,21 +672,21 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
             MainAct.mPlaying_pageTableId = TabsHost.getCurrentPageTableId();
 
             // update playing folder position
-            MainAct.mPlaying_folderPos = FolderUi.getFocus_folderPos();
+            MainAct.mPlaying_folderPos = Folder.getFocus_folderPos();
 
             // update playing folder table Id
-            DB_drawer dB_drawer = new DB_drawer(mAct);
+            DB_drawer dB_drawer = new DB_drawer(act);
             MainAct.mPlaying_folderTableId = dB_drawer.getFolderTableId(MainAct.mPlaying_folderPos,true);
 
-            TabsHost.mTabsPagerAdapter.notifyDataSetChanged();
+            tabsHost.mTabsPagerAdapter.notifyDataSetChanged();
         }
     }
 
     // toggle mark of note
-    public static int toggleNoteMarking(AppCompatActivity mAct, int position)
+    public static int toggleNoteMarking(int position)
     {
         int marking = 0;
-		DB_page db_page = new DB_page(mAct,TabsHost.getCurrentPageTableId());
+		DB_page db_page = new DB_page(TabsHost.getCurrentPageTableId());
         db_page.open();
         int count = db_page.getNotesCount(false);
         if(position >= count) //end of list
@@ -677,7 +732,7 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
         int oriStartPos = fromPos;
         int oriEndPos = toPos;
 
-        mDb_page = new DB_page(mAct, TabsHost.getCurrentPageTableId());
+        mDb_page = new DB_page(TabsHost.getCurrentPageTableId());
         if(fromPos >= mDb_page.getNotesCount(true)) // avoid footer error
             return false;
 
@@ -692,8 +747,8 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
                 toPos--;
         }
 
-        if( Audio7Player.isOnAudioPlayingPage() &&
-                (BackgroundAudioService.mMediaPlayer != null)				   )
+        if( mAudio_manager.isOnAudioPlayingPage() &&
+                (mMediaPlayer != null)				   )
         {
             if( (Page.mHighlightPosition == oriEndPos)  && (oriStartPos > oriEndPos))
             {
@@ -722,12 +777,12 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
                 Page.mHighlightPosition++;
             }
 
-            Audio_manager.mAudioPos = Page.mHighlightPosition;
-            Audio_manager.setupAudioList();
+            mAudio_manager.mAudioPos = Page.mHighlightPosition;
+            mAudio_manager.setupAudioList();
         }
 
         // update footer
-        TabsHost.showFooter(mAct);
+        tabsHost.showFooter(act);
         return true;
     }
 

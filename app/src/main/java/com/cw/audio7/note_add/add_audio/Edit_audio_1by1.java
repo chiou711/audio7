@@ -33,6 +33,7 @@ import android.widget.Toast;
 
 import com.cw.audio7.R;
 import com.cw.audio7.db.DB_page;
+import com.cw.audio7.folder.Folder;
 import com.cw.audio7.tabs.TabsHost;
 import com.cw.audio7.util.ColorSet;
 import com.cw.audio7.util.Util;
@@ -51,6 +52,7 @@ import java.util.Locale;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.ListFragment;
 
+
 public class Edit_audio_1by1 extends ListFragment
 {
     private List<String> filePathArray = null;
@@ -58,6 +60,16 @@ public class Edit_audio_1by1 extends ListFragment
     public View rootView;
     ListView listView;
     public static String new_audioUri;
+    AppCompatActivity act;
+    Folder folder;
+
+    public Edit_audio_1by1() {
+    }
+
+    public Edit_audio_1by1(AppCompatActivity _act,Folder _folder) {
+        act =_act;
+        folder = _folder;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -292,7 +304,8 @@ public class Edit_audio_1by1 extends ListFragment
                     System.out.println("Add_audio_1by1 / _showFilesList / dirName  = " + dirName);
 
                     // get volume name under root
-                    dirName = StorageUtils.getVolumeName(dirName);
+                    StorageUtils storageUtils = new StorageUtils();
+                    dirName = storageUtils.getVolumeName(act,dirName);
 //                        System.out.println("Add_audio_1by1 / _showFilesList / dirName (with volume name) = " + dirName);
 
                     fileNames.add("[ " + dirName +" ]");
@@ -420,7 +433,7 @@ public class Edit_audio_1by1 extends ListFragment
     void addAudio(String path)
     {
         String uriStr = getAudioUriString(path);
-        DB_page dB = new DB_page(getActivity(), TabsHost.getCurrentPageTableId());
+        DB_page dB = new DB_page(TabsHost.getCurrentPageTableId());
         if( !Util.isEmptyString(uriStr)) {
             // insert new link, set marking to 1 for default
             dB.insertNote("",  uriStr, "",  1);
@@ -437,7 +450,7 @@ public class Edit_audio_1by1 extends ListFragment
     String getAudioUriString(String path) {
         path = "file://".concat(path);
         Uri selectedUri = Uri.parse(path);
-        System.out.println("Add_audio / _getAudioUriString / selectedUri = " + selectedUri);
+        System.out.println("Edit_audio_1by1 / _getAudioUriString / selectedUri = " + selectedUri);
 
         String scheme = selectedUri.getScheme();
         String audioUri = selectedUri.toString();

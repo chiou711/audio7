@@ -20,7 +20,6 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -35,14 +34,15 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.cw.audio7.folder.Folder;
 import com.cw.audio7.operation.List_selectPage;
-import com.cw.audio7.tabs.TabsHost;
-import com.cw.audio7.util.BaseBackPressedListener;
-import com.cw.audio7.main.MainAct;
 import com.cw.audio7.R;
+import com.cw.audio7.tabs.TabsHost;
 import com.cw.audio7.util.Util;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+
 
 public class Export_toSDCardFragment extends Fragment {
 	Context mContext;
@@ -51,9 +51,17 @@ public class Export_toSDCardFragment extends Fragment {
     ListView mListView;
     int mStyle;
 	List_selectPage mList_selPage;
-	public static View mSelPageDlg,mProgressBar;
+	View mSelPageDlg,mProgressBar;
+	View rootView;
+	AppCompatActivity act;
+	Folder folder;
+
 	public Export_toSDCardFragment(){}
-	public static View rootView;
+
+	public Export_toSDCardFragment(AppCompatActivity _act, Folder _folder){
+		act = _act;
+		folder = _folder;
+	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -81,7 +89,7 @@ public class Export_toSDCardFragment extends Fragment {
 				mList_selPage.selectAllPages(false);
 		}
 		});
-		mStyle = Util.getCurrentPageStyle(TabsHost.getFocus_tabPos());
+		mStyle = Util.getCurrentPageStyle(act, TabsHost.getFocus_tabPos());
 
 		// list view: selecting which pages to send
 		mListView = (ListView)rootView.findViewById(R.id.listView1);
@@ -119,7 +127,7 @@ public class Export_toSDCardFragment extends Fragment {
 		// step 1: show list for Select
 		mList_selPage = new List_selectPage(getActivity(),rootView,mListView);
 
-		((MainAct)getActivity()).setOnBackPressedListener(new BaseBackPressedListener(MainAct.mAct));
+//		((MainAct)getActivity()).setOnBackPressedListener(new BaseBackPressedListener(MainAct.mAct));
 
 		return rootView;
 	}
@@ -242,7 +250,7 @@ public class Export_toSDCardFragment extends Fragment {
 		@Override
 		protected Void doInBackground(Void... params) {
 			Util util = new Util(getActivity());
-			util.exportToSdCard(mStrSDCardFileName, // attachment name
+			util.exportToSdCard(act,folder,mStrSDCardFileName, // attachment name
 								mList_selPage.mCheckedTabs); // checked page array
 			return null;
 		}

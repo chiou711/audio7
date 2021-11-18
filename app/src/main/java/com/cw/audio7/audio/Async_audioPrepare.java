@@ -24,6 +24,10 @@ import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.widget.Toast;
 
+import java.util.Objects;
+import static com.cw.audio7.audio.BackgroundAudioService.mAudio_manager;
+import static com.cw.audio7.audio.BackgroundAudioService.mMediaPlayer;
+
 /***************************************************************
  * 
  * audio prepare task
@@ -31,12 +35,13 @@ import android.widget.Toast;
  */
 public class Async_audioPrepare extends AsyncTask<String,Integer,String>
 {
-	 final private Activity act;
-	 public ProgressDialog mPrepareDialog;
-	 Audio7Player audio7Player;
+	final ThreadLocal<Activity> act = new ThreadLocal<>();
+	final ProgressDialog progressDialog;
+	Audio7Player audio7Player;
 
-	 Async_audioPrepare(Activity act, Audio7Player _audio7Player) {
-		 this.act = act;
+	 Async_audioPrepare(Activity act, Audio7Player _audio7Player,ProgressDialog _dlg) {
+	 	 this.progressDialog = _dlg;
+		 this.act.set(act);
 		 audio7Player = _audio7Player;
 	 }
 	 
@@ -44,20 +49,17 @@ public class Async_audioPrepare extends AsyncTask<String,Integer,String>
 	 protected void onPreExecute() 
 	 {
 	 	super.onPreExecute();
-//	 	System.out.println("Async_audioPrepare / onPreExecute" );
 
-		mPrepareDialog = new ProgressDialog(act);
-
-		mPrepareDialog.setMessage(act.getResources().getText(R.string.audio_message_preparing_to_play));
-		mPrepareDialog.setCancelable(true); // set true for enabling Back button
-		mPrepareDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER); //ProgressDialog.STYLE_HORIZONTAL
+		progressDialog.setMessage(Objects.requireNonNull(act.get()).getResources().getText(R.string.audio_message_preparing_to_play));
+		progressDialog.setCancelable(true); // set true for enabling Back button
+		progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER); //ProgressDialog.STYLE_HORIZONTAL
 
 		// only for Page play mode
 		// show dialog will affect full screen at Note play mode
-        if( Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE)
+        if( mAudio_manager.getAudioPlayMode() == mAudio_manager.PAGE_PLAY_MODE)
         {
-	        if(!act.isFinishing() && !act.isDestroyed())
-		        mPrepareDialog.show();
+	        if(!Objects.requireNonNull(act.get()).isFinishing() && !Objects.requireNonNull(act.get()).isDestroyed())
+		        progressDialog.show();
         }
 
         BackgroundAudioService.mIsPrepared = false;
@@ -73,8 +75,9 @@ public class Async_audioPrepare extends AsyncTask<String,Integer,String>
 		 int count = 0;
 
 		 while(	(!isTimeOut) &&
-				( (BackgroundAudioService.mMediaPlayer != null) &&
-				  (!BackgroundAudioService.mMediaPlayer.isPlaying()) ) )
+				    (!BackgroundAudioService.mIsPrepared) &&
+				    ( (mMediaPlayer != null) &&
+				      (!mMediaPlayer.isPlaying()) ) )
 		 {
 			 System.out.println("Async_audioPrepare / doInBackground / count = " + count);
 			 count++;
@@ -84,7 +87,7 @@ public class Async_audioPrepare extends AsyncTask<String,Integer,String>
 			 
 			 publishProgress(progress);
 			 
-			 progress =+ 20;
+			 progress += 20;
 			 if(progress >= 100)
 				 progress = 0;
 			 
@@ -107,8 +110,8 @@ public class Async_audioPrepare extends AsyncTask<String,Integer,String>
 //		 System.out.println("Async_audioPrepare / OnProgressUpdate / progress[0] " + progress[0] );
 	     super.onProgressUpdate(progress);
 	     
-	     if((mPrepareDialog != null) && mPrepareDialog.isShowing())
-	    	 mPrepareDialog.setProgress(progress[0]);
+	     if((progressDialog != null) && progressDialog.isShowing())
+	    	 progressDialog.setProgress(progress[0]);
 	 }
 	 
 	 // This is executed in the context of the main GUI thread
@@ -118,15 +121,13 @@ public class Async_audioPrepare extends AsyncTask<String,Integer,String>
 //	 	System.out.println("Async_audioPrepare / _onPostExecute / result = " + result);
 	 	
 	 	// dialog off
-		if((mPrepareDialog != null) && mPrepareDialog.isShowing())
-			mPrepareDialog.dismiss();
-
-		mPrepareDialog = null;
+		if((progressDialog != null) && progressDialog.isShowing())
+			progressDialog.dismiss();
 
 		// show time out
 		if(result.equalsIgnoreCase("timeout"))
 		{
-			Toast toast = Toast.makeText(act.getApplicationContext(), R.string.audio_message_preparing_time_out, Toast.LENGTH_SHORT);
+			Toast toast = Toast.makeText(Objects.requireNonNull(act.get()).getApplicationContext(), R.string.audio_message_preparing_time_out, Toast.LENGTH_SHORT);
 			toast.show();
 		} else {
 			// Prepare is ready, start Audio Runnable
@@ -134,7 +135,7 @@ public class Async_audioPrepare extends AsyncTask<String,Integer,String>
 		}
 
 		// unlock orientation
-		Util.unlockOrientation(act);
+		Util.unlockOrientation(Objects.requireNonNull(act.get()));
 	 }
 	 
 }

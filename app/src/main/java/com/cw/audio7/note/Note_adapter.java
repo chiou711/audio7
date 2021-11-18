@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 CW Chiu
+ * Copyright (C) 2021 CW Chiu
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,17 +19,16 @@ package com.cw.audio7.note;
 import com.cw.audio7.R;
 import com.cw.audio7.db.DB_page;
 import com.cw.audio7.audio.AudioUi_note;
-import com.cw.audio7.audio.Audio_manager;
+import com.cw.audio7.folder.Folder;
+import com.cw.audio7.main.MainAct;
 import com.cw.audio7.tabs.TabsHost;
 import com.cw.audio7.util.audio.UtilAudio;
-import com.cw.audio7.util.image.AsyncTaskAudioBitmap;
 import com.cw.audio7.util.ColorSet;
 import com.cw.audio7.util.CustomWebView;
 import com.cw.audio7.util.Util;
 
 import android.annotation.SuppressLint;
 import android.graphics.Color;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.text.Html;
 import android.text.Spannable;
@@ -51,7 +50,9 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
-public class Note_adapter extends FragmentStatePagerAdapter
+import static com.cw.audio7.audio.BackgroundAudioService.mAudio_manager;
+
+public class Note_adapter extends FragmentStatePagerAdapter implements View.OnClickListener
 {
 	static int mLastPosition;
 	private final LayoutInflater inflater;
@@ -67,11 +68,11 @@ public class Note_adapter extends FragmentStatePagerAdapter
     	act = activity;
         inflater = act.getLayoutInflater();
         mLastPosition = -1;
-	    db_page = new DB_page(act, TabsHost.getCurrentPageTableId());
+	    db_page = new DB_page(TabsHost.getCurrentPageTableId());
 	    audioUi_note = ui;
         System.out.println("Note_adapter / constructor / mLastPosition = " + mLastPosition);
     }
-    
+
 	@Override
 	public void destroyItem(ViewGroup container, int position, Object object) {
 		container.removeView((View) object);
@@ -87,11 +88,15 @@ public class Note_adapter extends FragmentStatePagerAdapter
     	// 1. picture group:  thumb nail
     	// 2. text group: title, body, time 
     	View pagerView = inflater.inflate(R.layout.note_view_adapter, container, false);
-    	int style = Note.getStyle();
+    	int style = NoteAct.getStyle();
         pagerView.setBackgroundColor(ColorSet.mBG_ColorArray[style]);
 
         // image view
 	    ImageView imageView = ((ImageView) pagerView.findViewById(R.id.image_view));
+
+	    // set on click listener for toggling full screen or not
+	    imageView.setOnClickListener(this);
+
         String tagImageStr = "current"+ position +"imageView";
         imageView.setTag(tagImageStr);
 
@@ -170,23 +175,30 @@ public class Note_adapter extends FragmentStatePagerAdapter
   			// workaround to fix no image in View note
 //		    imageView.setZoom((float) 0.999);
 
-  			try
-			{
-			    AsyncTaskAudioBitmap audioAsyncTask;
-			    audioAsyncTask = new AsyncTaskAudioBitmap(act,
-						    							  audioUri, 
-						    							  imageView,
-						    							  null,
-														  null,
-														  false,
-					                                        1);
-				audioAsyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,"Searching media ...");
-			}
-			catch(Exception e)
-			{
-				System.out.println("Note_adapter / _AsyncTaskAudioBitmap / exception");
-			}
-  		}
+		    // todo Select
+		    // case 1
+//  			try
+//			{
+//			    AsyncTaskAudioBitmap audioAsyncTask;
+//			    audioAsyncTask = new AsyncTaskAudioBitmap(act,
+//						    							  audioUri,
+//						    							  imageView,
+//						    							  null,
+//														  false,
+//					                                        1);
+//				audioAsyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,"Searching media ...");
+//			}
+//			catch(Exception e)
+//			{
+//				System.out.println("Note_adapter / _AsyncTaskAudioBitmap / exception");
+//			}
+
+		    // todo Select
+		    // case 2
+		    // for Image Cache
+		    ((NoteAct)act).getImageFetcher().loadImage(audioUri, imageView);
+
+	    }
   		// show link thumb view
   		else if(Util.isEmptyString(audioUri))
   		{
@@ -250,14 +262,31 @@ public class Note_adapter extends FragmentStatePagerAdapter
 			else
 				audioPanel.setVisibility(View.GONE);
 
-			//auto play
-			System.out.println("Note_adapter / _setPrimaryItem / auto play ");
+			// continue playing/pausing or auto play
+			if(mAudio_manager.getPlayerState() != mAudio_manager.PLAYER_AT_STOP) {
+				// continue playing
+				System.out.println("Note_adapter / _setPrimaryItem / continue playing ");
 
-			// first audio play
-			if(Audio_manager.getPlayerState() != Audio_manager.PLAYER_AT_PLAY) {
-				Audio_manager.stopAudioPlayer();
+				/** Entry: Page play -> Note play */
+				audioPanel = (ViewGroup) act.findViewById(R.id.audioGroup);
+				if(audioPanel != null)
+					audioPanel.setVisibility(View.VISIBLE);
+
+				mAudio_manager.audio7Player.setAudioPanel(audioUi_note.audioPanel);
+				mAudio_manager.audio7Player.initAudioBlock(NoteAct.mAudioUriInDB);
+				mAudio_manager.audio7Player.updateAudioPanel(act);
+				mAudio_manager.audio7Player.updateAudioProgress();
+
+			} else { // first audio play
+				/** Entry: Note play */
+				System.out.println("Note_adapter / _setPrimaryItem / auto play ");
+
+				mAudio_manager.stopAudioPlayer();
+
 				audioUi_note.audio_play_btn.performClick();
+				MainAct.mPlaying_folderPos = Folder.getFocus_folderPos();
 			}
+
 		}
 	    mLastPosition = position;
 	    
@@ -270,7 +299,7 @@ public class Note_adapter extends FragmentStatePagerAdapter
     // Get HTML string with view port
     private String getHtmlStringWithViewPort(int position, int viewPort)
     {
-    	int mStyle = Note.mStyle;
+    	int mStyle = NoteAct.mStyle;
     	
     	System.out.println("Note_adapter / _getHtmlStringWithViewPort");
     	String strTitle = db_page.getNoteTitle(position,true);
@@ -357,4 +386,13 @@ public class Note_adapter extends FragmentStatePagerAdapter
 		         "</body></html>";
     }
 
+	@Override
+	public void onClick(View view) {
+		final int vis = pager.getSystemUiVisibility();
+		if ((vis & View.SYSTEM_UI_FLAG_LOW_PROFILE) != 0) {
+			pager.setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
+		} else {
+			pager.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
+		}
+	}
 }

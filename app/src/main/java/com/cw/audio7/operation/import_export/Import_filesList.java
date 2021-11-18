@@ -29,9 +29,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.cw.audio7.main.MainAct;
 import com.cw.audio7.R;
-import com.cw.audio7.util.BaseBackPressedListener;
 import com.cw.audio7.util.ColorSet;
 import com.cw.audio7.util.Util;
 
@@ -45,6 +43,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.fragment.app.ListFragment;
 
@@ -54,6 +53,11 @@ public class Import_filesList extends ListFragment
     List<String> fileNames = null;
     public View rootView;
     ListView listView;
+    AppCompatActivity act;
+
+    public Import_filesList(AppCompatActivity _act) {
+        act = _act;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -124,7 +128,7 @@ public class Import_filesList extends ListFragment
             }
         });
 
-        ((MainAct)getActivity()).setOnBackPressedListener(new BaseBackPressedListener(MainAct.mAct));
+//        ((MainAct)getActivity()).setOnBackPressedListener(new BaseBackPressedListener(MainAct.mAct));
 
         return rootView;
     }
@@ -179,7 +183,7 @@ public class Import_filesList extends ListFragment
                     View view2 = getActivity().findViewById(R.id.file_list_title);
                     view2.setVisibility(View.GONE);
 
-                    Import_fileView fragment = new Import_fileView();
+                    Import_fileView fragment = new Import_fileView(act);
                     final Bundle args = new Bundle();
                     args.putString("KEY_FILE_PATH", currFilePath);
                     fragment.setArguments(args);

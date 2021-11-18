@@ -19,11 +19,9 @@ package com.cw.audio7.util.audio;
 import java.io.File;
 import java.util.Locale;
 
-import com.cw.audio7.folder.FolderUi;
+import com.cw.audio7.folder.Folder;
 import com.cw.audio7.main.MainAct;
 import com.cw.audio7.R;
-import com.cw.audio7.audio.Audio_manager;
-import com.cw.audio7.audio.BackgroundAudioService;
 import com.cw.audio7.tabs.TabsHost;
 import com.cw.audio7.util.Util;
 
@@ -31,39 +29,26 @@ import android.app.Activity;
 import android.media.MediaPlayer;
 import android.net.Uri;
 
-//import static android.content.Context.TELEPHONY_SERVICE;
+import static com.cw.audio7.audio.BackgroundAudioService.mAudio_manager;
+import static com.cw.audio7.audio.BackgroundAudioService.mMediaPlayer;
 
 public class UtilAudio {
 
-//	public static void setPhoneListener(AppCompatActivity act)
-//	{
-//		System.out.println("UtilAudio/ _setPhoneListener");
-//
-//		// To Registers a listener object to receive notification when incoming call
-//		TelephonyManager telMgr = (TelephonyManager) act.getSystemService(TELEPHONY_SERVICE);
-//		if (telMgr != null) {
-//			telMgr.listen(UtilAudio.phoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
-//		}
-//	}
-
-    public static void stopAudioIfNeeded()
+    public static void stopAudioIfNeeded(TabsHost tabsHost)
     {
-		if( ( (BackgroundAudioService.mMediaPlayer != null) &&
-              (Audio_manager.getPlayerState() != Audio_manager.PLAYER_AT_STOP) ) &&
-			(MainAct.mPlaying_folderPos == FolderUi.getFocus_folderPos()) &&
+		if( ( (mMediaPlayer != null) &&
+              (mAudio_manager.getPlayerState() != mAudio_manager.PLAYER_AT_STOP) ) &&
+			(MainAct.mPlaying_folderPos == Folder.getFocus_folderPos()) &&
 			(TabsHost.getFocus_tabPos() == MainAct.mPlaying_pagePos)                           )
 		{
-            if(BackgroundAudioService.mMediaPlayer != null){
-                Audio_manager.stopAudioPlayer();
-	            Audio_manager.removeRunnable();
-                Audio_manager.mAudioPos = 0;
-	            Audio_manager.audio7Player.showAudioPanel(MainAct.mAct, false);
+            if(mMediaPlayer != null){
+                mAudio_manager.stopAudioPlayer();
+                mAudio_manager.mAudioPos = 0;
+	            mAudio_manager.audio7Player.showAudioPanel(false);
 	            // remove playing focus
-	            TabsHost.reloadCurrentPage();
+	            tabsHost.reloadCurrentPage();
             }
 
-			if(MainAct.mSubMenuItemAudio != null)
-				MainAct.mSubMenuItemAudio.setIcon(R.drawable.ic_menu_slideshow);
 		}
     }
 

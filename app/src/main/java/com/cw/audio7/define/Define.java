@@ -141,6 +141,8 @@ public class Define {
      ***************************************************************************/
     public static boolean ENABLE_ADMOB = false; //true; //false;
 
+    public static boolean ENABLE_MEDIA_CONTROLLER = true; //true; //false;
+
 
     // default style for Insert page table
     public static int STYLE_DEFAULT = 1; //1: white

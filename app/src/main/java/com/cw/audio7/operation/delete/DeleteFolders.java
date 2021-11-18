@@ -35,18 +35,14 @@ import android.widget.Toast;
 import com.cw.audio7.R;
 import com.cw.audio7.db.DB_drawer;
 import com.cw.audio7.db.DB_folder;
-import com.cw.audio7.folder.FolderUi;
+import com.cw.audio7.folder.Folder;
 import com.cw.audio7.main.MainAct;
 import com.cw.audio7.operation.List_selectFolder;
-import com.cw.audio7.audio.Audio_manager;
-import com.cw.audio7.audio.BackgroundAudioService;
-import com.cw.audio7.util.BaseBackPressedListener;
 import com.cw.audio7.util.Util;
 import com.cw.audio7.util.preferences.Pref;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-
 
 public class DeleteFolders extends Fragment {
 	Context mContext;
@@ -60,6 +56,10 @@ public class DeleteFolders extends Fragment {
 
 	public DeleteFolders(){}
 
+    public DeleteFolders(AppCompatActivity _act){
+	    act = _act;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -70,7 +70,6 @@ public class DeleteFolders extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		rootView = inflater.inflate(R.layout.select_page_list, container, false);
-        act = MainAct.mAct;
 
 		// title
 		title = (TextView) rootView.findViewById(R.id.select_list_title);
@@ -144,7 +143,7 @@ public class DeleteFolders extends Fragment {
                 DB_drawer db_drawer = new DB_drawer(act);
 
                 int focusFolder_tableId = Pref.getPref_focusView_folder_tableId(act);
-                DB_folder db_folder = new DB_folder(act,focusFolder_tableId);
+                DB_folder db_folder = new DB_folder(focusFolder_tableId);
                 if((db_drawer.getFoldersCount(true) == 0) || (db_folder.getPagesCount(true) == 0))
                 {
                     System.out.println("DeleteFolders / _btnSelPageCancel / will call MainAct");
@@ -166,7 +165,8 @@ public class DeleteFolders extends Fragment {
         //show list for selection
         list_selFolder = new List_selectFolder(act,rootView , mListView);
 
-		((MainAct)act).setOnBackPressedListener(new BaseBackPressedListener(act));
+//        ((MainAct)act).setOnBackPressedListener(new BaseBackPressedListener(act));
+//        act.setOnBackPressedListener(new BaseBackPressedListener(act));
 
 		return rootView;
 	}
@@ -184,7 +184,7 @@ public class DeleteFolders extends Fragment {
         DB_drawer dbDrawer = new DB_drawer(act);
 
         // drawer DB check
-        boolean doDB_check = true;
+        boolean doDB_check = false;
         if(doDB_check) {
             dbDrawer.open();
             for (int i = 0; i < list_selFolder.count; i++) {
@@ -209,7 +209,7 @@ public class DeleteFolders extends Fragment {
                 Pref.removePref_focusView_page_tableId_key(act, folderTableId);
 
                 // 1) delete related page tables
-                DB_folder dbFolder = new DB_folder(act, folderTableId);
+                DB_folder dbFolder = new DB_folder(folderTableId);
                 int pgsCnt = dbFolder.getPagesCount(true);
                 for (int j = 0; j < pgsCnt; j++) {
                     int pageTableId = dbFolder.getPageTableId(j, true);
@@ -218,13 +218,15 @@ public class DeleteFolders extends Fragment {
 
                 // 2) delete folder table
                 dbDrawer.dropFolderTable(folderTableId,false);
+                System.out.println("DeleteFolders / drop folderTableId = " + folderTableId);
 
                 // 3) delete folder Id
                 int folderId = (int)dbDrawer.getFolderId(i,false);
                 dbDrawer.deleteFolderId(folderId,false);
+                System.out.println("DeleteFolders / delete folderId = " + folderId);
 
                 // change focus
-                FolderUi.setFocus_folderPos(0);
+                Folder.setFocus_folderPos(0);
             }
         }
         dbDrawer.close();
@@ -256,12 +258,13 @@ public class DeleteFolders extends Fragment {
 //        int scrollX = 0; //over the last scroll X
 //        Pref.setPref_focusView_scrollX_byFolderTableId(act, scrollX );
 
-        if(BackgroundAudioService.mMediaPlayer != null)
-        {
-            Audio_manager.stopAudioPlayer();
-            Audio_manager.mAudioPos = 0;
-            Audio_manager.setPlayerState(Audio_manager.PLAYER_AT_STOP);
-        }
+        //todo TBD
+//        if(BackgroundAudioService.mMediaPlayer != null)
+//        {
+//            Audio_manager.stopAudioPlayer();
+//            Audio_manager.mAudioPos = 0;
+//            Audio_manager.setPlayerState(Audio_manager.PLAYER_AT_STOP);
+//        }
 
         list_selFolder = new List_selectFolder(act,rootView , mListView);
     }

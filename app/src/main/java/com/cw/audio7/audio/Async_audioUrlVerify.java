@@ -22,7 +22,11 @@ import com.cw.audio7.util.Util;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
 
+import java.util.Objects;
+
 import androidx.appcompat.app.AppCompatActivity;
+
+import static com.cw.audio7.audio.BackgroundAudioService.mAudio_manager;
 
 /**
  * Audio Url verification task
@@ -31,14 +35,15 @@ import androidx.appcompat.app.AppCompatActivity;
 
 class Async_audioUrlVerify extends AsyncTask<String,Integer,String>
 {
-	ProgressDialog mUrlVerifyDialog;
-	private AppCompatActivity act;
+	final ProgressDialog progressDialog;
+	final ThreadLocal<AppCompatActivity> act = new ThreadLocal<>();
     static boolean mIsOkUrl;
 	final private String audioStr;
 	Audio7Player audio7Player;
 
-	Async_audioUrlVerify(AppCompatActivity act, Audio7Player audio7Player,String audioStr) 	{
-	    this.act = act;
+	Async_audioUrlVerify(AppCompatActivity act, Audio7Player audio7Player,ProgressDialog _dlg,String audioStr) 	{
+	    this.act.set(act);
+	    progressDialog = _dlg;
 		this.audioStr = audioStr;
 		this.audio7Player = audio7Player;
 	}
@@ -47,20 +52,18 @@ class Async_audioUrlVerify extends AsyncTask<String,Integer,String>
 	protected void onPreExecute() {
 	    super.onPreExecute();
 	 	 // lock orientation
-	 	 Util.lockOrientation(act);
+	 	 Util.lockOrientation(Objects.requireNonNull(act.get()));
 
-        mUrlVerifyDialog = new ProgressDialog(act);
-
-		mUrlVerifyDialog.setMessage(act.getResources().getText(R.string.audio_message_searching_media));
-		mUrlVerifyDialog.setCancelable(true); // set true for enabling Back button
-		mUrlVerifyDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER); //ProgressDialog.STYLE_HORIZONTAL
+		progressDialog.setMessage(Objects.requireNonNull(act.get()).getResources().getText(R.string.audio_message_searching_media));
+		progressDialog.setCancelable(true); // set true for enabling Back button
+		progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER); //ProgressDialog.STYLE_HORIZONTAL
 
 		// only for Page play mode
 		// show dialog will affect full screen at Note play mode
-		if( Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE ) {
-		    if( (mUrlVerifyDialog != null) && (!mUrlVerifyDialog.isShowing()) )  {
-			    if( !act.isFinishing() && !act.isDestroyed() )
-			    	mUrlVerifyDialog.show();
+		if( mAudio_manager.getAudioPlayMode() == mAudio_manager.PAGE_PLAY_MODE ) {
+		    if(!progressDialog.isShowing())  {
+			    if( !Objects.requireNonNull(act.get()).isFinishing() && !Objects.requireNonNull(act.get()).isDestroyed() )
+			    	progressDialog.show();
 		    }
 		}
 
@@ -74,7 +77,7 @@ class Async_audioUrlVerify extends AsyncTask<String,Integer,String>
  	    // check if audio file exists or not
  		mIsOkUrl = false;
  		String scheme  = Util.getUriScheme(audioStr);
- 		System.out.println("scheme = " + scheme + " / path = " + audioStr);
+ 		System.out.println("Async_audioUrlVerify / doInBackground / scheme = " + scheme + " / path = " + audioStr);
  		
  		// if scheme is https or http
  		boolean isUriExisted;
@@ -84,8 +87,8 @@ class Async_audioUrlVerify extends AsyncTask<String,Integer,String>
  		 
  		if( scheme.equalsIgnoreCase("http")||
 			scheme.equalsIgnoreCase("https") ) {
-		    if(Util.isNetworkConnected(act)) {
-		 	    isUriExisted = Util.isUriExisted(audioStr, act);
+		    if(Util.isNetworkConnected(Objects.requireNonNull(act.get()))) {
+		 	    isUriExisted = Util.isUriExisted(audioStr, act.get());
 		 		System.out.println("Async_audioUrlVerify / isUriExisted  = " + isUriExisted);
 		 		if(isUriExisted) {
 		 		    try {
@@ -93,20 +96,18 @@ class Async_audioUrlVerify extends AsyncTask<String,Integer,String>
 		 				int i = 0;
 		 				while(!isEnd) {
 		 				    // check if network connection is OK
-		 					publishProgress(Integer.valueOf(mProgress));
-		 					mProgress =+ 20;
+		 					publishProgress(mProgress);
+		 					mProgress += 20;
 		 					if(mProgress >= 100)
 		 					    mProgress = 0;
  				         
-		 					Util.tryUrlConnection(audioStr, act);
+		 					Util.tryUrlConnection(audioStr, act.get());
+
 		 					// wait for response
 		 					Thread.sleep(Util.oneSecond);
  						
 		 					// check response
-		 					if(200 <= Util.mResponseCode && Util.mResponseCode <= 399)
-		 					    mIsOkUrl =  true;
-		 					else
-		 					    mIsOkUrl =  false;
+						    mIsOkUrl = 200 <= Util.mResponseCode && Util.mResponseCode <= 399;
  						
 		 					System.out.println("mIsOkUrl = " + mIsOkUrl +
 		 					                   " / count = " + i);
@@ -128,11 +129,11 @@ class Async_audioUrlVerify extends AsyncTask<String,Integer,String>
  		// if scheme is content or file
  		else if( scheme.equalsIgnoreCase("content") ||
  		            scheme.equalsIgnoreCase("file")          )  {
- 			isUriExisted = Util.isUriExisted(audioStr, act);
+ 			isUriExisted = Util.isUriExisted(audioStr, act.get());
 
 		    String[] strName = null;
  			if(isUriExisted)
-			    strName =  Util.getDisplayNameByUriString(audioStr, act);
+			    strName =  Util.getDisplayNameByUriString(audioStr, act.get());
 
 		    assert strName != null;
 		    mIsOkUrl = !Util.isEmptyString(strName[0]) || !Util.isEmptyString(strName[1]);
@@ -150,8 +151,8 @@ class Async_audioUrlVerify extends AsyncTask<String,Integer,String>
 	protected void onProgressUpdate(Integer... progress) {
 	    System.out.println("Async_audioUrlVerify / OnProgressUpdate / progress[0] " + progress[0] );
 	    super.onProgressUpdate(progress);
-	    if(mUrlVerifyDialog != null)
-	        mUrlVerifyDialog.setProgress(progress[0]);
+	    if(progressDialog != null)
+	        progressDialog.setProgress(progress[0]);
 	}
 	 
 	// This is executed in the context of the main GUI thread
@@ -160,10 +161,8 @@ class Async_audioUrlVerify extends AsyncTask<String,Integer,String>
 //	    System.out.println("Async_audioUrlVerify / onPostExecute / result = " + result);
 		
 	 	// dialog off
-		if((mUrlVerifyDialog != null) && mUrlVerifyDialog.isShowing() )
-			mUrlVerifyDialog.dismiss();
-
- 		mUrlVerifyDialog = null;
+		if((progressDialog != null) && progressDialog.isShowing() )
+			progressDialog.dismiss();
 
  		// wait for Verify URL OK
 		while (!mIsOkUrl) {
@@ -176,8 +175,8 @@ class Async_audioUrlVerify extends AsyncTask<String,Integer,String>
 		}
 
 		// prepare audio
-		if (Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE)
-			audio7Player.showAudioPanel(act, true);
+		if (mAudio_manager.getAudioPlayMode() == mAudio_manager.PAGE_PLAY_MODE)
+			audio7Player.showAudioPanel( true);
 
 		// URL is ready, start Audio Prepare
 		audio7Player.prepareAudio();

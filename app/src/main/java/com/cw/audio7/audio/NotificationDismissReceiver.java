@@ -4,21 +4,23 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-import com.cw.audio7.main.MainAct;
-import com.cw.audio7.tabs.TabsHost;
+import static com.cw.audio7.audio.BackgroundAudioService.mAudio_manager;
+
 
 // cf https://stackoverflow.com/questions/12654820/is-it-possible-to-check-if-a-notification-is-visible-or-canceled
 public class NotificationDismissReceiver extends BroadcastReceiver {
+	// onReceive when Remove notification
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		int notificationId = intent.getExtras().getInt("com.cw.audio7.notificationId");
 		System.out.println("NotificationDismissReceiver / _onReceive / notificationId = " + notificationId);
 
-		Audio_manager.stopAudioPlayer();
-		Audio_manager.removeRunnable();
-		Audio_manager.audio7Player.showAudioPanel(MainAct.mAct, false);
+		{
+			mAudio_manager.stopAudioPlayer( );
+			mAudio_manager.audio7Player.showAudioPanel(false);
 
-		// refresh
-		TabsHost.reloadCurrentPage();
+			// refresh //todo Check more
+//			mFUI.tabsHost.reloadCurrentPage();
+		}
 	}
 }

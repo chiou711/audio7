@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 CW Chiu
+ * Copyright (C) 2021 CW Chiu
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,96 +42,116 @@ import android.widget.TextView;
 
 import com.cw.audio7.R;
 import com.cw.audio7.audio.Audio7Player;
+import com.cw.audio7.audio.Audio_manager;
 import com.cw.audio7.db.DB_folder;
 import com.cw.audio7.db.DB_page;
-import com.cw.audio7.define.Define;
+
 import com.cw.audio7.drawer.Drawer;
-import com.cw.audio7.folder.FolderUi;
+import com.cw.audio7.folder.Folder;
 import com.cw.audio7.main.MainAct;
 import com.cw.audio7.audio.AudioUi_page;
-import com.cw.audio7.audio.Audio_manager;
-import com.cw.audio7.audio.BackgroundAudioService;
 import com.cw.audio7.page.Page;
+import com.cw.audio7.page.PageUi;
 import com.cw.audio7.util.ColorSet;
 import com.cw.audio7.util.Util;
 import com.cw.audio7.util.preferences.Pref;
 
 //if(Define.ENABLE_ADMOB), enable the following
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.MobileAds;
+//import com.google.android.gms.ads.AdRequest;
+//import com.google.android.gms.ads.AdView;
+//import com.google.android.gms.ads.MobileAds;
+//import com.google.android.gms.ads.initialization.InitializationStatus;
+//import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 
-import com.google.android.gms.ads.initialization.InitializationStatus;
-import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
+import com.cw.audio7.util.system.SystemState;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
 
+import static com.cw.audio7.audio.BackgroundAudioService.mAudio_manager;
+import static com.cw.audio7.audio.BackgroundAudioService.mMediaPlayer;
+
 public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTabSelectedListener
 {
-    public static TabLayout mTabLayout;
-    public static ViewPager mViewPager;
-    public static TabsPagerAdapter mTabsPagerAdapter;
+    public TabLayout mTabLayout;
+    public ViewPager mViewPager;
+    public TabsPagerAdapter mTabsPagerAdapter;
     public static int mFocusPageTableId;
     public static int mFocusTabPos;
 
     public static int lastPageTableId;
-    public static int firstPos_pageId;
+    public int firstPos_pageId;
 
-    public static AudioUi_page audioUi_page;
+    public AudioUi_page audioUi_page;
     public static boolean isDoingMarking;
-    private AdView adView;
+    AppCompatActivity act;
+    Folder folder;
+
+    //if(Define.ENABLE_ADMOB), enable the following
+    //private AdView adView;
 
     public TabsHost()
     {
 //        System.out.println("TabsHost / construct");
     }
 
+    public TabsHost(AppCompatActivity _act, Folder _folder) {
+        act =_act;
+        folder = _folder;
+    }
+
     int pagesCount;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        pagesCount = FolderUi.getFolder_pagesCount(MainAct.mAct,FolderUi.getFocus_folderPos());
-        System.out.println("TabsHost / _onCreate / pagesCount = " + pagesCount);
+        
+        int folderPos = 0;
+        
+        if(folder != null) {
+            folderPos = Folder.getFocus_folderPos();
+            pagesCount = folder.getFolder_pagesCount(act, folderPos);
+            System.out.println("TabsHost / _onCreate / pagesCount = " + pagesCount);
+        }
     }
 
-    public static View rootView;
+    public View rootView;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         System.out.println("TabsHost / _onCreateView");
 
         // set layout by orientation
-        if (Util.isLandscapeOrientation(MainAct.mAct)) {
-            if(Define.ENABLE_ADMOB) {
-                if (Define.CODE_MODE == Define.DEBUG_MODE)
-                    rootView = inflater.inflate(R.layout.tabs_host_landscape_test, container, false);
-                else
-                    rootView = inflater.inflate(R.layout.tabs_host_landscape, container, false);
-            }
-            else
+        if ((act!= null) && Util.isLandscapeOrientation(act)) {
+//            if(Define.ENABLE_ADMOB) {
+//                if (Define.CODE_MODE == Define.DEBUG_MODE)
+//                    rootView = inflater.inflate(R.layout.tabs_host_landscape_test, container, false);
+//                else
+//                    rootView = inflater.inflate(R.layout.tabs_host_landscape, container, false);
+//            }
+//            else
                 rootView = inflater.inflate(R.layout.tabs_host_landscape_no_admob, container, false);
         }
         else {
-            if(Define.ENABLE_ADMOB) {
-                if (Define.CODE_MODE == Define.DEBUG_MODE)
-                    rootView = inflater.inflate(R.layout.tabs_host_portrait_test, container, false);
-                else
-                    rootView = inflater.inflate(R.layout.tabs_host_portrait, container, false);
-            }
-            else
+//            if(Define.ENABLE_ADMOB) {
+//                if (Define.CODE_MODE == Define.DEBUG_MODE)
+//                    rootView = inflater.inflate(R.layout.tabs_host_portrait_test, container, false);
+//                else
+//                    rootView = inflater.inflate(R.layout.tabs_host_portrait, container, false);
+//            }
+//            else
                 rootView = inflater.inflate(R.layout.tabs_host_portrait_no_admob, container, false);
         }
 
         // view pager
         mViewPager = (ViewPager) rootView.findViewById(R.id.tabs_pager);
 
-        // mTabsPagerAdapter
-        mTabsPagerAdapter = new TabsPagerAdapter(MainAct.mAct,MainAct.mAct.getSupportFragmentManager());
+        int pageCount = 0;
+
+        if(act!= null)
+            mTabsPagerAdapter = new TabsPagerAdapter(act, act.getSupportFragmentManager());
 
         // add pages to mTabsPagerAdapter
-        int pageCount = 0;
-        if(Drawer.getFolderCount() > 0) {
+        if ( (act != null) && Drawer.getFoldersCount(act) > 0) {
             pageCount = addPages(mTabsPagerAdapter);
         }
 
@@ -157,20 +177,23 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
 //        mTabLayout.setTabMode(TabLayout.MODE_FIXED);
         mTabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
 
-        mTabLayout.setBackgroundColor(ColorSet.getBarColor(MainAct.mAct));
+        if(act != null) {
+            mTabLayout.setBackgroundColor(ColorSet.getBarColor(act));
 
-        // set text color
-        mTabLayout.setTabTextColors(
-                ContextCompat.getColor(MainAct.mAct,R.color.colorGray), //normal
-                ContextCompat.getColor(MainAct.mAct,R.color.colorWhite) //selected
-        );
+            // set text color
+            mTabLayout.setTabTextColors(
+                    ContextCompat.getColor(act, R.color.colorGray), //normal
+                    ContextCompat.getColor(act, R.color.colorWhite) //selected
+            );
 
-        // tab indicator height
+            // tab indicator height
 //        mTabLayout.setSelectedTabIndicatorHeight(25); //todo ??? Replaced with?
-        mTabLayout.setSelectedTabIndicatorHeight((int) (6 * getResources().getDisplayMetrics().density));
+            mTabLayout.setSelectedTabIndicatorHeight((int) (6 * getResources().getDisplayMetrics().density));
 
-        // indicator color
-        mTabLayout.setSelectedTabIndicatorColor(ColorSet.getTabIndicatorColor(getActivity()));
+            // indicator color
+            mTabLayout.setSelectedTabIndicatorColor(ColorSet.getTabIndicatorColor(act));
+        }
+
 
         // indicator corner
         GradientDrawable gradientDrawable = new GradientDrawable();
@@ -191,26 +214,30 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
         // AdMob support
         // if ENABLE_ADMOB = true, enable the following
         // test app id
-        if(Define.ENABLE_ADMOB) {
-            // Initialize the Mobile Ads SDK.
-            MobileAds.initialize(getActivity(), new OnInitializationCompleteListener() {
-                @Override
-                public void onInitializationComplete(InitializationStatus initializationStatus) {}
-            });
-
-            // Create an ad request.
-            AdRequest adRequest = new AdRequest.Builder().build();
-
-            adView = rootView.findViewById(R.id.adView);
-            // Start loading the ad in the background.
-            adView.loadAd(adRequest);
-        }
+//        if(Define.ENABLE_ADMOB) {
+//            // Initialize the Mobile Ads SDK.
+//            MobileAds.initialize(getActivity(), new OnInitializationCompleteListener() {
+//                @Override
+//                public void onInitializationComplete(InitializationStatus initializationStatus) {}
+//            });
+//
+//            // Create an ad request.
+//            AdRequest adRequest = new AdRequest.Builder().build();
+//
+//            adView = rootView.findViewById(R.id.adView);
+//            // Start loading the ad in the background.
+//            adView.loadAd(adRequest);
+//        }
         return rootView;
     }
 
     /**
      * Add pages
      */
+    PageUi pageUi;
+    public PageUi mPageUi;
+    Bundle args;
+    public View audio_panel;
     private int addPages(TabsPagerAdapter adapter)
     {
         lastPageTableId = 0;
@@ -227,13 +254,22 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
                 if (pageTableId > lastPageTableId)
                     lastPageTableId = pageTableId;
 
-                Page page = new Page();
-                Bundle args = new Bundle();
+                audio_panel = rootView.findViewById(R.id.audio_panel);
+                pageUi = new PageUi(act, folder,audio_panel);
+
+                int currPageTableId = Pref.getPref_focusView_page_tableId(act);
+                setCurrentPageTableId(currPageTableId);
+//                System.out.println("TabsHost / _addPages / currPageTableId = " + currPageTableId);
+
+                if(pageTableId == currPageTableId)
+                    mPageUi = new PageUi(act, folder,audio_panel);
+
+                args = new Bundle();
                 args.putInt("page_pos",i);
                 args.putInt("page_table_id",pageTableId);
-                page.setArguments(args);
+                pageUi.setArguments(args);
 //                System.out.println("TabsHost / _addPages / page_tableId = " + pageTableId);
-                adapter.addFragment(page);
+                adapter.addFragment(pageUi);
             }
         }
 
@@ -278,29 +314,13 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
 
         // keep focus view page table Id
         int pageTableId = mTabsPagerAdapter.dbFolder.getPageTableId(getFocus_tabPos(), true);
-        Pref.setPref_focusView_page_tableId(MainAct.mAct, pageTableId);
+        Pref.setPref_focusView_page_tableId(act, pageTableId);
 
         // current page table Id
         setCurrentPageTableId(pageTableId);
 
         // refresh list view of selected page
         Page page = mTabsPagerAdapter.fragmentList.get(getFocus_tabPos());
-
-        if( (tab.getPosition() == MainAct.mPlaying_pagePos) &&
-            (page != null) &&
-            (page.itemAdapter != null)                                 )
-        {
-            RecyclerView listView = page.recyclerView;
-
-            if( (Audio_manager.audio7Player != null) &&
-                    !isDoingMarking &&
-                    (listView != null) &&
-                    (Audio_manager.getPlayerState() != Audio_manager.PLAYER_AT_STOP)  )
-            {
-                if ( (Audio_manager.audio7Player != null) && Audio7Player.isOnAudioPlayingPage())
-                    Audio_manager.audio7Player.scrollPlayingItemToBeVisible(listView); //todo Could hang up if page had too many notes (more then 1000)
-            }
-        }
 
         // add for update page item view
         if((page != null) && (page.itemAdapter != null)) {
@@ -312,17 +332,17 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
         showPlayingTab();
 
         // call onCreateOptionsMenu
-        MainAct.mAct.invalidateOptionsMenu();
+        act.invalidateOptionsMenu();
 
         // set long click listener
         setLongClickListener();
 
-        TabsHost.showFooter(MainAct.mAct);
+        showFooter(act);
 
         isDoingMarking = false;
     }
 
-
+//    public Audio7Player audio7Player;
     @Override
     public void onResume() {
         super.onResume();
@@ -332,20 +352,22 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
         // default
         setFocus_tabPos(0);
 
-        if(Drawer.getFolderCount() == 0)
-            return;//todo Check again
+        if(Drawer.getFoldersCount(act) == 0)
+            return;
 
+        int pageCount = 0;
         // restore focus view page
-        int pageCount = mTabsPagerAdapter.dbFolder.getPagesCount(true);
+        if(mTabsPagerAdapter != null)
+            pageCount = mTabsPagerAdapter.dbFolder.getPagesCount(true);
+
 //        System.out.println("TabsHost / _onResume / pageCount = " + pageCount);
         for(int pos=0; pos<pageCount; pos++)
         {
             int pageTableId = mTabsPagerAdapter.dbFolder.getPageTableId(pos, true);
 
-            if(pageTableId == Pref.getPref_focusView_page_tableId(MainAct.mAct)) {
-//                System.out.println("TabsHost / _onResume / set focus tab pos = " + pos);
+            if(pageTableId == Pref.getPref_focusView_page_tableId(act)) {
+                System.out.println("TabsHost / _onResume / set focus tab pos = " + pos);
                 setFocus_tabPos(pos);
-                setCurrentPageTableId(pageTableId);
             }
         }
 
@@ -365,59 +387,113 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
          * - incoming phone call case
          * - after Key Protect (screen off/on)
          * */
-        if( (Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE) &&
-            (Audio_manager.getPlayerState() != Audio_manager.PLAYER_AT_STOP)               ) {
-
-            String uriString =  Audio_manager.getAudioStringAt(Audio_manager.mAudioPos);
-            MainAct.showAudioView(uriString);
-
-            Audio_manager.audio7Player.updateAudioPanel(MainAct.mAct);
+        if( (mAudio_manager !=null) &&
+            (mAudio_manager.getAudioPlayMode() == mAudio_manager.PAGE_PLAY_MODE) &&
+            (mAudio_manager.getPlayerState() != mAudio_manager.PLAYER_AT_STOP)               ) {
+            if(mAudio_manager.audio7Player!=null)
+                mAudio_manager.audio7Player.updateAudioPanel(act);
         }
 
-        if (adView != null) {
-            adView.resume();
+//        if(Define.ENABLE_ADMOB) {
+//            if (adView != null) {
+//                adView.resume();
+//            }
+//        }
+
+        // init audio parameters
+        if(mAudio_manager == null)
+            mAudio_manager = new Audio_manager(act, folder);
+
+        // change audio panel when Note audio is changed to Page audio
+        /** Entry: Note play -> Page play */
+        /** Entry: background play -> Page play */
+        if ( mMediaPlayer != null &&
+             MainAct.mPlaying_folderPos == Folder.getFocus_folderPos())
+        {
+            mAudio_manager.kill_runnable = true;
+
+            if(mAudio_manager.audio7Player == null)
+                mAudio_manager.audio7Player = new Audio7Player(act, this,audio_panel, mAudio_manager.mAudioUri);
+            else {
+                mAudio_manager.audio7Player.setAudioPanel(audio_panel);
+                mAudio_manager.audio7Player.initAudioBlock(mAudio_manager.mAudioUri);
+            }
+
+            audioUi_page = new AudioUi_page(act, this, mAudio_manager.audio7Player,  audio_panel, mAudio_manager.mAudioUri);
+
+            if(audio_panel != null)
+                audio_panel.setVisibility(View.VISIBLE);
+
+            mAudio_manager.audio7Player.updateAudioPanel(act);
+            mAudio_manager.audio7Player.updateAudioProgress();
+
+            mAudio_manager.audioHandler.postDelayed(mAudio_manager.audio_runnable,Util.oneSecond*2);
+
+            showPlayingTab();
         }
+
     }
 
     @Override
     public void onPause() {
         super.onPause();
-//        System.out.println("TabsHost / _onPause");
+        System.out.println("TabsHost / _onPause");
 
         //  Remove fragments
-        if(!MainAct.mAct.isDestroyed())
+        if( (act!=null) && !act.isDestroyed())
             removePages();//Put here will solve onBackStackChanged issue (no Page_recycler / _onCreate)
 
-        if (adView != null) {
-            adView.pause();
-        }
+//        if(Define.ENABLE_ADMOB) {
+//            if (adView != null) {
+//                adView.pause();
+//            }
+//        }
+
+//        mTabsPagerAdapter = null;
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        System.out.println("TabsHost / _onStop");
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (adView != null) {
-            adView.destroy();
-        }
+        System.out.println("TabsHost / _onDestroy");
+//        if(Define.ENABLE_ADMOB) {
+//            if (adView != null) {
+//                adView.destroy();
+//            }
+//        }
     }
 
     // show audio playing tab
-   public static void showPlayingTab() {
+   public void showPlayingTab() {
 //       System.out.println("TabsHost / _showPlayingTab" );
         // set audio icon after Key Protect
+
+       // return if screen off
+       if(SystemState.isScreenOff(act)) {
+           System.out.println("TabsHost / _showPlayingTab / return");
+           return;
+       }
+
        TabLayout.Tab tab =  mTabLayout.getTabAt(MainAct.mPlaying_pagePos);
 
         if(tab != null) {
-            if( (MainAct.mPlaying_folderPos == FolderUi.getFocus_folderPos()) &&
-                (Audio_manager.getPlayerState() != Audio_manager.PLAYER_AT_STOP)  &&
+            if( (MainAct.mPlaying_folderPos == Folder.getFocus_folderPos()) &&
+                (mAudio_manager !=null) &&
+                (mAudio_manager.getPlayerState() != mAudio_manager.PLAYER_AT_STOP)  &&
                 (tab.getPosition() == MainAct.mPlaying_pagePos)                               )
             {
                 if(tab.getCustomView() == null)
                 {
-                    LinearLayout tabLinearLayout = (LinearLayout) MainAct.mAct.getLayoutInflater().inflate(R.layout.tab_custom, null);
+                    LinearLayout tabLinearLayout = (LinearLayout) act.getLayoutInflater().inflate(R.layout.tab_custom, null);
                     TextView title = (TextView) tabLinearLayout.findViewById(R.id.tabTitle);
                     title.setText(mTabsPagerAdapter.dbFolder.getPageTitle(tab.getPosition(), true));
-                    title.setTextColor(MainAct.mAct.getResources().getColor(R.color.colorWhite));
+                    title.setTextColor(act.getResources().getColor(R.color.colorWhite));
                     title.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_audio, 0, 0, 0);
                     tab.setCustomView(title);
                 }
@@ -428,7 +504,7 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
     }
 
     // store scroll of recycler view
-    public static void store_listView_vScroll(RecyclerView recyclerView)
+    public void store_listView_vScroll(RecyclerView recyclerView)
     {
         int firstVisibleIndex = ((LinearLayoutManager) recyclerView.getLayoutManager())
                 .findFirstVisibleItemPosition();
@@ -440,16 +516,16 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
 //                " , firstVisibleIndexTop = " + firstVisibleIndexTop);
 
         // keep index and top position
-        Pref.setPref_focusView_list_view_first_visible_index(MainAct.mAct, firstVisibleIndex);
-        Pref.setPref_focusView_list_view_first_visible_index_top(MainAct.mAct, firstVisibleIndexTop);
+        Pref.setPref_focusView_list_view_first_visible_index(act, firstVisibleIndex);
+        Pref.setPref_focusView_list_view_first_visible_index_top(act, firstVisibleIndexTop);
     }
 
     // resume scroll of recycler view
-    public static void resume_listView_vScroll(RecyclerView recyclerView)
+    public void resume_listView_vScroll(RecyclerView recyclerView)
     {
         // recover scroll Y
-        int firstVisibleIndex = Pref.getPref_focusView_list_view_first_visible_index(MainAct.mAct);
-        int firstVisibleIndexTop = Pref.getPref_focusView_list_view_first_visible_index_top(MainAct.mAct);
+        int firstVisibleIndex = Pref.getPref_focusView_list_view_first_visible_index(act);
+        int firstVisibleIndexTop = Pref.getPref_focusView_list_view_first_visible_index_top(act);
 
 //        System.out.println("TabsHost / _resume_listView_vScroll / firstVisibleIndex = " + firstVisibleIndex +
 //                " , firstVisibleIndexTop = " + firstVisibleIndexTop);
@@ -463,7 +539,7 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
      * Get first position page Id
      * @return page Id of 1st position
      */
-    public static int getFirstPos_pageId() {
+    public int getFirstPos_pageId() {
         return firstPos_pageId;
     }
 
@@ -471,11 +547,11 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
      * Set first position table Id
      * @param id: page Id
      */
-    public static void setFirstPos_pageId(int id) {
+    public void setFirstPos_pageId(int id) {
         firstPos_pageId = id;
     }
 
-    public static void reloadCurrentPage()
+    public  void reloadCurrentPage()
     {
 //        System.out.println("TabsHost / _reloadCurrentPage");
         int pagePos = getFocus_tabPos();
@@ -483,15 +559,17 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
         mViewPager.setCurrentItem(pagePos);
     }
 
-    public static Page getCurrentPage()
+    public Page getCurrentPage()
     {
+        if(mTabsPagerAdapter.fragmentList == null)
+            System.out.println("------------- mTabsPagerAdapter.fragmentList == null)");
         return mTabsPagerAdapter.fragmentList.get(getFocus_tabPos());
     }
 
 
-    public static void setCurrentPageTableId(int id)
+    public void setCurrentPageTableId(int id)
     {
-        //System.out.println("TabsHost / _setCurrentPageTableId / id = " + id);
+//        System.out.println("TabsHost / _setCurrentPageTableId / id = " + id);
         mFocusPageTableId = id;
     }
 
@@ -520,7 +598,7 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
             tabStrip.getChildAt(tabPos).setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    editPageTitle(tabPos,MainAct.mAct);
+                    editPageTitle(tabPos,act);
                     return false;
                 }
             });
@@ -531,9 +609,9 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
      * edit page title
      *
      */
-    static void editPageTitle(final int tabPos, final AppCompatActivity act)
+    void editPageTitle(final int tabPos, final AppCompatActivity act)
     {
-        final DB_folder mDbFolder = mTabsPagerAdapter.dbFolder;
+        final DB_folder mDbFolder = new DB_folder(Folder.getFocus_folderTableId());
 
         // get tab name
         String title = mDbFolder.getPageTitle(tabPos, true);
@@ -572,7 +650,7 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
                                         @Override
                                         public void onClick(DialogInterface dialog1, int which1){
                                             deletePage(tabPos, act);
-                                            FolderUi.selectFolder(act,FolderUi.getFocus_folderPos());
+                                            folder.selectFolder(act, Folder.getFocus_folderPos());
                                         }})
                                     .show();
                         }
@@ -592,7 +670,7 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
                                                  tabStyle,
                                                  true);
 
-                            FolderUi.startTabsHostRun();
+                            folder.startTabsHostRun();
                         }
                     })
                 .setIcon(android.R.drawable.ic_menu_edit);
@@ -618,7 +696,7 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
      * delete page
      *
      */
-    public static  void deletePage(int tabPos, final AppCompatActivity activity)
+    public void deletePage(int tabPos, final AppCompatActivity activity)
     {
 
         final DB_folder mDbFolder = mTabsPagerAdapter.dbFolder;
@@ -685,24 +763,24 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
             MainAct.mPlaying_pagePos--;
         }
         else if((getFocus_tabPos() == MainAct.mPlaying_pagePos) &&
-                (MainAct.mPlaying_folderPos == FolderUi.getFocus_folderPos()))
+                (MainAct.mPlaying_folderPos == Folder.getFocus_folderPos()))
         {
-            if(BackgroundAudioService.mMediaPlayer != null)
+            if(mMediaPlayer != null)
             {
-                Audio_manager.stopAudioPlayer();
-                Audio_manager.mAudioPos = 0;
-                Audio_manager.setPlayerState(Audio_manager.PLAYER_AT_STOP);
+                mAudio_manager.stopAudioPlayer();
+                mAudio_manager.mAudioPos = 0;
+                mAudio_manager.setPlayerState(mAudio_manager.PLAYER_AT_STOP);
             }
         }
 
         // update change after deleting tab
-        FolderUi.startTabsHostRun();
+        folder.startTabsHostRun();
     }
 
-    public static TextView mFooterMessage;
+    public TextView mFooterMessage;
 
     // set footer
-    public static void showFooter(AppCompatActivity mAct)
+    public void showFooter(AppCompatActivity mAct)
     {
 //		System.out.println("TabsHost / _showFooter ");
         if(mFooterMessage != null)
@@ -717,7 +795,7 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
     static String getFooterMessage(AppCompatActivity mAct)
     {
         int pageTableId = Pref.getPref_focusView_page_tableId(mAct);
-        DB_page mDb_page = new DB_page(mAct, pageTableId);
+        DB_page mDb_page = new DB_page(pageTableId);
         return mAct.getResources().getText(R.string.footer_checked).toString() +
                 "/" +
                 mAct.getResources().getText(R.string.footer_total).toString() +
@@ -744,25 +822,27 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
         mFocusTabPos = pos;
     }
 
-    public static void removePages()
+    public void removePages()
     {
-//        System.out.println("TabsHost / _removePages");
-    	if(TabsHost.mTabsPagerAdapter == null)
+        System.out.println("TabsHost / _removePages");
+    	if( mTabsPagerAdapter == null)
     		return;
 
-        ArrayList<Page> fragmentList = TabsHost.mTabsPagerAdapter.fragmentList;
+        ArrayList<Page> fragmentList = mTabsPagerAdapter.fragmentList;
         if( (fragmentList != null) &&
             (fragmentList.size() >0)  )
         {
-            RecyclerView listView = fragmentList.get(TabsHost.getFocus_tabPos()).recyclerView;//drag_listView;
+            RecyclerView listView = fragmentList.get(getFocus_tabPos()).recyclerView;//drag_listView;
 
             if(listView != null)
-                TabsHost.store_listView_vScroll(listView);
+                store_listView_vScroll(listView);
 
             for (int i = 0; i < fragmentList.size(); i++) {
 //                System.out.println("TabsHost / _removeTabs / i = " + i);
-                MainAct.mAct.getSupportFragmentManager().beginTransaction().remove(fragmentList.get(i)).commit();
+//                fragmentList.remove(i);
+                act.getSupportFragmentManager().beginTransaction().remove(fragmentList.get(i)).commit();
             }
+
         }
     }
 

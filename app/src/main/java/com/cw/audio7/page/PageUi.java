@@ -22,7 +22,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -36,7 +35,7 @@ import android.widget.Space;
 import com.cw.audio7.R;
 import com.cw.audio7.db.DB_folder;
 import com.cw.audio7.db.DB_page;
-import com.cw.audio7.folder.FolderUi;
+import com.cw.audio7.folder.Folder;
 import com.cw.audio7.main.MainAct;
 import com.cw.audio7.define.Define;
 import com.cw.audio7.tabs.TabsHost;
@@ -46,16 +45,27 @@ import com.cw.audio7.util.preferences.Pref;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+
 // implement lambda expressions
-public class PageUi
+public class PageUi extends Page
 {
 	public PageUi(){}
+
+	AppCompatActivity act;
+	Folder folder;
+	TabsHost tabsHost;
+	public  PageUi(AppCompatActivity _act, Folder _folder,View _panelView) {
+		super(_act,_folder.tabsHost,_panelView);
+		act = _act;
+		folder = _folder;
+		tabsHost = folder.tabsHost;
+	}
 
     /*
 	 * Change Page Color
 	 *
 	 */
-	public static void changePageColor(final AppCompatActivity act)
+	public void changePageColor(final AppCompatActivity act)
 	{
 		// set color
 		final Builder builder = new Builder(act);
@@ -86,7 +96,7 @@ public class PageUi
 		// set current selection
 		for(int i=0;i< Util.getStyleCount();i++)
 		{
-			if(Util.getCurrentPageStyle(TabsHost.getFocus_tabPos()) == i)
+			if(Util.getCurrentPageStyle(act, TabsHost.getFocus_tabPos()) == i)
 			{
 				RadioButton button = (RadioButton) RG_view.getChildAt(i);
 		    	if(i%2 == 0)
@@ -104,7 +114,7 @@ public class PageUi
 	    dlg.show();
 
 		radioGroup.setOnCheckedChangeListener( (anyName, id) -> {
-				DB_folder db = new DB_folder(MainAct.mAct,DB_folder.getFocusFolder_tableId());
+				DB_folder db = new DB_folder(DB_folder.getFocusFolder_tableId());
 				int style = radioGroup.indexOfChild(radioGroup.findViewById(id));
                 int pos = TabsHost.getFocus_tabPos();
 				db.updatePage(db.getPageId(pos, true),
@@ -113,7 +123,7 @@ public class PageUi
 							  style,
                               true);
 	 			dlg.dismiss();
-				FolderUi.startTabsHostRun();
+			folder.startTabsHostRun();
 		});
 	}
 
@@ -130,7 +140,7 @@ public class PageUi
      *      left to right order: NegativeButton(button 2), NeutralButton(button 3), PositiveButton(button 1)
 	 *
 	 */
-	public static void shiftPage(final AppCompatActivity act)
+	public void shiftPage(final AppCompatActivity act)
 	{
 	    Builder builder = new Builder(act);
 	    builder.setTitle(R.string.rearrange_page_title)
@@ -173,7 +183,7 @@ public class PageUi
 			Button mButton=(Button)dlg.findViewById(android.R.id.button2);
 			mButton.setText(R.string.btn_Finish);
 			mButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_menu_finish , 0, 0, 0);
-			DB_folder db = new DB_folder(act,Pref.getPref_focusView_folder_tableId(act));
+			DB_folder db = new DB_folder(Pref.getPref_focusView_folder_tableId(act));
 		    int focus_tabPos = 	TabsHost.getFocus_tabPos();
 			if(getTabPositionState() != LEFTMOST)
 			{
@@ -182,7 +192,7 @@ public class PageUi
 						focus_tabPos -1);
 
 				// shift left when audio playing
-				if(MainAct.mPlaying_folderPos == FolderUi.getFocus_folderPos()) {
+				if(MainAct.mPlaying_folderPos == Folder.getFocus_folderPos()) {
 					// target is playing index
 					if (focus_tabPos == MainAct.mPlaying_pagePos)
 						MainAct.mPlaying_pagePos--;
@@ -190,8 +200,8 @@ public class PageUi
 					else if ((focus_tabPos - MainAct.mPlaying_pagePos) == 1)
 						MainAct.mPlaying_pagePos++;
 				}
-				FolderUi.startTabsHostRun();
-				TabsHost.setFocus_tabPos(focus_tabPos-1);
+				folder.startTabsHostRun();
+				tabsHost.setFocus_tabPos(focus_tabPos-1);
 				updateButtonState(dlg);
 			}
 	    });
@@ -207,7 +217,7 @@ public class PageUi
 			mButton.setText(R.string.btn_Finish);
 			mButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_menu_finish , 0, 0, 0);
 
-			DB_folder db = new DB_folder(act,Pref.getPref_focusView_folder_tableId(act));
+			DB_folder db = new DB_folder(Pref.getPref_focusView_folder_tableId(act));
 			int focus_tabPos = 	TabsHost.getFocus_tabPos();
 			if(getTabPositionState() != RIGHTMOST)
 			{
@@ -215,7 +225,7 @@ public class PageUi
 				swapPage(focus_tabPos, focus_tabPos +1);
 
 				// shift right when audio playing
-				if(MainAct.mPlaying_folderPos == FolderUi.getFocus_folderPos()) {
+				if(MainAct.mPlaying_folderPos == Folder.getFocus_folderPos()) {
 					// target is playing index
 					if (focus_tabPos== MainAct.mPlaying_pagePos)
 						MainAct.mPlaying_pagePos++;
@@ -223,8 +233,8 @@ public class PageUi
 					else if ((MainAct.mPlaying_pagePos - focus_tabPos) == 1)
 						MainAct.mPlaying_pagePos--;
 				}
-				FolderUi.startTabsHostRun();
-				TabsHost.setFocus_tabPos(TabsHost.getFocus_tabPos()+1);
+				folder.startTabsHostRun();
+				tabsHost.setFocus_tabPos(TabsHost.getFocus_tabPos()+1);
 				updateButtonState(dlg);
 			}
 	    });
@@ -236,11 +246,11 @@ public class PageUi
 	              .setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_menu_close_clear_cancel, 0, 0, 0);
 	}
 
-	private static int getTabPositionState()
+	private int getTabPositionState()
 	{
 		int pos = TabsHost.getFocus_tabPos();
 
-		DB_folder db = new DB_folder(MainAct.mAct,Pref.getPref_focusView_folder_tableId(MainAct.mAct));
+		DB_folder db = new DB_folder(Pref.getPref_focusView_folder_tableId(act));
 		int count = db.getPagesCount(true);
 
 		if( pos == 0 )
@@ -251,7 +261,7 @@ public class PageUi
 			return MIDDLE;
 	}
 
-	private static void updateButtonState(AlertDialog dlg)
+	private void updateButtonState(AlertDialog dlg)
     {
 	    ((Button)dlg.findViewById(android.R.id.button1))
 			    .setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_menu_forward, 0, 0, 0);
@@ -295,10 +305,10 @@ public class PageUi
 	 * swap page
 	 *
 	 */
-	private static void swapPage(int start, int end)
+	private void swapPage(int start, int end)
 	{
 		System.out.println("PageUi / _swapPage / start = " + start + " , end = " + end);
-		DB_folder db = new DB_folder(MainAct.mAct,Pref.getPref_focusView_folder_tableId(MainAct.mAct));
+		DB_folder db = new DB_folder(Pref.getPref_focusView_folder_tableId(act));
 
         db.open();
 
@@ -336,12 +346,12 @@ public class PageUi
 	 */
     private static int mAddAt;
     private static SharedPreferences mPref_add_new_page_location;
-	public static  void addNewPage(final AppCompatActivity act, final int newTabId) {
+	public void addNewPage(final AppCompatActivity act, final int newTabId) {
         // get tab name
         String pageName = Define.getTabTitle(act, newTabId);
 
         // check if name is duplicated
-		DB_folder dbFolder = new DB_folder(act,Pref.getPref_focusView_folder_tableId(act));
+		DB_folder dbFolder = new DB_folder(Pref.getPref_focusView_folder_tableId(act));
         dbFolder.open();
         final int pagesCount = dbFolder.getPagesCount(false);
 
@@ -477,9 +487,9 @@ public class PageUi
 	 * Insert Page to Rightmost
 	 * 
 	 */
-	private static void insertPage_rightmost(final AppCompatActivity act, int newTblId, String tabName)
+	private void insertPage_rightmost(final AppCompatActivity act, int newTblId, String tabName)
 	{
-		DB_folder dbFolder = new DB_folder(act,Pref.getPref_focusView_folder_tableId(act));
+		DB_folder dbFolder = new DB_folder(Pref.getPref_focusView_folder_tableId(act));
 	    // insert tab name
 		int style = Util.getNewPageStyle(act);
 		dbFolder.insertPage(DB_folder.getFocusFolder_tableName(),tabName,newTblId,style,true );
@@ -492,32 +502,32 @@ public class PageUi
 		// commit: final page viewed
 		Pref.setPref_focusView_page_tableId(act, newTblId);
 
-		updateFinalPageViewed(act);
+		updateFinalPageViewed(act,folder);
 
 	    // set scroll X
 		final int scrollX = (tabTotalCount) * 60 * 5; //over the last scroll X
 
-        FolderUi.startTabsHostRun();
+		folder.startTabsHostRun();
 
-		if(TabsHost.mTabLayout != null) {
-			TabsHost.mTabLayout.post(() -> {
-				TabsHost.mTabLayout.scrollTo(scrollX, 0);
+		if(tabsHost.mTabLayout != null) {
+			tabsHost.mTabLayout.post(() -> {
+				tabsHost.mTabLayout.scrollTo(scrollX, 0);
 //					Pref.setPref_focusView_scrollX_byFolderTableId(act, scrollX);
 			});
 		}
 
-		MainAct.mAct.invalidateOptionsMenu();
+		act.invalidateOptionsMenu();
 		//todo For first folder, first page: tab is not seen
-		TabsHost.setFocus_tabPos(0);
+		tabsHost.setFocus_tabPos(0);
 	}
 
 	/* 
 	 * Insert Page to Leftmost
 	 * 
 	 */
-	private static void insertPage_leftmost(final AppCompatActivity act, int newTabId, String tabName)
+	private void insertPage_leftmost(final AppCompatActivity act, int newTabId, String tabName)
 	{
-		DB_folder dbFolder = new DB_folder(act,Pref.getPref_focusView_folder_tableId(act));
+		DB_folder dbFolder = new DB_folder(Pref.getPref_focusView_folder_tableId(act));
 		
 		
 	    // insert tab name
@@ -533,32 +543,32 @@ public class PageUi
 		{
 			int tabIndex = tabTotalCount -1 -i ;
 			swapPage(tabIndex,tabIndex-1);
-			updateFinalPageViewed(act);
+			updateFinalPageViewed(act, this.folder);
 		}
 		
 	    // set scroll X
 		final int scrollX = 0; // leftmost
 
 		// commit: scroll X
-        FolderUi.startTabsHostRun();
+		this.folder.startTabsHostRun();
 
-        if(TabsHost.mTabLayout != null){
-            TabsHost.mTabLayout.post(new Runnable() {
+        if(tabsHost.mTabLayout != null){
+	        tabsHost.mTabLayout.post(new Runnable() {
                 @Override
                 public void run() {
                     System.out.println("PageUi / _insertPage_leftmost / _Runnable / scrollX = " + scrollX);
-                    TabsHost.mTabLayout.scrollTo(scrollX, 0);
+	                tabsHost.mTabLayout.scrollTo(scrollX, 0);
 //                    Pref.setPref_focusView_scrollX_byFolderTableId(act, scrollX);
                 }
             });
         }
 		
 		// update highlight tab
-		if(MainAct.mPlaying_folderPos == FolderUi.getFocus_folderPos())
+		if(MainAct.mPlaying_folderPos == Folder.getFocus_folderPos())
 			MainAct.mPlaying_pagePos++;
 
-		MainAct.mAct.invalidateOptionsMenu();
-		TabsHost.setFocus_tabPos(0);
+		act.invalidateOptionsMenu();
+		tabsHost.setFocus_tabPos(0);
 	}
 	
 	
@@ -566,13 +576,13 @@ public class PageUi
 	 * Update Final page which was focus view
 	 * 
 	 */
-	protected static void updateFinalPageViewed(AppCompatActivity act)
+	protected static void updateFinalPageViewed(AppCompatActivity act,Folder folder)
 	{
 	    // get final viewed table Id
 	    int tableId = Pref.getPref_focusView_page_tableId(act);
 		DB_page.setFocusPage_tableId(tableId);
 	
-		DB_folder dbFolder = new DB_folder(act,Pref.getPref_focusView_folder_tableId(act));
+		DB_folder dbFolder = new DB_folder(Pref.getPref_focusView_folder_tableId(act));
 		dbFolder.open();
 
 		// get final view tab index of focus
@@ -580,10 +590,10 @@ public class PageUi
 		{
 			if(tableId == dbFolder.getPageTableId(i, false)) {
 				TabsHost.setFocus_tabPos(i);
-				TabsHost.setCurrentPageTableId(tableId);
+				folder.tabsHost.setCurrentPageTableId(tableId);
 			}
 			
-	    	if(	dbFolder.getPageId(i, false)== TabsHost.getFirstPos_pageId())
+	    	if(	dbFolder.getPageId(i, false)== folder.tabsHost.getFirstPos_pageId())
 	    		Pref.setPref_focusView_page_tableId(act, dbFolder.getPageTableId(i, false) );
 		}
 		dbFolder.close();

@@ -19,7 +19,6 @@ package com.cw.audio7.note_edit;
 import java.util.Date;
 
 import com.cw.audio7.db.DB_folder;
-import com.cw.audio7.main.MainAct;
 import com.cw.audio7.R;
 import com.cw.audio7.db.DB_page;
 import com.cw.audio7.tabs.TabsHost;
@@ -39,6 +38,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
 
 public class Note_edit_ui {
 
@@ -90,7 +90,7 @@ public class Note_edit_ui {
 	    thumbImage = (TouchImageView)act.findViewById(R.id.thumb_image);
         progressBarThumb = (ProgressBar) act.findViewById(R.id.progress_bar_thumb);
 
-		DB_folder dbFolder = new DB_folder(act, Pref.getPref_focusView_folder_tableId(act));
+		DB_folder dbFolder = new DB_folder(Pref.getPref_focusView_folder_tableId(act));
 		style = dbFolder.getPageStyle(TabsHost.getFocus_tabPos(), true);
 
 		thumbImage = (TouchImageView)act.findViewById(R.id.thumb_image);
@@ -107,7 +107,7 @@ public class Note_edit_ui {
 	private void UI_init_text()
 	{
         int focusFolder_tableId = Pref.getPref_focusView_folder_tableId(act);
-        DB_folder db = new DB_folder(MainAct.mAct, focusFolder_tableId);
+        DB_folder db = new DB_folder(focusFolder_tableId);
 		style = db.getPageStyle(TabsHost.getFocus_tabPos(), true);
 
 		LinearLayout block = (LinearLayout) act.findViewById(R.id.edit_title_block);
@@ -188,7 +188,6 @@ public class Note_edit_ui {
 						    audioUri,
 						    thumbImage,
 						    progressBarThumb,
-						    null,
 						    false,
 						    1);
 				    audioAsyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,"Searching media ...");
@@ -301,9 +300,7 @@ public class Note_edit_ui {
                         else
                             marking = oriMarking;
 
-                        boolean isOK;
-	        			isOK = dB_page.updateNote(rowId, title,  audioUri,  body,marking, true); // update note
-	        			System.out.println("--- isOK = " + isOK);
+	        			dB_page.updateNote(rowId, title,  audioUri,  body,marking, true); // update note
 	        		}
 	        		currAudioUri = audioUri;
 	        	}

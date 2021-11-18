@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 CW Chiu
+ * Copyright (C) 2021 CW Chiu
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,22 +16,6 @@
 
 package com.cw.audio7.note;
 
-import com.cw.audio7.audio.AudioUi_note;
-import com.cw.audio7.main.MenuId;
-import com.cw.audio7.note_edit.Note_edit;
-import com.cw.audio7.R;
-import com.cw.audio7.db.DB_folder;
-import com.cw.audio7.db.DB_page;
-import com.cw.audio7.main.MainAct;
-import com.cw.audio7.audio.Audio_manager;
-import com.cw.audio7.audio.BackgroundAudioService;
-import com.cw.audio7.page.PageAdapter;
-import com.cw.audio7.tabs.TabsHost;
-import com.cw.audio7.util.audio.UtilAudio;
-import com.cw.audio7.util.preferences.Pref;
-import com.cw.audio7.util.uil.UilCommon;
-import com.cw.audio7.util.Util;
-
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -41,25 +25,46 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.cw.audio7.R;
+import com.cw.audio7.audio.AudioUi_note;
+import com.cw.audio7.audio.BackgroundAudioService;
+import com.cw.audio7.db.DB_folder;
+import com.cw.audio7.db.DB_page;
+import com.cw.audio7.main.MenuId;
+import com.cw.audio7.note_edit.Note_edit;
+import com.cw.audio7.page.PageAdapter;
+import com.cw.audio7.tabs.TabsHost;
+import com.cw.audio7.util.Util;
+import com.cw.audio7.util.audio.UtilAudio;
+import com.cw.audio7.util.image.ImageCache;
+import com.cw.audio7.util.image.ImageFetcher;
+import com.cw.audio7.util.preferences.Pref;
+//import com.cw.audio7.util.uil.UilCommon;
+
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.FragmentManager;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
-public class Note extends Fragment
+import static com.cw.audio7.audio.BackgroundAudioService.mAudio_manager;
+import static com.cw.audio7.audio.BackgroundAudioService.mMediaPlayer;
+
+public class NoteAct extends AppCompatActivity
 {
-    /**
+	public static final int VIEW_CURRENT_NOTE = 6;
+	/**
      * The pager widget, which handles animation and allows swiping horizontally to access previous
      * and next wizard steps.
      */
@@ -75,7 +80,6 @@ public class Note extends Fragment
     public DB_page mDb_page;
     public static Long mNoteId;
     int mEntryPosition;
-    int EDIT_CURRENT_VIEW = 5;
     static int mStyle;
     
     static SharedPreferences mPref_show_note_attribute;
@@ -84,46 +88,88 @@ public class Note extends Fragment
 
     public AppCompatActivity act;
     public AudioUi_note audioUi_note;
+	public FragmentManager mFragmentManager;
+	// for Image Cache
+	private static final String IMAGE_CACHE_DIR = "images";
+	private ImageFetcher mImageFetcher;
 
 	@Override
 	public void onCreate(@Nullable Bundle savedInstanceState) {
-		System.out.println("Note/ _onCreate");
+		System.out.println("NoteAct / _onCreate");
 		super.onCreate(savedInstanceState);
-		Bundle arguments = getArguments();
+
+		if(Util.isLandscapeOrientation(this))
+			setContentView(R.layout.note_view_landscape);
+		else
+			setContentView(R.layout.note_view_portrait);
+
+		Toolbar toolbar = findViewById(R.id.recorder_toolbar);
+		toolbar.setPopupTheme(R.style.ThemeOverlay_AppCompat_Light);
+		setSupportActionBar(toolbar);
+
+		Bundle arguments = getIntent().getExtras();
 		mEntryPosition = arguments.getInt("POSITION");
 		NoteUi.setFocus_notePos(mEntryPosition);
 
-		DB_page db_page = new DB_page(MainAct.mAct,TabsHost.getCurrentPageTableId());
+		DB_page db_page = new DB_page(TabsHost.getCurrentPageTableId());
 		NoteUi.setNotesCnt(db_page.getNotesCount(true));
 
-		act = MainAct.mAct;
-		setHasOptionsMenu(true);
+		act = this;
 
-		// force stop audio whenever user touch page mode thumb nail
-		Audio_manager.removeRunnable();
-		Audio_manager.stopAudioPlayer();
+		// force stop audio whenever user touch new thumb nail at page mode
+		if((mAudio_manager !=null) && (mAudio_manager.mAudioPos != mEntryPosition)) {
+			mAudio_manager.stopAudioPlayer();
+			mAudio_manager.audio7Player = null;
+		}
 
-		Audio_manager.audio7Player = null;
+		// add on back stack changed listener
+		mFragmentManager = getSupportFragmentManager();
+
+		// for Image Cache
+		// Fetch screen height and width, to use as our max size when loading images as this
+		// activity runs full screen
+		final DisplayMetrics displayMetrics = new DisplayMetrics();
+		getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+		final int height = displayMetrics.heightPixels;
+		final int width = displayMetrics.widthPixels;
+
+		// For this sample we'll use half of the longest width to resize our images. As the
+		// image scaling ensures the image is larger than this, we should be left with a
+		// resolution that is appropriate for both portrait and landscape. For best image quality
+		// we shouldn't divide by 2, but this will use more memory and require a larger memory
+		// cache.
+		final int longest = (Math.max(height, width)) / 2;
+
+		ImageCache.ImageCacheParams cacheParams =
+				new ImageCache.ImageCacheParams(this, IMAGE_CACHE_DIR);
+		cacheParams.setMemCacheSizePercent(0.25f); // Set memory cache to 25% of app memory
+
+		// The ImageFetcher takes care of loading images into our ImageView children asynchronously
+		mImageFetcher = new ImageFetcher(this, longest);
+		mImageFetcher.addImageCache(getSupportFragmentManager(), cacheParams);
+		mImageFetcher.setImageFadeIn(false);
 	}
 
-	public View rootView;
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		if(Util.isLandscapeOrientation(act))
-			rootView = inflater.inflate(R.layout.note_view_landscape, container, false);
-		else
-			rootView = inflater.inflate(R.layout.note_view_portrait, container, false);
+	// for Image Cache
+	public ImageFetcher getImageFetcher() {
+		return mImageFetcher;
+	}
 
-		return rootView;
+	@Override
+	public void onBackPressed() {
+		System.out.println("NoteAct / _onBackPressed" );
+		// add for avoiding exception: The application's PagerAdapter changed the adapter's contents without calling PagerAdapter#notifyDataSetChanged!
+		viewPager.setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
+
+		finish();
 	}
 
 	Menu mMenu;
 	@Override
-	public void onCreateOptionsMenu( Menu menu, MenuInflater inflater) {
-		System.out.println("Note / _onCreateOptionsMenu");
+	public boolean onCreateOptionsMenu( Menu menu) {
+		System.out.println("NoteAct / _onCreateOptionsMenu");
 		menu.clear();
-
-		inflater.inflate(R.menu.pager_menu, menu);
+		getMenuInflater().inflate(R.menu.pager_menu, menu);
 		mMenu = menu;
 
 		// menu item: checked status
@@ -134,44 +180,46 @@ public class Note extends Fragment
 		else
 			menu.findItem(R.id.VIEW_NOTE_CHECK).setIcon(R.drawable.btn_check_on_holo_dark);
 
-		super.onCreateOptionsMenu(menu, inflater);
+		return super.onCreateOptionsMenu(menu);
 	}
 
+
 	@Override
-	public void onPrepareOptionsMenu(Menu menu) {
+	public boolean onPrepareOptionsMenu(Menu menu) {
 		mMenu.findItem(R.id.VIEW_NOTE_CHECK).setVisible(true);
-		super.onPrepareOptionsMenu(menu);
+		return super.onPrepareOptionsMenu(menu);
 	}
 
 	void setLayoutView()
 	{
-        System.out.println("Note / _setLayoutView");
+        System.out.println("NoteAct / _setLayoutView");
 
 		mPref_show_note_attribute = act.getSharedPreferences("show_note_attribute", 0);
 
-		UilCommon.init();
+//		UilCommon.init();
 
 		// DB
-		DB_folder dbFolder = new DB_folder(act,Pref.getPref_focusView_folder_tableId(act));
-		mStyle = dbFolder.getPageStyle(TabsHost.getFocus_tabPos(), true);
+		DB_folder dbFolder = new DB_folder(Pref.getPref_focusView_folder_tableId(act));
 
-		mDb_page = new DB_page(act, TabsHost.getCurrentPageTableId());
+		{
+			mStyle = dbFolder.getPageStyle(TabsHost.getFocus_tabPos(), true);
+			mDb_page = new DB_page(TabsHost.getCurrentPageTableId());
 
-		if(mDb_page != null) {
-			mNoteId = mDb_page.getNoteId(NoteUi.getFocus_notePos(), true);
+			if(mNoteId == null)
+				mNoteId = mDb_page.getNoteId(NoteUi.getFocus_notePos(), true);
 			mAudioUriInDB = mDb_page.getNoteAudioUri_byId(mNoteId);
 		}
 
-		if(UtilAudio.hasAudioExtension(mAudioUriInDB) ||
+		if (UtilAudio.hasAudioExtension(mAudioUriInDB) ||
 				UtilAudio.hasAudioExtension(Util.getDisplayNameByUriString(mAudioUriInDB, act)[0])) {
-				// create new instance after rotation
-				audioUi_note = new AudioUi_note(act, rootView, mAudioUriInDB);
+			// create new instance after rotation
+			audioUi_note = new AudioUi_note(act, null, mAudioUriInDB);
 		}
 
 		// Instantiate a ViewPager and a PagerAdapter.
 
 		if(viewPager == null) {
-			viewPager = (ViewPager) rootView.findViewById(R.id.tabs_pager);
+			viewPager = (ViewPager) findViewById(R.id.tabs_pager);
 			mPagerAdapter = new Note_adapter(viewPager, audioUi_note, act);
 			viewPager.setAdapter(mPagerAdapter);
 			viewPager.setCurrentItem(NoteUi.getFocus_notePos());
@@ -189,25 +237,26 @@ public class Note extends Fragment
 		@Override
 		public void onPageSelected(int nextPosition)
 		{
-			if(Audio_manager.getAudioPlayMode()  == Audio_manager.NOTE_PLAY_MODE) {
-				System.out.println("Note / onPageSelected / stop audio" );
-				Audio_manager.stopAudioPlayer();
+			if(mAudio_manager.getAudioPlayMode()  == mAudio_manager.NOTE_PLAY_MODE) {
+				System.out.println("NoteAct / onPageSelected / stop audio" );
+				mAudio_manager.stopAudioPlayer();
 			}
 
 			NoteUi.setFocus_notePos(viewPager.getCurrentItem());
-			System.out.println("Note / _onPageSelected");
+			System.out.println("NoteAct / _onPageSelected");
 //			System.out.println("    NoteUi.getFocus_notePos() = " + NoteUi.getFocus_notePos());
 //			System.out.println("    nextPosition = " + nextPosition);
 
 			// show audio name
 			mNoteId = mDb_page.getNoteId(nextPosition,true);
 			mAudioUriInDB = mDb_page.getNoteAudioUri_byId(mNoteId);
-			System.out.println("Note / _onPageSelected /  mNoteId =" + mNoteId
-					+ "mAudioUriInDB = " + mAudioUriInDB);
+			System.out.println("NoteAct / _onPageSelected /  mNoteId = " + mNoteId
+					+ ", mAudioUriInDB = " + mAudioUriInDB);
 
 			if(UtilAudio.hasAudioExtension(mAudioUriInDB)) {
-				if(audioUi_note == null)
-                    audioUi_note = new AudioUi_note(act, rootView,mAudioUriInDB);
+	            audioUi_note = new AudioUi_note(act, null, mAudioUriInDB);
+				/** Entry: Note play */
+				audioUi_note.playAudioInNotePager(act,mAudioUriInDB);
             }
 
 			setOutline(act);
@@ -222,19 +271,6 @@ public class Note extends Fragment
 		mStyle = style;
 	}
 
-	@Override
-	public void onActivityResult(int requestCode, int resultCode, Intent data)
-	{
-		super.onActivityResult(requestCode,resultCode,data);
-		System.out.println("Note / _onActivityResult ");
-        if((requestCode==EDIT_CURRENT_VIEW) )
-        {
-			stopNoteAudio();
-        }
-
-		getActivity().recreate();
-	}
-
     /** Set outline for selected view mode
     *
     *   Controlled factor:
@@ -243,15 +279,17 @@ public class Note extends Fragment
     */
 	public void setOutline(AppCompatActivity act)
 	{
+		System.out.println("NoteAct / _setOutline");
+
         // Set full screen or not, and action bar
-		Util.setFullScreen_noImmersive(act);
-        if(act.getSupportActionBar() != null)
-		    act.getSupportActionBar().show();
+//		Util.setFullScreen_noImmersive(act);
+//        if(act.getSupportActionBar() != null)
+//		    act.getSupportActionBar().show();
 
         // renew pager
         showSelectedView();
 
-		TextView audioTitle = (TextView) rootView.findViewById(R.id.audio_title);
+		TextView audioTitle = (TextView) findViewById(R.id.audio_title);
         // audio title
         if(!Util.isEmptyString(audioTitle.getText().toString()) )
             audioTitle.setVisibility(View.VISIBLE);
@@ -260,35 +298,53 @@ public class Note extends Fragment
 
         // renew options menu
         act.invalidateOptionsMenu();
+
+		// Set up activity to go full screen
+		act.getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		ActionBar actionBar = act.getSupportActionBar();
+		// immersive photo viewing experience
+		// Hide title text and set home as up
+		if (actionBar != null) {
+			actionBar.setDisplayShowTitleEnabled(true);//false
+			actionBar.setDisplayHomeAsUpEnabled(true);
+
+			// Hide and show the ActionBar as the visibility changes
+			viewPager.setOnSystemUiVisibilityChangeListener(
+					new View.OnSystemUiVisibilityChangeListener() {
+						@Override
+						public void onSystemUiVisibilityChange(int vis) {
+							if ((vis & View.SYSTEM_UI_FLAG_LOW_PROFILE) != 0) {
+								actionBar.hide();
+							} else {
+								actionBar.show();
+							}
+						}
+					});
+
+			// Start low profile mode and hide ActionBar
+			viewPager.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
+			actionBar.hide();
+		}
+
 	}
 
 	@Override
 	public void onConfigurationChanged(Configuration newConfig) {
 	    super.onConfigurationChanged(newConfig);
-	    System.out.println("Note / _onConfigurationChanged");
-
-	    // case 1: restart current fragment to apply orientation change
-//		getFragmentManager()
-//				.beginTransaction()
-//				.detach(Note.this)
-//				.attach(Note.this)
-//				.commit();
-
-		// case 2: just layout view change
+	    System.out.println("NoteAct / _onConfigurationChanged");
 		setLayoutView();
-
 	}
 
 	@Override
 	public void onResume() {
 		super.onResume();
-		System.out.println("Note / _onResume");
+		System.out.println("NoteAct / _onResume");
 
 		setLayoutView();
 
 		isPagerActive = true;
 
-		Note.setViewAllMode();
+		NoteAct.setViewAllMode();
 
 		setOutline(act);
 
@@ -299,23 +355,38 @@ public class Note extends Fragment
 			act.registerReceiver(mReceiver, filter);
 		}
 
+		// for Image Cache
+		mImageFetcher.setExitTasksEarly(false);
 	}
 
 	@Override
 	public void onPause() {
 		super.onPause();
-		System.out.println("Note / _onPause");
+		System.out.println("NoteAct / _onPause");
 
 		isPagerActive = false;
 
 		// disable full screen
 		Util.setNormalScreen(act);
+
+		// for Image Cache
+		mImageFetcher.setExitTasksEarly(true);
+		mImageFetcher.flushCache();
+	}
+
+	@Override
+	public void onStop() {
+		super.onStop();
+		System.out.println("Note/ _onStop");
 	}
 
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		System.out.println("Note / _onDestroy");
+		System.out.println("NoteAct / _onDestroy");
+
+		// for Image Cache
+		mImageFetcher.closeCache();
 	}
 
     // for menu buttons
@@ -323,11 +394,11 @@ public class Note extends Fragment
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-				stopNoteAudio();
+				finish();
                 return true;
 
 	        case MenuId.VIEW_NOTE_CHECK:
-		        int markingNow = PageAdapter.toggleNoteMarking(act,NoteUi.getFocus_notePos());
+		        int markingNow = PageAdapter.toggleNoteMarking(NoteUi.getFocus_notePos());
 
 		        // update marking
 		        if(markingNow == 1)
@@ -335,9 +406,9 @@ public class Note extends Fragment
 		        else {
 			        mMenu.findItem(R.id.VIEW_NOTE_CHECK).setIcon(R.drawable.btn_check_off_holo_dark);
 			        stopNoteAudio();
-			        Audio_manager.audio7Player.setAudioPanel(audioUi_note.audioPanel);
-			        Audio_manager.audio7Player.initAudioBlock(mAudioUriInDB);
-			        Audio_manager.audio7Player.updateAudioPanel(act);
+			        mAudio_manager.audio7Player.setAudioPanel(audioUi_note.audioPanel);
+			        mAudio_manager.audio7Player.initAudioBlock(mAudioUriInDB);
+			        mAudio_manager.audio7Player.updateAudioPanel(act);
 		        }
 		        return true;
 
@@ -347,7 +418,7 @@ public class Note extends Fragment
 		        intent.putExtra(DB_page.KEY_NOTE_TITLE, mDb_page.getNoteTitle_byId(mNoteId));
 		        intent.putExtra(DB_page.KEY_NOTE_AUDIO_URI , mDb_page.getNoteAudioUri_byId(mNoteId));
 		        intent.putExtra(DB_page.KEY_NOTE_BODY, mDb_page.getNoteBody_byId(mNoteId));
-		        startActivityForResult(intent, EDIT_CURRENT_VIEW);
+		        startActivityForResult(intent, VIEW_CURRENT_NOTE);
 		        return true;
         }
 
@@ -370,10 +441,10 @@ public class Note extends Fragment
 		   						  .apply();
     }
     
-	public static void stopNoteAudio()
+	public void stopNoteAudio()
 	{
-		if(Audio_manager.getAudioPlayMode() == Audio_manager.NOTE_PLAY_MODE)
-            Audio_manager.stopAudioPlayer();
+		if(mAudio_manager.getAudioPlayMode() == mAudio_manager.NOTE_PLAY_MODE)
+            mAudio_manager.stopAudioPlayer();
 	}
 
 	//The BroadcastReceiver that listens for bluetooth broadcasts
@@ -400,7 +471,7 @@ public class Note extends Fragment
 //	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		int newPos;
-		System.out.println("Note / _onKeyDown / keyCode = " + keyCode);
+		System.out.println("NoteAct / _onKeyDown / keyCode = " + keyCode);
 		switch (keyCode) {
 			case KeyEvent.KEYCODE_MEDIA_PREVIOUS: //88
 				if(viewPager.getCurrentItem() == 0)
@@ -409,11 +480,11 @@ public class Note extends Fragment
 					newPos = NoteUi.getFocus_notePos()-1;
 
 				NoteUi.setFocus_notePos(newPos);
-				Audio_manager.stopAudioPlayer();
+				mAudio_manager.stopAudioPlayer();
 				viewPager.setCurrentItem(newPos);
 
 				BackgroundAudioService.mIsPrepared = false;
-				BackgroundAudioService.mMediaPlayer = null;
+				mMediaPlayer = null;
 				return true;
 
 			case KeyEvent.KEYCODE_MEDIA_NEXT: //87
@@ -423,11 +494,11 @@ public class Note extends Fragment
 					newPos = NoteUi.getFocus_notePos() + 1;
 
 				NoteUi.setFocus_notePos(newPos);
-				Audio_manager.stopAudioPlayer();
+				mAudio_manager.stopAudioPlayer();
 				viewPager.setCurrentItem(newPos);
 
 				BackgroundAudioService.mIsPrepared = false;
-				BackgroundAudioService.mMediaPlayer = null;
+				mMediaPlayer = null;
 				return true;
 
 			case KeyEvent.KEYCODE_MEDIA_PLAY: //126
@@ -436,15 +507,11 @@ public class Note extends Fragment
 				return true;
 
 			case KeyEvent.KEYCODE_BACK:
-//                onBackPressed();
+                onBackPressed();
 				return true;
 
 			case KeyEvent.KEYCODE_MEDIA_FAST_FORWARD:
-				return true;
-
 			case KeyEvent.KEYCODE_MEDIA_REWIND:
-				return true;
-
 			case KeyEvent.KEYCODE_MEDIA_STOP:
 				return true;
 		}

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 CW Chiu
+ * Copyright (C) 2021 CW Chiu
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,6 +28,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.provider.BaseColumns;
 import android.widget.Toast;
 
+import static com.cw.audio7.audio.BackgroundAudioService.dbHelper;
+
 /**
  *  Data Base Class for Drawer
  *
@@ -35,15 +37,14 @@ import android.widget.Toast;
 public class DB_drawer
 {
 
-    private Context mContext = null;
-    private static DatabaseHelper mDbHelper ;
-    private SQLiteDatabase mSqlDb;
+    final private Context context;
+    private SQLiteDatabase sqlDb;
 
     // Table name format: Drawer
     static String DB_DRAWER_TABLE_NAME = "Drawer";
 
 	// Table name format: Folder1
-	private static String DB_FOLDER_TABLE_PREFIX = "Folder";
+	final private static String DB_FOLDER_TABLE_PREFIX = "Folder";
 
 	// Folder rows
     static final String KEY_FOLDER_ID = "folder_id"; //can rename _id for using BaseAdapter
@@ -52,13 +53,12 @@ public class DB_drawer
     static final String KEY_FOLDER_CREATED = "folder_created";
 
 	// Cursor
-	public static Cursor mCursor_folder;
-
+	public Cursor cursor_folder;
 
     /** Constructor */
 	public DB_drawer(Context context)
     {
-        mContext = context;
+        this.context = context;
     }
 
     /**
@@ -67,35 +67,39 @@ public class DB_drawer
      */
 	public DB_drawer open() throws SQLException
 	{
-		mDbHelper = new DatabaseHelper(mContext);
-
 		// Will call DatabaseHelper.onCreate()first time when WritableDatabase is not created yet
-		mSqlDb = mDbHelper.getWritableDatabase();
-        mCursor_folder = this.getFolderCursor();
-		return DB_drawer.this;
+		try {
+			sqlDb = dbHelper.getWritableDatabase();
+			cursor_folder = this.getFolderCursor();
+			return DB_drawer.this;
+		} catch (Exception e){
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	public void close()
 	{
-        if((mCursor_folder != null) && (!mCursor_folder.isClosed()))
-            mCursor_folder.close();
-		mDbHelper.close();
+        if((cursor_folder != null) && (!cursor_folder.isClosed()))
+            cursor_folder.close();
+		dbHelper.close();
 	}
 
     // delete DB
 	public void deleteDB()
 	{
-        mSqlDb = mDbHelper.getWritableDatabase();
+        sqlDb = dbHelper.getWritableDatabase();
         try {
-	    	mSqlDb.beginTransaction();
-	        mContext.deleteDatabase(DatabaseHelper.DB_NAME);
-	        mSqlDb.setTransactionSuccessful();
+	    	sqlDb.beginTransaction();
+	        context.deleteDatabase(DatabaseHelper.DB_NAME);
+	        sqlDb.setTransactionSuccessful();
 	    }
 	    catch (Exception e) {
+        	e.printStackTrace();
 	    }
 	    finally {
-	    	Toast.makeText(mContext,R.string.config_delete_DB_toast,Toast.LENGTH_SHORT).show();
-	    	mSqlDb.endTransaction();
+	    	Toast.makeText(context,R.string.config_delete_DB_toast,Toast.LENGTH_SHORT).show();
+	    	sqlDb.endTransaction();
 	    }
 	}
 
@@ -113,7 +117,7 @@ public class DB_drawer
 				DB_folder.KEY_PAGE_TABLE_ID + " INTEGER," +
 				DB_folder.KEY_PAGE_STYLE + " INTEGER," +
 				DB_folder.KEY_PAGE_CREATED + " INTEGER);";
-        mSqlDb.execSQL(DB_CREATE);
+        sqlDb.execSQL(DB_CREATE);
 
 		if(enDbOpenClose)
             this.close();
@@ -127,7 +131,7 @@ public class DB_drawer
 		//format "Folder1"
     	String DB_FOLDER_TABLE_NAME = DB_FOLDER_TABLE_PREFIX.concat(String.valueOf(tableId));
         String dB_drop_table = "DROP TABLE IF EXISTS " + DB_FOLDER_TABLE_NAME + ";";
-        mSqlDb.execSQL(dB_drop_table);
+        sqlDb.execSQL(dB_drop_table);
         if(enDbOpenClose)
             this.close();
     }
@@ -138,7 +142,7 @@ public class DB_drawer
 	 *
 	 *
 	 */
-    private String[] strFolderColumns = new String[] {
+    final private String[] strFolderColumns = new String[] {
         KEY_FOLDER_ID + " AS " + BaseColumns._ID,
 			KEY_FOLDER_TABLE_ID,
 			KEY_FOLDER_TITLE,
@@ -147,7 +151,7 @@ public class DB_drawer
 
 
     public Cursor getFolderCursor() {
-        return mSqlDb.query(DB_DRAWER_TABLE_NAME,
+        return sqlDb.query(DB_DRAWER_TABLE_NAME,
 				 strFolderColumns,
 				 null,
 				 null,
@@ -167,7 +171,7 @@ public class DB_drawer
         args.put(KEY_FOLDER_TABLE_ID, tableId);
         args.put(KEY_FOLDER_TITLE, title);
         args.put(KEY_FOLDER_CREATED, now.getTime());
-        long rowId = mSqlDb.insert(DB_DRAWER_TABLE_NAME, null, args);
+        long rowId = sqlDb.insert(DB_DRAWER_TABLE_NAME, null, args);
         if(enDbOpenClose)
             this.close();
         return rowId;
@@ -177,7 +181,7 @@ public class DB_drawer
     {
         if(enDbOpenClose)
             this.open();
-        long rowsNumber = mSqlDb.delete(DB_DRAWER_TABLE_NAME, KEY_FOLDER_ID + "='" + id +"'", null);
+        long rowsNumber = sqlDb.delete(DB_DRAWER_TABLE_NAME, KEY_FOLDER_ID + "='" + id +"'", null);
         if(enDbOpenClose)
             this.close();
         return  rowsNumber;
@@ -185,7 +189,7 @@ public class DB_drawer
     
     
     // update folder
-    public boolean updateFolder(long rowId, int drawerFolderTableId, String drawerTitle,boolean enDbOpenClose) {
+    public void  updateFolder(long rowId, int drawerFolderTableId, String drawerTitle,boolean enDbOpenClose) {
         if(enDbOpenClose)
             this.open();
         ContentValues args = new ContentValues();
@@ -194,22 +198,20 @@ public class DB_drawer
         args.put(KEY_FOLDER_TITLE, drawerTitle);
        	args.put(KEY_FOLDER_CREATED, now.getTime());
 
-        int cUpdateItems = mSqlDb.update(DB_DRAWER_TABLE_NAME, args, KEY_FOLDER_ID + "=" + rowId, null);
-        boolean bUpdate = cUpdateItems > 0? true:false;
+        sqlDb.update(DB_DRAWER_TABLE_NAME, args, KEY_FOLDER_ID + "=" + rowId, null);
         if(enDbOpenClose)
             this.close();
-        return bUpdate;
-    }    
+    }
     
     public long getFolderId(int position,boolean enDbOpenClose)
     {
         if(enDbOpenClose)
             this.open();
-    	mCursor_folder.moveToPosition(position);
+    	cursor_folder.moveToPosition(position);
     	// note: KEY_FOLDER_ID + " AS " + BaseColumns._ID
         long column = -1;
         try {
-            column = (long) mCursor_folder.getInt(mCursor_folder.getColumnIndex(BaseColumns._ID));
+            column = (long) cursor_folder.getInt(cursor_folder.getColumnIndex(BaseColumns._ID));
         }
         catch (Exception e) {
             System.out.println("DB_drawer / _getFolderId / exception ");
@@ -223,7 +225,11 @@ public class DB_drawer
     {
         if(enDbOpenClose)
             this.open();
-    	int count = mCursor_folder.getCount();
+
+        int count = 0;
+        if(cursor_folder != null)
+	        count = cursor_folder.getCount();
+
         if(enDbOpenClose)
             this.close();
     	return count;
@@ -233,8 +239,8 @@ public class DB_drawer
     {
         if(enDbOpenClose)
             this.open();
-        mCursor_folder.moveToPosition(position);
-        int id = mCursor_folder.getInt(mCursor_folder.getColumnIndex(KEY_FOLDER_TABLE_ID));
+        cursor_folder.moveToPosition(position);
+        int id = cursor_folder.getInt(cursor_folder.getColumnIndex(KEY_FOLDER_TABLE_ID));
 
         if(enDbOpenClose)
             this.close();
@@ -246,10 +252,10 @@ public class DB_drawer
 	{
         if(enDbOpenClose)
             this.open();
-		mCursor_folder.moveToPosition(position);
+		cursor_folder.moveToPosition(position);
         String str="";
         try {
-            str = mCursor_folder.getString(mCursor_folder.getColumnIndex(KEY_FOLDER_TITLE));
+            str = cursor_folder.getString(cursor_folder.getColumnIndex(KEY_FOLDER_TITLE));
         }
         catch (Exception e)
         {

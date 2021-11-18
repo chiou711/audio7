@@ -52,4 +52,8 @@
         <item name="android:height">92sp</item>
     </style>
  -->
+    <style name="Widget.Toolbar" parent="Widget.AppCompat.Toolbar">
+        <item name="android:background">#99000000</item>
+    </style>
+
 </resources>

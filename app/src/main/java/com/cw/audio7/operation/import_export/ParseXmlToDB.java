@@ -23,7 +23,6 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 
 import com.cw.audio7.db.DB_drawer;
-import com.cw.audio7.main.MainAct;
 import com.cw.audio7.db.DB_folder;
 import com.cw.audio7.db.DB_page;
 import com.cw.audio7.tabs.TabsHost;
@@ -33,30 +32,34 @@ import com.cw.audio7.util.preferences.Pref;
 import android.content.Context;
 import android.util.Xml;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 public class ParseXmlToDB {
 
     private String pageName,title,body,audio;
     private DB_folder mDb_folder;
-    private DB_page mDb_page;
+    private final DB_page mDb_page;
 
-    private Context mContext;
-   
+    private final Context mContext;
+
     private FileInputStream fileInputStream = null;
     public static boolean isParsing;
     String fileBody = "";
     private String strSplitter;
     private boolean mEnableInsertDB = true;
     int folderTableId;
+    AppCompatActivity act;
 
-    ParseXmlToDB(FileInputStream fileInputStream, Context context)
+    ParseXmlToDB(FileInputStream fileInputStream, AppCompatActivity _act)
     {
-        mContext = context;
+        act = _act;
+        mContext = _act;
         this.fileInputStream = fileInputStream;
 
         folderTableId = Pref.getPref_focusView_folder_tableId(mContext);
-        mDb_folder = new DB_folder(MainAct.mAct, folderTableId);
+        mDb_folder = new DB_folder(folderTableId);
 
-        mDb_page = new DB_page(MainAct.mAct,TabsHost.getCurrentPageTableId());
+        mDb_page = new DB_page(TabsHost.getCurrentPageTableId());
 
         isParsing = true;
     }
@@ -114,7 +117,7 @@ public class ParseXmlToDB {
                             String folderName = text.trim();
                             if(mEnableInsertDB)
                             {
-                                DB_drawer dB_drawer = new DB_drawer(MainAct.mAct);
+                                DB_drawer dB_drawer = new DB_drawer(act);
                                 int folders_count = dB_drawer.getFoldersCount(true);
 
                                 // get last folder Id
@@ -147,9 +150,8 @@ public class ParseXmlToDB {
 
                                 DB_folder.setFocusFolder_tableId(lastFolderTableId);
 
-                                Pref.setPref_focusView_folder_tableId(MainAct.mAct, lastFolderTableId);
-                                Pref.setPref_focusView_page_tableId(MainAct.mAct, 1);
-//                                TabsHost.setLastPageTableId(0);
+                                Pref.setPref_focusView_folder_tableId(act, lastFolderTableId);
+                                Pref.setPref_focusView_page_tableId(act, 1);
 
                                 TabsHost.setFocus_tabPos(0);
                             }
@@ -163,7 +165,7 @@ public class ParseXmlToDB {
                                 int style = Util.getNewPageStyle(mContext);
 
                                 // get last page table Id
-                                mDb_folder = new DB_folder(MainAct.mAct,Pref.getPref_focusView_folder_tableId(mContext));
+                                mDb_folder = new DB_folder(Pref.getPref_focusView_folder_tableId(mContext));
                                 int lastPageTableId = 0;
                                 for(int i=0; i<mDb_folder.getPagesCount(true); i++)
                                 {
@@ -177,7 +179,7 @@ public class ParseXmlToDB {
                                 // style is not set in XML file, so insert default style instead
                                 mDb_folder.insertPage(DB_folder.getFocusFolder_tableName(),
                                                       pageName,
-                                                      TabsHost.getLastPageTableId() + 1,
+                                        TabsHost.getLastPageTableId() + 1,
                                                       style ,
                                                       true);
 
@@ -189,8 +191,8 @@ public class ParseXmlToDB {
 
                                 // update from 0 to 1 if Import starts from Empty
                                 int pgsCnt = mDb_folder.getPagesCount(true);
-                                if((pgsCnt > 0) && (Pref.getPref_focusView_page_tableId(MainAct.mAct) ==0))
-                                    Pref.setPref_focusView_page_tableId(MainAct.mAct, 1);
+                                if((pgsCnt > 0) && (Pref.getPref_focusView_page_tableId(act) ==0))
+                                    Pref.setPref_focusView_page_tableId(act, 1);
                             }
                             fileBody = fileBody.concat(Util.NEW_LINE + "=== " + "Page:" + " " + pageName + " ===");
                        }
