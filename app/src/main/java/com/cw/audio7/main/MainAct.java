@@ -55,6 +55,7 @@ import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.os.Environment;
 import android.os.RemoteException;
 import android.os.StrictMode;
 import android.content.Context;
@@ -62,6 +63,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.v4.media.MediaBrowserCompat;
 import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
@@ -101,6 +103,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
 
     public Drawer drawer;
     public Folder folder;
+    public static final int STORAGE_MANAGER_PERMISSION = 99;
 
     // Main Act onCreate
     @Override
@@ -183,7 +186,9 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
             // Ok button listener
             dialog_EULA.clickListener_Ok = (DialogInterface dialog, int i) -> {
 
-                dialog_EULA.applyPreference();
+                dialog_EULA.applyPreference(); // set true
+
+                bEULA_accepted = true;
 
                 // dialog: with default content
                 if((Define.DEFAULT_CONTENT == Define.BY_INITIAL_TABLES) && (Define.INITIAL_FOLDERS_COUNT > 0))
@@ -230,11 +235,26 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
     void checkPermission()
     {
         // check permission first time, request all necessary permissions
-        if( (Build.VERSION.SDK_INT < M /*API23*/) ||
-            !Util.request_permission_WRITE_EXTERNAL_STORAGE(this,
+        if( !Util.request_permission_WRITE_EXTERNAL_STORAGE(this,
                     Util.PERMISSIONS_REQUEST_STORAGE)) {
             Pref.setPref_will_create_default_content(this, false);
             recreate();
+        }
+
+
+    }
+
+
+    public void checkStorageManagerPermission() {
+        if (!Environment.isExternalStorageManager()) {
+            Intent intent = new Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION);
+//            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); //set this will go to _onActivityResult soon
+            startActivityForResult(intent,STORAGE_MANAGER_PERMISSION);
+
+            // flow of this query:
+            // MainAct / _onPause / _onStop
+            // this query UI
+            // MainAct / _onStart / _onResume
         }
     }
 
@@ -245,11 +265,6 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
 
 //		mContext = getApplicationContext();
 //      mContext = getBaseContext();
-
-        // add on back stack changed listener
-        fragmentManager = getSupportFragmentManager();
-        onBackStackChangedListener = this;
-        fragmentManager.addOnBackStackChangedListener(onBackStackChangedListener);
 
         //todo if (ENABLE_MEDIA_CONTROLLER)
         // Register Bluetooth device receiver
@@ -355,7 +370,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                     break;
 
                 case Util.PERMISSIONS_REQUEST_STORAGE_ADD_NEW:
-                    Add_note_option add_note_option = new Add_note_option(this, menu, drawer, folder);
+                    Add_note_option add_note_option = new Add_note_option(this, menu, drawer);
                     add_note_option.createSelection(this,true);
                     break;
 
@@ -372,7 +387,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
         {
             switch (requestCode) {
                 case Util.PERMISSIONS_REQUEST_STORAGE_ADD_NEW:
-                    Add_note_option add_note_option = new Add_note_option(this, menu, drawer, folder);
+                    Add_note_option add_note_option = new Add_note_option(this, menu, drawer);
                     add_note_option.createSelection(this, false);
                     break;
 
@@ -471,7 +486,12 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
     @Override
     protected void onResume() {
         super.onResume();
-    	System.out.println("MainAct / _onResume");
+        System.out.println("MainAct / _onResume");
+
+        // add on back stack changed listener
+        fragmentManager = getSupportFragmentManager();
+        onBackStackChangedListener = this;
+        fragmentManager.addOnBackStackChangedListener(onBackStackChangedListener);
 
         // Sync the toggle state after onRestoreInstanceState has occurred.
         if(bEULA_accepted) {
@@ -509,12 +529,14 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
 
+        System.out.println("MainAct / _onAttachedToWindow");
+
         // do Add all
         if(Pref.getPref_will_create_default_content(this)) {
 
             Objects.requireNonNull(getSupportActionBar()).hide();
 
-            Add_audio_all add_audio_all = new Add_audio_all(drawer,folder); // todo Check more
+            Add_audio_all add_audio_all = new Add_audio_all(drawer); // todo Check more
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.setCustomAnimations(R.anim.fragment_slide_in_left, R.anim.fragment_slide_out_left, R.anim.fragment_slide_in_right, R.anim.fragment_slide_out_right);
             transaction.add(R.id.content_frame, add_audio_all, "add_audio").addToBackStack(null).commit();
@@ -718,6 +740,13 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
 
         if(requestCode == NoteAct.VIEW_CURRENT_NOTE)
             System.out.println("MainAct / _onActivityResult / NoteAct.VIEW_CURRENT_NOTE");
+
+        if(requestCode == STORAGE_MANAGER_PERMISSION){
+            if(Environment.isExternalStorageManager()){
+                Pref.setPref_will_create_default_content(this, true);
+                recreate();
+            }
+        }
     }
 
     /*=======================================================
@@ -1045,10 +1074,13 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                 return true;
 
             case MenuId.ADD_NEW_NOTE:
-                if( (Build.VERSION.SDK_INT < M /*API23*/) ||
+                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
+                    checkStorageManagerPermission();
+
+                else if( (Build.VERSION.SDK_INT < M /*API23*/) ||
                       !Util.request_permission_WRITE_EXTERNAL_STORAGE(this,
                                 Util.PERMISSIONS_REQUEST_STORAGE_ADD_NEW) ) {
-                    Add_note_option add_note_option = new Add_note_option(this, menu, drawer, folder);
+                    Add_note_option add_note_option = new Add_note_option(this, menu, drawer);
                     add_note_option.createSelection(this, true);
                 }
                 return true;
@@ -1363,7 +1395,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
         drawer.initDrawer();
 
         // new folder
-        folder = new Folder(this, drawer);
+        folder = drawer.folder;
         folder.openFolder(drawer);
     }
 

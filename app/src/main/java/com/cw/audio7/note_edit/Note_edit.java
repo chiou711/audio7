@@ -95,7 +95,6 @@ public class Note_edit extends AppCompatActivity
     	body = extras.getString(DB_page.KEY_NOTE_BODY);
 
         //initialization
-	    folder = new Folder(this,null); //todo More check
         note_edit_ui = new Note_edit_ui(this, dB, noteId, title,  audioUri,  body);
         note_edit_ui.UI_init();
 

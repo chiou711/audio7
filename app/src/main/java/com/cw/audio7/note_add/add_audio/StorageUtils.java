@@ -45,7 +45,7 @@ public class StorageUtils {
 
 	public static class StorageInfo {
 
-		public final String path;
+		public String path;
 		public final boolean internal;
 		public final boolean readonly;
 		public final int display_number;

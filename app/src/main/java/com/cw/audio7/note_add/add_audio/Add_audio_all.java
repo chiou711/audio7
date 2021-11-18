@@ -62,10 +62,10 @@ public class Add_audio_all extends Fragment
     Folder folder;
     TabsHost tabsHost;
 
-    public Add_audio_all(Drawer _drawer, Folder _folder) {
+    public Add_audio_all(Drawer _drawer) {
         drawer = _drawer;
-        folder = _folder;
-        tabsHost = _folder.tabsHost;
+        folder = drawer.folder;
+        tabsHost = folder.tabsHost;
     }
 
     @Override
@@ -489,7 +489,8 @@ public class Add_audio_all extends Fragment
             // auto add all: no UI is needed
             Pref.setPref_will_create_default_content(act, false);
             Objects.requireNonNull(act).getSupportFragmentManager().popBackStack();
-            act.finish();
+
+            // new task
             Intent intent  = new Intent(act,MainAct.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

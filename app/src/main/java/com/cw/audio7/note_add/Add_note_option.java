@@ -58,11 +58,11 @@ public class Add_note_option {
     Drawer drawer;
     Folder folder;
 
-    public Add_note_option(AppCompatActivity _act, Menu _menu, Drawer _drawer, Folder fUI) {
+    public Add_note_option(AppCompatActivity _act, Menu _menu, Drawer _drawer) {
         act = _act;
         menu = _menu;
         drawer = _drawer;
-        folder = fUI;
+        folder = drawer.folder;
     }
 
     Add_note_option(int id, int draw_id, int string_id)
@@ -266,7 +266,7 @@ public class Add_note_option {
 
                 // do Add all
                 Pref.setPref_will_create_default_content(act,true);
-                Add_audio_all add_audio_all = new Add_audio_all(drawer, folder); //todo More check
+                Add_audio_all add_audio_all = new Add_audio_all(drawer); //todo More check
                 FragmentTransaction transaction = act.getSupportFragmentManager().beginTransaction();
                 transaction.setCustomAnimations(R.anim.fragment_slide_in_left, R.anim.fragment_slide_out_left, R.anim.fragment_slide_in_right, R.anim.fragment_slide_out_right);
                 transaction.replace(R.id.content_frame, add_audio_all, "add_audio").addToBackStack(null).commit();

@@ -50,11 +50,14 @@ public class Drawer {
     public NavigationView mNavigationView;
     DragSortListView listView;
     public SharedPreferences mPref_show_note_attribute;
-    Folder folder;
+    public Folder folder;
     public static int foldersCount;
 
     public Drawer(AppCompatActivity _act, Toolbar toolbar) {
         this.act = _act;
+
+        // new folder
+        folder = new Folder(this.act);
 
         drawerLayout = (DrawerLayout) act.findViewById(R.id.drawer_layout);
 

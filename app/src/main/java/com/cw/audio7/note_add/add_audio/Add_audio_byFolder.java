@@ -52,7 +52,6 @@ import java.util.Locale;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.ListFragment;
 
-
 public class Add_audio_byFolder extends ListFragment
 {
     private List<String> filePathArray = null;
@@ -177,39 +176,65 @@ public class Add_audio_byFolder extends ListFragment
     public void onListItemClick(long rowId)
     {
         AppCompatActivity act = (AppCompatActivity) getActivity();
+        selectedRow = (int)rowId;
 
         System.out.println("--- onListItemClick / currFilePath = " + currFilePath);
-
-        selectedRow = (int)rowId;
         System.out.println("--- onListItemClick / selectedRow = " + selectedRow);
+
         if(selectedRow == 0)
         {
-            System.out.println("--- onListItemClick / selectedRow = 0 / currFilePath = " + currFilePath);
+            boolean showTopDir = false;
+            List<StorageUtils.StorageInfo> storageList = StorageUtils.getStorageList();
+            File[] storageDirs = new File[storageList.size()];
+            for(int i=0;i<storageList.size();i++) {
+                System.out.println("-->  storageList[" + i +"] name = "+ storageList.get(i).getDisplayName());
+                System.out.println("-->  storageList[" + i +"] path = "+ storageList.get(i).path);
+                System.out.println("-->  storageList[" + i +"] display number = "+ storageList.get(i).display_number);
 
-            if(currFilePath.equals("/storage")) {
-                Toast.makeText(act,R.string.toast_storage_directory_top,Toast.LENGTH_SHORT).show();
-                showFilesList(new File(currFilePath).listFiles());
-                return;
+                String sdCardPath =  storageList.get(i).path;
+
+                if (storageList.get(i).path.contains("/mnt/media_rw")) {
+                    sdCardPath = sdCardPath.replace("mnt/media_rw", "storage");
+
+                    storageList.get(i).path = sdCardPath;
+                }
+                System.out.println("-->  storageList[" + i +"] sdCardPath = "+ sdCardPath);
+
+                storageDirs[i]  = new File(storageList.get(i).path);
             }
 
-            File parentDir = null;
-            String parentPath;
-            do {
-                File currDir = new File(currFilePath);
-                parentPath = currDir.getParent();
-                System.out.println("--- onListItemClick / selectedRow = 0 / parentPath = " + parentPath);
-
-                if (parentPath != null) {
-                    parentDir = new File(parentPath);
-                    currFilePath = parentPath;
-                    System.out.println("--- onListItemClick / selectedRow = 0 / new currFilePath = " + currFilePath);
+            for(int i=0;i<storageList.size();i++){
+                if (currFilePath.equals(storageList.get(i).path)) {
+                    showFilesList(storageDirs);
+                    showTopDir = true;
                 }
-            } while (parentDir.listFiles() == null);
+            }
 
-            showFilesList(parentDir.listFiles());
-        }
-        else
-        {
+//            if(currFilePath.equals("/storage")) {
+//                Toast.makeText(act,R.string.toast_storage_directory_top,Toast.LENGTH_SHORT).show();
+//                showFilesList(new File(currFilePath).listFiles());
+//                return;
+//            }
+
+            if(!showTopDir){
+                File parentDir = null;
+                String parentPath;
+                do {
+                    File currDir = new File(currFilePath);
+                    parentPath = currDir.getParent();
+
+                    if (parentPath != null) {
+                        parentDir = new File(parentPath);
+
+                        currFilePath = parentPath;
+                        System.out.println("---*** onListItemClick / selectedRow = 0 / new currFilePath = " + currFilePath);
+                    }
+                } while (((parentDir != null) && (parentDir.listFiles() == null)));
+
+                showFilesList(parentDir.listFiles());
+            }
+
+        } else {
 //            System.out.println("Add_audio_byFolder / _onListItemClick / is dir");
             currFilePath = filePathArray.get(selectedRow);
             System.out.println("Add_audio_byFolder / _onListItemClick / currFilePath = " + currFilePath);
@@ -288,17 +313,16 @@ public class Add_audio_byFolder extends ListFragment
         }
     }
 
-    int showFilesList(File[] files)
-    {
+    //
+    // Show files or dirs list view
+    //
+    int showFilesList(File[] files){
         int dirCount = 0;
-        if(files == null)
-        {
-//            System.out.println("Add_audio_byFolder / _showFilesList / files = null");
+        if(files == null){
+            System.out.println("Add_audio_byFolder / _showFilesList / files = null");
         	Toast.makeText(getActivity(),"Please select audio file",Toast.LENGTH_SHORT).show();
-        }
-        else
-        {
-//        	System.out.println("Add_audio_byFolder / _showFilesList / files length = " + files.length);
+        } else {
+        	System.out.println("Add_audio_byFolder / _showFilesList / files length = " + files.length);
             filePathArray = new ArrayList<>();
             fileNames = new ArrayList<>();
             filePathArray.add("");

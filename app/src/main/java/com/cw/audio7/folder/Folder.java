@@ -67,14 +67,13 @@ public class Folder
     public List<String> mFolderTitles;
     Drawer drawer;
 
-    Folder(){};
+    Folder(){}
 
-    public Folder(AppCompatActivity _act,Drawer _drawer){
+    public Folder(AppCompatActivity _act){
         act = _act;
         mFolderTitles = new ArrayList<>();
         FolderSetup(act);
-        drawer = _drawer;
-    };
+    }
 
     public void FolderSetup(AppCompatActivity act)
     {
