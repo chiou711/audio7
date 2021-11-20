@@ -1287,7 +1287,7 @@ public class Util
 	}
 
 	// check if WRITE_EXTERNAL_STORAGE permission is granted
-	public static boolean request_permission_WRITE_EXTERNAL_STORAGE(Activity act, int requestCode){
+	public static boolean willRequest_permission_WRITE_EXTERNAL_STORAGE(Activity act, int requestCode){
 
 		int permissionWriteExtStorage = ActivityCompat.checkSelfPermission(act,
 				Manifest.permission.WRITE_EXTERNAL_STORAGE);
@@ -1300,8 +1300,10 @@ public class Util
 					requestCode);
 			return true;
 		}
-		else
+		else {
+			// granted
 			return false;
+		}
 	}
 
 }

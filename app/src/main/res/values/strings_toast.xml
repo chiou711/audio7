@@ -6,4 +6,5 @@
     <string name="toast_not_working">Not working during database processing</string>
     <string name="toast_cyclic_play_disabled">Cyclic play is not enabled</string>
     <string name="toast_storage_directory_top">At top of storage directory already</string>
+    <string name="toast_no_SD_permission">Please note that you have denied SD card read/write permission. You can enable it by system setting.</string>
 </resources>

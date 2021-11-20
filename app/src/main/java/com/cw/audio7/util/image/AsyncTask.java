@@ -16,6 +16,7 @@
 
 package com.cw.audio7.util.image;
 
+import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Process;
@@ -318,6 +319,9 @@ public abstract class AsyncTask<Params, Progress, Result> {
         mFuture = new FutureTask<Result>(mWorker) {
             @Override
             protected void done() {
+                if(Build.VERSION.SDK_INT < 26)
+                    return; //todo Need more checks
+
                 try {
                     postResultIfNotInvoked(get());
                 } catch (InterruptedException e) {

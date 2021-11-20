@@ -193,10 +193,11 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                 // dialog: with default content
                 if((Define.DEFAULT_CONTENT == Define.BY_INITIAL_TABLES) && (Define.INITIAL_FOLDERS_COUNT > 0))
                 {
-                    if(Build.VERSION.SDK_INT >= 23)
+                    if(Build.VERSION.SDK_INT >= 30)
+                        checkStorageManagerPermission();
+                    else if(Build.VERSION.SDK_INT >= 23)
                         checkPermission();
-                    else
-                    {
+                    else {
                         Pref.setPref_will_create_default_content(this, true);
                         recreate();
                     }
@@ -235,13 +236,11 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
     void checkPermission()
     {
         // check permission first time, request all necessary permissions
-        if( !Util.request_permission_WRITE_EXTERNAL_STORAGE(this,
+        if( !Util.willRequest_permission_WRITE_EXTERNAL_STORAGE(this,
                     Util.PERMISSIONS_REQUEST_STORAGE)) {
             Pref.setPref_will_create_default_content(this, false);
             recreate();
         }
-
-
     }
 
 
@@ -254,6 +253,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
             // flow of this query:
             // MainAct / _onPause / _onStop
             // this query UI
+            // onActivityResult
             // MainAct / _onStart / _onResume
         }
     }
@@ -370,8 +370,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                     break;
 
                 case Util.PERMISSIONS_REQUEST_STORAGE_ADD_NEW:
-                    Add_note_option add_note_option = new Add_note_option(this, menu, drawer);
-                    add_note_option.createSelection(this,true);
+                    addNewNote();
                     break;
 
                 case Util.PERMISSIONS_REQUEST_STORAGE_IMPORT:
@@ -387,8 +386,10 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
         {
             switch (requestCode) {
                 case Util.PERMISSIONS_REQUEST_STORAGE_ADD_NEW:
-                    Add_note_option add_note_option = new Add_note_option(this, menu, drawer);
-                    add_note_option.createSelection(this, false);
+                    if((grantResults[0] == PackageManager.PERMISSION_DENIED) ||
+                       (grantResults[1] == PackageManager.PERMISSION_DENIED)    ) {
+                        Toast.makeText(this,R.string.toast_no_SD_permission,Toast.LENGTH_LONG).show();
+                    }
                     break;
 
                 case Util.PERMISSIONS_REQUEST_STORAGE:
@@ -1074,14 +1075,15 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                 return true;
 
             case MenuId.ADD_NEW_NOTE:
-                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
+                if(Build.VERSION.SDK_INT >= 30) {
                     checkStorageManagerPermission();
-
-                else if( (Build.VERSION.SDK_INT < M /*API23*/) ||
-                      !Util.request_permission_WRITE_EXTERNAL_STORAGE(this,
-                                Util.PERMISSIONS_REQUEST_STORAGE_ADD_NEW) ) {
-                    Add_note_option add_note_option = new Add_note_option(this, menu, drawer);
-                    add_note_option.createSelection(this, true);
+                    if(Environment.isExternalStorageManager())
+                        addNewNote();
+                }
+                else if( (Build.VERSION.SDK_INT < 23) ||
+                         !Util.willRequest_permission_WRITE_EXTERNAL_STORAGE(this,
+                              Util.PERMISSIONS_REQUEST_STORAGE_ADD_NEW) ) {
+                        addNewNote();
                 }
                 return true;
 
@@ -1268,7 +1270,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
             // sub menu for backup
             case MenuId.IMPORT_FROM_SD_CARD:
                 if( ( Build.VERSION.SDK_INT < M /*API23*/ ) ||
-                    !Util.request_permission_WRITE_EXTERNAL_STORAGE(this,
+                    !Util.willRequest_permission_WRITE_EXTERNAL_STORAGE(this,
                                 Util.PERMISSIONS_REQUEST_STORAGE_IMPORT)             ) {
                     //hide the menu
                     menu.findItem(R.id.ADD_NEW_NOTE).setVisible(false);
@@ -1283,8 +1285,8 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                 return true;
 
             case MenuId.EXPORT_TO_SD_CARD:
-                if( ( Build.VERSION.SDK_INT <= M /*API23*/) ||
-                    !Util.request_permission_WRITE_EXTERNAL_STORAGE(this,
+                if( ( Build.VERSION.SDK_INT <= 23) ||
+                    !Util.willRequest_permission_WRITE_EXTERNAL_STORAGE(this,
                                 Util.PERMISSIONS_REQUEST_STORAGE_EXPORT)           ) {
                     //hide the menu
                     menu.findItem(R.id.ADD_NEW_NOTE).setVisible(false);
@@ -1333,6 +1335,13 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    // addNewNote
+    void addNewNote(){
+        System.out.println("MainAct / _addNewNote ");
+        Add_note_option add_note_option = new Add_note_option(this, menu, drawer);
+        add_note_option.createSelection(this);
     }
 
     /** Entry: Page play */

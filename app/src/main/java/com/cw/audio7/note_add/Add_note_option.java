@@ -87,7 +87,7 @@ public class Add_note_option {
     private final static int ID_NEW_BACK = 11;
     private final static int ID_NEW_SETTING = 12;
 
-    public void createSelection(AppCompatActivity act, boolean permitted)
+    public void createSelection(AppCompatActivity act)
     {
 
         System.out.println("Add_note_option / _createSelection");
@@ -102,37 +102,34 @@ public class Add_note_option {
 
         int foldersCount = Drawer.getFoldersCount(act);
 
-        if(permitted)
-        {
-            // audio by all
-            addNoteList.add(new Add_note_option(ID_NEW_AUDIO_all,
+        // audio by all
+        addNoteList.add(new Add_note_option(ID_NEW_AUDIO_all,
+                R.drawable.ic_audio_unselected,
+                R.string.note_ready_audio_by_all));
+
+        // audio by folder
+        if (foldersCount > 0)
+            addNoteList.add(new Add_note_option(ID_NEW_AUDIO_byFolder,
                     R.drawable.ic_audio_unselected,
-                    R.string.note_ready_audio_by_all));
+                    R.string.note_ready_audio_byFolder));
 
-            // audio by folder
-            if (foldersCount > 0)
-                addNoteList.add(new Add_note_option(ID_NEW_AUDIO_byFolder,
-                        R.drawable.ic_audio_unselected,
-                        R.string.note_ready_audio_byFolder));
+        // audio 1by1
+        if (pagesCount > 0)
+            addNoteList.add(new Add_note_option(ID_NEW_AUDIO_1by1,
+                    R.drawable.ic_audio_unselected,
+                    R.string.note_ready_audio_1by1));
 
-            // audio 1by1
-            if (pagesCount > 0)
-                addNoteList.add(new Add_note_option(ID_NEW_AUDIO_1by1,
-                        R.drawable.ic_audio_unselected,
-                        R.string.note_ready_audio_1by1));
+        // recording
+        if (pagesCount > 0)
+            addNoteList.add(new Add_note_option(ID_NEW_RECORDING,
+                    R.drawable.ic_mic,
+                    R.string.note_recording));
 
-            // recording
-            if (pagesCount > 0)
-                addNoteList.add(new Add_note_option(ID_NEW_RECORDING,
-                        R.drawable.ic_mic,
-                        R.string.note_recording));
-
-            // audio app
-            if (pagesCount > 0)
-                addNoteList.add(new Add_note_option(ID_NEW_AUDIO,
-                        R.drawable.ic_audio_unselected,
-                        R.string.note_ready_audio));
-        }
+        // audio app
+        if (pagesCount > 0)
+            addNoteList.add(new Add_note_option(ID_NEW_AUDIO,
+                    R.drawable.ic_audio_unselected,
+                    R.string.note_ready_audio));
 
         // Setting
         addNoteList.add(new Add_note_option(ID_NEW_SETTING,

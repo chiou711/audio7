@@ -194,6 +194,7 @@ public class Note_adapter extends FragmentStatePagerAdapter implements View.OnCl
 //			}
 
 		    // todo Select
+		    // todo API23 not working?
 		    // case 2
 		    // for Image Cache
 		    ((NoteAct)act).getImageFetcher().loadImage(audioUri, imageView);

@@ -6,4 +6,5 @@
     <string name="toast_not_working">在數據庫處理期間不起作用</string>
     <string name="toast_cyclic_play_disabled">循環播放未啟用</string>
     <string name="toast_storage_directory_top">已經在存儲目錄的頂部</string>
+    <string name="toast_no_SD_permission">請注意，您拒絕了 SD 卡讀/寫權限。 您可以通過系統設置啟用它。</string>
 </resources>

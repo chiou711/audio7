@@ -115,6 +115,7 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat
 
     NotificationCompat.Builder builder;
     NotificationManagerCompat manager;
+    NotificationManager manager_before_API26;
     String CHANNEL_ID = "77";
 
     // init Media Player
@@ -154,7 +155,8 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat
                     getResources().getString(R.string.app_name),
                     NotificationManager.IMPORTANCE_DEFAULT);
             manager.createNotificationChannel(channel);
-        }
+        } else
+            manager_before_API26 = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
     }
 
     /**
@@ -524,7 +526,7 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat
         if (Build.VERSION.SDK_INT >= 26)
             manager.notify(mNotification_id,builder.setChannelId(CHANNEL_ID).build());
         else
-            manager.notify(mNotification_id, builder.build());
+            manager_before_API26.notify(mNotification_id, builder.build());//todo null object API23
     }
 
     //if (ENABLE_MEDIA_CONTROLLER)
@@ -552,7 +554,7 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat
         if (Build.VERSION.SDK_INT >= 26)
             manager.notify(mNotification_id,builder.setChannelId(CHANNEL_ID).build());
         else
-            manager.notify(mNotification_id, builder.build());
+            manager_before_API26.notify(mNotification_id, builder.build());
     }
 
     @Override
