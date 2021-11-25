@@ -717,10 +717,14 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
             System.out.println("MainAct / _onBackStackChanged / init");
             onBackPressedListener = null;
 
+//            configLayoutView(); //todo Add this will make playing highlight gone after Add folder?
+
+            // new drawer
+            drawer = new Drawer(this, toolbar);
+            drawer.initDrawer();
+
             if(folder.adapter!=null)
                 folder.adapter.notifyDataSetChanged();
-
-            configLayoutView();
 
             drawer.drawerToggle.syncState(); // make sure toggle icon state is correct
         }
@@ -1397,7 +1401,6 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
         setContentView(R.layout.drawer);
 
         initActionBar();
-
 
         // new drawer
         drawer = new Drawer(this, toolbar);

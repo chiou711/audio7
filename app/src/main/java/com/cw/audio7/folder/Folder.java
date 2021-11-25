@@ -69,10 +69,11 @@ public class Folder
 
     Folder(){}
 
-    public Folder(AppCompatActivity _act){
+    public Folder(AppCompatActivity _act,Drawer _drawer){
         act = _act;
         mFolderTitles = new ArrayList<>();
         FolderSetup(act);
+        drawer = _drawer;
     }
 
     public void FolderSetup(AppCompatActivity act)

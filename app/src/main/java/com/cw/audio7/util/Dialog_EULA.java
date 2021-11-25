@@ -30,9 +30,9 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.preference.PreferenceManager;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.PreferenceManager;
 
 public class Dialog_EULA {
 
@@ -64,11 +64,12 @@ public class Dialog_EULA {
     public boolean isEulaAlreadyAccepted() {
         PackageInfo versionInfo = getPackageInfo();
         prefs= PreferenceManager.getDefaultSharedPreferences(mAct);
+
         // The eulaKey changes every time you increment the version number in
         // the AndroidManifest.xml
         eulaKey = EULA_PREFIX + versionInfo.versionCode;
 
-        return prefs.getBoolean(eulaKey, false);
+        return prefs.getBoolean(eulaKey, false); //default false
     }
 
     private PackageInfo getPackageInfo() {

@@ -57,8 +57,7 @@ public class Drawer {
         this.act = _act;
 
         // new folder
-        folder = new Folder(this.act);
-
+        folder = new Folder(this.act,this);
         drawerLayout = (DrawerLayout) act.findViewById(R.id.drawer_layout);
 
         mNavigationView = (NavigationView) act.findViewById(R.id.nav_view);
