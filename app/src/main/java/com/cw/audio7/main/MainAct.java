@@ -174,62 +174,76 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
         */
         UtilImage.getDefaultScaleInPercent(MainAct.this);
 
-        // EULA
-        Dialog_EULA dialog_EULA = new Dialog_EULA(this);
-        bEULA_accepted = dialog_EULA.isEulaAlreadyAccepted();
+        if(Define.ENABLE_EULA) {
+            // EULA
+            Dialog_EULA dialog_EULA = new Dialog_EULA(this);
+            bEULA_accepted = dialog_EULA.isEulaAlreadyAccepted();
 
-        // Show dialog of EULA
-        if (!bEULA_accepted)
-        {
-            //deleteDatabase(Define.DB_FILE_NAME);
+            // Show dialog of EULA
+            if (!bEULA_accepted) {
+                //deleteDatabase(Define.DB_FILE_NAME);
 
-            // Ok button listener
-            dialog_EULA.clickListener_Ok = (DialogInterface dialog, int i) -> {
+                // Ok button listener
+                dialog_EULA.clickListener_Ok = (DialogInterface dialog, int i) -> {
 
-                dialog_EULA.applyPreference(); // set true
+                    dialog_EULA.applyPreference(); // set true
 
-                bEULA_accepted = true;
+                    bEULA_accepted = true;
 
-                // dialog: with default content
-                if((Define.DEFAULT_CONTENT == Define.BY_INITIAL_TABLES) && (Define.INITIAL_FOLDERS_COUNT > 0))
-                {
-                    if(Build.VERSION.SDK_INT >= 30)
-                        checkStorageManagerPermission();
-                    else if(Build.VERSION.SDK_INT >= 23)
-                        checkPermission();
-                    else {
-                        Pref.setPref_will_create_default_content(this, true);
-                        recreate();
+                    // dialog: with default content
+                    if ((Define.DEFAULT_CONTENT == Define.BY_INITIAL_TABLES) && (Define.INITIAL_FOLDERS_COUNT > 0)) {
+                        if (Build.VERSION.SDK_INT >= 30)
+                            checkStorageManagerPermission();
+                        else if (Build.VERSION.SDK_INT >= 23)
+                            checkPermission();
+                        else {
+                            Pref.setPref_will_create_default_content(this, true);
+                            recreate();
+                        }
+                        // Close dialog
+                        dialog.dismiss();
                     }
-                    // Close dialog
-                    dialog.dismiss();
-                }
-            };
+                };
 
-            // Read agreement button listener
-            dialog_EULA.clickListener_ReadAgreement = (DialogInterface dialog, int i) ->
-                dialog_EULA.show_read_agreement();
+                // Read agreement button listener
+                dialog_EULA.clickListener_ReadAgreement = (DialogInterface dialog, int i) ->
+                        dialog_EULA.show_read_agreement();
 
-            // No button listener
-            dialog_EULA.clickListener_No = (DialogInterface dialog, int which) -> {
+                // No button listener
+                dialog_EULA.clickListener_No = (DialogInterface dialog, int which) -> {
                     // Close the activity as they have declined
                     // the EULA
                     dialog.dismiss();
                     finish();
-            };
+                };
 
-            // back button listener
-            dialog_EULA.clickListener_back = (DialogInterface dialog, int which) -> {
-                // Close the activity as they have declined
-                // the EULA
-                dialog.dismiss();
+                // back button listener
+                dialog_EULA.clickListener_back = (DialogInterface dialog, int which) -> {
+                    // Close the activity as they have declined
+                    // the EULA
+                    dialog.dismiss();
+                    dialog_EULA.show();
+                };
+
                 dialog_EULA.show();
-            };
-
-            dialog_EULA.show();
+            } else
+                doCreate();
         }
-        else
-            doCreate();
+        else // Disable EULA
+        {
+            bEULA_accepted = true;
+
+            if ((Define.DEFAULT_CONTENT == Define.BY_INITIAL_TABLES) && (Define.INITIAL_FOLDERS_COUNT > 0)) {
+                if (Build.VERSION.SDK_INT >= 30)
+                    checkStorageManagerPermission();
+                else if (Build.VERSION.SDK_INT >= 23)
+                    checkPermission();
+                else {
+                    Pref.setPref_will_create_default_content(this, true);
+                    recreate();
+                }
+            }
+        }
     }
 
     // check permission dialog
@@ -240,7 +254,8 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                     Util.PERMISSIONS_REQUEST_STORAGE)) {
             Pref.setPref_will_create_default_content(this, false);
             recreate();
-        }
+        } else
+            doCreate();
     }
 
 
@@ -255,7 +270,8 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
             // this query UI
             // onActivityResult
             // MainAct / _onStart / _onResume
-        }
+        } else
+            doCreate();
     }
 
     // Do major create operation
@@ -693,10 +709,13 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
         }
         else
         {
-            if((drawer != null) && drawer.isDrawerOpen())
+            if((drawer != null) && drawer.isDrawerOpen()) {
                 drawer.closeDrawer();
-            else
+            }
+            else {
                 super.onBackPressed();
+                finish();
+            }
         }
 
     }
@@ -717,7 +736,9 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
             System.out.println("MainAct / _onBackStackChanged / init");
             onBackPressedListener = null;
 
-//            configLayoutView(); //todo Add this will make playing highlight gone after Add folder?
+
+            doCreate();//add for making sure audio playing after Do add all
+            configLayoutView(); //todo Add this will make playing highlight gone after Add folder?
 
             // new drawer
             drawer = new Drawer(this, toolbar);
@@ -749,7 +770,14 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
         if(requestCode == STORAGE_MANAGER_PERMISSION){
             if(Environment.isExternalStorageManager()){
                 Pref.setPref_will_create_default_content(this, true);
-                recreate();
+//                recreate();
+
+                // make sure Do add all
+                finish();
+                Intent intent  = new Intent(this,MainAct.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
             }
         }
     }

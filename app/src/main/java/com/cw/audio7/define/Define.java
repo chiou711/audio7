@@ -160,4 +160,6 @@ public class Define {
         return title;
     }
 
+    // enable EULA
+    public static boolean ENABLE_EULA = false;
 }

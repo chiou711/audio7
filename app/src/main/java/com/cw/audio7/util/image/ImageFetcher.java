@@ -23,7 +23,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.util.Log;
-import android.widget.Toast;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -316,7 +315,7 @@ public class ImageFetcher extends ImageResizer {
         BufferedOutputStream out = null;
         BufferedInputStream in;
 
-        if(!isValidURL(urlString))
+        if(!isValidLocalURL(urlString))
             return false;
 
         mmr = new MediaMetadataRetriever();
@@ -362,10 +361,10 @@ public class ImageFetcher extends ImageResizer {
     }
 
 
+    // cf. https://www.geeksforgeeks.org/check-if-an-url-is-valid-or-not-using-regular-expression/
     // Function to validate URL
     // using regular expression
-    public static boolean
-    isValidURL(String url)
+    public static boolean isValidURL(String url)
     {
         // Regex to check valid URL
         String regex = "((http|https)://)(www.)?"
@@ -392,4 +391,10 @@ public class ImageFetcher extends ImageResizer {
         // matched the ReGex
         return m.matches();
     }
+
+    public static boolean isValidLocalURL(String url)
+    {
+        return !url.contains("#");
+    }
+
 }
