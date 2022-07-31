@@ -220,7 +220,7 @@ public class ImageFetcher extends ImageResizer {
 //                            if (downloadUrlToStream(data,
                             //todo Select: for local
                             if (downloadAudioUrlToStream(data,
-                                    editor.newOutputStream(DISK_CACHE_INDEX))) {
+                                editor.newOutputStream(DISK_CACHE_INDEX))) {
                                 editor.commit();
                             } else {
                                 editor.abort();

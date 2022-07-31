@@ -327,8 +327,10 @@ public abstract class AsyncTask<Params, Progress, Result> {
                 } catch (InterruptedException e) {
                     android.util.Log.w(LOG_TAG, e);
                 } catch (ExecutionException e) {
-                    throw new RuntimeException("An error occurred while executing doInBackground()",
-                            e.getCause());
+                    //todo Need this?
+                    // system is halted while no bitmap is inside mp3 file
+//                    throw new RuntimeException("An error occurred while executing doInBackground()",
+//                            e.getCause());
                 } catch (CancellationException e) {
                     postResultIfNotInvoked(null);
                 }
