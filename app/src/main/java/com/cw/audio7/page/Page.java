@@ -208,10 +208,14 @@ public class Page extends Fragment implements OnStartDragListener {
     private void fillData()
     {
         //System.out.println("Page / _fillData / page_tableId = " + page_tableId);
-        if(itemAdapter == null)
-            itemAdapter = new PageAdapter(act, tabsHost,panelView,page_tableId, this);
-        // Set PageAdapter_recycler as the adapter for RecyclerView.
-        recyclerView.setAdapter(itemAdapter);
+        int focusTableId = Pref.getPref_focusView_page_tableId(act);
+        int diff = Math.abs(focusTableId - page_tableId);
+        if(diff <= 1) {
+            if (itemAdapter == null)
+                itemAdapter = new PageAdapter(act, tabsHost, panelView, page_tableId, this);
+            // Set PageAdapter_recycler as the adapter for RecyclerView.
+            recyclerView.setAdapter(itemAdapter);
+        }
     }
 
     // swap rows
