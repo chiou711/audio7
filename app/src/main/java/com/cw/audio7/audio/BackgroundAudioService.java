@@ -57,6 +57,7 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat
     public static boolean mIsCompleted;
 
     public static MediaSessionCompat mMediaSessionCompat;
+    public static BackgroundAudioService mAudioBgService;
 
     //if (ENABLE_MEDIA_CONTROLLER)
     public static MediaBrowserCompat mMediaBrowserCompat;
@@ -86,6 +87,7 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat
             initMediaSession();
 
         initNoisyReceiver();
+        mAudioBgService = this;
     }
 
     private void initNoisyReceiver() {

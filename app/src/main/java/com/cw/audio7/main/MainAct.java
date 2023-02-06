@@ -623,7 +623,18 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
     @Override
     protected void onDestroy()
     {
+        if (ENABLE_MEDIA_CONTROLLER) {
+            //hide notification //todo ??? User stops all tasks could fail to hide
+            NotificationManagerCompat.from(BackgroundAudioService.mAudioBgService).cancel(BackgroundAudioService.mNotification_id);
+
+//            BackgroundAudioService.mMediaSessionCompat.release();
+            // disconnect MediaBrowserCompat
+            if ((mMediaBrowserCompat != null) && mMediaBrowserCompat.isConnected())
+                mMediaBrowserCompat.disconnect();
+            mMediaBrowserCompat = null;
+        }
         System.out.println("MainAct / _onDestroy");
+
         if(bluetooth_device_receiver != null)
         {
             try {
@@ -637,17 +648,6 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
         // stop audio player
         if(mMediaPlayer != null)
             mAudio_manager.stopAudioPlayer();
-
-        if (ENABLE_MEDIA_CONTROLLER) {
-            // disconnect MediaBrowserCompat
-            if ((mMediaBrowserCompat != null) && mMediaBrowserCompat.isConnected())
-                mMediaBrowserCompat.disconnect();
-
-            //hide notification
-            NotificationManagerCompat.from(this).cancel(BackgroundAudioService.mNotification_id);
-
-            mMediaBrowserCompat = null;
-        }
 
         super.onDestroy();
     }
