@@ -62,6 +62,8 @@ public class Add_audio_all extends Fragment
     Folder folder;
     TabsHost tabsHost;
 
+    public Add_audio_all(){};
+
     public Add_audio_all(Drawer _drawer) {
         drawer = _drawer;
         folder = drawer.folder;
@@ -71,7 +73,7 @@ public class Add_audio_all extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.add_all, container, false);
-//        System.out.println("Add_audio_all / _onCreateView");
+        System.out.println("Add_audio_all / _onCreateView");
         act = (AppCompatActivity) getActivity();
 
         TextView titleViewText = (TextView) rootView.findViewById(R.id.add_all_message);
@@ -89,12 +91,11 @@ public class Add_audio_all extends Fragment
     Integer existing_folders_count;
     Integer folders_count;
     Integer pages_count;
-    boolean isDoing;
 
     @Override
     public void onResume() {
         super.onResume();
-//        System.out.println("Add_audio_all / _onResume");
+        System.out.println("Add_audio_all / _onResume");
     }
 
     /**
@@ -130,8 +131,8 @@ public class Add_audio_all extends Fragment
             for (String file : list) {
                 File fileDir = new File(currFilePath.concat("/").concat(file));
 
-//                System.out.println("==>  file = " + file);
-//                System.out.println("==>  fileDir = " + fileDir.getPath());
+                System.out.println("==>  file = " + file);
+                System.out.println("==>  fileDir = " + fileDir.getPath());
 
                 //Skip some directories which could cause playing hang-up issue
                 if( !fileDir.getAbsolutePath().contains("Android/data") &&
@@ -147,16 +148,16 @@ public class Add_audio_all extends Fragment
 
                         // get page name
                         String pageName = fileDir.getName();
-//                        System.out.println(" ");
-//                        System.out.println("==>  dir Name = " + pageName);
+                        System.out.println(" ");
+                        System.out.println("==>  dir Name = " + pageName);
 
                         if (fileDir.listFiles() != null) {
                             dirsFilesCount = fileDir.listFiles().length;
-//                            System.out.println("--> dirsFilesCount : " + dirsFilesCount);
+                            System.out.println("--> dirsFilesCount : " + dirsFilesCount);
                             dirs_count = getDirsCount(fileDir.listFiles());
-//                            System.out.println("--1 dirs_count : " + dirs_count);
+                            System.out.println("--1 dirs_count : " + dirs_count);
                             int files_count =  dirsFilesCount - dirs_count;
-//                            System.out.println("--2 files_count : " + files_count);
+                            System.out.println("--2 files_count : " + files_count);
                         }
 
                         // check if audio files exist
@@ -187,7 +188,7 @@ public class Add_audio_all extends Fragment
                     } // if (fileDir.isDirectory())
                     else {
                         String audioUri =  "file://".concat(fileDir.getPath());
-//                        System.out.println("----- audioUri = " + audioUri);
+                        System.out.println("----- audioUri = " + audioUri);
                         if(beSaved)
                             addNewNote(audioUri);
                     }
@@ -215,7 +216,7 @@ public class Add_audio_all extends Fragment
                 }
             }
         }
-//        System.out.println("---------------- audioFilesCount = " + audioFilesCount);
+        System.out.println("---------------- audioFilesCount = " + audioFilesCount);
         return  audioFilesCount;
     }
 
@@ -223,15 +224,16 @@ public class Add_audio_all extends Fragment
     void addNewFolder(String folderName)
     {
         DB_drawer dB_drawer = new DB_drawer(act);
-        int folders_count = dB_drawer.getFoldersCount(true);
+        int folders_count = dB_drawer.getFoldersCount(true);//@@@ ? exception
 
         // get last folder Id
         long  lastFolderId = 0;
-        for(int i=0; i<folders_count; i++)
-        {
-            if(dB_drawer.getFolderId(i,true) > lastFolderId)
-                lastFolderId = dB_drawer.getFolderId(i,true);
+        dB_drawer.open();
+        for(int i=0; i<folders_count; i++){
+            if(dB_drawer.getFolderId(i,false) > lastFolderId)
+                lastFolderId = dB_drawer.getFolderId(i,false);
         }
+        dB_drawer.close();
 
         // new last folder Id
         lastFolderId++;
@@ -241,8 +243,7 @@ public class Add_audio_all extends Fragment
 
         // get last folder table Id
         int lastFolderTableId =0;
-        for(int i=0;i<folders_count;i++)
-        {
+        for(int i=0;i<folders_count;i++){
             if(dB_drawer.getFolderTableId(i,true)>lastFolderTableId)
                 lastFolderTableId = dB_drawer.getFolderTableId(i,true);
         }
@@ -270,10 +271,14 @@ public class Add_audio_all extends Fragment
         // get focus folder position
         DB_drawer dB_drawer = new DB_drawer(act);
         int folders_count = dB_drawer.getFoldersCount(true);
+
+        dB_drawer.open();
         for (int pos = 0; pos < folders_count; pos++) {
-            if (dB_drawer.getFolderTableId(pos, true) == Pref.getPref_focusView_folder_tableId(act))
+            if (dB_drawer.getFolderTableId(pos, false) == Pref.getPref_focusView_folder_tableId(act))
                 Folder.setFocus_folderPos(pos);
         }
+        dB_drawer.close();
+
         // get current Max page table Id
         int currentMaxPageTableId = 0;
         int pagesCount = folder.getFolder_pagesCount(act, Folder.getFocus_folderPos());
@@ -284,6 +289,7 @@ public class Add_audio_all extends Fragment
             if (id > currentMaxPageTableId)
                 currentMaxPageTableId = id;
         }
+
         currentMaxPageTableId++;
 
         int newPageTableId = currentMaxPageTableId;
@@ -313,8 +319,9 @@ public class Add_audio_all extends Fragment
 
             DB_page dB = new DB_page(currPageTableId);
             // insert
-            if (!Util.isEmptyString(audioUri))
+            if (!Util.isEmptyString(audioUri)) {
                 dB.insertNote("", audioUri, "", 1);// add new note, get return row Id
+            }
     }
 
     // get list array in designated path
@@ -402,14 +409,14 @@ public class Add_audio_all extends Fragment
     /**
      *  Add all audio links to DB
      */
-    void doAddAll()
-    {
+    void doAddAlltoDB(){
+        System.out.println("Add_audio_all / doAddAlltoDB ");
+
         List<StorageUtils.StorageInfo> storageList = StorageUtils.getStorageList();
 
         existing_folders_count = Drawer.getFoldersCount(act);
         folders_count = 0;
         pages_count = 0;
-        isDoing = true;
 
         for(int i=0;i<storageList.size();i++) {
             System.out.println("-->  storageList[" + i +"] name = "+ storageList.get(i).getDisplayName());
@@ -429,8 +436,6 @@ public class Add_audio_all extends Fragment
 
             scan_and_save(currFilePath,true);
         }
-
-        isDoing = false;
     }
 
     /**
@@ -444,7 +449,7 @@ public class Add_audio_all extends Fragment
         private TextView messageText;
 
         Add_audio_all_asyncTask(AppCompatActivity _act, View _rootView) {
-//            System.out.println("Add_audio_all / Add_audio_all_asyncTask / _constructor");
+            System.out.println("Add_audio_all / Add_audio_all_asyncTask / _constructor");
             act = _act;
             rootView = _rootView;
 
@@ -467,21 +472,15 @@ public class Add_audio_all extends Fragment
 
         @Override
         protected Void doInBackground(Void... params) {
-
             // main function for adding audio links
-            doAddAll();
-
-            while (isDoing)
-            {
-                System.out.println("doing");
-            }
+            doAddAlltoDB();
             return null;
         }
 
         @Override
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
-
+            System.out.println("--- Add_audio_all / Add_audio_all_asyncTask / onPostExecute");
             progressBar.setVisibility(View.INVISIBLE);
             messageText.setText(R.string.note_add_all_title_finish);
             messageText.setVisibility(View.VISIBLE);

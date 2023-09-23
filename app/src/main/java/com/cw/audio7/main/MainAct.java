@@ -49,13 +49,12 @@ import com.cw.audio7.util.Util;
 import com.cw.audio7.util.preferences.Pref;
 import com.mobeta.android.dslv.DragSortListView;
 
+import android.Manifest;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
-import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.Build;
-import android.os.Environment;
 import android.os.RemoteException;
 import android.os.StrictMode;
 import android.content.Context;
@@ -76,6 +75,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.view.GravityCompat;
 import androidx.fragment.app.Fragment;
@@ -99,11 +99,9 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
     public FragmentManager fragmentManager;
     public FragmentManager.OnBackStackChangedListener onBackStackChangedListener;
     OnBackPressedListener onBackPressedListener;
-    public boolean bEULA_accepted;
 
     public Drawer drawer;
     public Folder folder;
-    public static final int STORAGE_MANAGER_PERMISSION = 99;
 
     // Main Act onCreate
     @Override
@@ -174,74 +172,38 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
         */
         UtilImage.getDefaultScaleInPercent(MainAct.this);
 
-        if(Define.ENABLE_EULA) {
-            // EULA
-            Dialog_EULA dialog_EULA = new Dialog_EULA(this);
-            bEULA_accepted = dialog_EULA.isEulaAlreadyAccepted();
+        if ((Define.DEFAULT_CONTENT == Define.BY_INITIAL_TABLES) && (Define.INITIAL_FOLDERS_COUNT > 0)) {
+            if (Build.VERSION.SDK_INT >= 30) {
+                //@@@
+                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    //@@@
+                    // for API 33
+                    if(ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_AUDIO)
+                            != PackageManager.PERMISSION_GRANTED) {
+                        System.out.println("MainAct / requestPermissions 1");
 
-            // Show dialog of EULA
-            if (!bEULA_accepted) {
-                //deleteDatabase(Define.DB_FILE_NAME);
-
-                // Ok button listener
-                dialog_EULA.clickListener_Ok = (DialogInterface dialog, int i) -> {
-
-                    dialog_EULA.applyPreference(); // set true
-
-                    bEULA_accepted = true;
-
-                    // dialog: with default content
-                    if ((Define.DEFAULT_CONTENT == Define.BY_INITIAL_TABLES) && (Define.INITIAL_FOLDERS_COUNT > 0)) {
-                        if (Build.VERSION.SDK_INT >= 30)
-                            checkStorageManagerPermission();
-                        else if (Build.VERSION.SDK_INT >= 23)
-                            checkPermission();
-                        else {
-                            Pref.setPref_will_create_default_content(this, true);
-                            recreate();
-                        }
-                        // Close dialog
-                        dialog.dismiss();
+                        ActivityCompat.requestPermissions(this,
+                                new String[]{Manifest.permission.READ_MEDIA_AUDIO},
+                                Util.PERMISSIONS_REQUEST_STORAGE);
                     }
-                };
-
-                // Read agreement button listener
-                dialog_EULA.clickListener_ReadAgreement = (DialogInterface dialog, int i) ->
-                        dialog_EULA.show_read_agreement();
-
-                // No button listener
-                dialog_EULA.clickListener_No = (DialogInterface dialog, int which) -> {
-                    // Close the activity as they have declined
-                    // the EULA
-                    dialog.dismiss();
-                    finish();
-                };
-
-                // back button listener
-                dialog_EULA.clickListener_back = (DialogInterface dialog, int which) -> {
-                    // Close the activity as they have declined
-                    // the EULA
-                    dialog.dismiss();
-                    dialog_EULA.show();
-                };
-
-                dialog_EULA.show();
-            } else
-                doCreate();
-        }
-        else // Disable EULA
-        {
-            bEULA_accepted = true;
-
-            if ((Define.DEFAULT_CONTENT == Define.BY_INITIAL_TABLES) && (Define.INITIAL_FOLDERS_COUNT > 0)) {
-                if (Build.VERSION.SDK_INT >= 30)
-                    checkStorageManagerPermission();
-                else if (Build.VERSION.SDK_INT >= 23)
-                    checkPermission();
-                else {
-                    Pref.setPref_will_create_default_content(this, true);
-                    recreate();
+                } else {
+                    System.out.println("MainAct / requestPermissions 2");
+                    // for API 30,31,32
+                    if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+                            != PackageManager.PERMISSION_GRANTED) {
+                        ActivityCompat.requestPermissions(this,
+                                new String[]{
+                                        Manifest.permission.READ_EXTERNAL_STORAGE},
+                                Util.PERMISSIONS_REQUEST_STORAGE);
+                    }
                 }
+            }
+            else if (Build.VERSION.SDK_INT >= 23) {
+                checkPermission(); //@@@ ? 1
+            }
+            else {
+                Pref.setPref_will_create_default_content(this, true);
+                recreate();
             }
         }
     }
@@ -258,21 +220,6 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
             doCreate();
     }
 
-
-    public void checkStorageManagerPermission() {
-        if (!Environment.isExternalStorageManager()) {
-            Intent intent = new Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION);
-//            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); //set this will go to _onActivityResult soon
-            startActivityForResult(intent,STORAGE_MANAGER_PERMISSION);
-
-            // flow of this query:
-            // MainAct / _onPause / _onStop
-            // this query UI
-            // onActivityResult
-            // MainAct / _onStart / _onResume
-        } else
-            doCreate();
-    }
 
     // Do major create operation
     void doCreate()
@@ -301,6 +248,12 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
             this.registerReceiver(bluetooth_device_receiver, filter);
         }
 
+        BackgroundAudioService.dbHelper = new DatabaseHelper(this);
+
+        configLayoutView(); //createAssetsFile inside
+
+        if (drawer != null)
+            drawer.drawerToggle.syncState();
     }
 
 
@@ -370,19 +323,18 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
 
     // callback of granted permission
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, int[] grantResults)
-    {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         System.out.println("MainAct / _onRequestPermissionsResult / grantResults.length =" + grantResults.length);
 
-        if ( (grantResults.length > 0) &&
-             ( (grantResults[0] == PackageManager.PERMISSION_GRANTED) &&
-               (grantResults[1] == PackageManager.PERMISSION_GRANTED)   ) )
-        {
-            switch (requestCode)
-            {
+        if ((grantResults.length > 0) &&
+                ((grantResults[0] == PackageManager.PERMISSION_GRANTED) /*||
+                 (grantResults[1] == PackageManager.PERMISSION_GRANTED) */   ) ) {
+            switch (requestCode) {
                 case Util.PERMISSIONS_REQUEST_STORAGE:
+                    System.out.println("MainAct / _onRequestPermissionsResult /1");
                     Pref.setPref_will_create_default_content(this, true);
-                    recreate();
+
                     break;
 
                 case Util.PERMISSIONS_REQUEST_STORAGE_ADD_NEW:
@@ -397,20 +349,13 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                     isStorageRequestedExport = true;
                     break;
             }
-        }
-        else
-        {
+        } else {
             switch (requestCode) {
                 case Util.PERMISSIONS_REQUEST_STORAGE_ADD_NEW:
-                    if((grantResults[0] == PackageManager.PERMISSION_DENIED) ||
-                       (grantResults[1] == PackageManager.PERMISSION_DENIED)    ) {
-                        Toast.makeText(this,R.string.toast_no_SD_permission,Toast.LENGTH_LONG).show();
+                    if ((grantResults[0] == PackageManager.PERMISSION_DENIED)/* ||
+                        (grantResults[1] == PackageManager.PERMISSION_DENIED)*/) {
+                        Toast.makeText(this, R.string.toast_no_SD_permission, Toast.LENGTH_LONG).show();
                     }
-                    break;
-
-                case Util.PERMISSIONS_REQUEST_STORAGE:
-                    Pref.setPref_will_create_default_content(this, true); //also create as granted
-                    recreate();
                     break;
             }
         }
@@ -510,61 +455,19 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
         onBackStackChangedListener = this;
         fragmentManager.addOnBackStackChangedListener(onBackStackChangedListener);
 
-        // Sync the toggle state after onRestoreInstanceState has occurred.
-        if(bEULA_accepted) {
-
-            // Will create default contents: by assets or by initial tables
-//        if(Pref.getPref_will_create_default_content(this))
-//        {
-//            if ((Define.DEFAULT_CONTENT == Define.BY_INITIAL_TABLES) && (Define.INITIAL_FOLDERS_COUNT > 0))
-//                createDefaultContent_byInitialTables();
-//        }
-
-            // check DB
-//            final boolean ENABLE_DB_CHECK = false;//true;//false
-//            if (ENABLE_DB_CHECK) {
-//                // list all folder tables
-//                FolderUi.listAllFolderTables(mAct);
-//
-//                // recover focus
-//                DB_folder.setFocusFolder_tableId(Pref.getPref_focusView_folder_tableId(this));
-//                DB_page.setFocusPage_tableId(Pref.getPref_focusView_page_tableId(this));
-//            }//if(ENABLE_DB_CHECK)
-
-            BackgroundAudioService.dbHelper = new DatabaseHelper(this);
-
-            if(bEULA_accepted)
-                configLayoutView(); //createAssetsFile inside
-
-            if(drawer != null)
-                drawer.drawerToggle.syncState();
-
-        }
-    }
-
-    @Override
-    public void onAttachedToWindow() {
-        super.onAttachedToWindow();
-
-        System.out.println("MainAct / _onAttachedToWindow");
-
-        // do Add all
-        if(Pref.getPref_will_create_default_content(this)) {
-
-            Objects.requireNonNull(getSupportActionBar()).hide();
-
-            Add_audio_all add_audio_all = new Add_audio_all(drawer); // todo Check more
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.setCustomAnimations(R.anim.fragment_slide_in_left, R.anim.fragment_slide_out_left, R.anim.fragment_slide_in_right, R.anim.fragment_slide_out_right);
-            transaction.add(R.id.content_frame, add_audio_all, "add_audio").addToBackStack(null).commit();
-        }
-
     }
 
     @Override
     protected void onResumeFragments() {
-//        System.out.println("MainAct / _onResumeFragments ");
+        System.out.println("MainAct / _onResumeFragments ");
         super.onResumeFragments();
+
+        if(Pref.getPref_will_create_default_content(this)) {
+            doAddAll();
+            return; // add for showing dialog
+        }
+        else
+            doCreate();
 
         if( isStorageRequestedImport ||
             isStorageRequestedExport   )
@@ -601,10 +504,8 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
         }
         // fix: home button failed after power off/on in Config fragment
         else {
-            if (bEULA_accepted) {
-                if(fragmentManager != null)
-                    fragmentManager.popBackStack();
-            }
+            if(fragmentManager != null)
+                fragmentManager.popBackStack();
         }
     }
 
@@ -625,9 +526,9 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
     {
         if (ENABLE_MEDIA_CONTROLLER) {
             //hide notification //todo ??? User stops all tasks could fail to hide
-            NotificationManagerCompat.from(BackgroundAudioService.mAudioBgService).cancel(BackgroundAudioService.mNotification_id);
+            if(BackgroundAudioService.mAudioBgService!=null)
+                NotificationManagerCompat.from(BackgroundAudioService.mAudioBgService).cancel(BackgroundAudioService.mNotification_id);
 
-//            BackgroundAudioService.mMediaSessionCompat.release();
             // disconnect MediaBrowserCompat
             if ((mMediaBrowserCompat != null) && mMediaBrowserCompat.isConnected())
                 mMediaBrowserCompat.disconnect();
@@ -738,7 +639,6 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
 
 
             doCreate();//add for making sure audio playing after Do add all
-            configLayoutView(); //todo Add this will make playing highlight gone after Add folder?
 
             // new drawer
             drawer = new Drawer(this, toolbar);
@@ -766,20 +666,6 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
 
         if(requestCode == NoteAct.VIEW_CURRENT_NOTE)
             System.out.println("MainAct / _onActivityResult / NoteAct.VIEW_CURRENT_NOTE");
-
-        if(requestCode == STORAGE_MANAGER_PERMISSION){
-            if(Environment.isExternalStorageManager()){
-                Pref.setPref_will_create_default_content(this, true);
-//                recreate();
-
-                // make sure Do add all
-                finish();
-                Intent intent  = new Intent(this,MainAct.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
-            }
-        }
     }
 
     /*=======================================================
@@ -798,7 +684,6 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
 
         if( (drawer == null) ||
             (drawer.drawerLayout == null) ||
-            (!bEULA_accepted) ||
             (fragmentManager.getBackStackEntryCount() != 0) ) {
             return false;
         }
@@ -810,14 +695,12 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
          * Folder group
          */
         // If the navigation drawer is open, hide action items related to the content view
-        if(drawer.isDrawerOpen())
-        {
+        if(drawer.isDrawerOpen()){
             // for landscape: the layout file contains folder menu
             if(Util.isLandscapeOrientation(this)) {
                 this.menu.setGroupVisible(R.id.group_folders, true);
                 // set icon for folder draggable: landscape
-                if(drawer.mPref_show_note_attribute != null)
-                {
+                if(drawer.mPref_show_note_attribute != null){
                     if (Objects.requireNonNull(drawer.mPref_show_note_attribute.getString("KEY_ENABLE_FOLDER_DRAGGABLE", "no"))
                             .equalsIgnoreCase("yes")) {
                         this.menu.findItem(R.id.ENABLE_FOLDER_DRAG_AND_DROP).setIcon(R.drawable.btn_check_on_holo_light);
@@ -892,7 +775,8 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                 // play icon
                 boolean playIconIsVisible= false;
                 if( ((pgsCnt >0) && (notesCnt>0)) ||
-                    (mAudio_manager.getPlayerState() != mAudio_manager.PLAYER_AT_STOP) ) {
+                    ((mAudio_manager!= null ) &&
+                     (mAudio_manager.getPlayerState() != mAudio_manager.PLAYER_AT_STOP)) ) {
                     playIconIsVisible = true;
                 }
                 this.menu.findItem(R.id.PLAY).setVisible( playIconIsVisible );
@@ -921,7 +805,8 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
     @Override
     public boolean onCreateOptionsMenu(android.view.Menu menu)
     {
-//		System.out.println("MainAct / _onCreateOptionsMenu");
+		System.out.println("MainAct / _onCreateOptionsMenu");
+
         this.menu = menu;
 
         // inflate menu
@@ -1000,9 +885,9 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
-        //System.out.println("MainAct / _onOptionsItemSelected");
+    public boolean onOptionsItemSelected(MenuItem item){
+        System.out.println("MainAct / _onOptionsItemSelected");
+
         setMenuUiState(item.getItemId());
         DB_drawer dB_drawer = new DB_drawer(this);
         DB_folder dB_folder = new DB_folder(Pref.getPref_focusView_folder_tableId(this));
@@ -1011,27 +896,21 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
         // Go back: check if Configure fragment now
-        if( (item.getItemId() == android.R.id.home ))
-        {
-
+        if( (item.getItemId() == android.R.id.home )){
             System.out.println("MainAct / _onOptionsItemSelected / Home key of Config is pressed / mFragmentManager.getBackStackEntryCount() =" +
             fragmentManager.getBackStackEntryCount());
 
-            if(fragmentManager.getBackStackEntryCount() > 0 )
-            {
+            if(fragmentManager.getBackStackEntryCount() > 0 ){
                 int foldersCnt = dB_drawer.getFoldersCount(true);
                 System.out.println("MainAct / _onOptionsItemSelected / Home key of Config is pressed / foldersCnt = " + foldersCnt);
 
-                if(foldersCnt == 0)
-                {
+                if(foldersCnt == 0){
                     finish();
                     Intent intent  = new Intent(this,MainAct.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
-                }
-                else
-                {
+                }else{
                     fragmentManager.popBackStack();
 
                     initActionBar();
@@ -1047,8 +926,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
 
         // The action bar home/up action should open or close the drawer.
         // ActionBarDrawerToggle will take care of this.
-        if (drawer.drawerToggle.onOptionsItemSelected(item))
-        {
+        if (drawer.drawerToggle.onOptionsItemSelected(item)){
             System.out.println("MainAct / _onOptionsItemSelected / drawerToggle.onOptionsItemSelected(item) == true ");
             return true;
         }
@@ -1108,13 +986,40 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
 
             case MenuId.ADD_NEW_NOTE:
                 if(Build.VERSION.SDK_INT >= 30) {
-                    checkStorageManagerPermission();
-                    if(Environment.isExternalStorageManager())
-                        addNewNote();
+                    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        // for API 33
+                        if(ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_AUDIO)
+                                != PackageManager.PERMISSION_GRANTED) {
+                            System.out.println("MainAct / requestPermissions 3");
+
+                            ActivityCompat.requestPermissions(this,
+                                    new String[]{Manifest.permission.READ_MEDIA_AUDIO},
+                                    Util.PERMISSIONS_REQUEST_STORAGE_ADD_NEW);
+                        } else
+                            addNewNote();
+                    } else {
+                        System.out.println("MainAct / requestPermissions 4");
+
+                        // for API 30,31,32
+                        if (ActivityCompat.checkSelfPermission(this,
+                                Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                            System.out.println("MainAct / requestPermissions 4-1");
+
+                            // will not show dialog if user rejected when first time asking
+                            ActivityCompat.requestPermissions(this,
+                                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                                    Util.PERMISSIONS_REQUEST_STORAGE_ADD_NEW);
+                        } else {
+                            System.out.println("MainAct / requestPermissions 4-2");
+                            addNewNote();
+                        }
+                    }
+                } else if (Build.VERSION.SDK_INT >= 23) {
+                        checkPermission();//@@@ ?2
                 }
-                else if( (Build.VERSION.SDK_INT < 23) ||
+                else if( (Build.VERSION.SDK_INT < 23) /*||
                          !Util.willRequest_permission_WRITE_EXTERNAL_STORAGE(this,
-                              Util.PERMISSIONS_REQUEST_STORAGE_ADD_NEW) ) {
+                              Util.PERMISSIONS_REQUEST_STORAGE_ADD_NEW)*/ ) {
                         addNewNote();
                 }
                 return true;
@@ -1436,6 +1341,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
 
         // new folder
         folder = drawer.folder;
+
         folder.openFolder(drawer);
     }
 
@@ -1448,7 +1354,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
 
             System.out.println("MainAct / MediaBrowserCompat.Callback / _onConnected");
             try {
-                if(mMediaBrowserCompat != null) {
+                if(mMediaBrowserCompat != null && mMediaBrowserCompat.isConnected()) {
                     mMediaControllerCompat = new MediaControllerCompat(MainAct.this, mMediaBrowserCompat.getSessionToken());
                     mMediaControllerCompat.registerCallback(mMediaControllerCompatCallback);
                     MediaControllerCompat.setMediaController(MainAct.this, mMediaControllerCompat);
@@ -1468,5 +1374,19 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
 //            System.out.println("MainAct / _MediaControllerCompat.Callback / _onPlaybackStateChanged / state = " + state);
         }
     };
+
+    // do Add all
+    void doAddAll(){
+//        if(Pref.getPref_will_create_default_content(this)) {
+
+            Objects.requireNonNull(getSupportActionBar()).hide();
+
+            //@@@ temp mark
+            Add_audio_all add_audio_all = new Add_audio_all(drawer); // todo Check more
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.setCustomAnimations(R.anim.fragment_slide_in_left, R.anim.fragment_slide_out_left, R.anim.fragment_slide_in_right, R.anim.fragment_slide_out_right);
+            transaction.replace(R.id.content_frame, add_audio_all, "add_audio").addToBackStack(null).commit();
+//        }
+    }
 
 }

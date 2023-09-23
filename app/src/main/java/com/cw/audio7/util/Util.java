@@ -1047,7 +1047,6 @@ public class Util
 	}
 	
 
-    @TargetApi(Build.VERSION_CODES.KITKAT)
 	public static Intent chooseMediaIntentByType(Activity act,String type)
     {
 	    // set multiple actions in Intent 
@@ -1060,39 +1059,35 @@ public class Util
 		List<ResolveInfo> resInfo;
 		List<LabeledIntent> intentList = new ArrayList<>();
 
-        // SAF support starts from Kitkat
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
+		// BEGIN_INCLUDE (use_open_document_intent)
+        // ACTION_OPEN_DOCUMENT is the intent to choose a file via the system's file browser.
+        intentSaf = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+
+        // Filter to only show results that can be "opened", such as a file (as opposed to a list
+        // of contacts or time zones)
+        intentSaf.addCategory(Intent.CATEGORY_OPENABLE);
+        intentSaf.setType(type);
+
+        // get extra SAF intents
+        resInfoSaf = pkgMgr.queryIntentActivities(intentSaf, 0);
+
+        for (int i = 0; i < resInfoSaf.size(); i++)
         {
-			// BEGIN_INCLUDE (use_open_document_intent)
-	        // ACTION_OPEN_DOCUMENT is the intent to choose a file via the system's file browser.
-        	intentSaf = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+            // Extract the label, append it, and repackage it in a LabeledIntent
+            ResolveInfo ri = resInfoSaf.get(i);
+            String packageName = ri.activityInfo.packageName;
+			intentSaf.setComponent(new ComponentName(packageName, ri.activityInfo.name));
 
-	        // Filter to only show results that can be "opened", such as a file (as opposed to a list
-	        // of contacts or time zones)
-        	intentSaf.addCategory(Intent.CATEGORY_OPENABLE);
-        	intentSaf.setType(type);
-
-        	// get extra SAF intents
-	        resInfoSaf = pkgMgr.queryIntentActivities(intentSaf, 0);
-
-	        for (int i = 0; i < resInfoSaf.size(); i++)
-	        {
-	            // Extract the label, append it, and repackage it in a LabeledIntent
-	            ResolveInfo ri = resInfoSaf.get(i);
-	            String packageName = ri.activityInfo.packageName;
-				intentSaf.setComponent(new ComponentName(packageName, ri.activityInfo.name));
-
-				// add span (CLOUD)
-		        Spannable saf_span = new SpannableString(" (CLOUD)");
-		        saf_span.setSpan(new ForegroundColorSpan(android.graphics.Color.RED), 0, saf_span.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-		        CharSequence newSafLabel = TextUtils.concat(ri.loadLabel(pkgMgr), saf_span.toString());
+			// add span (CLOUD)
+	        Spannable saf_span = new SpannableString(" (CLOUD)");
+	        saf_span.setSpan(new ForegroundColorSpan(android.graphics.Color.RED), 0, saf_span.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+	        CharSequence newSafLabel = TextUtils.concat(ri.loadLabel(pkgMgr), saf_span.toString());
 //	        	System.out.println("Util / _chooseMediaIntentByType / SAF label " + i + " = " + newSafLabel );
 //				extraIntentsSaf[i] = new LabeledIntent(intentSaf, packageName, newSafLabel, ri.icon);
 
-				intentList.add(new LabeledIntent(intentSaf,packageName,newSafLabel,ri.icon));
-	        }
+			intentList.add(new LabeledIntent(intentSaf,packageName,newSafLabel,ri.icon));
         }
-        
+
         // get extra non-SAF intents
 		intent = new Intent(Intent.ACTION_GET_CONTENT);
 		intent.setType(type);
@@ -1104,10 +1099,8 @@ public class Util
 			intentList.add(new LabeledIntent(intent,packageName,ri.loadLabel(pkgMgr),ri.icon));
         }
 
-
         // remove duplicated item
-        for(int i=0;i<intentList.size();i++)
-		{
+        for(int i=0;i<intentList.size();i++){
 			ComponentName name1 = intentList.get(i).getComponent();
 //			System.out.println("---> intentList.size() = " + intentList.size());
 //			System.out.println("---> name1 = " + name1);
@@ -1125,8 +1118,7 @@ public class Util
 		}
 
 		// check
-		for(int i=0; i<intentList.size() ; i++)
-		{
+		for(int i=0; i<intentList.size() ; i++)	{
 			System.out.println("--> intent list ("+ i +")" + intentList.get(i).toString());
 		}
         
@@ -1136,11 +1128,16 @@ public class Util
 		 if(type.startsWith("audio"))
         	charSeq = act.getResources().getText(R.string.add_new_chooser_audio);
 
-		openInChooser = Intent.createChooser(intentList.remove(intentList.size()-1), charSeq);//remove duplicated item
-		LabeledIntent[] extraIntentsFinal = intentList.toArray(new LabeledIntent[intentList.size()]);
-        openInChooser.putExtra(Intent.EXTRA_INITIAL_INTENTS, extraIntentsFinal);
+		 try {
+			 openInChooser = Intent.createChooser(intentList.remove(intentList.size() - 1), charSeq);//remove duplicated item
+			 LabeledIntent[] extraIntentsFinal = intentList.toArray(new LabeledIntent[intentList.size()]);
+			 openInChooser.putExtra(Intent.EXTRA_INITIAL_INTENTS, extraIntentsFinal);
+			 return openInChooser;
+		 }catch (Exception e){
+			 e.printStackTrace();
+			 return null;
+		 }
                 	
-        return openInChooser;
     }
 
     public static void setScrollThumb(Context context, View view)
@@ -1296,7 +1293,7 @@ public class Util
 			// request permission
 			ActivityCompat.requestPermissions(act,
 					new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
-										Manifest.permission.READ_EXTERNAL_STORAGE},
+								 Manifest.permission.READ_EXTERNAL_STORAGE},
 					requestCode);
 			return true;
 		}

@@ -414,14 +414,20 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat
         if(enDbgMsg)
             System.out.println("BackgroundAudioService / _initMediaSession");
 
+        Intent mediaButtonIntent = new Intent(Intent.ACTION_MEDIA_BUTTON);
+        mediaButtonIntent.setClass(this, MediaButtonReceiver.class);
+
+        // Add for Strongly consider using FLAG_IMMUTABLE
+        final int flags =  Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ?
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE : PendingIntent.FLAG_UPDATE_CURRENT;
+
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, mediaButtonIntent, flags);
+
         ComponentName mediaButtonReceiver = new ComponentName(getApplicationContext(), MediaButtonReceiver.class);
-        mMediaSessionCompat = new MediaSessionCompat(getApplicationContext(), "Tag", mediaButtonReceiver, null);
+        mMediaSessionCompat = new MediaSessionCompat(getApplicationContext(), "Tag", mediaButtonReceiver, pendingIntent);
         mMediaSessionCompat.setCallback(mMediaSessionCallback);
         mMediaSessionCompat.setFlags( MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS | MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS );
 
-        Intent mediaButtonIntent = new Intent(Intent.ACTION_MEDIA_BUTTON);
-        mediaButtonIntent.setClass(this, MediaButtonReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, mediaButtonIntent, 0);
         mMediaSessionCompat.setMediaButtonReceiver(pendingIntent);
 
         setSessionToken(mMediaSessionCompat.getSessionToken());
@@ -510,15 +516,33 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat
 
         builder = MediaStyleHelper.from(this, mMediaSessionCompat);
 
+        int flags =  Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ?
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE : PendingIntent.FLAG_UPDATE_CURRENT;
+
+        Intent mediaButtonIntent = new Intent(Intent.ACTION_MEDIA_BUTTON);
+        mediaButtonIntent.setClass(this, MediaButtonReceiver.class);
+
+        // Previous button
+        mediaButtonIntent.addFlags((int)PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, mediaButtonIntent, flags);
         builder.addAction(new NotificationCompat.Action(android.R.drawable.ic_media_previous,
                 "Previous",
-                MediaButtonReceiver.buildMediaButtonPendingIntent(this, PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS)));
-        builder.addAction(new NotificationCompat.Action(android.R.drawable.ic_media_pause,
+                pendingIntent));
+
+        // Play/Pause button
+        mediaButtonIntent.addFlags((int)PlaybackStateCompat.ACTION_PLAY_PAUSE);
+        pendingIntent = PendingIntent.getBroadcast(this, 0, mediaButtonIntent, flags);
+        builder.addAction(new NotificationCompat.Action(android.R.drawable.ic_media_previous,
                 "Pause",
-                MediaButtonReceiver.buildMediaButtonPendingIntent(this,PlaybackStateCompat.ACTION_PLAY_PAUSE)));
-        builder.addAction(new NotificationCompat.Action(android.R.drawable.ic_media_next,
+                pendingIntent));
+
+        // Next button
+        mediaButtonIntent.addFlags((int)PlaybackStateCompat.ACTION_SKIP_TO_NEXT);
+        pendingIntent = PendingIntent.getBroadcast(this, 0, mediaButtonIntent, flags);
+        builder.addAction(new NotificationCompat.Action(android.R.drawable.ic_media_previous,
                 "Next",
-                MediaButtonReceiver.buildMediaButtonPendingIntent(this, PlaybackStateCompat.ACTION_SKIP_TO_NEXT)));
+                pendingIntent));
+
         builder.setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
                 .setShowActionsInCompactView(1)
                 .setMediaSession(mMediaSessionCompat.getSessionToken()));
@@ -538,15 +562,33 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat
 
         builder = MediaStyleHelper.from(this, mMediaSessionCompat);
 
+        Intent mediaButtonIntent = new Intent(Intent.ACTION_MEDIA_BUTTON);
+        mediaButtonIntent.setClass(this, MediaButtonReceiver.class);
+        int flags =  Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ?
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE : PendingIntent.FLAG_UPDATE_CURRENT;
+
+        // Previous button
+        mediaButtonIntent.addFlags((int)PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, mediaButtonIntent, flags);
         builder.addAction(new NotificationCompat.Action(android.R.drawable.ic_media_previous,
                 "Previous",
-                MediaButtonReceiver.buildMediaButtonPendingIntent(this, PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS)));
-        builder.addAction(new NotificationCompat.Action(android.R.drawable.ic_media_play,
+                pendingIntent));
+
+
+        // Play/Pause button
+        mediaButtonIntent.addFlags((int)PlaybackStateCompat.ACTION_PLAY_PAUSE);
+        pendingIntent = PendingIntent.getBroadcast(this, 0, mediaButtonIntent, flags);
+        builder.addAction(new NotificationCompat.Action(android.R.drawable.ic_media_previous,
                 "Play",
-                MediaButtonReceiver.buildMediaButtonPendingIntent(this, PlaybackStateCompat.ACTION_PLAY_PAUSE)));
-        builder.addAction(new NotificationCompat.Action(android.R.drawable.ic_media_next,
+                pendingIntent));
+
+        // Next button
+        mediaButtonIntent.addFlags((int)PlaybackStateCompat.ACTION_SKIP_TO_NEXT);
+        pendingIntent = PendingIntent.getBroadcast(this, 0, mediaButtonIntent, flags);
+        builder.addAction(new NotificationCompat.Action(android.R.drawable.ic_media_previous,
                 "Next",
-                MediaButtonReceiver.buildMediaButtonPendingIntent(this, PlaybackStateCompat.ACTION_SKIP_TO_NEXT)));
+                pendingIntent));
+
         builder.setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
                 .setShowActionsInCompactView(1)
                 .setMediaSession(mMediaSessionCompat.getSessionToken()));

@@ -391,7 +391,7 @@ public class Audio_manager
 			return false;
 
 		String prefix = "Audio_manager / _isOnAudioPlayingPage / ";
-		boolean showDbgMsg = false;
+		boolean showDbgMsg = true;
 
 		boolean isSameTabPos = (TabsHost.getFocus_tabPos() == MainAct.mPlaying_pagePos);
 		if(showDbgMsg)
@@ -409,7 +409,10 @@ public class Audio_manager
 		if(showDbgMsg)
 			System.out.println(prefix + "isPlayingOnCurrPageTableId = " + isPlayingOnCurrPageTableId);
 
-		boolean isCurrRecycleViewExist = (folder.tabsHost.getCurrentPage().recyclerView != null);
+		//@@@ why false?
+//		boolean isCurrRecycleViewExist = (folder.tabsHost.getCurrentPage().recyclerView != null);
+		boolean isCurrRecycleViewExist = (folder.tabsHost.getCurrentPage() != null);
+
 		if(showDbgMsg)
 			System.out.println(prefix + "isCurrRecycleViewExist  = " + isCurrRecycleViewExist);
 

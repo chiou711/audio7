@@ -17,6 +17,7 @@
 package com.cw.audio7.note_add;
 
 import java.io.File;
+import java.util.Objects;
 
 import com.cw.audio7.R;
 import com.cw.audio7.db.DB_page;
@@ -297,8 +298,15 @@ public class Note_addAudio extends AppCompatActivity {
     void chooseAudioMedia()
     {
 	    enSaveDb = true;
-        startActivityForResult(Util.chooseMediaIntentByType(Note_addAudio.this,"audio/*"),
-        					   Util.CHOOSER_SET_AUDIO);        
+		try {
+			startActivityForResult(Util.chooseMediaIntentByType(Note_addAudio.this, "audio/*"),
+					Util.CHOOSER_SET_AUDIO);
+		}catch(Exception e) {
+			e.printStackTrace();
+			Toast toast = Toast.makeText(this, R.string.app_not_found, Toast.LENGTH_SHORT);
+			toast.show();
+			finish();
+        }
     }	
 	
 

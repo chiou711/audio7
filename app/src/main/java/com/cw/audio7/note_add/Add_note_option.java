@@ -79,7 +79,7 @@ public class Add_note_option {
      */
     static List<Add_note_option> addNoteList;
 
-    private final static int ID_NEW_RECORDING = 3;
+//    private final static int ID_NEW_RECORDING = 3;
     private final static int ID_NEW_AUDIO = 4;
     private final static int ID_NEW_AUDIO_1by1 = 5;
     private final static int ID_NEW_AUDIO_byFolder = 6;
@@ -120,10 +120,10 @@ public class Add_note_option {
                     R.string.note_ready_audio_1by1));
 
         // recording
-        if (pagesCount > 0)
-            addNoteList.add(new Add_note_option(ID_NEW_RECORDING,
-                    R.drawable.ic_mic,
-                    R.string.note_recording));
+//        if (pagesCount > 0)
+//            addNoteList.add(new Add_note_option(ID_NEW_RECORDING,
+//                    R.drawable.ic_mic,
+//                    R.string.note_recording));
 
         // audio app
         if (pagesCount > 0)
@@ -181,21 +181,21 @@ public class Add_note_option {
 
         switch (option) {
 
-            case ID_NEW_RECORDING:
-            {
-                Intent intent = new Intent(act, Add_recording_act.class);
-                if( bTop && !bDirectory )
-                    intent.putExtra("EXTRA_ADD_EXIST", "single_to_top");
-                else if(!bTop && !bDirectory)
-                    intent.putExtra("EXTRA_ADD_EXIST", "single_to_bottom");
-                else if(bTop && bDirectory)
-                    intent.putExtra("EXTRA_ADD_EXIST", "directory_to_top");
-                else if(!bTop && bDirectory)
-                    intent.putExtra("EXTRA_ADD_EXIST", "directory_to_bottom");
-
-                act.startActivity(intent);
-            }
-            break;
+//            case ID_NEW_RECORDING:
+//            {
+//                Intent intent = new Intent(act, Add_recording_act.class);
+//                if( bTop && !bDirectory )
+//                    intent.putExtra("EXTRA_ADD_EXIST", "single_to_top");
+//                else if(!bTop && !bDirectory)
+//                    intent.putExtra("EXTRA_ADD_EXIST", "single_to_bottom");
+//                else if(bTop && bDirectory)
+//                    intent.putExtra("EXTRA_ADD_EXIST", "directory_to_top");
+//                else if(!bTop && bDirectory)
+//                    intent.putExtra("EXTRA_ADD_EXIST", "directory_to_bottom");
+//
+//                act.startActivity(intent);
+//            }
+//            break;
 
             case ID_NEW_AUDIO:
             {

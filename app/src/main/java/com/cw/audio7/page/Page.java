@@ -53,9 +53,9 @@ public class Page extends Fragment implements OnStartDragListener {
 
     public RecyclerView recyclerView;
     RecyclerView.LayoutManager layoutMgr;
+    int page_pos;
     public static int mCurrPlayPosition;
     public static int mHighlightPosition;
-    public SeekBar seekBarProgress;
 
     public PageAdapter itemAdapter;
     private ItemTouchHelper itemTouchHelper;
@@ -100,6 +100,14 @@ public class Page extends Fragment implements OnStartDragListener {
         Bundle args = getArguments();
         page_tableId = args.getInt("page_table_id");
 //        System.out.println("Page / _onCreateView / page_tableId = " + page_tableId);
+
+        int focusTableId = Pref.getPref_focusView_page_tableId(act);
+        int diff = Math.abs(focusTableId - page_tableId);
+        if(diff > 1) {
+            System.out.println("Page / _onCreateView / return");
+            return null;
+        } else
+            System.out.println("Page / _onCreateView / go on");
 
         View rootView = inflater.inflate(R.layout.page_view, container, false);
 
@@ -205,17 +213,12 @@ public class Page extends Fragment implements OnStartDragListener {
         mImageFetcher.closeCache();
     }
 
-    private void fillData()
-    {
-        //System.out.println("Page / _fillData / page_tableId = " + page_tableId);
-        int focusTableId = Pref.getPref_focusView_page_tableId(act);
-        int diff = Math.abs(focusTableId - page_tableId);
-        if(diff <= 1) {
-            if (itemAdapter == null)
-                itemAdapter = new PageAdapter(act, tabsHost, panelView, page_tableId, this);
-            // Set PageAdapter_recycler as the adapter for RecyclerView.
-            recyclerView.setAdapter(itemAdapter);
-        }
+    private void fillData(){
+        System.out.println("Page / _fillData / page_tableId = " + page_tableId);
+        System.out.println("Page / _fillData / page_pos = " + page_pos);
+        itemAdapter = new PageAdapter(act, tabsHost, panelView, page_tableId, this);
+        // Set PageAdapter_recycler as the adapter for RecyclerView.
+        recyclerView.setAdapter(itemAdapter);
     }
 
     // swap rows

@@ -197,13 +197,12 @@ public class DeleteFolders extends Fragment {
             dbDrawer.close();
         }
 
-        dbDrawer.open();
         for(int i = 0; i< list_selFolder.count; i++)
         {
             if(list_selFolder.mCheckedArr.get(i))
             {
                 // get folder table id
-                int folderTableId = dbDrawer.getFolderTableId(i,false);
+                int folderTableId = dbDrawer.getFolderTableId(i,true);
 
                 // remove focus view Key for page table Id
                 Pref.removePref_focusView_page_tableId_key(act, folderTableId);
@@ -217,19 +216,18 @@ public class DeleteFolders extends Fragment {
                 }
 
                 // 2) delete folder table
-                dbDrawer.dropFolderTable(folderTableId,false);
+                dbDrawer.dropFolderTable(folderTableId,true);
                 System.out.println("DeleteFolders / drop folderTableId = " + folderTableId);
 
                 // 3) delete folder Id
-                int folderId = (int)dbDrawer.getFolderId(i,false);
-                dbDrawer.deleteFolderId(folderId,false);
+                int folderId = (int)dbDrawer.getFolderId(i,true);
+                dbDrawer.deleteFolderId(folderId,true);
                 System.out.println("DeleteFolders / delete folderId = " + folderId);
 
                 // change focus
                 Folder.setFocus_folderPos(0);
             }
         }
-        dbDrawer.close();
 
         // check if only one folder left
         int foldersCnt = dbDrawer.getFoldersCount(true);

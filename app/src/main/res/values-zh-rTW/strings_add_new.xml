@@ -26,6 +26,7 @@
     <string name="audio_message_preparing_to_play">準備播放 &#8230;</string>
     <string name="audio_message_preparing_time_out">準備已經超時</string>
     <string name="audio_file_not_found">找不到或未選擇音訊檔案</string>
+    <string name="app_not_found">未找到相關應用</string>
     <string name="add_new_start">開始新增連結</string>
     <string name="add_new_stop">停止新增連結</string>
     <string name="add_new_file_error">新增多個連結時，請確認您的選擇是本地連結。</string>

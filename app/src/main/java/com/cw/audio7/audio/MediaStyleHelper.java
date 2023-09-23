@@ -3,6 +3,7 @@ package com.cw.audio7.audio;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.support.v4.media.MediaDescriptionCompat;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaControllerCompat;
@@ -45,10 +46,11 @@ public class MediaStyleHelper {
     static private PendingIntent createOnDismissIntent(Context context, int notificationId) {
         Intent intent = new Intent(context, NotificationDismissReceiver.class);
         intent.putExtra("com.cw.audio7.notificationId", notificationId);
-
+        final int flags =  Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ?
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE : PendingIntent.FLAG_UPDATE_CURRENT;
         PendingIntent pendingIntent =
                 PendingIntent.getBroadcast(context.getApplicationContext(),
-                        notificationId, intent, 0);
+                        notificationId, intent, flags);
         return pendingIntent;
     }
 }

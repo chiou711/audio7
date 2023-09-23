@@ -203,15 +203,13 @@ public class Audio7Player
 	*/
 	public void scrollPlayingItemToBeVisible(RecyclerView recyclerView)
 	{
-		System.out.println("Audio7Player / _scrollPlayingItemToBeVisible");
+		//System.out.println("Audio7Player / _scrollPlayingItemToBeVisible");
 
 		// return if screen off
 		if(SystemState.isScreenOff(act))
 			return;
 
-        if ( (recyclerView == null) ||
-		     (recyclerView.getAdapter() == null) ||
-		     (Build.VERSION.SDK_INT < 19)            )
+        if (recyclerView == null || recyclerView.getAdapter() == null)
             return;
 
         boolean showDebugMsg = false;//true;//false;
@@ -380,7 +378,7 @@ public class Audio7Player
 	// prepare Audio
 	public void prepareAudio() {
 		if (ENABLE_MEDIA_CONTROLLER &&  Build.VERSION.SDK_INT >= 21) {
-			mMediaControllerCompat
+				mMediaControllerCompat
 					.getTransportControls()
 					.playFromUri(Uri.parse(audioUrl), null); // will call onPlayFromUri
 		} else {

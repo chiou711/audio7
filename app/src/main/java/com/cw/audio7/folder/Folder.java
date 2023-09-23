@@ -87,8 +87,10 @@ public class Folder
     // initialize folder list view
     SimpleDragSortCursorAdapter initFolder()
     {
+        int foldersCount = dB_drawer.getFoldersCount(true);
+
         // set Folder title
-        if(dB_drawer.getFoldersCount(true) == 0)
+        if(foldersCount == 0)
         {
             // default: add 2 new folders
 //            for(int i = 0; i< Define.INITIAL_FOLDERS_COUNT; i++)
@@ -102,10 +104,10 @@ public class Folder
         }
         else
         {
-            for(int i = 0; i< dB_drawer.getFoldersCount(true); i++)
-            {
+            for(int i = 0; i< foldersCount; i++){
                 mFolderTitles.add(""); // init only
-                mFolderTitles.set(i, dB_drawer.getFolderTitle(i,true));
+                String title = dB_drawer.getFolderTitle(i,true);
+                mFolderTitles.set(i,title);
             }
         }
 
@@ -409,13 +411,14 @@ public class Folder
         System.out.println("Folder / _openFolder");
 
         DB_drawer dB_drawer = new DB_drawer(act);
-        int folders_count = dB_drawer.getFoldersCount(true);
+        dB_drawer.open();
+        int folders_count = dB_drawer.getFoldersCount(false);
 
         if (folders_count > 0) {
             int pref_focus_table_id = Pref.getPref_focusView_folder_tableId(act);
             for(int folder_pos=0; folder_pos<folders_count; folder_pos++)
             {
-                if(dB_drawer.getFolderTableId(folder_pos,true) == pref_focus_table_id) {
+                if(dB_drawer.getFolderTableId(folder_pos,false) == pref_focus_table_id) {
                     // select folder
                     selectFolder(act, folder_pos);
 
@@ -431,6 +434,7 @@ public class Folder
             if (act.getSupportActionBar() != null)
                 act.getSupportActionBar().setTitle(mFolderTitle);
         }
+        dB_drawer.close();
 
         if(drawer != null)
             drawer.closeDrawer();

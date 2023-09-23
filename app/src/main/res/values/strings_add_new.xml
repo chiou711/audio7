@@ -26,6 +26,7 @@
     <string name="audio_message_preparing_to_play">Preparing to play &#8230;</string>
     <string name="audio_message_preparing_time_out">Preparing has timed out</string>
     <string name="audio_file_not_found">Audio file not found or not selected</string>
+    <string name="app_not_found">Related App is not found</string>
     <string name="add_new_start">Start adding link</string>
     <string name="add_new_stop">Stop adding link</string>
     <string name="add_new_file_error">Adding multiple links please confirm your selection is a local link.</string>

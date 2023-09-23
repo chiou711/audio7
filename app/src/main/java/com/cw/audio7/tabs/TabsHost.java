@@ -361,14 +361,17 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
             pageCount = mTabsPagerAdapter.dbFolder.getPagesCount(true);
 
 //        System.out.println("TabsHost / _onResume / pageCount = " + pageCount);
-        for(int pos=0; pos<pageCount; pos++)
-        {
-            int pageTableId = mTabsPagerAdapter.dbFolder.getPageTableId(pos, true);
+        if ( (mTabsPagerAdapter != null) && (mTabsPagerAdapter.dbFolder != null) ) {
+            mTabsPagerAdapter.dbFolder.open();
+            for(int pos=0; pos<pageCount; pos++){
+                int pageTableId = mTabsPagerAdapter.dbFolder.getPageTableId(pos, false);
 
-            if(pageTableId == Pref.getPref_focusView_page_tableId(act)) {
-                System.out.println("TabsHost / _onResume / set focus tab pos = " + pos);
-                setFocus_tabPos(pos);
+                if(pageTableId == Pref.getPref_focusView_page_tableId(act)) {
+                    System.out.println("TabsHost / _onResume / set focus tab pos = " + pos);
+                    setFocus_tabPos(pos);
+                }
             }
+            mTabsPagerAdapter.dbFolder.close();
         }
 
         System.out.println("TabsHost / _onResume / _getFocus_tabPos = " + getFocus_tabPos());
@@ -825,8 +828,6 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
     public void removePages()
     {
         System.out.println("TabsHost / _removePages");
-    	if( mTabsPagerAdapter == null)
-    		return;
 
         ArrayList<Page> fragmentList = mTabsPagerAdapter.fragmentList;
         if( (fragmentList != null) &&
@@ -839,10 +840,9 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
 
             for (int i = 0; i < fragmentList.size(); i++) {
 //                System.out.println("TabsHost / _removeTabs / i = " + i);
-//                fragmentList.remove(i);
+                mTabsPagerAdapter.fragmentList.get(i).itemAdapter = null;
                 act.getSupportFragmentManager().beginTransaction().remove(fragmentList.get(i)).commit();
             }
-
         }
     }
 

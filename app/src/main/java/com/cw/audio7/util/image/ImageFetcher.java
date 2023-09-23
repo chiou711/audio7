@@ -311,7 +311,7 @@ public class ImageFetcher extends ImageResizer {
      * @param urlString The URL to fetch
      * @return true if successful, false otherwise
      */
-    public boolean downloadAudioUrlToStream(String urlString, OutputStream outputStream) {
+    public boolean downloadAudioUrlToStream(String urlString, OutputStream outputStream) throws IOException {
         BufferedOutputStream out = null;
         BufferedInputStream in;
 

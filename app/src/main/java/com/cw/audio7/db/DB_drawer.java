@@ -20,6 +20,7 @@ import java.util.Date;
 
 import com.cw.audio7.R;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -203,7 +204,8 @@ public class DB_drawer
             this.close();
     }
     
-    public long getFolderId(int position,boolean enDbOpenClose)
+    @SuppressLint("Range")
+    public long getFolderId(int position, boolean enDbOpenClose)
     {
         if(enDbOpenClose)
             this.open();
@@ -227,28 +229,35 @@ public class DB_drawer
             this.open();
 
         int count = 0;
-        if(cursor_folder != null)
-	        count = cursor_folder.getCount();
+        if(cursor_folder != null ) {
+			try {
+				count = cursor_folder.getCount();
+			}catch (Exception e){
+				e.printStackTrace();
+			}
+        }
 
         if(enDbOpenClose)
             this.close();
     	return count;
     }
-    
-    public int getFolderTableId(int position,boolean enDbOpenClose)
-    {
+
+	@SuppressLint("Range")
+	public int getFolderTableId(int position,boolean enDbOpenClose){
         if(enDbOpenClose)
             this.open();
+
         cursor_folder.moveToPosition(position);
         int id = cursor_folder.getInt(cursor_folder.getColumnIndex(KEY_FOLDER_TABLE_ID));
 
         if(enDbOpenClose)
             this.close();
-        return id;
 
+        return id;
     }
 
-	public String getFolderTitle(int position,boolean enDbOpenClose)
+	@SuppressLint("Range")
+	public String getFolderTitle(int position, boolean enDbOpenClose)
 	{
         if(enDbOpenClose)
             this.open();
