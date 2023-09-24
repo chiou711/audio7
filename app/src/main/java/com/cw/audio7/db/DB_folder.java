@@ -91,13 +91,13 @@ public class DB_folder
     // 1 SQLiteDatabase
     // 2 assigned drawer Id
     // 3 page table Id
-    public void insertPageTable(DB_folder db, int drawerId, int pageId, boolean enDbOpenClose)
+    public void insertPageTable(DB_folder db, int folderId, int pageId, boolean enDbOpenClose)
     {   
     	if(enDbOpenClose)
     		db.open();
 
         //format "Page1_2"
-    	DB_PAGE_TABLE_NAME = DB_PAGE_TABLE_PREFIX.concat(String.valueOf(drawerId)+
+    	DB_PAGE_TABLE_NAME = DB_PAGE_TABLE_PREFIX.concat(String.valueOf(folderId)+
     														"_"+
     														String.valueOf(pageId));
         String dB_insert_table = "CREATE TABLE IF NOT EXISTS " + DB_PAGE_TABLE_NAME + "(" +

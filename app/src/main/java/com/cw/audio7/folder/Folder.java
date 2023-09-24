@@ -342,10 +342,10 @@ public class Folder
                 {
                     DB_drawer db_drawer = new DB_drawer(act);
                     // save
-                    int drawerId =  (int) db_drawer.getFolderId(position,true);
-                    int drawerTabInfoTableId =  db_drawer.getFolderTableId(position,true);
-                    db_drawer.updateFolder(drawerId,
-                            drawerTabInfoTableId,
+                    int folderId =  (int) db_drawer.getFolderId(position,true);
+                    int folderTableId =  db_drawer.getFolderTableId(position,true);
+                    db_drawer.updateFolder(folderId,
+                            folderTableId,
                             editText.getText().toString()
                             ,true);
                     // update

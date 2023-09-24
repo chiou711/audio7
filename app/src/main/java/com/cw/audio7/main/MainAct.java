@@ -1108,14 +1108,41 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                 int pgCnt = folder.getFolder_pagesCount(this, Folder.getFocus_folderPos());
                 DB_folder db_folder = new DB_folder(DB_folder.getFocusFolder_tableId());
 
-                for(int i=0;i< pgCnt;i++)
-                {
+                for(int i=0;i< pgCnt;i++){
                     int id = db_folder.getPageTableId(i,true);
                     if(id >currentMaxPageTableId)
                         currentMaxPageTableId = id;
                 }
 
-                folder.tabsHost.mPageUi.addNewPage(this, currentMaxPageTableId + 1);
+                if(folder.tabsHost.mPageUi != null)
+                    folder.tabsHost.mPageUi.addNewPage(this, currentMaxPageTableId + 1);
+                else {
+                    if (Define.INITIAL_PAGES_COUNT > 0) {
+                        // insert initial page table after Add new folder
+                        int focusFolder_tableId = DB_folder.getFocusFolder_tableId();
+                        dB_folder = new DB_folder(focusFolder_tableId);
+                        int lastId = 0;
+                        for (int i = 1; i <= Define.INITIAL_PAGES_COUNT; i++) {
+                            int style = Util.getNewPageStyle(this);
+                            dB_folder.insertPage(DB_folder.getFocusFolder_tableName(),
+                                    Define.getTabTitle(this, 1),
+                                    i,
+                                    style,
+                                    true);
+                            lastId = i;
+                            dB_folder.insertPageTable(dB_folder,  DB_folder.getFocusFolder_tableId(), i, true);
+                        }
+
+                        // commit: final page viewed
+                        Pref.setPref_focusView_page_tableId(this, lastId);
+
+                        folder.startTabsHostRun();
+
+                        invalidateOptionsMenu();
+                        //For first folder, first page: tab is not seen
+                        TabsHost.setFocus_tabPos(0);
+                    }
+                }
                 return true;
 
             case MenuId.CHANGE_PAGE_COLOR:
