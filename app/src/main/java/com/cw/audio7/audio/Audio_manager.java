@@ -396,31 +396,37 @@ public class Audio_manager
 		boolean isSameTabPos = (TabsHost.getFocus_tabPos() == MainAct.mPlaying_pagePos);
 		if(showDbgMsg)
 			System.out.println( prefix + "isSameTabPos = " + isSameTabPos);
+		if(!isSameTabPos)
+			return false;
 
 		boolean isPlayOrPause = (getPlayerState() != PLAYER_AT_STOP);
 		if(showDbgMsg)
 			System.out.println( prefix + "isPlayOrPause = " +isPlayOrPause);
+		if(!isPlayOrPause)
+			return false;
+
 
 		boolean isPlayingOnFocusFolderPos = (MainAct.mPlaying_folderPos == Folder.getFocus_folderPos());
 		if(showDbgMsg)
 			System.out.println(prefix + "isPlayingOnFocusFolderPos = " + isPlayingOnFocusFolderPos);
+		if(!isPlayingOnFocusFolderPos)
+			return false;
 
 		boolean isPlayingOnCurrPageTableId = (MainAct.mPlaying_pageTableId == TabsHost.getCurrentPageTableId());
 		if(showDbgMsg)
 			System.out.println(prefix + "isPlayingOnCurrPageTableId = " + isPlayingOnCurrPageTableId);
+		if(!isPlayingOnCurrPageTableId)
+			return false;
 
 		//@@@ why false?
 //		boolean isCurrRecycleViewExist = (folder.tabsHost.getCurrentPage().recyclerView != null);
 		boolean isCurrRecycleViewExist = (folder.tabsHost.getCurrentPage() != null);
-
 		if(showDbgMsg)
 			System.out.println(prefix + "isCurrRecycleViewExist  = " + isCurrRecycleViewExist);
+		if(!isCurrRecycleViewExist)
+			return false;
 
-		return  (isPlayOrPause &&
-				isPlayingOnFocusFolderPos &&
-				isSameTabPos     &&
-				isPlayingOnCurrPageTableId &&
-				isCurrRecycleViewExist);
+		return true;
 	}
 
 	public boolean willDoScroll() {
