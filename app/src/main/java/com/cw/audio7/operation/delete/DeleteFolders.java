@@ -184,7 +184,8 @@ public class DeleteFolders extends Fragment {
         DB_drawer dbDrawer = new DB_drawer(act);
 
         // drawer DB check
-        boolean doDB_check = false;
+//        boolean doDB_check = false;
+        boolean doDB_check = true;
         if(doDB_check) {
             dbDrawer.open();
             for (int i = 0; i < list_selFolder.count; i++) {
@@ -197,37 +198,46 @@ public class DeleteFolders extends Fragment {
             dbDrawer.close();
         }
 
-        for(int i = 0; i< list_selFolder.count; i++)
-        {
-            if(list_selFolder.mCheckedArr.get(i))
-            {
+        // 1 delete related page tables
+        for(int i = 0; i< list_selFolder.count; i++){
+            if(list_selFolder.mCheckedArr.get(i)){
                 // get folder table id
                 int folderTableId = dbDrawer.getFolderTableId(i,true);
-
-                // remove focus view Key for page table Id
-                Pref.removePref_focusView_page_tableId_key(act, folderTableId);
 
                 // 1) delete related page tables
                 DB_folder dbFolder = new DB_folder(folderTableId);
                 int pgsCnt = dbFolder.getPagesCount(true);
-                for (int j = 0; j < pgsCnt; j++) {
+                for (int j = 0; j < pgsCnt; j++){
                     int pageTableId = dbFolder.getPageTableId(j, true);
                     dbFolder.dropPageTable(folderTableId, pageTableId);
                 }
+            }
+        }
+
+        // 2 delete folder tables and folder Ids
+        dbDrawer.open();
+        for(int i = 0; i< list_selFolder.count; i++){
+            if(list_selFolder.mCheckedArr.get(i)){
+                // get folder table id
+                int folderTableId = dbDrawer.getFolderTableId(i,false);
+
+                // remove focus view Key for page table Id
+                Pref.removePref_focusView_page_tableId_key(act, folderTableId);
 
                 // 2) delete folder table
-                dbDrawer.dropFolderTable(folderTableId,true);
+                dbDrawer.dropFolderTable(folderTableId,false);
                 System.out.println("DeleteFolders / drop folderTableId = " + folderTableId);
 
                 // 3) delete folder Id
-                int folderId = (int)dbDrawer.getFolderId(i,true);
-                dbDrawer.deleteFolderId(folderId,true);
+                int folderId = (int)dbDrawer.getFolderId(i,false);
+                dbDrawer.deleteFolderId(folderId,false);
                 System.out.println("DeleteFolders / delete folderId = " + folderId);
 
                 // change focus
                 Folder.setFocus_folderPos(0);
             }
         }
+        dbDrawer.close();
 
         // check if only one folder left
         int foldersCnt = dbDrawer.getFoldersCount(true);

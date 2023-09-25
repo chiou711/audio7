@@ -277,12 +277,14 @@ public class Checked_notes_option {
             UtilAudio.stopAudioIfNeeded(folder.tabsHost);
 
         // update audio play list
-        if(mAudio_manager.isOnAudioPlayingPage())
+        if(mAudio_manager!=null &&
+           mAudio_manager.isOnAudioPlayingPage())
             mAudio_manager.setupAudioList();
 
-        folder.tabsHost.reloadCurrentPage();
-
-        folder.tabsHost.showFooter(act);
+        if(folder.tabsHost!=null) {
+            folder.tabsHost.reloadCurrentPage();
+            folder.tabsHost.showFooter(act);
+        }
     }
 
     /**
