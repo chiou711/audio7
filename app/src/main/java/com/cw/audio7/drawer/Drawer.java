@@ -78,11 +78,13 @@ public class Drawer {
 
                 menuItem.setChecked(true);
                 switch (menuItem.getItemId()) {
+                    // for portrait
                     case MenuId.ADD_NEW_FOLDER:
                         folder.renewFirstAndLast_folderId();
                         folder.addNewFolder(act, folder.mLastExist_folderTableId + 1, folder.getAdapter());
                         return true;
 
+                    // for portrait
                     case MenuId.ENABLE_FOLDER_DRAG_AND_DROP:
                         if (mPref_show_note_attribute.getString("KEY_ENABLE_FOLDER_DRAGGABLE", "no")
                                 .equalsIgnoreCase("yes")) {
@@ -110,6 +112,7 @@ public class Drawer {
                         Drawer.this.act.invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
                         return true;
 
+                    // for portrait
                     case MenuId.DELETE_FOLDERS:
 
                         DB_drawer dB_drawer = new DB_drawer(act);

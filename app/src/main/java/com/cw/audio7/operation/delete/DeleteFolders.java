@@ -54,15 +54,14 @@ public class DeleteFolders extends Fragment {
 	View rootView;
     AppCompatActivity act;
 
-	public DeleteFolders(){}
+    public DeleteFolders(){}
 
-    public DeleteFolders(AppCompatActivity _act){
-	    act = _act;
+	public DeleteFolders(AppCompatActivity _act){
+        act = _act;
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
+    public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         mContext = act;
     }

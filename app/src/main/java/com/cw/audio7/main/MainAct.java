@@ -615,7 +615,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
             }
             else {
                 super.onBackPressed();
-                finish();
+//                finish();
             }
         }
 
@@ -638,7 +638,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
             onBackPressedListener = null;
 
 
-            doCreate();//add for making sure audio playing after Do add all
+//            doCreate();//add for making sure audio playing after Do add all
 
             // new drawer
             drawer = new Drawer(this, toolbar);
@@ -933,11 +933,13 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
 
         switch (item.getItemId())
         {
+            // for landscape
             case MenuId.ADD_NEW_FOLDER:
                 folder.renewFirstAndLast_folderId();
                 folder.addNewFolder(this, folder.mLastExist_folderTableId +1, folder.getAdapter());
                 return true;
 
+            // for landscape
             case MenuId.ENABLE_FOLDER_DRAG_AND_DROP:
                 if(Objects.requireNonNull(drawer.mPref_show_note_attribute.getString("KEY_ENABLE_FOLDER_DRAGGABLE", "no"))
                         .equalsIgnoreCase("yes"))
@@ -966,6 +968,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                 invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
                 return true;
 
+            // for landscape
             case MenuId.DELETE_FOLDERS:
                 menu.setGroupVisible(R.id.group_folders, false);
 
@@ -973,7 +976,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                 {
                     drawer.closeDrawer();
                     menu.setGroupVisible(R.id.group_notes, false); //hide the menu
-                    DeleteFolders delFoldersFragment = new DeleteFolders();
+                    DeleteFolders delFoldersFragment = new DeleteFolders(this);
                     mFragmentTransaction = fragmentManager.beginTransaction();
                     mFragmentTransaction.setCustomAnimations(R.anim.fragment_slide_in_left, R.anim.fragment_slide_out_left, R.anim.fragment_slide_in_right, R.anim.fragment_slide_out_right);
                     mFragmentTransaction.replace(R.id.content_frame, delFoldersFragment).addToBackStack("delete_folders").commit();
