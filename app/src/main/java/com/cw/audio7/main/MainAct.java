@@ -37,11 +37,8 @@ import com.cw.audio7.audio.BackgroundAudioService;
 import com.cw.audio7.operation.delete.DeleteFolders;
 import com.cw.audio7.operation.delete.DeletePages;
 import com.cw.audio7.page.Checked_notes_option;
-import com.cw.audio7.operation.import_export.Export_toSDCardFragment;
-import com.cw.audio7.operation.import_export.Import_filesList;
 import com.cw.audio7.db.DB_drawer;
 import com.cw.audio7.tabs.TabsHost;
-import com.cw.audio7.util.Dialog_EULA;
 import com.cw.audio7.util.image.UtilImage;
 import com.cw.audio7.define.Define;
 import com.cw.audio7.util.OnBackPressedListener;
@@ -469,44 +466,9 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
         else
             doCreate();
 
-        if( isStorageRequestedImport ||
-            isStorageRequestedExport   )
-        {
-            //hide the menu
-            menu.setGroupVisible(R.id.group_notes, false);
-            menu.setGroupVisible(R.id.group_pages_and_more, false);
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-
-            if(isStorageRequestedImport) {
-                // replace fragment
-                Import_filesList importFragment = new Import_filesList(this);
-                transaction.setCustomAnimations(R.anim.fragment_slide_in_left, R.anim.fragment_slide_out_left, R.anim.fragment_slide_in_right, R.anim.fragment_slide_out_right);
-                transaction.replace(R.id.content_frame, importFragment, "import").addToBackStack(null).commit();
-
-                isStorageRequestedImport = false;
-            }
-
-            if(isStorageRequestedExport)
-            {
-                DB_folder dB_folder = new DB_folder(Pref.getPref_focusView_folder_tableId(this));
-                if (dB_folder.getPagesCount(true) > 0) {
-                    Export_toSDCardFragment exportFragment = new Export_toSDCardFragment(this,folder);
-                    transaction.setCustomAnimations(R.anim.fragment_slide_in_left, R.anim.fragment_slide_out_left, R.anim.fragment_slide_in_right, R.anim.fragment_slide_out_right);
-                    transaction.replace(R.id.content_frame, exportFragment, "export").addToBackStack(null).commit();
-                } else {
-                    Toast.makeText(this, R.string.no_page_yet, Toast.LENGTH_SHORT).show();
-                }
-                isStorageRequestedExport = false;
-            }
-
-            if (folder.mHandler != null)
-                folder.mHandler.removeCallbacks(folder.mTabsHostRun);
-        }
         // fix: home button failed after power off/on in Config fragment
-        else {
-            if(fragmentManager != null)
-                fragmentManager.popBackStack();
-        }
+        if(fragmentManager != null)
+            fragmentManager.popBackStack();
     }
 
     @Override
@@ -754,7 +716,8 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                 }
 
                 // change page color
-                this.menu.findItem(R.id.CHANGE_PAGE_COLOR).setVisible(pgsCnt >0);
+//                this.menu.findItem(R.id.CHANGE_PAGE_COLOR).setVisible(pgsCnt >0);
+                this.menu.findItem(R.id.CHANGE_PAGE_COLOR).setVisible(true);
 
                 // pages order
                 this.menu.findItem(R.id.SHIFT_PAGE).setVisible(pgsCnt >1);
@@ -766,7 +729,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                 this.menu.findItem(R.id.note_operation).setVisible( (pgsCnt >0) && (notesCnt>0) );
 
                 // EXPORT TO SD CARD
-                this.menu.findItem(R.id.EXPORT_TO_SD_CARD).setVisible(pgsCnt >0);
+//                this.menu.findItem(R.id.EXPORT_TO_SD_CARD).setVisible(pgsCnt >0);
 
                 /*
                  *  Note group
@@ -1149,11 +1112,13 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                 return true;
 
             case MenuId.CHANGE_PAGE_COLOR:
-                folder.tabsHost.mPageUi.changePageColor(this);
+                if(folder.tabsHost.mPageUi != null)
+                    folder.tabsHost.mPageUi.changePageColor(this);
                 return true;
 
             case MenuId.SHIFT_PAGE:
-                folder.tabsHost.mPageUi.shiftPage(this);
+                if(folder.tabsHost.mPageUi != null)
+                    folder.tabsHost.mPageUi.shiftPage(this);
             return true;
 
             case MenuId.DELETE_PAGES:
@@ -1163,8 +1128,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                 menu.findItem(R.id.HANDLE_CHECKED_NOTES).setVisible(false);
                 menu.setGroupVisible(R.id.group_pages_and_more, false);
 
-                if(dB_folder.getPagesCount(true)>0)
-                {
+                if(dB_folder.getPagesCount(true)>0){
                     DeletePages delPgsFragment = new DeletePages(this,folder);
                     mFragmentTransaction = fragmentManager.beginTransaction();
                     mFragmentTransaction.setCustomAnimations(R.anim.fragment_slide_in_left, R.anim.fragment_slide_out_left, R.anim.fragment_slide_in_right, R.anim.fragment_slide_out_right);
@@ -1232,43 +1196,6 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                 }
                 invalidateOptionsMenu();
                 folder.tabsHost.reloadCurrentPage();
-                return true;
-
-            // sub menu for backup
-            case MenuId.IMPORT_FROM_SD_CARD:
-                if( ( Build.VERSION.SDK_INT < M /*API23*/ ) ||
-                    !Util.willRequest_permission_WRITE_EXTERNAL_STORAGE(this,
-                                Util.PERMISSIONS_REQUEST_STORAGE_IMPORT)             ) {
-                    //hide the menu
-                    menu.findItem(R.id.ADD_NEW_NOTE).setVisible(false);
-                    menu.setGroupVisible(R.id.group_notes, false);
-                    menu.findItem(R.id.HANDLE_CHECKED_NOTES).setVisible(false);
-                    menu.setGroupVisible(R.id.group_pages_and_more, false);
-                    // replace fragment
-                    Import_filesList importFragment = new Import_filesList(this);
-                    transaction.setCustomAnimations(R.anim.fragment_slide_in_left, R.anim.fragment_slide_out_left, R.anim.fragment_slide_in_right, R.anim.fragment_slide_out_right);
-                    transaction.replace(R.id.content_frame, importFragment, "import").addToBackStack(null).commit();
-                }
-                return true;
-
-            case MenuId.EXPORT_TO_SD_CARD:
-                if( ( Build.VERSION.SDK_INT <= 23) ||
-                    !Util.willRequest_permission_WRITE_EXTERNAL_STORAGE(this,
-                                Util.PERMISSIONS_REQUEST_STORAGE_EXPORT)           ) {
-                    //hide the menu
-                    menu.findItem(R.id.ADD_NEW_NOTE).setVisible(false);
-                    menu.setGroupVisible(R.id.group_notes, false);
-                    menu.findItem(R.id.HANDLE_CHECKED_NOTES).setVisible(false);
-                    menu.setGroupVisible(R.id.group_pages_and_more, false);
-
-                    if (dB_folder.getPagesCount(true) > 0) {
-                        Export_toSDCardFragment exportFragment = new Export_toSDCardFragment(this,folder);
-                        transaction.setCustomAnimations(R.anim.fragment_slide_in_left, R.anim.fragment_slide_out_left, R.anim.fragment_slide_in_right, R.anim.fragment_slide_out_right);
-                        transaction.replace(R.id.content_frame, exportFragment, "export").addToBackStack(null).commit();
-                    } else {
-                        Toast.makeText(this, R.string.no_page_yet, Toast.LENGTH_SHORT).show();
-                    }
-                }
                 return true;
 
             case MenuId.CONFIG:
