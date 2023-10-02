@@ -1112,12 +1112,14 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                 return true;
 
             case MenuId.CHANGE_PAGE_COLOR:
-                if(folder.tabsHost.mPageUi != null)
+                if((folder.tabsHost != null) &&
+                   (folder.tabsHost.mPageUi != null))//unclear issue of preview test
                     folder.tabsHost.mPageUi.changePageColor(this);
                 return true;
 
             case MenuId.SHIFT_PAGE:
-                if(folder.tabsHost.mPageUi != null)
+                if((folder.tabsHost != null) &&
+                   (folder.tabsHost.mPageUi != null))
                     folder.tabsHost.mPageUi.shiftPage(this);
             return true;
 
