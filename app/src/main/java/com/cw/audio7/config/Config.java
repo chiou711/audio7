@@ -25,6 +25,7 @@ import com.cw.audio7.main.MainAct;
 import com.cw.audio7.R;
 import com.cw.audio7.db.DB_drawer;
 import com.cw.audio7.tabs.TabsHost;
+import com.cw.audio7.util.BaseBackPressedListener;
 import com.cw.audio7.util.ColorSet;
 import com.cw.audio7.util.Util;
 import com.cw.audio7.util.preferences.Pref;
@@ -97,7 +98,7 @@ public class Config extends Fragment
 		recover_all_settings_button();
 
 		// set Back pressed listener
-//		((MainAct)getActivity()).setOnBackPressedListener(new BaseBackPressedListener(MainAct.mAct));
+		((MainAct)getActivity()).setOnBackPressedListener(new BaseBackPressedListener(act));
 
 		return mRootView;
 	}   	
@@ -355,7 +356,7 @@ public class Config extends Fragment
 				mAudio_manager.stopAudioPlayer();
 
 			//remove preference
-			clearSharedPreferencesForSettings(Objects.requireNonNull(getActivity()));
+			clearSharedPreferencesForSettings(requireActivity());
 
 			dialog.dismiss();
 

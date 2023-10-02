@@ -29,6 +29,8 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 
 import com.cw.audio7.R;
+import com.cw.audio7.main.MainAct;
+import com.cw.audio7.util.BaseBackPressedListener;
 
 import androidx.fragment.app.Fragment;
 import de.psdev.licensesdialog.LicensesDialogFragment;
@@ -52,7 +54,7 @@ public class About extends Fragment
 		showAboutDlg();
 
 		// set Back pressed listener
-//		((MainAct)getActivity()).setOnBackPressedListener(new BaseBackPressedListener(MainAct.mAct));
+		((MainAct)getActivity()).setOnBackPressedListener(new BaseBackPressedListener((MainAct)getActivity()));
 
 		return mRootView;
 	}   	

@@ -38,6 +38,7 @@ import com.cw.audio7.db.DB_folder;
 import com.cw.audio7.folder.Folder;
 import com.cw.audio7.main.MainAct;
 import com.cw.audio7.operation.List_selectFolder;
+import com.cw.audio7.util.BaseBackPressedListener;
 import com.cw.audio7.util.Util;
 import com.cw.audio7.util.preferences.Pref;
 
@@ -164,7 +165,7 @@ public class DeleteFolders extends Fragment {
         //show list for selection
         list_selFolder = new List_selectFolder(act,rootView , mListView);
 
-//        ((MainAct)act).setOnBackPressedListener(new BaseBackPressedListener(act));
+        ((MainAct)act).setOnBackPressedListener(new BaseBackPressedListener(act));
 //        act.setOnBackPressedListener(new BaseBackPressedListener(act));
 
 		return rootView;

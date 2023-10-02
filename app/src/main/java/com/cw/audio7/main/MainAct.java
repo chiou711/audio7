@@ -59,7 +59,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.support.v4.media.MediaBrowserCompat;
 import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
@@ -79,7 +78,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import static android.os.Build.VERSION_CODES.M;
 import static com.cw.audio7.audio.BackgroundAudioService.mAudio_manager;
 import static com.cw.audio7.audio.BackgroundAudioService.mMediaBrowserCompat;
 import static com.cw.audio7.audio.BackgroundAudioService.mMediaControllerCompat;
@@ -484,8 +482,8 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
     }
 
     @Override
-    protected void onDestroy()
-    {
+    protected void onDestroy(){
+        System.out.println("MainAct / _onDestroy");
         if (ENABLE_MEDIA_CONTROLLER) {
             //hide notification //todo ??? User stops all tasks could fail to hide
             if(BackgroundAudioService.mAudioBgService!=null)
@@ -496,7 +494,6 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                 mMediaBrowserCompat.disconnect();
             mMediaBrowserCompat = null;
         }
-        System.out.println("MainAct / _onDestroy");
 
         if(bluetooth_device_receiver != null)
         {
@@ -577,7 +574,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
             }
             else {
                 super.onBackPressed();
-//                finish();
+                finish();
             }
         }
 
@@ -613,9 +610,9 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
         }
     }
 
-//    public void setOnBackPressedListener(OnBackPressedListener onBackPressedListener) {
-//        this.onBackPressedListener = onBackPressedListener;
-//    }
+    public void setOnBackPressedListener(OnBackPressedListener onBackPressedListener) {
+        this.onBackPressedListener = onBackPressedListener;
+    }
 
     /**
      * on Activity Result

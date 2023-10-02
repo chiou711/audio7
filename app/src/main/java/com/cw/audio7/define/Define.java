@@ -50,10 +50,10 @@ public class Define {
          */
 
         /** 1 debug, initial */
-//        int mode = DEBUG_DEFAULT_BY_INITIAL;
+        int mode = DEBUG_DEFAULT_BY_INITIAL;
 
         /** 2 release, initial */
-        int mode  =  Define.RELEASE_DEFAULT_BY_INITIAL;
+//        int mode  =  Define.RELEASE_DEFAULT_BY_INITIAL;
 
         setAppBuildMode(mode);
     }
