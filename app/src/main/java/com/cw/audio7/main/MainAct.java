@@ -610,6 +610,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
         }
     }
 
+    // Back from fragment to MainAct
     public void setOnBackPressedListener(OnBackPressedListener onBackPressedListener) {
         this.onBackPressedListener = onBackPressedListener;
     }
