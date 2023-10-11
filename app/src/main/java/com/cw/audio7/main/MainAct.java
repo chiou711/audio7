@@ -1078,7 +1078,8 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                         currentMaxPageTableId = id;
                 }
 
-                if(folder.tabsHost.mPageUi != null)
+                if((folder.tabsHost != null) &&
+                   (folder.tabsHost.mPageUi != null))
                     folder.tabsHost.mPageUi.addNewPage(this, currentMaxPageTableId + 1);
                 else {
                     if (Define.INITIAL_PAGES_COUNT > 0) {
