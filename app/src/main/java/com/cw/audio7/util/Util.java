@@ -121,6 +121,12 @@ public class Util
 	public Util(Context context) {
 		mContext = context;
 	}
+
+	static public String getAudioPath(){
+		// internal storage space
+		return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC).getPath();
+	}
+
 	
 	// set vibration time
 	public void vibrate()

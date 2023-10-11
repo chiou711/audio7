@@ -85,8 +85,8 @@ public class Add_audio_byFolder extends ListFragment
         backButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_menu_back, 0, 0, 0);
 
         // update button
-        Button renewButton = (Button) rootView.findViewById(R.id.view_renew);
-        renewButton.setCompoundDrawablesWithIntrinsicBounds(android.R.drawable.ic_popup_sync , 0, 0, 0);
+//        Button renewButton = (Button) rootView.findViewById(R.id.view_renew);
+//        renewButton.setCompoundDrawablesWithIntrinsicBounds(android.R.drawable.ic_popup_sync , 0, 0, 0);
 
         // do cancel
         backButton.setOnClickListener(new View.OnClickListener() {
@@ -96,51 +96,51 @@ public class Add_audio_byFolder extends ListFragment
         });
 
         // do update
-        renewButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                // source dir: Download
-                String srcDirName = "Download";//todo Could be empty
-                String srcDirPath = Environment.getExternalStorageDirectory().toString() +
-                        "/" +
-                        srcDirName;
-                System.out.println("srcDirPath = " + srcDirPath);
-
-                /**
-                 * Note about getExternalStorageDirectory:
-                 * don't be confused by the word "external" here.
-                 * This directory can better be thought as media/shared storage.
-                 * It is a filesystem that can hold a relatively large amount of data and
-                 * that is shared across all applications (does not enforce permissions).
-                 * Traditionally this is an SD card, but it may also be implemented as built-in storage in a device
-                 * that is distinct from the protected internal storage and can be mounted as a filesystem on a computer.
-                 */
-                // target dir
-                String targetDirPath = Environment.getExternalStorageDirectory().toString() +
-                        "/" +
-                        Util.getStorageDirName(getActivity());
-
-                // copy source files to target directory
-                File srcDir = new File(srcDirPath);
-
-                if(srcDir.exists()) {
-                    for (File srcFile : srcDir.listFiles()) {
-                        File targetFile = new File(targetDirPath + "/" + srcFile.getName());
-                        System.out.println("targetFile.getName() = " + targetFile.getName());
-                        try {
-                            if (UtilAudio.hasAudioExtension(srcFile))
-                                FileUtils.copyFile(srcFile, targetFile);
-                        } catch (IOException e) {
-
-                            e.printStackTrace();
-                        }
-                    }
-                }
-
-                // refresh list view
-                File dir = new File(targetDirPath);
-                showFilesList(dir.listFiles());
-            }
-        });
+//        renewButton.setOnClickListener(new View.OnClickListener() {
+//            public void onClick(View view) {
+//                // source dir: Download
+//                String srcDirName = "Download";//todo Could be empty
+//                String srcDirPath = Environment.getExternalStorageDirectory().toString() +
+//                        "/" +
+//                        srcDirName;
+//                System.out.println("srcDirPath = " + srcDirPath);
+//
+//                /**
+//                 * Note about getExternalStorageDirectory:
+//                 * don't be confused by the word "external" here.
+//                 * This directory can better be thought as media/shared storage.
+//                 * It is a filesystem that can hold a relatively large amount of data and
+//                 * that is shared across all applications (does not enforce permissions).
+//                 * Traditionally this is an SD card, but it may also be implemented as built-in storage in a device
+//                 * that is distinct from the protected internal storage and can be mounted as a filesystem on a computer.
+//                 */
+//                // target dir
+//                String targetDirPath = Environment.getExternalStorageDirectory().toString() +
+//                        "/" +
+//                        Util.getStorageDirName(getActivity());
+//
+//                // copy source files to target directory
+//                File srcDir = new File(srcDirPath);
+//
+//                if(srcDir.exists()) {
+//                    for (File srcFile : srcDir.listFiles()) {
+//                        File targetFile = new File(targetDirPath + "/" + srcFile.getName());
+//                        System.out.println("targetFile.getName() = " + targetFile.getName());
+//                        try {
+//                            if (UtilAudio.hasAudioExtension(srcFile))
+//                                FileUtils.copyFile(srcFile, targetFile);
+//                        } catch (IOException e) {
+//
+//                            e.printStackTrace();
+//                        }
+//                    }
+//                }
+//
+//                // refresh list view
+//                File dir = new File(targetDirPath);
+//                showFilesList(dir.listFiles());
+//            }
+//        });
 
         ((MainAct)getActivity()).setOnBackPressedListener(new BaseBackPressedListener((MainAct)getActivity()));
 
@@ -159,9 +159,12 @@ public class Add_audio_byFolder extends ListFragment
     public void onResume() {
         super.onResume();
         listView = getListView();
-        appDir = Environment.getExternalStorageDirectory().toString() +
-                                    "/" +
-                                    Util.getStorageDirName(getActivity());
+//        appDir = Environment.getExternalStorageDirectory().toString() +
+//                                    "/" +
+//                                    Util.getStorageDirName(getActivity());
+
+        appDir = Util.getAudioPath();
+
         currFilePath = appDir;
 
         File dir = new File(appDir);
