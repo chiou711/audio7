@@ -49,21 +49,14 @@ public class List_selectPage
     ListView mListView;
     public List<String> mListStrArr; // list view string array
     public List<Boolean> mCheckedTabs; // checked list view items array
-    DB_drawer dB_drawer;
     DB_folder mDb_folder;
     public int count;
     Activity mAct;
-    public String mFolderTitle;
     public boolean isCheckAll;
 
     public List_selectPage(Activity act, View rootView, View view)
     {
         mAct = act;
-
-        dB_drawer = new DB_drawer(act);
-        DragSortListView listView = (DragSortListView) act.findViewById(R.id.drawer_listview);
-        int pos = listView.getCheckedItemPosition();
-        mFolderTitle = dB_drawer.getFolderTitle(pos,true);
 
         mDb_folder = new DB_folder(Pref.getPref_focusView_folder_tableId(mAct));
 
