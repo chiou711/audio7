@@ -640,7 +640,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
      ===================================*/
     @Override
     public boolean onPrepareOptionsMenu(android.view.Menu menu) {
-        System.out.println("MainAct / _onPrepareOptionsMenu");
+//        System.out.println("MainAct / _onPrepareOptionsMenu");
 
         if( (drawer == null) ||
             (drawer.drawerLayout == null) ||
@@ -766,7 +766,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
     @Override
     public boolean onCreateOptionsMenu(android.view.Menu menu)
     {
-		System.out.println("MainAct / _onCreateOptionsMenu");
+//		System.out.println("MainAct / _onCreateOptionsMenu");
 
         this.menu = menu;
 

@@ -177,13 +177,13 @@ public class Page extends Fragment implements OnStartDragListener {
 
     @Override
     public void onResume() {
-        System.out.println("Page / _onResume / page_tableId = " + page_tableId);
+//        System.out.println("Page / _onResume / page_tableId = " + page_tableId);
         super.onResume();
         if(Pref.getPref_focusView_page_tableId(act) == page_tableId) {
 
             if( (tabsHost!= null) && (recyclerView != null) ) {
                 tabsHost.resume_listView_vScroll(recyclerView);
-                System.out.println("Page / _onResume / resume_listView_vScroll");
+//                System.out.println("Page / _onResume / resume_listView_vScroll");
             }
         }
 

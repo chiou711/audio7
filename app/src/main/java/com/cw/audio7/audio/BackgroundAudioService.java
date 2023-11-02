@@ -71,7 +71,7 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat
     public static Audio_manager mAudio_manager;
 
     //    boolean enDbgMsg = true;
-    boolean enDbgMsg = true;
+    boolean enDbgMsg = false;//true;
 
     public static PlaybackStateCompat.Builder playbackStateBuilder;
 

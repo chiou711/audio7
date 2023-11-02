@@ -30,6 +30,7 @@ import com.cw.audio7.util.Util;
 import com.cw.audio7.util.preferences.Pref;
 
 import java.util.Locale;
+import java.util.Random;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -202,7 +203,20 @@ public class AudioUi_page {
                 int playingPage_notesCnt = Audio_manager.getPlayingPage_notesCount();
                 do
                 {
-                    mAudio_manager.mAudioPos++;
+                    // set shuffle
+                    boolean isShufflePlay = true;
+                    if(isShufflePlay){
+                        int listSize = mAudio_manager.getAudioFilesCount();
+                        System.out.println("------------ random / old: mAudio_manager.mAudioPos =  " +
+                                mAudio_manager.mAudioPos) ;
+                        Random rand = new Random();
+                        System.out.println("------------ random / listSize =  " +listSize);
+                        mAudio_manager.mAudioPos = rand.nextInt((listSize - 1) - 0 + 1) + 0;
+                        System.out.println("------------ random / new: mAudio_manager.mAudioPos =  " +
+                                mAudio_manager.mAudioPos) ;
+                    } else
+                        mAudio_manager.mAudioPos++;
+
                     if( mAudio_manager.mAudioPos >= playingPage_notesCnt) {
                         if(Pref.getPref_cyclic_play_enable(mAct)) {
                             mAudio_manager.mAudioPos = 0; //back to first index

@@ -391,7 +391,7 @@ public class Audio_manager
 			return false;
 
 		String prefix = "Audio_manager / _isOnAudioPlayingPage / ";
-		boolean showDbgMsg = true;
+		boolean showDbgMsg = false;//true;
 
 		boolean isSameTabPos = (TabsHost.getFocus_tabPos() == MainAct.mPlaying_pagePos);
 		if(showDbgMsg)

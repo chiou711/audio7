@@ -73,10 +73,6 @@ public class Audio7Player
 		this.audio_panel = audio_panel;
 	}
 
-	public View getAudioPanel() {
-		return audio_panel;
-	}
-
 	/**
      *  Run audio state
      */
@@ -103,8 +99,10 @@ public class Audio7Player
 				//for 1st play
 				audioUrl = mAudio_manager.getAudioStringAt(mAudio_manager.mAudioPos);
 				while (!UtilAudio.hasAudioExtension(audioUrl) &&
-						   !audioUrl.contains("google")) {
+					   !audioUrl.contains("google")             ) {
+
                     mAudio_manager.mAudioPos++;
+
                     audioUrl = mAudio_manager.getAudioStringAt(mAudio_manager.mAudioPos);
 
                     if(mAudio_manager.mAudioPos >= tabsHost.getCurrentPage().getNotesCountInPage())
