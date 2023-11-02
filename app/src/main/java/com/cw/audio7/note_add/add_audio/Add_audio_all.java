@@ -490,10 +490,10 @@ public class Add_audio_all extends Fragment
             Objects.requireNonNull(act).getSupportFragmentManager().popBackStack();
 
             // new task
-//            Intent intent  = new Intent(act,MainAct.class);
-//            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//            act.startActivity(intent);
+            Intent intent  = new Intent(act,MainAct.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            act.startActivity(intent);
         } // onPostExecute
     }
 
