@@ -31,11 +31,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cw.audio7.R;
-import com.cw.audio7.main.MainAct;
 import com.cw.audio7.tabs.TabsHost;
 import com.cw.audio7.util.ColorSet;
 import com.cw.audio7.util.Util;
 import com.cw.audio7.util.audio.UtilAudio;
+import com.cw.audio7.util.preferences.Pref;
 import com.cw.audio7.util.system.SystemState;
 
 import java.util.Locale;
@@ -458,6 +458,7 @@ public class Audio7Player
 	public TextView audio_curr_pos;
 	public SeekBar audio_seek_bar;
 	public TextView audio_length;
+	public ImageView audio_shuffle_btn;
 	public ImageView audio_previous_btn;
 	public ImageView audio_play_btn;
 	public ImageView audio_next_btn;
@@ -584,6 +585,12 @@ public class Audio7Player
 		audio_length.setTextColor(act.getResources().getColor(R.color.colorWhite));
 
 		// audio buttons
+		audio_shuffle_btn = (ImageView) audio_panel.findViewById(R.id.audioPanel_shuffle);
+		if(Pref.getPref_shuffle_play_enable(act))
+			audio_shuffle_btn.setImageResource(R.drawable.ic_menu_shuffle);
+		else
+			audio_shuffle_btn.setImageResource(R.drawable.ic_menu_ordered);
+
 		audio_previous_btn = (ImageView) audio_panel.findViewById(R.id.audioPanel_previous);
 		audio_previous_btn.setImageResource(R.drawable.ic_media_previous);
 

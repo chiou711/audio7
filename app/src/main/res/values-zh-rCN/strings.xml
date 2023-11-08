@@ -7,6 +7,7 @@
     <string name="btn_Finish">完成</string>
     <string name="btn_Select">选择</string>
     <string name="btn_None">无</string>
+    <string name="btn_shuffle">随机播放</string>
     <string name="btn_Previous">上一</string>
     <string name="btn_Next">下一</string>
     <string name="bar_audio_progress">音频进度条</string>

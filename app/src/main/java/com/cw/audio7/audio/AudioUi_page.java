@@ -48,6 +48,7 @@ public class AudioUi_page {
 
     private TextView audio_curr_pos;
     private SeekBar audio_seek_bar;
+    public ImageView audio_shuffle_btn;
     public ImageView audio_previous_btn;
     public ImageView audio_play_btn;
     public ImageView audio_next_btn;
@@ -88,6 +89,7 @@ public class AudioUi_page {
     public void setAudioBlockListener(AppCompatActivity act) {
         audio_curr_pos = (TextView) audioPanel.findViewById(R.id.audioPanel_current_pos);
         audio_seek_bar = (SeekBar) audioPanel.findViewById(R.id.seek_bar);
+        audio_shuffle_btn = (ImageView) audioPanel.findViewById(R.id.audioPanel_shuffle);
         audio_previous_btn = (ImageView) audioPanel.findViewById(R.id.audioPanel_previous);
         audio_play_btn = (ImageView) audioPanel.findViewById(R.id.audioPanel_play);
         audio_next_btn = (ImageView) audioPanel.findViewById(R.id.audioPanel_next);
@@ -159,6 +161,22 @@ public class AudioUi_page {
             }
         });
 
+        // Audio play Shuffle mode toggle button listener
+        audio_shuffle_btn.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v){
+                //toggle
+                if(Pref.getPref_shuffle_play_enable(act)) {
+                    Pref.setPref_shuffle_play(act,false);// set off
+                    audio_shuffle_btn.setImageResource(R.drawable.ic_menu_ordered);
+                } else {
+                    Pref.setPref_shuffle_play(act,true);// set on
+                    audio_shuffle_btn.setImageResource(R.drawable.ic_menu_shuffle);
+                }
+            }
+        });
+
         // Audio play previous on click button listener
         audio_previous_btn.setOnClickListener(new View.OnClickListener()
         {
@@ -203,17 +221,11 @@ public class AudioUi_page {
                 int playingPage_notesCnt = Audio_manager.getPlayingPage_notesCount();
                 do
                 {
-                    // set shuffle
-                    boolean isShufflePlay = true;
-                    if(isShufflePlay){
+                    // check shuffle mode setting
+                    if(Pref.getPref_shuffle_play_enable(act)){
                         int listSize = mAudio_manager.getAudioFilesCount();
-                        System.out.println("------------ random / old: mAudio_manager.mAudioPos =  " +
-                                mAudio_manager.mAudioPos) ;
                         Random rand = new Random();
-                        System.out.println("------------ random / listSize =  " +listSize);
                         mAudio_manager.mAudioPos = rand.nextInt((listSize - 1) - 0 + 1) + 0;
-                        System.out.println("------------ random / new: mAudio_manager.mAudioPos =  " +
-                                mAudio_manager.mAudioPos) ;
                     } else
                         mAudio_manager.mAudioPos++;
 

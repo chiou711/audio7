@@ -249,5 +249,19 @@ public class Pref
         return pref.getBoolean(key, true);
     }
 
+    // set shuffle play mode
+    public static void setPref_shuffle_play(Activity act, boolean enable )
+    {
+        SharedPreferences pref = act.getSharedPreferences("play_mode", 0);
+        String key = "KEY_SHUFFLE_PLAY";
+        pref.edit().putBoolean(key, enable).apply();
+    }
 
+    // get shuffle play mode
+    public static boolean getPref_shuffle_play_enable(Activity act)
+    {
+        SharedPreferences pref = act.getSharedPreferences("play_mode", 0);
+        String key = "KEY_SHUFFLE_PLAY";
+        return pref.getBoolean(key, false);//default: set shuffle mode off
+    }
 }

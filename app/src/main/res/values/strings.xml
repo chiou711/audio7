@@ -7,6 +7,7 @@
     <string name="btn_Finish">Finish</string>
     <string name="btn_Select">Select</string>
     <string name="btn_None">None</string>
+    <string name="btn_shuffle">Shuffle</string>
     <string name="btn_Previous">Previous</string>
     <string name="btn_Next">Next</string>
     <string name="bar_audio_progress">audio progress bar</string>

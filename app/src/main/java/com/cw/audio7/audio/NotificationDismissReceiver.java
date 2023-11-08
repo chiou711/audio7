@@ -16,8 +16,10 @@ public class NotificationDismissReceiver extends BroadcastReceiver {
 		System.out.println("NotificationDismissReceiver / _onReceive / notificationId = " + notificationId);
 
 		{
-			mAudio_manager.stopAudioPlayer( );
-			mAudio_manager.audio7Player.showAudioPanel(false);
+			if(mAudio_manager != null) {
+				mAudio_manager.stopAudioPlayer();
+				mAudio_manager.audio7Player.showAudioPanel(false);
+			}
 
 			// refresh //todo Check more
 //			mFUI.tabsHost.reloadCurrentPage();
