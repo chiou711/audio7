@@ -34,6 +34,7 @@ import com.cw.audio7.util.audio.UtilAudio;
 import com.cw.audio7.util.preferences.Pref;
 
 import java.util.Locale;
+import java.util.Random;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
@@ -50,12 +51,9 @@ public class AudioUi_note
 {
     public ViewGroup audioPanel;
 
-    public TextView audio_title;
-    public TextView audio_artist;
     public TextView audio_curr_pos;
     public SeekBar audio_seek_bar;
-    public TextView audio_length;
-    public TextView audio_number; //todo
+    public ImageView audio_shuffle_btn;
     public ImageView audio_previous_btn;
     public ImageView audio_play_btn;
     public ImageView audio_next_btn;
@@ -91,6 +89,7 @@ public class AudioUi_note
     {
         audio_curr_pos = (TextView) audioPanel.findViewById(R.id.audioPanel_current_pos);
         audio_seek_bar = (SeekBar) audioPanel.findViewById(R.id.seek_bar);
+        audio_shuffle_btn = (ImageView) audioPanel.findViewById(R.id.audioPanel_shuffle);
         audio_previous_btn = (ImageView) audioPanel.findViewById(R.id.audioPanel_previous);
         audio_play_btn = (ImageView) audioPanel.findViewById(R.id.audioPanel_play);
         audio_next_btn = (ImageView) audioPanel.findViewById(R.id.audioPanel_next);
@@ -129,6 +128,22 @@ public class AudioUi_note
 
                 /** Entry: Note play */
                 playAudioInNotePager(act,audioUriStr);
+            }
+        });
+
+        // Audio play Shuffle mode toggle button listener
+        audio_shuffle_btn.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v){
+                //toggle
+                if(Pref.getPref_shuffle_play_enable(act)) {
+                    Pref.setPref_shuffle_play(act,false);// set off
+                    audio_shuffle_btn.setImageResource(R.drawable.ic_menu_ordered);
+                } else {
+                    Pref.setPref_shuffle_play(act,true);// set on
+                    audio_shuffle_btn.setImageResource(R.drawable.ic_menu_shuffle);
+                }
             }
         });
 
@@ -233,9 +248,16 @@ public class AudioUi_note
 
                 mAudio_manager.stopAudioPlayer();
 
-                int new_pos = NoteUi.getFocus_notePos()+1;
-                if( new_pos >= NoteUi.getNotesCnt())
-                {
+                int new_pos;
+                // check shuffle mode setting
+                if(Pref.getPref_shuffle_play_enable(act)){
+                    int listSize = mAudio_manager.getAudioFilesCount();
+                    Random rand = new Random();
+                    new_pos = rand.nextInt((listSize - 1) - 0 + 1) + 0;
+                } else
+                    new_pos = NoteUi.getFocus_notePos()+1;
+
+                if( new_pos >= NoteUi.getNotesCnt()){
                     if(Pref.getPref_cyclic_play_enable(act)) {
                         NoteUi.setFocus_notePos(0);
                         viewPager.setCurrentItem(0);
@@ -244,10 +266,9 @@ public class AudioUi_note
                         mAudio_manager.stopAudioPlayer();
                         return;
                     }
-                }
-                else {
+                } else {
                     NoteUi.setFocus_notePos(new_pos);
-                    viewPager.setCurrentItem(viewPager.getCurrentItem() + 1);
+                    viewPager.setCurrentItem(new_pos);
                 }
 
             }

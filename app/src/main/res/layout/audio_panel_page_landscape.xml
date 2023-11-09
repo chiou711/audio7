@@ -78,6 +78,16 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:orientation="horizontal" >
+
+            <ImageView
+                android:id="@+id/audioPanel_shuffle"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:contentDescription="@string/btn_shuffle"
+                android:background="@drawable/button"/>
+
             <TextView
                 android:id="@+id/audioPanel_audio_number"
                 android:layout_width="wrap_content"
