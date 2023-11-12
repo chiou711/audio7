@@ -145,11 +145,9 @@ public class AudioUi_page {
         });
 
         // Audio play and pause button on click listener
-        audio_play_btn.setOnClickListener(new View.OnClickListener()
-        {
+        audio_play_btn.setOnClickListener(new View.OnClickListener(){
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v){
 //                System.out.println("AudioUi_page / _initAudioBlock / audioPanel_play_button / _onClick");
                 audio7Player.runAudioState();
 

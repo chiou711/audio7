@@ -109,8 +109,7 @@ public class AudioUi_note
         }
 
         // set audio play and pause control image
-        audio_play_btn.setOnClickListener(new View.OnClickListener()
-        {
+        audio_play_btn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v)
             {
@@ -276,24 +275,20 @@ public class AudioUi_note
     }
 
     //  play audio in pager
-    public void playAudioInNotePager(AppCompatActivity act, String audioUriStr)
-    {
+    public void playAudioInNotePager(AppCompatActivity act, String audioUriStr){
         System.out.println("AudioUi_note / _playAudioInNotePager");
 
         String[] audioName = Util.getDisplayNameByUriString(audioUriStr, act);
         if(UtilAudio.hasAudioExtension(audioUriStr) ||
-           UtilAudio.hasAudioExtension(audioName[0]))
-        {
+           UtilAudio.hasAudioExtension(audioName[0])  ){
             mAudio_manager.mAudioPos = NoteUi.getFocus_notePos();
             MainAct.mPlaying_pageTableId = TabsHost.getCurrentPageTableId();
 
             // new instance
             if(mAudio_manager.audio7Player == null)
                 mAudio_manager.audio7Player = new Audio7Player(act, null,audioPanel, audioUriStr);
-            else {
+            else
                 mAudio_manager.audio7Player.setAudioPanel(audioPanel);
-                mAudio_manager.audio7Player.initAudioBlock(audioUriStr);
-            }
 
             mAudio_manager.audio7Player.setAudioPanel(audioPanel);
 

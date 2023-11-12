@@ -86,8 +86,8 @@ public class Audio7Player
 		    System.out.println("Audio7Player / _runAudioState / audio_panel = null ");
 
 	   	// if media player is null
-		if( mMediaPlayer == null )	//for first
-		{
+		if( mMediaPlayer == null ){
+			// for first
 		 	// show toast if Audio file is not found or No selection of audio file
 			if( mAudio_manager.getAudioFilesCount() == 0) {
                 mAudio_manager.setPlayerState(mAudio_manager.PLAYER_AT_STOP);

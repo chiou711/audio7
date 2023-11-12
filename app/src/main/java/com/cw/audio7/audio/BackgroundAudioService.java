@@ -155,7 +155,8 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat
             manager = NotificationManagerCompat.from(this);
             NotificationChannel channel = new NotificationChannel(CHANNEL_ID,
                     getResources().getString(R.string.app_name),
-                    NotificationManager.IMPORTANCE_DEFAULT);
+//                    NotificationManager.IMPORTANCE_DEFAULT);
+                    NotificationManager.IMPORTANCE_LOW); // no intrusive sound
             manager.createNotificationChannel(channel);
         } else
             manager_before_API26 = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
