@@ -206,6 +206,11 @@ public class PageAdapter extends RecyclerView.Adapter<PageAdapter.ViewHolder>
     public void onBindViewHolder(ViewHolder holder, final int position) {
 
 //        System.out.println("PageAdapter / _onBindViewHolder / position = " + position);
+//        System.out.println("PageAdapter / _onBindViewHolder / page_table_id = " + page_table_id);
+
+        // speed up loading card view
+        if(TabsHost.getCurrentPageTableId() != page_table_id)
+            return;
 
         ((CardView)holder.itemView).setCardBackgroundColor(act.getResources().getColor(R.color.colorBlack));
 

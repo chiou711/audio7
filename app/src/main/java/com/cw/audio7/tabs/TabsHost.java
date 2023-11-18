@@ -234,7 +234,6 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
     /**
      * Add pages
      */
-    PageUi pageUi;
     public PageUi mPageUi;
     Bundle args;
     public View audio_panel;
@@ -255,21 +254,18 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
                     lastPageTableId = pageTableId;
 
                 audio_panel = rootView.findViewById(R.id.audio_panel);
-                pageUi = new PageUi(act, folder,audio_panel);
+                mPageUi = new PageUi(act, folder,audio_panel);
 
                 int currPageTableId = Pref.getPref_focusView_page_tableId(act);
                 setCurrentPageTableId(currPageTableId);
 //                System.out.println("TabsHost / _addPages / currPageTableId = " + currPageTableId);
 
-                if(pageTableId == currPageTableId)
-                    mPageUi = new PageUi(act, folder,audio_panel);
-
                 args = new Bundle();
                 args.putInt("page_pos",i);
                 args.putInt("page_table_id",pageTableId);
-                pageUi.setArguments(args);
+                mPageUi.setArguments(args);
 //                System.out.println("TabsHost / _addPages / page_tableId = " + pageTableId);
-                adapter.addFragment(pageUi);
+                adapter.addFragment(mPageUi);
             }
         }
 
