@@ -7,4 +7,6 @@
     <string name="toast_cyclic_play_disabled">循环播放未启用</string>
     <string name="toast_storage_directory_top">已经在存储目录的顶部</string>
     <string name="toast_no_SD_permission">请注意，您拒绝了 SD 卡读/写权限。 您可以通过系统设置启用它。</string>
+    <string name="toast_shuffle_enabled">启用随机播放</string>
+    <string name="toast_shuffle_disabled">关闭随机播放</string>
 </resources>

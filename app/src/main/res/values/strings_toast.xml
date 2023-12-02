@@ -7,4 +7,6 @@
     <string name="toast_cyclic_play_disabled">Cyclic play is not enabled</string>
     <string name="toast_storage_directory_top">At top of storage directory already</string>
     <string name="toast_no_SD_permission">Please note that you have denied SD card read/write permission. You can enable it by system setting.</string>
+    <string name="toast_shuffle_enabled">Enable shuffle</string>
+    <string name="toast_shuffle_disabled">Disable shuffle</string>
 </resources>

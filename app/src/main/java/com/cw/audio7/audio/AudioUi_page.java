@@ -168,9 +168,11 @@ public class AudioUi_page {
                 if(Pref.getPref_shuffle_play_enable(act)) {
                     Pref.setPref_shuffle_play(act,false);// set off
                     audio_shuffle_btn.setImageResource(R.drawable.ic_menu_ordered);
+                    Toast.makeText(act,R.string.toast_shuffle_disabled,Toast.LENGTH_SHORT).show();
                 } else {
                     Pref.setPref_shuffle_play(act,true);// set on
                     audio_shuffle_btn.setImageResource(R.drawable.ic_menu_shuffle);
+                    Toast.makeText(act,R.string.toast_shuffle_enabled,Toast.LENGTH_SHORT).show();
                 }
             }
         });
