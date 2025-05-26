@@ -15,8 +15,8 @@ android {
         minSdk 21
         targetSdk 34
         multiDexEnabled true
-        versionCode 33
-        versionName '0.00.33'
+        versionCode 13401
+        versionName '1.34.01'
     }
 
     buildTypes {
@@ -39,6 +39,7 @@ android {
         sourceCompatibility JavaVersion.VERSION_11
         targetCompatibility JavaVersion.VERSION_11
     }
+    namespace 'com.cw.audio7'
 
     //https://stackoverflow.com/questions/44342455/more-than-one-file-was-found-with-os-independent-path-meta-inf-license
 //    packagingOptions {
